@@ -1,5 +1,6 @@
 package com.pfi.crm.controller;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 import javax.validation.Valid;
@@ -11,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.pfi.crm.model.Contacto;
 import com.pfi.crm.model.Voluntario;
 import com.pfi.crm.model.test.Customer;
 import com.pfi.crm.model.test.Employee;
@@ -82,15 +82,20 @@ public class Controller {
     public Voluntario altaVoluntarioTest(/*@Valid @RequestBody Voluntario voluntario*/) {
     	System.out.println("Entre aca");
     	
-    	Contacto c = new Contacto();
-    	c.setEstadoActivoContacto(true);
-    	c.setNombreDescripcion("Voluntario Don Roque");
-    	c.setCuit("20-1235678-9");
-    	c.setDomicilio("Avenida siempre falsa 123, piso 4, depto A");
-    	c.setEmail("felipe@gmail.com");
-    	c.setTelefono("1234-4567");
     	Voluntario v = new Voluntario();
-    	v.setContacto(c);
+    	
+    	//Contacto
+    	v.setEstadoActivoContacto(true);
+    	v.setNombreDescripcion("Voluntario Don Roque");
+    	v.setCuit("20-1235678-9");
+    	v.setDomicilio("Avenida siempre falsa 123, piso 4, depto A");
+    	v.setEmail("felipe@gmail.com");
+    	v.setTelefono("1234-4567");
+    	
+    	//PersonaFisica
+    	v.setNombre("Felipe");
+    	v.setApellido("del 8");
+    	v.setFechaNacimiento(LocalDate.of(1990, 1, 20));
     	
     	Voluntario ret = voluntarioRepository.save(v);
     	

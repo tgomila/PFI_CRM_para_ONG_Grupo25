@@ -30,6 +30,7 @@ public class Contacto {
 	//Constructor
 	public Contacto() {
 		super();
+		this.estadoActivoContacto = true;
 		this.fechaAltaContacto = LocalDate.now(); //Fecha de hoy en server
 	}
 	

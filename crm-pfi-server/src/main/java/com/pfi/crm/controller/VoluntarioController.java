@@ -13,33 +13,31 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.pfi.crm.model.Empleado;
-import com.pfi.crm.repository.EmpleadoRepository;
+import com.pfi.crm.model.Voluntario;
+import com.pfi.crm.repository.VoluntarioRepository;
 import com.pfi.crm.security.CurrentUser;
 import com.pfi.crm.security.UserPrincipal;
 
 @RestController
-@RequestMapping("/api/empleado")
-public class EmpleadoController {
+@RequestMapping("/api/voluntario")
+public class VoluntarioController {
 	
 	@Autowired
-	private EmpleadoRepository empleadoRepository;
+	private VoluntarioRepository voluntarioRepository;
 	
 	@PostMapping("/")
-    public Empleado altaEmpleado(@Valid @RequestBody Empleado empleado) {
-    	System.out.println("Entre aca");
-    	
-    	return empleadoRepository.save(empleado);
+    public Voluntario altaVoluntario(@Valid @RequestBody Voluntario voluntario) {
+    	return voluntarioRepository.save(voluntario);
     }
 	
 	@GetMapping("/{id}")
-    public Optional<Empleado> getEmpleadoById(@PathVariable Long id) {
-        return empleadoRepository.findById(id);
+    public Optional<Voluntario> getEmpleadoById(@PathVariable Long id) {
+        return voluntarioRepository.findById(id);
     }
 	
-	@GetMapping("/empleados")
+	@GetMapping("/voluntarios")
 	//@PreAuthorize("hasRole('EMPLOYEE')")
-    public List<Empleado> empleados() {
-    	return empleadoRepository.findAll();
+    public List<Voluntario> voluntarios() {
+    	return voluntarioRepository.findAll();
     }
 }
