@@ -1,19 +1,36 @@
 package com.pfi.crm.model;
 
-import javax.persistence.CascadeType;
-import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
-import javax.persistence.OrderBy;
 
 @MappedSuperclass
-public abstract class TrabajadorAbstract {
+public abstract class TrabajadorAbstract extends ContactoAbstract{
 	
 	private String datosBancarios;
 	
-	//Mejorar
+	//Las facturas se buscan de manera aparte
 	
-	@ManyToOne(cascade = CascadeType.ALL)
-	@OrderBy("nombreDescripcion ASC")
-	private Contacto contacto;
+	
+	//Constructor
+	public TrabajadorAbstract() {
+		super();
+	}
+	
+	
+	public TrabajadorAbstract(String datosBancarios) {
+		super();
+		this.datosBancarios = datosBancarios;
+	}
+		
+	
+
+
+	//Getters and Setters
+	public String getDatosBancarios() {
+		return datosBancarios;
+	}
+
+	public void setDatosBancarios(String datosBancarios) {
+		this.datosBancarios = datosBancarios;
+	}
 	
 }

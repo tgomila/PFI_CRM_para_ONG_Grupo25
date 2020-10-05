@@ -78,7 +78,7 @@ public class Controller {
     	return employee;
     }
     
-    @PostMapping("/voluntario")
+    @PostMapping("/testVoluntario")
     public Voluntario altaVoluntarioTest(/*@Valid @RequestBody Voluntario voluntario*/) {
     	System.out.println("Entre aca");
     	
@@ -97,6 +97,7 @@ public class Controller {
     	return ret;
     }
     
+    //MiniCambio
     @PostMapping("/voluntario")
     public Voluntario altaVoluntario(@Valid @RequestBody Voluntario voluntario) {
     	System.out.println("Entre aca");
