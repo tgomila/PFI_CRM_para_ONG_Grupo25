@@ -12,7 +12,11 @@ public interface ConsejoAdHonoremRepository extends JpaRepository<ConsejoAdHonor
     
 	//Probar
 	//@Query("SELECT e FROM  ConsejoAdHonorem e WHERE e.contacto.estadoActivoContacto=?1")
+	Optional<ConsejoAdHonorem> findByContacto_Id(Long id);
+	
 	Optional<ConsejoAdHonorem> findByContacto_Email(String email);
+	
+	boolean existsByContacto_Id(Long id);
 	
 	Optional<ConsejoAdHonorem> findByContacto_NombreDescripcion(String nombreDescripcion);
 	

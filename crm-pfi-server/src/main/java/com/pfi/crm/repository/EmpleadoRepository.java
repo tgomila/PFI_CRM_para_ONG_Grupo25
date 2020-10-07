@@ -10,7 +10,9 @@ public interface EmpleadoRepository extends JpaRepository<Empleado, Long> {
     
 	//Probar
 	//@Query("SELECT e FROM  Empleado e WHERE e.Contacto.estadoActivoContacto=?1")
-	Optional<Empleado> findByContacto_id(String email);
+	Optional<Empleado> findByContacto_Id(Long id);
+	
+	boolean existsByContacto_Id(Long id);
 	
 	Optional<Empleado> findByContacto_Email(String email);
 	

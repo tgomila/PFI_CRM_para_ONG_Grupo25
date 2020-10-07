@@ -51,4 +51,23 @@ public class ContactoController {
     public ContactoPayload modificarContacto(@Valid @RequestBody ContactoPayload payload) {
     	return contactoService.modificarContacto(new Contacto(payload)).toPayload();
     }
+	
+	// TEST
+	// Devuelve un ejemplo de contacto payload
+
+	@GetMapping("/test")
+	public ContactoPayload altaConsejoAdHonoremTest(/* @Valid @RequestBody ContactoPayload payload */) {
+
+		Contacto m = new Contacto();
+
+		// Contacto
+		m.setEstadoActivoContacto(true);
+		m.setNombreDescripcion("Contacto Don Roque");
+		m.setCuit("20-1235678-9");
+		m.setDomicilio("Avenida siempre falsa 123, piso 4, depto A");
+		m.setEmail("felipe@gmail.com");
+		m.setTelefono("1234-4567");
+
+		return m.toPayload();
+	}
 }

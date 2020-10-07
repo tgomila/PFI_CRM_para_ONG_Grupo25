@@ -10,7 +10,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import com.pfi.crm.payload.ContactoPayload;
 import com.pfi.crm.payload.PersonaJuridicaPayload;
 
 @Entity
@@ -33,6 +32,7 @@ public class PersonaJuridica extends ContactoAbstract{
 	//Constructores
 	public PersonaJuridica() {
 		super();
+		this.estadoActivoPersonaJuridica = true;
 	}
 
 	public PersonaJuridica(Long idPersonaJuridica, String internoTelefono, TipoPersonaJuridica tipoPersonaJuridica) {

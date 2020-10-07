@@ -53,7 +53,7 @@ public class BeneficiarioPayload extends PersonaFisicaAbstractPayload{
 	public void setLugarDeNacimiento(String lugarDeNacimiento) {
 		this.lugarDeNacimiento = lugarDeNacimiento;
 	}
-	public boolean isSeRetiraSolo() {
+	public boolean getSeRetiraSolo() {
 		return seRetiraSolo;
 	}
 	public void setSeRetiraSolo(boolean seRetiraSolo) {

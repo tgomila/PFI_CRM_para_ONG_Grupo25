@@ -13,43 +13,43 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.pfi.crm.model.Empleado;
-import com.pfi.crm.payload.EmpleadoPayload;
-import com.pfi.crm.service.EmpleadoService;
+import com.pfi.crm.model.Profesional;
+import com.pfi.crm.payload.ProfesionalPayload;
+import com.pfi.crm.service.ProfesionalService;
 
 @RestController
-@RequestMapping("/api/empleado")
-public class EmpleadoController {
+@RequestMapping("/api/profesional")
+public class ProfesionalController {
 	
 	@Autowired
-	private EmpleadoService empleadoService;
+	private ProfesionalService profesionalService;
 	
 	
 	
 	@GetMapping("/{id}")
-    public EmpleadoPayload getEmpleadoById(@PathVariable Long id) {
-        return empleadoService.getEmpleadoByIdContacto(id);
+    public ProfesionalPayload getProfesionalById(@PathVariable Long id) {
+        return profesionalService.getProfesionalByIdContacto(id);
     }
 	
 	@GetMapping("/all")
 	//@PreAuthorize("hasRole('EMPLOYEE')")
-    public List<EmpleadoPayload> getEmpleado() {
-    	return  empleadoService.getPersonasFisicas();
+    public List<ProfesionalPayload> getProfesional() {
+    	return  profesionalService.getPersonasFisicas();
 	}
 	
 	@PostMapping({"/", "/alta"})
-    public EmpleadoPayload altaEmpleado(@Valid @RequestBody EmpleadoPayload payload) {
-    	return empleadoService.altaEmpleado(payload);
+    public ProfesionalPayload altaProfesional(@Valid @RequestBody ProfesionalPayload payload) {
+    	return profesionalService.altaProfesional(payload);
     }
 	
 	@PostMapping({"/baja/{id}"})
-    public void bajaEmpleado(@PathVariable Long id) {
-		empleadoService.bajaEmpleado(id);
+    public void bajaProfesional(@PathVariable Long id) {
+		profesionalService.bajaProfesional(id);
     }
 	
 	@PostMapping("/modificar")
-    public EmpleadoPayload modificarEmpleado(@Valid @RequestBody EmpleadoPayload payload) {
-    	return empleadoService.modificarEmpleado(payload);
+    public ProfesionalPayload modificarProfesional(@Valid @RequestBody ProfesionalPayload payload) {
+    	return profesionalService.modificarProfesional(payload);
     }
 	
 	
@@ -57,16 +57,16 @@ public class EmpleadoController {
 	
 	
 	// TEST
-	// Devuelve un ejemplo de Empleado payload
+	// Devuelve un ejemplo de PersonaFisica
 
 	@GetMapping("/test")
-	public EmpleadoPayload altaEmpleadoTest(/* @Valid @RequestBody EmpleadoPayload payload */) {
+	public ProfesionalPayload altaProfesionalTest(/* @Valid @RequestBody ProfesionalPayload payload */) {
 
-		Empleado m = new Empleado();
+		Profesional m = new Profesional();
 
 		// Contacto
 		m.setEstadoActivoContacto(true);
-		m.setNombreDescripcion("Empleado Don psicologo");
+		m.setNombreDescripcion("Profesional Don psicologo");
 		m.setCuit("20-1235678-9");
 		m.setDomicilio("Avenida siempre falsa 123, piso 4, depto A");
 		m.setEmail("estebanquito@gmail.com");
@@ -77,10 +77,9 @@ public class EmpleadoController {
 		m.setApellido("Quito");
 		m.setFechaNacimiento(LocalDate.of(1990, 1, 20));
 
-		// Empleado
-		m.setFuncion("Desktop Helper");
-		m.setDescripcion("Da las altas y bajas de beneficiarios");
-		// Fin Empleado
+		// Profesional
+		m.setProfesion("Psicologo");
+		// Fin Profesional
 
 		return m.toPayload();
 	}

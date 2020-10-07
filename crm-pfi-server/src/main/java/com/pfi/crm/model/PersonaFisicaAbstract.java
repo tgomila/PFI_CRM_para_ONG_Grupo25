@@ -15,6 +15,14 @@ public abstract class PersonaFisicaAbstract extends ContactoAbstract{
 	
 	
 	
+	public PersonaFisica getPersonaFisica() {
+		return personaFisica;
+	}
+
+	public void setPersonaFisica(PersonaFisica personaFisica) {
+		this.personaFisica = personaFisica;
+	}
+
 	//metodo agregado
 	public int getEdad() {
 		return personaFisica.getEdad();
@@ -71,6 +79,14 @@ public abstract class PersonaFisicaAbstract extends ContactoAbstract{
 
 	public void setFechaNacimiento(LocalDate fechaNacimiento) {
 		personaFisica.setFechaNacimiento(fechaNacimiento);
+	}
+	
+	public boolean getEstadoActivoPersonaFisica() {
+		return personaFisica.getEstadoActivoPersonaFisica();
+	}
+
+	public void setEstadoActivoPersonaFisica(boolean estadoActivoPersonaFisica) {
+		personaFisica.setEstadoActivoPersonaFisica(estadoActivoPersonaFisica);
 	}
 	
 	

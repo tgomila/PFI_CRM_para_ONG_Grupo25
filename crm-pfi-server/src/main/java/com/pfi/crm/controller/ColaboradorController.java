@@ -13,43 +13,43 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.pfi.crm.model.Voluntario;
-import com.pfi.crm.payload.VoluntarioPayload;
-import com.pfi.crm.service.VoluntarioService;
+import com.pfi.crm.model.Colaborador;
+import com.pfi.crm.payload.ColaboradorPayload;
+import com.pfi.crm.service.ColaboradorService;
 
 @RestController
-@RequestMapping("/api/voluntario")
-public class VoluntarioController {
+@RequestMapping("/api/colaborador")
+public class ColaboradorController  {
 	
 	@Autowired
-	private VoluntarioService voluntarioService;
+	private ColaboradorService colaboradorService;
 	
 	
 	
 	@GetMapping("/{id}")
-    public VoluntarioPayload getVoluntarioById(@PathVariable Long id) {
-        return voluntarioService.getVoluntarioByIdContacto(id);
+    public ColaboradorPayload getColaboradorById(@PathVariable Long id) {
+        return colaboradorService.getColaboradorByIdContacto(id);
     }
 	
 	@GetMapping("/all")
 	//@PreAuthorize("hasRole('EMPLOYEE')")
-    public List<VoluntarioPayload> getVoluntario() {
-    	return  voluntarioService.getPersonasFisicas();
+    public List<ColaboradorPayload> getColaborador() {
+    	return  colaboradorService.getPersonasFisicas();
 	}
 	
 	@PostMapping({"/", "/alta"})
-    public VoluntarioPayload altaVoluntario(@Valid @RequestBody VoluntarioPayload payload) {
-    	return voluntarioService.altaVoluntario(payload);
+    public ColaboradorPayload altaColaborador(@Valid @RequestBody ColaboradorPayload payload) {
+    	return colaboradorService.altaColaborador(payload);
     }
 	
 	@PostMapping({"/baja/{id}"})
-    public void bajaVoluntario(@PathVariable Long id) {
-		voluntarioService.bajaVoluntario(id);
+    public void bajaColaborador(@PathVariable Long id) {
+		colaboradorService.bajaColaborador(id);
     }
 	
 	@PostMapping("/modificar")
-    public VoluntarioPayload modificarVoluntario(@Valid @RequestBody VoluntarioPayload payload) {
-    	return voluntarioService.modificarVoluntario(payload);
+    public ColaboradorPayload modificarColaborador(@Valid @RequestBody ColaboradorPayload payload) {
+    	return colaboradorService.modificarColaborador(payload);
     }
 	
 	
@@ -57,16 +57,16 @@ public class VoluntarioController {
 	
 	
 	// TEST
-	// Devuelve un ejemplo del payload
+	// Devuelve un ejemplo de colaborador payload
 
 	@GetMapping("/test")
-	public VoluntarioPayload altaVoluntarioTest(/* @Valid @RequestBody VoluntarioPayload payload */) {
+	public ColaboradorPayload altaColaboradorTest(/* @Valid @RequestBody ColaboradorPayload payload */) {
 
-		Voluntario m = new Voluntario();
+		Colaborador m = new Colaborador();
 
 		// Contacto
 		m.setEstadoActivoContacto(true);
-		m.setNombreDescripcion("Voluntario Don Roque");
+		m.setNombreDescripcion("Colaborador Don Roque");
 		m.setCuit("20-1235678-9");
 		m.setDomicilio("Avenida siempre falsa 123, piso 4, depto A");
 		m.setEmail("felipe@gmail.com");
@@ -77,8 +77,9 @@ public class VoluntarioController {
 		m.setApellido("del 8");
 		m.setFechaNacimiento(LocalDate.of(1990, 1, 20));
 
-		//Voluntario
-		//No tiene otros atributos
+		// Colaborador
+		m.setArea("Area administrativa");
+		// Fin Colaborador
 
 		return m.toPayload();
 	}

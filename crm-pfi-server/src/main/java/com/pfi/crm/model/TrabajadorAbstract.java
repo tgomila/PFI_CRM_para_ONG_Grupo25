@@ -3,7 +3,7 @@ package com.pfi.crm.model;
 import javax.persistence.MappedSuperclass;
 
 @MappedSuperclass
-public abstract class TrabajadorAbstract extends ContactoAbstract{
+public abstract class TrabajadorAbstract extends PersonaFisicaAbstract{
 	
 	private String datosBancarios;
 	

@@ -64,14 +64,14 @@ public class PersonaFisica extends ContactoAbstract{
 		this.setTelefono(p.getTelefono());
 		// Fin Contacto
 		
-		// Persona Juridica
+		// Persona Fisica
 		this.setIdPersonaFisica(null);
 		this.setDni(p.getDni());
 		this.setNombre(p.getNombre());
 		this.setApellido(p.getApellido());
 		this.setFechaNacimiento(p.getFechaNacimiento());
 		this.setEstadoActivoPersonaFisica(true);
-		// Fin Persona Juridica
+		// Fin Persona Fisica
 	}
 	
 	
@@ -148,6 +148,7 @@ public class PersonaFisica extends ContactoAbstract{
 		p.setNombre(this.getNombre());
 		p.setApellido(this.getApellido());
 		p.setFechaNacimiento(this.getFechaNacimiento());
+		//p.setEstadoActivoPersonaFisica(this.getEstadoActivoPersonaFisica());
 		// Fin Persona Juridica
 		
 		
@@ -168,12 +169,12 @@ public class PersonaFisica extends ContactoAbstract{
 		this.setTelefono(p.getTelefono());
 		// Fin Contacto
 		
-		// Persona Juridica
+		// Persona Fisica
 		this.setDni(p.getDni());
 		this.setNombre(p.getNombre());
 		this.setApellido(p.getApellido());
 		this.setFechaNacimiento(p.getFechaNacimiento());
 		//this.setEstadoActivoPersonaFisica(true);
-		// Fin Persona Juridica
+		// Fin Persona Fisica
 	}
 }

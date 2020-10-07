@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.pfi.crm.model.PersonaFisica;
 import com.pfi.crm.payload.PersonaFisicaPayload;
-import com.pfi.crm.repository.PersonaFisicaRepository;
 import com.pfi.crm.service.PersonaFisicaService;
 
 
@@ -26,9 +25,6 @@ public class PersonaFisicaController {
 	
 	@Autowired
 	private PersonaFisicaService personaFisicaService;
-	
-	@Autowired
-	private PersonaFisicaRepository personaFisicaRepository;
 	
 	
 	
@@ -65,7 +61,7 @@ public class PersonaFisicaController {
 	//TEST
 	//Devuelve un ejemplo de PersonaFisica
 	
-	@GetMapping("/test/personafisica")
+	@GetMapping("/test")
 	public PersonaFisicaPayload altaVoluntarioTest(/* @Valid @RequestBody PersonaFisicaPayload payload */) {
 		System.out.println("Entre aca");
 
@@ -73,7 +69,7 @@ public class PersonaFisicaController {
 
 		// Contacto
 		m.setEstadoActivoContacto(true);
-		m.setNombreDescripcion("Voluntario Don Roque");
+		m.setNombreDescripcion("Persona Fisica Don Roque");
 		m.setCuit("20-1235678-9");
 		m.setDomicilio("Avenida siempre falsa 123, piso 4, depto A");
 		m.setEmail("felipe@gmail.com");
@@ -83,9 +79,7 @@ public class PersonaFisicaController {
 		m.setNombre("Felipe");
 		m.setApellido("del 8");
 		m.setFechaNacimiento(LocalDate.of(1990, 1, 20));
-
-		PersonaFisicaPayload ret = personaFisicaRepository.save(m).toPayload();
-
-		return ret;
+		
+		return m.toPayload();
 	}
 }

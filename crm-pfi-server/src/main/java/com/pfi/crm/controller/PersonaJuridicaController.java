@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.pfi.crm.model.PersonaJuridica;
+import com.pfi.crm.model.TipoPersonaJuridica;
 import com.pfi.crm.payload.PersonaJuridicaPayload;
 import com.pfi.crm.service.PersonaJuridicaService;
 
@@ -49,4 +51,32 @@ public class PersonaJuridicaController {
     public PersonaJuridicaPayload modificarPersonaJuridica(@Valid @RequestBody PersonaJuridicaPayload payload) {
     	return personaJuridicaService.modificarPersonaJuridica(payload);
     }
+	
+	
+	
+	
+	
+	// TEST
+	// Devuelve un ejemplo de Persona juridica
+
+	@GetMapping("/test")
+	public PersonaJuridicaPayload altaVoluntarioTest(/* @Valid @RequestBody PersonaJuridicaPayload payload */) {
+		System.out.println("Entre aca");
+
+		PersonaJuridica m = new PersonaJuridica();
+
+		// Contacto
+		m.setEstadoActivoContacto(true);
+		m.setNombreDescripcion("Persona Fisica Don Roque");
+		m.setCuit("20-1235678-9");
+		m.setDomicilio("Avenida siempre falsa 123, piso 4, depto A");
+		m.setEmail("felipe@gmail.com");
+		m.setTelefono("1234-4567");
+
+		// Persona Juridica
+		m.setInternoTelefono("07");
+		m.setTipoPersonaJuridica(TipoPersonaJuridica.EMPRESA);
+
+		return m.toPayload();
+	}
 }
