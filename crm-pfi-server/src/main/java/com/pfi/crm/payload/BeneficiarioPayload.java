@@ -1,9 +1,9 @@
-package com.pfi.crm.payload.request;
+package com.pfi.crm.payload;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
-public class BeneficiarioRequest extends PersonaFisicaAbstractRequest{
+public class BeneficiarioPayload extends PersonaFisicaAbstractPayload{
 	
 	//private Long idBeneficiario;
 		

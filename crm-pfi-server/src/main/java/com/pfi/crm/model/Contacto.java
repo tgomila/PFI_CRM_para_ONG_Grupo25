@@ -8,6 +8,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import com.pfi.crm.payload.ContactoPayload;
+
 @Entity
 @Table(name ="contacto")
 public class Contacto {
@@ -34,6 +36,29 @@ public class Contacto {
 		this.fechaAltaContacto = LocalDate.now(); //Fecha de hoy en server
 	}
 	
+	public Contacto(ContactoPayload p) {
+		super();
+		this.setId(p.getId());
+		this.setEstadoActivoContacto(true);
+		this.setFechaAltaContacto(LocalDate.now());
+		this.setFechaBajaContacto(null);
+		this.setNombreDescripcion(p.getNombreDescripcion());
+		this.setCuit(p.getCuit());
+		this.setDomicilio(p.getDomicilio());
+		this.setEmail(p.getEmail());
+		this.setTelefono(p.getTelefono());
+		
+		/*this.id = p.getId();
+		this.estadoActivoContacto = true;
+		this.fechaAltaContacto = LocalDate.now();
+		this.fechaBajaContacto = null;
+		this.nombreDescripcion = p.getNombreDescripcion();
+		this.cuit = p.getCuit();
+		this.domicilio = p.getDomicilio();
+		this.email = p.getEmail();
+		this.telefono = p.getTelefono();*/
+	}
+
 	//Getters y Setters
 	public Long getId() {
 		return id;
@@ -91,5 +116,37 @@ public class Contacto {
 	}
 	
 	
-	
+	// Payloads
+	/*public Contacto toModel(ContactoPayload p) {
+
+		// Contacto
+		Contacto m = new Contacto();
+		m.setId(p.getId());
+		m.setEstadoActivoContacto(true);
+		m.setFechaAltaContacto(LocalDate.now());
+		m.setFechaBajaContacto(null);
+		m.setNombreDescripcion(p.getNombreDescripcion());
+		m.setCuit(p.getCuit());
+		m.setDomicilio(p.getDomicilio());
+		m.setEmail(p.getEmail());
+		m.setTelefono(p.getTelefono());
+
+		return m;
+	}*/
+
+	public ContactoPayload toPayload() {
+
+		ContactoPayload p = new ContactoPayload();
+
+		// Contacto
+		p.setId(this.getId());
+		p.setNombreDescripcion(this.getNombreDescripcion());
+		p.setCuit(this.getCuit());
+		p.setDomicilio(this.getDomicilio());
+		p.setEmail(this.getEmail());
+		p.setTelefono(this.getTelefono());
+		// Fin Contacto
+
+		return p;
+	}
 }

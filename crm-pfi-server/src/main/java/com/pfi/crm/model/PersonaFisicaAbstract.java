@@ -33,12 +33,12 @@ public abstract class PersonaFisicaAbstract extends ContactoAbstract{
 	}
 
 
-	public Long getIdPersonaJuridica() {
-		return personaFisica.getIdPersonaJuridica();
+	public Long getIdPersonaFisica() {
+		return personaFisica.getIdPersonaFisica();
 	}
 
-	public void setIdPersonaJuridica(Long idPersonaJuridica) {
-		personaFisica.setIdPersonaJuridica(idPersonaJuridica);
+	public void setIdPersonaFisica(Long idPersonaFisica) {
+		personaFisica.setIdPersonaFisica(idPersonaFisica);
 	}
 
 	public int getDni() {

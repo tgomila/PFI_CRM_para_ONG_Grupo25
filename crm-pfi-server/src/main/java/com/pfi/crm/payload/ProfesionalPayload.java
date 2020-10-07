@@ -1,6 +1,6 @@
-package com.pfi.crm.payload.request;
+package com.pfi.crm.payload;
 
-public class ProfesionalRequest extends TrabajadorAbstractRequest{
+public class ProfesionalPayload extends TrabajadorAbstractPayload{
 	
 	//private Long idProfesional;
 	

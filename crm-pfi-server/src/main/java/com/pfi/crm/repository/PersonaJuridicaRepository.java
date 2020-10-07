@@ -10,7 +10,11 @@ public interface PersonaJuridicaRepository extends JpaRepository<PersonaJuridica
     
 	//Probar
 	//@Query("SELECT e FROM  PersonaJuridica e WHERE e.contacto.estadoActivoContacto=?1")
-	Optional<PersonaJuridica> findByContactoEmail(String email);
+	Optional<PersonaJuridica> findByContacto_Id(Long id);
+	
+	boolean existsByContacto_Id(Long id);
+	
+	Optional<PersonaJuridica> findByContacto_Email(String email);
 	
 	Optional<PersonaJuridica> findByContacto_NombreDescripcion(String nombreDescripcion);
 	

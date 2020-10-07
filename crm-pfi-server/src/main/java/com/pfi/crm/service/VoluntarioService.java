@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import com.pfi.crm.model.Voluntario;
+import com.pfi.crm.payload.VoluntarioPayload;
 import com.pfi.crm.repository.VoluntarioRepository;
 
 @Service
@@ -17,9 +18,9 @@ public class VoluntarioService {
 	@Autowired
 	private VoluntarioRepository voluntarioRepository;
 	
-	 private static final Logger logger = LoggerFactory.getLogger(EjemploService.class);
+	private static final Logger logger = LoggerFactory.getLogger(EjemploService.class);
 	
-	public Optional<Voluntario> getEmpleadoById(@PathVariable Long id) {
+	public Optional<Voluntario> getVoluntarioById(@PathVariable Long id) {
         return voluntarioRepository.findByContacto_Id(id);
     }
 }

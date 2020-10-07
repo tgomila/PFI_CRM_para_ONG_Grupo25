@@ -1,11 +1,11 @@
-package com.pfi.crm.payload.request;
+package com.pfi.crm.payload;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 
 import com.pfi.crm.model.TipoPersonaJuridica;
 
-public class PersonaJuridicaRequest extends ContactoAbstractRequest{
+public class PersonaJuridicaPayload extends ContactoAbstractPayload{
 	
 	private String internoTelefono;
 	

@@ -7,28 +7,35 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.pfi.crm.model.Contacto;
 import com.pfi.crm.model.Voluntario;
 import com.pfi.crm.model.test.Customer;
 import com.pfi.crm.model.test.Employee;
 import com.pfi.crm.model.test.Person;
+import com.pfi.crm.payload.ContactoPayload;
 import com.pfi.crm.repository.VoluntarioRepository;
 import com.pfi.crm.repository.test.CustomerRepository;
 import com.pfi.crm.repository.test.EmployeeRepository;
 import com.pfi.crm.repository.test.PersonRepository;
+import com.pfi.crm.service.ContactoService;
 //import com.pfi.crm.repository.PersonRepository;
 import com.pfi.crm.service.EjemploService;
 
 @RestController
 @RequestMapping("/test")
-public class Controller {
+public class ZTestController {
 	
 	@Autowired
     private PersonRepository personRepository;
+	
+	@Autowired
+    private ContactoService contactoService;
 	
 	@Autowired
     private EjemploService ejemploService;
@@ -41,6 +48,28 @@ public class Controller {
     
     @Autowired
     private VoluntarioRepository voluntarioRepository;
+    
+    @GetMapping("/testContacto")
+    public ContactoPayload getContacto(/*@Valid @RequestBody Contacto contacto*/) {
+    	System.out.println("Entre aca");
+    	
+    	Contacto c = new Contacto();
+    	
+    	//Contacto
+    	c.setEstadoActivoContacto(true);
+    	c.setNombreDescripcion("Contacto test");
+    	c.setCuit("20-1235678-9");
+    	c.setDomicilio("Avenida siempre falsa 123, piso 4, depto A");
+    	c.setEmail("testContacto@gmail.com");
+    	c.setTelefono("1234-4567");
+    	
+    	return c.toPayload();
+    }
+    
+    @PostMapping("/testContacto")
+    public ContactoPayload getContacto(@Valid @RequestBody ContactoPayload payload) {
+    	return contactoService.altaContacto(new Contacto(payload)).toPayload();
+    }
     
     @PostMapping("/testEntities")
     public Employee createEmployee(/*@Valid @RequestBody Employee employee*/) {

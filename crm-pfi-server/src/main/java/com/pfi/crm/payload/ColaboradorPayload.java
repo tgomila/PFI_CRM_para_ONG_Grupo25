@@ -1,9 +1,9 @@
-package com.pfi.crm.payload.request;
+package com.pfi.crm.payload;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
-public class ColaboradorRequest extends TrabajadorAbstractRequest{
+public class ColaboradorPayload extends TrabajadorAbstractPayload{
 	
 	//private Long idColaborador;
 	

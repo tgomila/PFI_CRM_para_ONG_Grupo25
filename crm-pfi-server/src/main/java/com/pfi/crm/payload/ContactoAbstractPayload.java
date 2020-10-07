@@ -1,11 +1,11 @@
-package com.pfi.crm.payload.request;
+package com.pfi.crm.payload;
 
 import java.time.LocalDate;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
-public class ContactoAbstractRequest {
+public class ContactoAbstractPayload {
 	
 	//Solo esta para "modificar persona"
 	private Long id;

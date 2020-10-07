@@ -9,18 +9,21 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import com.pfi.crm.payload.PersonaFisicaPayload;
+
 @Entity
 @Table(name ="personaFisica")
 public class PersonaFisica extends ContactoAbstract{
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long idPersonaJuridica;
+	private Long idPersonaFisica;
 	
 	private int dni;
 	private String nombre;
 	private String apellido;
 	private LocalDate fechaNacimiento;
+	private boolean estadoActivoPersonaFisica;
 	//private int edad;	//Necesario sabiendo la fecha de nacimiento?
 	
 	//Metodo edad
@@ -37,21 +40,48 @@ public class PersonaFisica extends ContactoAbstract{
 		super();
 	}
 
-	public PersonaFisica(Long idPersonaJuridica, int dni, String nombre, String apellido, LocalDate fechaNacimiento) {
+	public PersonaFisica(Long idPersonaFisica, int dni, String nombre, String apellido, LocalDate fechaNacimiento) {
 		super();
-		this.idPersonaJuridica = idPersonaJuridica;
+		this.idPersonaFisica = idPersonaFisica;
 		this.dni = dni;
 		this.nombre = nombre;
 		this.apellido = apellido;
 		this.fechaNacimiento = fechaNacimiento;
+		this.estadoActivoPersonaFisica = true;
+	}
+	
+	public PersonaFisica(PersonaFisicaPayload p) {
+		super();
+		// Contacto
+		this.setId(p.getId());
+		this.setEstadoActivoContacto(true);
+		this.setFechaAltaContacto(LocalDate.now());
+		this.setFechaBajaContacto(null);
+		this.setNombreDescripcion(p.getNombreDescripcion());
+		this.setCuit(p.getCuit());
+		this.setDomicilio(p.getDomicilio());
+		this.setEmail(p.getEmail());
+		this.setTelefono(p.getTelefono());
+		// Fin Contacto
+		
+		// Persona Juridica
+		this.setIdPersonaFisica(null);
+		this.setDni(p.getDni());
+		this.setNombre(p.getNombre());
+		this.setApellido(p.getApellido());
+		this.setFechaNacimiento(p.getFechaNacimiento());
+		this.setEstadoActivoPersonaFisica(true);
+		// Fin Persona Juridica
+	}
+	
+	
+
+	public Long getIdPersonaFisica() {
+		return idPersonaFisica;
 	}
 
-	public Long getIdPersonaJuridica() {
-		return idPersonaJuridica;
-	}
-
-	public void setIdPersonaJuridica(Long idPersonaJuridica) {
-		this.idPersonaJuridica = idPersonaJuridica;
+	public void setIdPersonaFisica(Long idPersonaFisica) {
+		this.idPersonaFisica = idPersonaFisica;
 	}
 
 	public int getDni() {
@@ -86,9 +116,64 @@ public class PersonaFisica extends ContactoAbstract{
 		this.fechaNacimiento = fechaNacimiento;
 	}
 	
+	public boolean getEstadoActivoPersonaFisica() {
+		return estadoActivoPersonaFisica;
+	}
+
+	public void setEstadoActivoPersonaFisica(boolean estadoActivoPersonaFisica) {
+		this.estadoActivoPersonaFisica = estadoActivoPersonaFisica;
+	}
 	
 	
 	
 	
 	
+
+	public PersonaFisicaPayload toPayload() {
+		
+		PersonaFisicaPayload p = new PersonaFisicaPayload();
+		
+		// Contacto
+		p.setId(this.getId());
+		p.setNombreDescripcion(this.getNombreDescripcion());
+		p.setCuit(this.getCuit());
+		p.setDomicilio(this.getDomicilio());
+		p.setEmail(this.getEmail());
+		p.setTelefono(this.getTelefono());
+		// Fin Contacto
+		
+		// Persona Juridica
+			//p.setIdPersonaFisica(null);
+		p.setDni(this.getDni());
+		p.setNombre(this.getNombre());
+		p.setApellido(this.getApellido());
+		p.setFechaNacimiento(this.getFechaNacimiento());
+		// Fin Persona Juridica
+		
+		
+		return p;
+	}
+	
+	public void modificar(PersonaFisicaPayload p) {
+		
+		// Contacto
+		//this.setId(p.getId());
+		//this.setEstadoActivoContacto(true);
+		//this.setFechaAltaContacto(LocalDate.now());
+		//this.setFechaBajaContacto(null);
+		this.setNombreDescripcion(p.getNombreDescripcion());
+		this.setCuit(p.getCuit());
+		this.setDomicilio(p.getDomicilio());
+		this.setEmail(p.getEmail());
+		this.setTelefono(p.getTelefono());
+		// Fin Contacto
+		
+		// Persona Juridica
+		this.setDni(p.getDni());
+		this.setNombre(p.getNombre());
+		this.setApellido(p.getApellido());
+		this.setFechaNacimiento(p.getFechaNacimiento());
+		//this.setEstadoActivoPersonaFisica(true);
+		// Fin Persona Juridica
+	}
 }
