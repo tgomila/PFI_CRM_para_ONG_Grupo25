@@ -25,7 +25,7 @@ public class ProfesionalService {
 	private static final Logger logger = LoggerFactory.getLogger(ProfesionalService.class);
 	
 	public ProfesionalPayload getProfesionalByIdContacto(@PathVariable Long id) {
-        return profesionalRepository.findByContacto_Id(id).orElseThrow(
+        return profesionalRepository.findByPersonaFisica_Contacto_Id(id).orElseThrow(
                 () -> new ResourceNotFoundException("Profesional", "id", id)).toPayload();
     }
 	
@@ -42,7 +42,7 @@ public class ProfesionalService {
 	public void bajaProfesional(Long id) {
 		
 		//Si Optional es null o no, lo conocemos con ".isPresent()".		
-		Optional<Profesional> optionalModel = profesionalRepository.findByContacto_Id(id);
+		Optional<Profesional> optionalModel = profesionalRepository.findByPersonaFisica_Contacto_Id(id);
 		if(optionalModel.isPresent()) {
 			Profesional m = optionalModel.get();
 			m.setEstadoActivoProfesional(false);
@@ -60,7 +60,7 @@ public class ProfesionalService {
 	public ProfesionalPayload modificarProfesional(ProfesionalPayload payload) {
 		if (payload != null && payload.getId() != null) {
 			//Necesito el id de persona Fisica o se crearia uno nuevo
-			Optional<Profesional> optional = profesionalRepository.findByContacto_Id(payload.getId());
+			Optional<Profesional> optional = profesionalRepository.findByPersonaFisica_Contacto_Id(payload.getId());
 			if(optional.isPresent()) {   //Si existe
 				Profesional model = optional.get();
 				model.modificar(payload);

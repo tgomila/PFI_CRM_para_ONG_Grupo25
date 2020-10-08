@@ -25,7 +25,7 @@ public class ConsejoAdHonoremService {
 	private static final Logger logger = LoggerFactory.getLogger(ConsejoAdHonoremService.class);
 	
 	public ConsejoAdHonoremPayload getConsejoAdHonoremByIdContacto(@PathVariable Long id) {
-        return consejoAdHonoremRepository.findByContacto_Id(id).orElseThrow(
+        return consejoAdHonoremRepository.findByPersonaFisica_Contacto_Id(id).orElseThrow(
                 () -> new ResourceNotFoundException("ConsejoAdHonorem", "id", id)).toPayload();
     }
 	
@@ -42,7 +42,7 @@ public class ConsejoAdHonoremService {
 	public void bajaConsejoAdHonorem(Long id) {
 		
 		//Si Optional es null o no, lo conocemos con ".isPresent()".		
-		Optional<ConsejoAdHonorem> optionalModel = consejoAdHonoremRepository.findByContacto_Id(id);
+		Optional<ConsejoAdHonorem> optionalModel = consejoAdHonoremRepository.findByPersonaFisica_Contacto_Id(id);
 		if(optionalModel.isPresent()) {
 			ConsejoAdHonorem m = optionalModel.get();
 			m.setEstadoActivoConsejoAdHonorem(false);
@@ -60,7 +60,7 @@ public class ConsejoAdHonoremService {
 	public ConsejoAdHonoremPayload modificarConsejoAdHonorem(ConsejoAdHonoremPayload payload) {
 		if (payload != null && payload.getId() != null) {
 			//Necesito el id de persona Fisica o se crearia uno nuevo
-			Optional<ConsejoAdHonorem> optional = consejoAdHonoremRepository.findByContacto_Id(payload.getId());
+			Optional<ConsejoAdHonorem> optional = consejoAdHonoremRepository.findByPersonaFisica_Contacto_Id(payload.getId());
 			if(optional.isPresent()) {   //Si existe
 				ConsejoAdHonorem model = optional.get();
 				model.modificar(payload);

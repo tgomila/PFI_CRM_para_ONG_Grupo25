@@ -25,7 +25,7 @@ public class BeneficiarioService {
 	private static final Logger logger = LoggerFactory.getLogger(BeneficiarioService.class);
 	
 	public BeneficiarioPayload getBeneficiarioByIdContacto(@PathVariable Long id) {
-        return beneficiarioRepository.findByContacto_Id(id).orElseThrow(
+        return beneficiarioRepository.findByPersonaFisica_Contacto_Id(id).orElseThrow(
                 () -> new ResourceNotFoundException("Beneficiario", "id", id)).toPayload();
     }
 	
@@ -42,7 +42,7 @@ public class BeneficiarioService {
 	public void bajaBeneficiario(Long id) {
 		
 		//Si Optional es null o no, lo conocemos con ".isPresent()".		
-		Optional<Beneficiario> optionalModel = beneficiarioRepository.findByContacto_Id(id);
+		Optional<Beneficiario> optionalModel = beneficiarioRepository.findByPersonaFisica_Contacto_Id(id);
 		if(optionalModel.isPresent()) {
 			Beneficiario m = optionalModel.get();
 			m.setEstadoActivoBeneficiario(false);
@@ -60,7 +60,7 @@ public class BeneficiarioService {
 	public BeneficiarioPayload modificarBeneficiario(BeneficiarioPayload payload) {
 		if (payload != null && payload.getId() != null) {
 			//Necesito el id de persona Fisica o se crearia uno nuevo
-			Optional<Beneficiario> optional = beneficiarioRepository.findByContacto_Id(payload.getId());
+			Optional<Beneficiario> optional = beneficiarioRepository.findByPersonaFisica_Contacto_Id(payload.getId());
 			if(optional.isPresent()) {   //Si existe
 				Beneficiario model = optional.get();
 				model.modificar(payload);

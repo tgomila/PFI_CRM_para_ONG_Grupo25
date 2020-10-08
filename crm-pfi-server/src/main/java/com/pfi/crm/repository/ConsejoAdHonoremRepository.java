@@ -12,19 +12,19 @@ public interface ConsejoAdHonoremRepository extends JpaRepository<ConsejoAdHonor
     
 	//Probar
 	//@Query("SELECT e FROM  ConsejoAdHonorem e WHERE e.contacto.estadoActivoContacto=?1")
-	Optional<ConsejoAdHonorem> findByContacto_Id(Long id);
+	Optional<ConsejoAdHonorem> findByPersonaFisica_Contacto_Id(Long id);
 	
-	Optional<ConsejoAdHonorem> findByContacto_Email(String email);
+	Optional<ConsejoAdHonorem> findByPersonaFisica_Contacto_Email(String email);
 	
-	boolean existsByContacto_Id(Long id);
+	boolean existsByPersonaFisica_Contacto_Id(Long id);
 	
-	Optional<ConsejoAdHonorem> findByContacto_NombreDescripcion(String nombreDescripcion);
+	Optional<ConsejoAdHonorem> findByPersonaFisica_Contacto_NombreDescripcion(String nombreDescripcion);
 	
-	Boolean existsByContacto_NombreDescripcion(String username);
+	Boolean existsByPersonaFisica_Contacto_NombreDescripcion(String username);
 	
-	Boolean existsByContacto_Email(String email);
+	Boolean existsByPersonaFisica_Contacto_Email(String email);
 	
-	Boolean existsByContacto_Cuit(String cuit);
+	Boolean existsByPersonaFisica_Contacto_Cuit(String cuit);
     
     
 }

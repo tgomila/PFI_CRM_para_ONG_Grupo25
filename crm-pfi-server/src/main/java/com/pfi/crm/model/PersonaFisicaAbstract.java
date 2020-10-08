@@ -7,7 +7,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
 
 @MappedSuperclass
-public abstract class PersonaFisicaAbstract extends ContactoAbstract{
+public abstract class PersonaFisicaAbstract /*extends ContactoAbstract*/{
 	
 	
 	@ManyToOne(cascade = CascadeType.ALL)
@@ -24,6 +24,15 @@ public abstract class PersonaFisicaAbstract extends ContactoAbstract{
 	}
 
 	//metodo agregado
+	public Contacto getContacto() {
+		return personaFisica.getContacto();
+	}
+
+	public void setContacto(Contacto contacto) {
+		personaFisica.setContacto(contacto);
+	}
+	
+	
 	public int getEdad() {
 		return personaFisica.getEdad();
 	}
@@ -90,4 +99,84 @@ public abstract class PersonaFisicaAbstract extends ContactoAbstract{
 	}
 	
 	
+	
+	
+	
+	
+	
+	
+	
+	
+	// Getters y Setters de Contacto.java, actualizar si es necesario
+	public Long getId() {
+		return personaFisica.getId();
+	}
+
+	public void setId(Long id) {
+		this.personaFisica.setId(id);
+	}
+
+	public boolean getEstadoActivoContacto() {
+		return personaFisica.getEstadoActivoContacto();
+	}
+
+	public void setEstadoActivoContacto(boolean estadoActivoContacto) {
+		personaFisica.setEstadoActivoContacto(estadoActivoContacto);
+	}
+
+	public LocalDate getFechaAltaContacto() {
+		return personaFisica.getFechaAltaContacto();
+	}
+
+	public void setFechaAltaContacto(LocalDate fechaAltaContacto) {
+		personaFisica.setFechaAltaContacto(fechaAltaContacto);
+	}
+
+	public LocalDate getFechaBajaContacto() {
+		return personaFisica.getFechaBajaContacto();
+	}
+
+	public void setFechaBajaContacto(LocalDate fechaBajaContacto) {
+		personaFisica.setFechaBajaContacto(fechaBajaContacto);
+	}
+
+	public String getNombreDescripcion() {
+		return personaFisica.getNombreDescripcion();
+	}
+
+	public void setNombreDescripcion(String nombreDescripcion) {
+		personaFisica.setNombreDescripcion(nombreDescripcion);
+	}
+
+	public String getCuit() {
+		return personaFisica.getCuit();
+	}
+
+	public void setCuit(String cuit) {
+		personaFisica.setCuit(cuit);
+	}
+
+	public String getDomicilio() {
+		return personaFisica.getDomicilio();
+	}
+
+	public void setDomicilio(String domicilio) {
+		personaFisica.setDomicilio(domicilio);
+	}
+
+	public String getEmail() {
+		return personaFisica.getEmail();
+	}
+
+	public void setEmail(String email) {
+		personaFisica.setEmail(email);
+	}
+
+	public String getTelefono() {
+		return personaFisica.getTelefono();
+	}
+
+	public void setTelefono(String telefono) {
+		personaFisica.setTelefono(telefono);
+	}
 }

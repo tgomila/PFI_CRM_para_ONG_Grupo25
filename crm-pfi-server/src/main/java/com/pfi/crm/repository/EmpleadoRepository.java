@@ -10,19 +10,19 @@ public interface EmpleadoRepository extends JpaRepository<Empleado, Long> {
     
 	//Probar
 	//@Query("SELECT e FROM  Empleado e WHERE e.Contacto.estadoActivoContacto=?1")
-	Optional<Empleado> findByContacto_Id(Long id);
+	Optional<Empleado> findByPersonaFisica_Contacto_Id(Long id);
 	
-	boolean existsByContacto_Id(Long id);
+	boolean existsByPersonaFisica_Contacto_Id(Long id);
 	
-	Optional<Empleado> findByContacto_Email(String email);
+	Optional<Empleado> findByPersonaFisica_Contacto_Email(String email);
 	
-	Optional<Empleado> findByContacto_NombreDescripcion(String nombreDescripcion);
+	Optional<Empleado> findByPersonaFisica_Contacto_NombreDescripcion(String nombreDescripcion);
 	
-	Boolean existsByContacto_NombreDescripcion(String username);
+	Boolean existsByPersonaFisica_Contacto_NombreDescripcion(String username);
 	
-	Boolean existsByContacto_Email(String email);
+	Boolean existsByPersonaFisica_Contacto_Email(String email);
 	
-	Boolean existsByContacto_Cuit(String cuit);
+	Boolean existsByPersonaFisica_Contacto_Cuit(String cuit);
     
     
 }

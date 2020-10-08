@@ -10,19 +10,19 @@ public interface BeneficiarioRepository extends JpaRepository<Beneficiario, Long
     
 	//Probar
 	//@Query("SELECT e FROM  Voluntario e WHERE e.Contacto.estadoActivoContacto=?1")
-	Optional<Beneficiario> findByContacto_Id(Long id);
+	Optional<Beneficiario> findByPersonaFisica_Contacto_Id(Long id);
 	
-	boolean existsByContacto_Id(Long id);
+	boolean existsByPersonaFisica_Contacto_Id(Long id);
 	
-	Optional<Beneficiario> findByContacto_Email(String email);
+	Optional<Beneficiario> findByPersonaFisica_Contacto_Email(String email);
 	
-	Optional<Beneficiario> findByContacto_NombreDescripcion(String nombreDescripcion);
+	Optional<Beneficiario> findByPersonaFisica_Contacto_NombreDescripcion(String nombreDescripcion);
 	
-	Boolean existsByContacto_NombreDescripcion(String username);
+	Boolean existsByPersonaFisica_Contacto_NombreDescripcion(String username);
 	
-	Boolean existsByContacto_Email(String email);
+	Boolean existsByPersonaFisica_Contacto_Email(String email);
 	
-	Boolean existsByContacto_Cuit(String cuit);
+	Boolean existsByPersonaFisica_Contacto_Cuit(String cuit);
     
     
 }

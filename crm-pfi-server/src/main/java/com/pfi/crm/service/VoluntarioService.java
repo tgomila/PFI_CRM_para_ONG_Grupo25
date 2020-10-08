@@ -25,7 +25,7 @@ public class VoluntarioService {
 	private static final Logger logger = LoggerFactory.getLogger(VoluntarioService.class);
 	
 	public VoluntarioPayload getVoluntarioByIdContacto(@PathVariable Long id) {
-        return voluntarioRepository.findByContacto_Id(id).orElseThrow(
+        return voluntarioRepository.findByPersonaFisica_Contacto_Id(id).orElseThrow(
                 () -> new ResourceNotFoundException("Voluntario", "id", id)).toPayload();
     }
 	
@@ -42,7 +42,7 @@ public class VoluntarioService {
 	public void bajaVoluntario(Long id) {
 		
 		//Si Optional es null o no, lo conocemos con ".isPresent()".		
-		Optional<Voluntario> optionalModel = voluntarioRepository.findByContacto_Id(id);
+		Optional<Voluntario> optionalModel = voluntarioRepository.findByPersonaFisica_Contacto_Id(id);
 		if(optionalModel.isPresent()) {
 			Voluntario m = optionalModel.get();
 			m.setEstadoActivoVoluntario(false);
@@ -60,7 +60,7 @@ public class VoluntarioService {
 	public VoluntarioPayload modificarVoluntario(VoluntarioPayload payload) {
 		if (payload != null && payload.getId() != null) {
 			//Necesito el id de persona Fisica o se crearia uno nuevo
-			Optional<Voluntario> optional = voluntarioRepository.findByContacto_Id(payload.getId());
+			Optional<Voluntario> optional = voluntarioRepository.findByPersonaFisica_Contacto_Id(payload.getId());
 			if(optional.isPresent()) {   //Si existe
 				Voluntario model = optional.get();
 				model.modificar(payload);

@@ -25,7 +25,7 @@ public class ColaboradorService {
 	private static final Logger logger = LoggerFactory.getLogger(ColaboradorService.class);
 	
 	public ColaboradorPayload getColaboradorByIdContacto(@PathVariable Long id) {
-        return colaboradorRepository.findByContacto_Id(id).orElseThrow(
+        return colaboradorRepository.findByPersonaFisica_Contacto_Id(id).orElseThrow(
                 () -> new ResourceNotFoundException("Colaborador", "id", id)).toPayload();
     }
 	
@@ -42,7 +42,7 @@ public class ColaboradorService {
 	public void bajaColaborador(Long id) {
 		
 		//Si Optional es null o no, lo conocemos con ".isPresent()".		
-		Optional<Colaborador> optionalModel = colaboradorRepository.findByContacto_Id(id);
+		Optional<Colaborador> optionalModel = colaboradorRepository.findByPersonaFisica_Contacto_Id(id);
 		if(optionalModel.isPresent()) {
 			Colaborador m = optionalModel.get();
 			m.setEstadoActivoColaborador(false);
@@ -60,7 +60,7 @@ public class ColaboradorService {
 	public ColaboradorPayload modificarColaborador(ColaboradorPayload payload) {
 		if (payload != null && payload.getId() != null) {
 			//Necesito el id de persona Fisica o se crearia uno nuevo
-			Optional<Colaborador> optional = colaboradorRepository.findByContacto_Id(payload.getId());
+			Optional<Colaborador> optional = colaboradorRepository.findByPersonaFisica_Contacto_Id(payload.getId());
 			if(optional.isPresent()) {   //Si existe
 				Colaborador model = optional.get();
 				model.modificar(payload);

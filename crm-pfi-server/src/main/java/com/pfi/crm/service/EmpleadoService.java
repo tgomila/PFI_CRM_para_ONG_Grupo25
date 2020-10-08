@@ -25,7 +25,7 @@ public class EmpleadoService {
 	private static final Logger logger = LoggerFactory.getLogger(EmpleadoService.class);
 	
 	public EmpleadoPayload getEmpleadoByIdContacto(@PathVariable Long id) {
-        return empleadoRepository.findByContacto_Id(id).orElseThrow(
+        return empleadoRepository.findByPersonaFisica_Contacto_Id(id).orElseThrow(
                 () -> new ResourceNotFoundException("Empleado", "id", id)).toPayload();
     }
 	
@@ -42,7 +42,7 @@ public class EmpleadoService {
 	public void bajaEmpleado(Long id) {
 		
 		//Si Optional es null o no, lo conocemos con ".isPresent()".		
-		Optional<Empleado> optionalModel = empleadoRepository.findByContacto_Id(id);
+		Optional<Empleado> optionalModel = empleadoRepository.findByPersonaFisica_Contacto_Id(id);
 		if(optionalModel.isPresent()) {
 			Empleado m = optionalModel.get();
 			m.setEstadoActivoEmpleado(false);
@@ -60,7 +60,7 @@ public class EmpleadoService {
 	public EmpleadoPayload modificarEmpleado(EmpleadoPayload payload) {
 		if (payload != null && payload.getId() != null) {
 			//Necesito el id de persona Fisica o se crearia uno nuevo
-			Optional<Empleado> optional = empleadoRepository.findByContacto_Id(payload.getId());
+			Optional<Empleado> optional = empleadoRepository.findByPersonaFisica_Contacto_Id(payload.getId());
 			if(optional.isPresent()) {   //Si existe
 				Empleado model = optional.get();
 				model.modificar(payload);
