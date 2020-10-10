@@ -29,7 +29,7 @@ public class ColaboradorService {
                 () -> new ResourceNotFoundException("Colaborador", "id", id)).toPayload();
     }
 	
-	public List<ColaboradorPayload> getPersonasFisicas() {
+	public List<ColaboradorPayload> getColaboradores() {
 		//return colaboradorRepository.findAll();
 		return colaboradorRepository.findAll().stream().map(e -> toPayload(e)).collect(Collectors.toList());
     }

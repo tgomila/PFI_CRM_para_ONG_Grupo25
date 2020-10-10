@@ -29,7 +29,7 @@ public class BeneficiarioService {
                 () -> new ResourceNotFoundException("Beneficiario", "id", id)).toPayload();
     }
 	
-	public List<BeneficiarioPayload> getPersonasFisicas() {
+	public List<BeneficiarioPayload> getBeneficiarios() {
 		//return beneficiarioRepository.findAll();
 		return beneficiarioRepository.findAll().stream().map(e -> toPayload(e)).collect(Collectors.toList());
     }

@@ -34,7 +34,7 @@ public class ColaboradorController  {
 	@GetMapping("/all")
 	//@PreAuthorize("hasRole('EMPLOYEE')")
     public List<ColaboradorPayload> getColaborador() {
-    	return  colaboradorService.getPersonasFisicas();
+    	return  colaboradorService.getColaboradores();
 	}
 	
 	@PostMapping({"/", "/alta"})

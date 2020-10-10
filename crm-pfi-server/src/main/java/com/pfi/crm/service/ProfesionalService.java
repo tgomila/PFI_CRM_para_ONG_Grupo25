@@ -29,7 +29,7 @@ public class ProfesionalService {
                 () -> new ResourceNotFoundException("Profesional", "id", id)).toPayload();
     }
 	
-	public List<ProfesionalPayload> getPersonasFisicas() {
+	public List<ProfesionalPayload> getProfesionales() {
 		//return profesionalRepository.findAll();
 		return profesionalRepository.findAll().stream().map(e -> toPayload(e)).collect(Collectors.toList());
     }

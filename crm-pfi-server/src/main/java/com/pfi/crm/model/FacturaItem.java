@@ -3,10 +3,15 @@ package com.pfi.crm.model;
 import java.math.BigDecimal;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+import com.pfi.crm.payload.FacturaItemPayload;
+import com.pfi.crm.payload.FacturaPayload;
 
 @Entity
 @Table(name ="factura_item")
@@ -20,19 +25,22 @@ public class FacturaItem {
 	private BigDecimal precioUnitario;
 	private BigDecimal precio;
 	
+	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	private Factura factura;
+	
 	//Constructores
 	public FacturaItem() {
 		super();
 	}
 	
 	
-	public FacturaItem(Long id, String descripcion, int unidades, BigDecimal precioUnitario, BigDecimal precio) {
+	public FacturaItem(FacturaItemPayload p) {
 		super();
-		this.id = id;
-		this.descripcion = descripcion;
-		this.unidades = unidades;
-		this.precioUnitario = precioUnitario;
-		this.precio = precio;
+		this.id = p.getId();
+		this.descripcion = p.getDescripcion();
+		this.unidades = p.getUnidades();
+		this.precioUnitario = p.getPrecioUnitario();
+		this.precio = p.getPrecio();
 	}
 	
 	
@@ -86,5 +94,29 @@ public class FacturaItem {
 	public void setPrecio(BigDecimal precio) {
 		this.precio = precio;
 	}
+
+
+	public Factura getFactura() {
+		return factura;
+	}
+
+
+	public void setFactura(Factura factura) {
+		this.factura = factura;
+	}
 	
+	
+	
+	
+	public FacturaItemPayload toPayload() {
+		FacturaItemPayload p = new FacturaItemPayload();
+		
+		p.setId(id);
+		p.setDescripcion(descripcion);
+		p.setUnidades(unidades);
+		p.setPrecioUnitario(precioUnitario);
+		p.setPrecio(precio);
+		
+		return p;
+	}
 }

@@ -8,12 +8,18 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import com.pfi.crm.model.audit.UserDateAudit;
 import com.pfi.crm.payload.ContactoPayload;
 
 @Entity
 @Table(name ="contacto")
-public class Contacto {
+public class Contacto extends UserDateAudit{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 218392515575775555L;
+
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;

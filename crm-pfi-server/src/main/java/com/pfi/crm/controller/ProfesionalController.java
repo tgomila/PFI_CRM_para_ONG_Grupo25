@@ -34,7 +34,7 @@ public class ProfesionalController {
 	@GetMapping("/all")
 	//@PreAuthorize("hasRole('EMPLOYEE')")
     public List<ProfesionalPayload> getProfesional() {
-    	return  profesionalService.getPersonasFisicas();
+    	return  profesionalService.getProfesionales();
 	}
 	
 	@PostMapping({"/", "/alta"})

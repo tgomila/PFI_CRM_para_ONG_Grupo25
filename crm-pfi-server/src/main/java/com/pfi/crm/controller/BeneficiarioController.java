@@ -27,14 +27,14 @@ public class BeneficiarioController {
 	
 	
 	@GetMapping("/{id}")
+	//@PreAuthorize("hasRole('USER')")
     public BeneficiarioPayload getBeneficiarioById(@PathVariable Long id) {
         return beneficiarioService.getBeneficiarioByIdContacto(id);
     }
 	
 	@GetMapping("/all")
-	//@PreAuthorize("hasRole('EMPLOYEE')")
     public List<BeneficiarioPayload> getBeneficiario() {
-    	return  beneficiarioService.getPersonasFisicas();
+    	return  beneficiarioService.getBeneficiarios();
 	}
 	
 	@PostMapping({"/", "/alta"})

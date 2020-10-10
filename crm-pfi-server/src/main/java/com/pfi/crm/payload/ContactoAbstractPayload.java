@@ -5,7 +5,7 @@ import java.time.LocalDate;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
-public class ContactoAbstractPayload {
+public abstract class ContactoAbstractPayload {
 	
 	//Solo esta para "modificar persona"
 	private Long id;

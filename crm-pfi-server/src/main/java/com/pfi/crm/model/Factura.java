@@ -14,10 +14,19 @@ import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
+import com.pfi.crm.model.audit.UserDateAudit;
+import com.pfi.crm.payload.FacturaItemPayload;
+import com.pfi.crm.payload.FacturaPayload;
+
 @Entity
 @Table(name ="factura")
-public class Factura {
+public class Factura extends UserDateAudit {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6022182382691725995L;
+
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -42,6 +51,21 @@ public class Factura {
 	
 	
 	
+	public Factura(FacturaPayload p) {
+		super();
+		this.id = p.getId();
+		this.fecha = p.getFecha();
+		this.cliente = new Contacto(p.getCliente());
+		this.emisorFactura = new Contacto(p.getEmisorFactura());
+		itemsFactura = new ArrayList<FacturaItem>();
+		for(FacturaItemPayload item:  p.getItemsFactura()) {
+			itemsFactura.add(new FacturaItem(item));
+		}
+	}
+
+
+
+
 	//Getters and Setters
 	public Long getId() {
 		return id;
@@ -84,4 +108,20 @@ public class Factura {
 	}
 	
 	
+	
+	
+	public FacturaPayload toPayload() {
+		FacturaPayload p = new FacturaPayload();
+		
+		p.setId(id);
+		p.setFecha(fecha);
+		p.setCliente(cliente.toPayload());
+		p.setEmisorFactura(emisorFactura.toPayload());
+		itemsFactura = new ArrayList<FacturaItem>();
+		for(FacturaItem item:  itemsFactura) {
+			p.agregarItemFactura(item.toPayload());
+		}
+		
+		return p;
+	}
 }

@@ -34,7 +34,7 @@ public class VoluntarioController {
 	@GetMapping("/all")
 	//@PreAuthorize("hasRole('EMPLOYEE')")
     public List<VoluntarioPayload> getVoluntario() {
-    	return  voluntarioService.getPersonasFisicas();
+    	return  voluntarioService.getVoluntarios();
 	}
 	
 	@PostMapping({"/", "/alta"})

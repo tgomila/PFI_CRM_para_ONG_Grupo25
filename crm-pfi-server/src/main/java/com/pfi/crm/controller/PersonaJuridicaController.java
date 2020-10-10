@@ -61,8 +61,7 @@ public class PersonaJuridicaController {
 
 	@GetMapping("/test")
 	public PersonaJuridicaPayload altaVoluntarioTest(/* @Valid @RequestBody PersonaJuridicaPayload payload */) {
-		System.out.println("Entre aca");
-
+		
 		PersonaJuridica m = new PersonaJuridica();
 
 		// Contacto

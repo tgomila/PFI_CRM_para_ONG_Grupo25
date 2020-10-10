@@ -29,7 +29,7 @@ public class EmpleadoService {
                 () -> new ResourceNotFoundException("Empleado", "id", id)).toPayload();
     }
 	
-	public List<EmpleadoPayload> getPersonasFisicas() {
+	public List<EmpleadoPayload> getEmpleados() {
 		//return empleadoRepository.findAll();
 		return empleadoRepository.findAll().stream().map(e -> toPayload(e)).collect(Collectors.toList());
     }
