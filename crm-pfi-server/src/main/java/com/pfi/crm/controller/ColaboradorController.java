@@ -13,9 +13,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.pfi.crm.model.Colaborador;
-import com.pfi.crm.payload.ColaboradorPayload;
-import com.pfi.crm.service.ColaboradorService;
+import com.pfi.crm.multitenant.tenant.model.Colaborador;
+import com.pfi.crm.multitenant.tenant.payload.ColaboradorPayload;
+import com.pfi.crm.multitenant.tenant.service.ColaboradorService;
 
 @RestController
 @RequestMapping("/api/colaborador")

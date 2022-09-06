@@ -1,9 +1,10 @@
 package com.pfi.crm.config;
 
-import com.pfi.crm.security.CustomUserDetailsService;
+import com.pfi.crm.security.JwtUserDetailsService;
 import com.pfi.crm.security.JwtAuthenticationEntryPoint;
 import com.pfi.crm.security.JwtAuthenticationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -18,6 +19,9 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
 /*
  * extemds WebSecurityConfigurerAdapter:
@@ -35,7 +39,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
-    CustomUserDetailsService customUserDetailsService;
+    JwtUserDetailsService jwtUserDetailsService;
 
     @Autowired
     private JwtAuthenticationEntryPoint unauthorizedHandler;
@@ -48,7 +52,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
         authenticationManagerBuilder
-                .userDetailsService(customUserDetailsService)
+                .userDetailsService(jwtUserDetailsService)
                 .passwordEncoder(passwordEncoder());
     }
 
@@ -57,6 +61,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
     }
+    
+	@Autowired
+	public void globalUserDetails(AuthenticationManagerBuilder auth) throws Exception {
+		auth.userDetailsService(jwtUserDetailsService).passwordEncoder(passwordEncoder());
+	}
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -103,4 +112,28 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 
     }
+    
+    
+	@Bean
+	public FilterRegistrationBean platformCorsFilter() {
+		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+
+		CorsConfiguration configAutenticacao = new CorsConfiguration();
+		configAutenticacao.setAllowCredentials(true);
+		configAutenticacao.addAllowedOrigin("*");
+		configAutenticacao.addAllowedHeader("Authorization");
+		configAutenticacao.addAllowedHeader("Content-Type");
+		configAutenticacao.addAllowedHeader("Accept");
+		configAutenticacao.addAllowedMethod("POST");
+		configAutenticacao.addAllowedMethod("GET");
+		configAutenticacao.addAllowedMethod("DELETE");
+		configAutenticacao.addAllowedMethod("PUT");
+		configAutenticacao.addAllowedMethod("OPTIONS");
+		configAutenticacao.setMaxAge(3600L);
+		source.registerCorsConfiguration("/**", configAutenticacao);
+
+		FilterRegistrationBean bean = new FilterRegistrationBean(new CorsFilter(source));
+		bean.setOrder(-110);
+		return bean;
+	}
 }

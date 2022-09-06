@@ -13,9 +13,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.pfi.crm.model.Contacto;
-import com.pfi.crm.payload.ContactoPayload;
-import com.pfi.crm.service.ContactoService;
+import com.pfi.crm.multitenant.tenant.model.Contacto;
+import com.pfi.crm.multitenant.tenant.payload.ContactoPayload;
+import com.pfi.crm.multitenant.tenant.service.ContactoService;
 
 @RestController
 @RequestMapping("/api/contacto")

@@ -1,26 +1,39 @@
 package com.pfi.crm.payload.response;
 
 public class JwtAuthenticationResponse {
-    private String accessToken;
-    private String tokenType = "Bearer";
+	
+	private String userName;
+	private String token;
+	private String tokenType = "Bearer";
 
-    public JwtAuthenticationResponse(String accessToken) {
-        this.accessToken = accessToken;
-    }
+	public JwtAuthenticationResponse(String userName, String token) {
+		this.userName = userName;
+		this.token = token;
+	}
+	
+	public String getUserName() {
+		return userName;
+	}
 
-    public String getAccessToken() {
-        return accessToken;
-    }
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
 
-    public void setAccessToken(String accessToken) {
-        this.accessToken = accessToken;
-    }
+	public String getToken() {
+		return token;
+	}
 
-    public String getTokenType() {
-        return tokenType;
-    }
+	public void setToken(String token) {
+		this.token = token;
+	}
 
-    public void setTokenType(String tokenType) {
-        this.tokenType = tokenType;
-    }
+	public String getTokenType() {
+		return tokenType;
+	}
+
+	public void setTokenType(String tokenType) {
+		this.tokenType = tokenType;
+	}
+	
+	
 }

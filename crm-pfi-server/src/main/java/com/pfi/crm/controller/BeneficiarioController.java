@@ -13,9 +13,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.pfi.crm.model.Beneficiario;
-import com.pfi.crm.payload.BeneficiarioPayload;
-import com.pfi.crm.service.BeneficiarioService;
+import com.pfi.crm.multitenant.tenant.model.Beneficiario;
+import com.pfi.crm.multitenant.tenant.payload.BeneficiarioPayload;
+import com.pfi.crm.multitenant.tenant.service.BeneficiarioService;
 
 @RestController
 @RequestMapping("/api/beneficiario")

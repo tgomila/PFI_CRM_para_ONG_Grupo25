@@ -1,7 +1,8 @@
 package com.pfi.crm.security;
 
-import com.pfi.crm.model.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.pfi.crm.multitenant.tenant.model.User;
+
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

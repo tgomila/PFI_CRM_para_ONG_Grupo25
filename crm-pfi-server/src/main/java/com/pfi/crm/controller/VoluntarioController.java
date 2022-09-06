@@ -13,9 +13,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.pfi.crm.model.Voluntario;
-import com.pfi.crm.payload.VoluntarioPayload;
-import com.pfi.crm.service.VoluntarioService;
+import com.pfi.crm.multitenant.tenant.model.Voluntario;
+import com.pfi.crm.multitenant.tenant.payload.VoluntarioPayload;
+import com.pfi.crm.multitenant.tenant.service.VoluntarioService;
 
 @RestController
 @RequestMapping("/api/voluntario")

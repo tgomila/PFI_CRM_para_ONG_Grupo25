@@ -13,19 +13,18 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.pfi.crm.model.Contacto;
-import com.pfi.crm.model.Voluntario;
-import com.pfi.crm.model.test.Customer;
-import com.pfi.crm.model.test.Employee;
-import com.pfi.crm.model.test.Person;
-import com.pfi.crm.payload.ContactoPayload;
-import com.pfi.crm.repository.VoluntarioRepository;
-import com.pfi.crm.repository.test.CustomerRepository;
-import com.pfi.crm.repository.test.EmployeeRepository;
-import com.pfi.crm.repository.test.PersonRepository;
-import com.pfi.crm.service.ContactoService;
-//import com.pfi.crm.repository.PersonRepository;
-import com.pfi.crm.service.EjemploService;
+import com.pfi.crm.multitenant.tenant.model.Contacto;
+import com.pfi.crm.multitenant.tenant.model.Voluntario;
+import com.pfi.crm.multitenant.tenant.model.test.Customer;
+import com.pfi.crm.multitenant.tenant.model.test.Employee;
+import com.pfi.crm.multitenant.tenant.model.test.Person;
+import com.pfi.crm.multitenant.tenant.payload.ContactoPayload;
+import com.pfi.crm.multitenant.tenant.repository.VoluntarioRepository;
+import com.pfi.crm.multitenant.tenant.repository.test.CustomerRepository;
+import com.pfi.crm.multitenant.tenant.repository.test.EmployeeRepository;
+import com.pfi.crm.multitenant.tenant.repository.test.PersonRepository;
+import com.pfi.crm.multitenant.tenant.service.ContactoService;
+import com.pfi.crm.multitenant.tenant.service.EjemploService;
 
 @RestController
 @RequestMapping("/test")

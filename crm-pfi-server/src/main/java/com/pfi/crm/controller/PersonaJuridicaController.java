@@ -12,10 +12,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.pfi.crm.model.PersonaJuridica;
-import com.pfi.crm.model.TipoPersonaJuridica;
-import com.pfi.crm.payload.PersonaJuridicaPayload;
-import com.pfi.crm.service.PersonaJuridicaService;
+import com.pfi.crm.multitenant.tenant.model.PersonaJuridica;
+import com.pfi.crm.multitenant.tenant.model.TipoPersonaJuridica;
+import com.pfi.crm.multitenant.tenant.payload.PersonaJuridicaPayload;
+import com.pfi.crm.multitenant.tenant.service.PersonaJuridicaService;
 
 @RestController
 @RequestMapping("/api/personajuridica")

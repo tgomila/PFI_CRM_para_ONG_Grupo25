@@ -13,9 +13,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.pfi.crm.model.ConsejoAdHonorem;
-import com.pfi.crm.payload.ConsejoAdHonoremPayload;
-import com.pfi.crm.service.ConsejoAdHonoremService;
+import com.pfi.crm.multitenant.tenant.model.ConsejoAdHonorem;
+import com.pfi.crm.multitenant.tenant.payload.ConsejoAdHonoremPayload;
+import com.pfi.crm.multitenant.tenant.service.ConsejoAdHonoremService;
 
 @RestController
 @RequestMapping("/api/consejoadhonorem")

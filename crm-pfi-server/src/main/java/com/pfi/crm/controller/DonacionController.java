@@ -13,10 +13,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.pfi.crm.model.Donacion;
-import com.pfi.crm.model.DonacionTipo;
-import com.pfi.crm.payload.DonacionPayload;
-import com.pfi.crm.service.DonacionService;
+import com.pfi.crm.multitenant.tenant.model.Donacion;
+import com.pfi.crm.multitenant.tenant.model.DonacionTipo;
+import com.pfi.crm.multitenant.tenant.payload.DonacionPayload;
+import com.pfi.crm.multitenant.tenant.service.DonacionService;
 
 @RestController
 @RequestMapping("/api/donacion")

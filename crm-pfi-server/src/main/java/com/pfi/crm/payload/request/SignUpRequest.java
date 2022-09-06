@@ -19,6 +19,8 @@ public class SignUpRequest {
     @NotBlank
     @Size(min = 6, max = 20)
     private String password;
+    
+    private Integer tenantOrClientId;
 
     public String getName() {
         return name;
@@ -51,4 +53,12 @@ public class SignUpRequest {
     public void setPassword(String password) {
         this.password = password;
     }
+
+	public Integer getTenantOrClientId() {
+		return tenantOrClientId;
+	}
+
+	public void setTenantOrClientId(Integer tenantOrClientId) {
+		this.tenantOrClientId = tenantOrClientId;
+	}
 }

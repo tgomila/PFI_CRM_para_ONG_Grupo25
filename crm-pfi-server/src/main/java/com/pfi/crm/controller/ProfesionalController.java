@@ -13,9 +13,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.pfi.crm.model.Profesional;
-import com.pfi.crm.payload.ProfesionalPayload;
-import com.pfi.crm.service.ProfesionalService;
+import com.pfi.crm.multitenant.tenant.model.Profesional;
+import com.pfi.crm.multitenant.tenant.payload.ProfesionalPayload;
+import com.pfi.crm.multitenant.tenant.service.ProfesionalService;
 
 @RestController
 @RequestMapping("/api/profesional")
