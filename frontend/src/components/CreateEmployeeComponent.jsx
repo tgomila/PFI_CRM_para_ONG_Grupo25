@@ -35,7 +35,9 @@ class CreateEmployeeComponent extends Component {
     }
     saveOrUpdateEmployee = (e) => {
         e.preventDefault();
+        //let employee = {firstName: this.state.firstName, lastName: this.state.lastName, emailId: this.state.emailId};
         let employee = {firstName: this.state.firstName, lastName: this.state.lastName, emailId: this.state.emailId};
+        
         console.log('employee => ' + JSON.stringify(employee));
 
         // step 5
@@ -50,6 +52,7 @@ class CreateEmployeeComponent extends Component {
         }
     }
     
+    //Actualiza el State con el nombre del objeto
     changeFirstNameHandler= (event) => {
         this.setState({firstName: event.target.value});
     }
@@ -77,7 +80,7 @@ class CreateEmployeeComponent extends Component {
         return (
             <div>
                 <br></br>
-                   <div className = "container">
+                   <div className = "container" >
                         <div className = "row">
                             <div className = "card col-md-6 offset-md-3 offset-md-3">
                                 {
