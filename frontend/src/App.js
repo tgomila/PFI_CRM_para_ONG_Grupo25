@@ -19,23 +19,39 @@ import {BrowserRouter, Route, Routes, Navigate, NavLink, Link, Nav} from 'react-
 
 import Error404 from './components/Error404';
 
+
+import Sidebar from './components/Sidebar.jsx';
+import Dashboard from './pages/Dashboard.jsx';
+import About from './pages/About.jsx';
+import Analytics from './pages/Analytics.jsx';
+import Comment from './pages/Comment.jsx';
+import Product from './pages/Product.jsx';
+import ProductList from './pages/ProductList.jsx';
+
+
 function App() {
   return (
     <div>
 
 <BrowserRouter>
 
-    <Routes>
-      <Route path='/' element={<ListEmployeeComponent/>}/>
-      
-      <Route path='*' element={<Error404/>}/>
-      
-      
-      
-      
-      
-    </Routes>
- 
+<Sidebar style={{marginLeft: "0px"}}>
+        <Routes>
+          <Route path="/" element={<ListEmployeeComponent  rey="Carlos"/>} />
+          <Route path="/dashboard" element={<ListEmployeeComponent  rey="contacto"/>} />
+          <Route path="/about" element={<ListEmployeeComponent  rey="beneficiarios"/>} />
+          <Route path="/comment" element={<Comment />} />
+          <Route path="/analytics" element={<Analytics />} />
+          <Route path="/product" element={<Product />} />
+          <Route path="/productList" element={<ProductList />} />
+
+
+
+          <Route path="*" element={<Error404 />} />
+        </Routes>
+      </Sidebar>
+
+ <FooterComponent></FooterComponent>
 
 </BrowserRouter>
 

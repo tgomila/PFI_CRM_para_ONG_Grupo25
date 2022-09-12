@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react'
 import EmployeeService from '../services/EmployeeService'
-import ContactoComponent from './ContactoComponent'
 
 
 
-function ListEmployeeComponent() {
+
+function ListEmployeeComponent(rey) {
 
 
  
-        
+        console.log(rey);
 
 
 
@@ -109,7 +109,7 @@ const viewEmployee=(id)=>{
                                <td> { employee.tenantClientId} </td>   
                                <td> {employee.name}</td>
                                <td> {employee.tenantClientId}</td>
-                               <td>
+                               <td className='actionTable'>
                                    <button onClick={ () => this.editEmployee(employee.tenantClientId)} className="btn btn-info">Update </button>
                                    <button style={{marginLeft: "10px"}} onClick={ () => this.deleteEmployee(employee.tenantClientId)} className="btn btn-danger">Delete </button>
                                    <button style={{marginLeft: "10px"}} onClick={ () => this.viewEmployee(employee.tenantClientId)} className="btn btn-info">View </button>
