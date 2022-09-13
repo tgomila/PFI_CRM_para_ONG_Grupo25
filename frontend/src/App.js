@@ -147,7 +147,7 @@ const App = () => {
       <div className="sidebarYRoutes">
         <Sidebar style={{ marginLeft: "0px" }}>
           <Routes>
-            <Route path="/" element={<ListEmployeeComponent redireccionamiento="contacto" />} />
+            <Route path="/" element={<ListEmployeeComponent redireccionamiento='tenant' />} />
             <Route
               path="/dashboard"
               element={<ListEmployeeComponent rey="contacto" />}

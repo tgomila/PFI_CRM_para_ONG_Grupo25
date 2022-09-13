@@ -1,11 +1,16 @@
 import axios from 'axios';
 
-const EMPLOYEE_API_BASE_URL = "http://localhost:8080/api/tenant";
+const EMPLOYEE_API_BASE_URL = "http://localhost:8080/api/";
+
+
 
 class EmployeeService {
 
-    getEmployees(){
-        return axios.get(EMPLOYEE_API_BASE_URL + '/all');
+    getEmployees(redireccionamiento){
+        const direccionURL = EMPLOYEE_API_BASE_URL + redireccionamiento.redireccionamiento + '/all';
+        console.log(direccionURL);
+
+        return axios.get(EMPLOYEE_API_BASE_URL + redireccionamiento.redireccionamiento + '/all');
     }
 
     createEmployee(employee){
@@ -25,4 +30,4 @@ class EmployeeService {
     }
 }
 
-export default new EmployeeService()
+export default new EmployeeService( )
