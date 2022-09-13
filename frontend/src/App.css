@@ -1,5 +1,13 @@
 
-
+html {
+  height: 100%;
+}
+body {
+  margin:0;
+  padding:0;
+  font-family: sans-serif;
+  background: linear-gradient(-90deg,#141e30, #243b55);
+}
 
 .App {
   text-align: center;
@@ -56,16 +64,17 @@ html{
 }
 
 body{
-  height: 100%
 }
 
 #root{
   height: 100%;
 }
 
+
 .principal{
   height: 100%;
 }
+
 
 .sidebarYRoutes{
   height: 93%;
@@ -176,3 +185,9 @@ label {
 }
 
 /* FIN CSS LOGIN */
+
+
+.TituloComponentePrincipal{
+  color: white;
+  text-align: center;
+}

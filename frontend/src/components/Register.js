@@ -6,6 +6,9 @@ import { isEmail } from "validator";
 
 import AuthService from "../services/auth.service";
 
+
+import "./Login.css";
+
 const required = (value) => {
   if (!value) {
     return (
@@ -138,8 +141,9 @@ const Register = () => {
   };
 
   return (
-    <div className="col-md-12">
-      <div className="card card-container">
+    <div className="login-box">
+    <h2>Registro</h2>
+      <div className="">
         <img
           src="//ssl.gstatic.com/accounts/ui/avatar_2x.png"
           alt="profile-img"
@@ -151,11 +155,11 @@ const Register = () => {
             <div>
 
 
-              <div className="form-group">
-                <label htmlFor="name">Nombre</label>
+              <div className="user-box">
+                <label className="miLabel"  htmlFor="name">Nombre:</label>
                 <Input
                   type="text"
-                  className="form-control"
+                  className="miInput"
                   name="name"
                   value={name}
                   onChange={onChangeName}
@@ -164,11 +168,11 @@ const Register = () => {
               </div>
 
 
-              <div className="form-group">
-                <label htmlFor="username">Username</label>
+              <div className="user-box">
+                <label className="miLabel"  htmlFor="username">Username:</label>
                 <Input
                   type="text"
-                  className="form-control"
+                  className="miInput"
                   name="username"
                   value={username}
                   onChange={onChangeUsername}
@@ -176,11 +180,11 @@ const Register = () => {
                 />
               </div>
 
-              <div className="form-group">
-                <label htmlFor="email">Email</label>
+              <div className="user-box">
+                <label className="miLabel"  htmlFor="email">Email:</label>
                 <Input
                   type="text"
-                  className="form-control"
+                  className="miInput"
                   name="email"
                   value={email}
                   onChange={onChangeEmail}
@@ -188,11 +192,11 @@ const Register = () => {
                 />
               </div>
 
-              <div className="form-group">
-                <label htmlFor="password">Password</label>
+              <div className="user-box">
+                <label className="miLabel"  htmlFor="password">Password:</label>
                 <Input
                   type="password"
-                  className="form-control"
+                  className="miInput"
                   name="password"
                   value={password}
                   onChange={onChangePassword}
@@ -200,11 +204,11 @@ const Register = () => {
                 />
               </div>
 
-              <div className="form-group">
-                <label htmlFor="tenantOrClientId">Tenant O ClientId</label>
+              <div className="user-box">
+                <label className="miLabel"  htmlFor="tenantOrClientId">Tenant o ClientId:</label>
                 <Input
                   type="text"
-                  className="form-control"
+                  className="miInput"
                   name="tenantOrClientId"
                   value={tenantOrClientId}
                   onChange={onChangeTenantOrClientId}
@@ -212,14 +216,20 @@ const Register = () => {
                 />
               </div>
 
-              <div className="form-group">
-                <button className="btn btn-primary btn-block">Sign Up</button>
+              <div className="user-box">
+                <button className="miBoton">
+                <span></span>
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                  
+                  INGRESAR</button>
               </div>
             </div>
           )}
 
           {message && (
-            <div className="form-group">
+            <div className="user-box">
               <div
                 className={
                   successful ? "alert alert-success" : "alert alert-danger"

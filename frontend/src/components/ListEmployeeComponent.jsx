@@ -139,7 +139,7 @@ function ListEmployeeComponent(redireccionamiento) {
 
   return (
     <div className="ComponentePrincipal">
-      <h2 className="text-center">Employees List</h2>
+    <h2 className="TituloComponentePrincipal">Employees List</h2>
 
       <div className="row">
         <button className="btn btn-primary" onClick={addEmployee}>
