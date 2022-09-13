@@ -1,66 +1,8 @@
-import React, { useState, useEffect  } from "react";
+import React, { useState, useEffect, useLayoutEffect } from "react";
 import EmployeeService from "../services/EmployeeService";
 
 
-import { useTable } from "react-table";
-
-
-
-function Table({ columns, data }) {
-  const {
-    getTableProps,
-    getTableBodyProps,
-    headerGroups,
-    rows,
-    prepareRow
-  } = useTable({
-    columns,
-    data
-  });
-
-  // Render the UI for your table
-  return (
-    <table>
-      <thead>
-        {headerGroups.map((headerGroup) => (
-          <tr {...headerGroup.getHeaderGroupProps()}>
-            {headerGroup.headers.map((column) => (
-              <th {...column.getHeaderProps()}>{column.render("Header")}</th>
-            ))}
-          </tr>
-        ))}
-      </thead>
-
-      <tbody {...getTableBodyProps()}>
-        {rows.map((row, i) => {
-          prepareRow(row);
-          return (
-            <tr {...row.getRowProps()}>
-              {row.cells.map((cell) => {
-                return <td {...cell.getCellProps()}>{cell.render("Cell")}</td>;
-              })}
-            </tr>
-          );
-        })}
-      </tbody>
-    </table>
-  );
-}
-
-
-
-
-
 function ListEmployeeComponent(redireccionamiento) {
-
-
-
-
-
-  const [data, setData] = useState([]);
-
-
-
   console.log(redireccionamiento);
 
   const [employees, setEmployees] = useState([]);
@@ -70,42 +12,12 @@ function ListEmployeeComponent(redireccionamiento) {
   //Se llama al Endpoint y se trae todo los datos
   const componentDidMount = () => {};
 
-
-
-  useEffect(() => {
-    // Fetch data
-    // Update the document title using the browser API
-
-    setTimeout(() => {
-      EmployeeService.getEmployees(redireccionamiento).then((res) => {
-        setEmployees(res.data);
-      });
-    }, 3000);
-    
-    //console.log(employees);
-    
-
-    setData(employees);
-  }, [employees]);
-
-  
-
-  const columns = Object.keys(data[0] || []).map((key) => ({
-    Header: key,
-    accessor: key
-  }));
-
-
-
-  React.useEffect(() => {
-
-    /*
+  React.useLayoutEffect(() => {
     // Update the document title using the browser API
     EmployeeService.getEmployees(redireccionamiento).then((res) => {
       setEmployees(res.data);
     });
     console.log(employees);
-*/
   }, []);
 
   //this.addEmployee = this.addEmployee.bind(this);
@@ -149,18 +61,17 @@ function ListEmployeeComponent(redireccionamiento) {
       </div>
       <br></br>
       <div className="row">
-
-
-
-      <Table columns={columns} data={data} />
-
-
-
-        {/*
         <table className="table table-striped table-bordered">
           <thead>
 
+{
+    console.log(employees[0])
+    
+    
+    
+    }
 
+          
                 
 
 
@@ -217,9 +128,6 @@ function ListEmployeeComponent(redireccionamiento) {
             ))}
           </tbody>
         </table>
-
-            */}
-
       </div>
     </div>
   );

@@ -1,4 +1,4 @@
-import React, { useState, useEffect  } from "react";
+import React, { useState, useEffect } from "react";
 import EmployeeService from "../services/EmployeeService";
 
 
@@ -61,6 +61,17 @@ function ListEmployeeComponent(redireccionamiento) {
 
 
 
+  const columns = Object.keys(data[0] || []).map((key) => ({
+    Header: key,
+    accessor: key
+  }));
+
+
+
+
+
+
+
   console.log(redireccionamiento);
 
   const [employees, setEmployees] = useState([]);
@@ -71,32 +82,19 @@ function ListEmployeeComponent(redireccionamiento) {
   const componentDidMount = () => {};
 
 
-
   useEffect(() => {
     // Fetch data
     // Update the document title using the browser API
-
-    setTimeout(() => {
-      EmployeeService.getEmployees(redireccionamiento).then((res) => {
-        setEmployees(res.data);
-      });
-    }, 3000);
-    
-    //console.log(employees);
+    EmployeeService.getEmployees(redireccionamiento).then((res) => {
+      setEmployees(res.data);
+    });
+    console.log(employees);
     
 
     setData(employees);
-  }, [employees]);
+  }, []);
 
   
-
-  const columns = Object.keys(data[0] || []).map((key) => ({
-    Header: key,
-    accessor: key
-  }));
-
-
-
   React.useEffect(() => {
 
     /*

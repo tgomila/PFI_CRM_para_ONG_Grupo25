@@ -31,6 +31,8 @@ import EventBus from "./common/EventBus";
 import Register from "./components/Register";
 import Profile from "./components/Profile";
 
+import { useTable } from "react-table";
+
 /*
 
 import { NavigationBar } from './components/NavigationBar';
@@ -39,11 +41,15 @@ import { About } from './About';
 import Sidebar from './components/Sidebar';
 */
 
+
+
+
 const App = () => {
 
 
 
-  
+
+
   const [showModeratorBoard, setShowModeratorBoard] = useState(false);
   const [showAdminBoard, setShowAdminBoard] = useState(false);
   const [currentUser, setCurrentUser] = useState(undefined);
@@ -73,8 +79,15 @@ const App = () => {
     setCurrentUser(undefined);
   };
 
+
   return (
+
+    
     <div className="principal">
+      
+
+
+
 
 
       
@@ -163,7 +176,6 @@ const App = () => {
 
             <Route path="*" element={<Error404 />} />
 
-            {/**/}
             <Route path="/login" element={<Login />} />
             <Route path="/admin" element={<BoardAdmin />} />
             <Route path="/register" element={<Register />} />
@@ -173,7 +185,9 @@ const App = () => {
 
         <FooterComponent></FooterComponent>
       </div>
-    </div>
+
+
+        </div>
   );
 };
 
