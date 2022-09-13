@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import {
-    FaTh,
+    FaBiohazard,
     FaBars,
-    FaUserAlt,
+    FaReact,
     FaRegChartBar,
     FaCommentAlt,
     FaShoppingBag,
@@ -10,7 +10,8 @@ import {
 }from "react-icons/fa";
 import { NavLink } from 'react-router-dom';
 
-
+//DOCUMENTACION ICONOS
+// https://react-icons.github.io/react-icons/icons?name=fa
 const Sidebar = ({children}) => {
     const[isOpen ,setIsOpen] = useState(false);
     const toggle = () => setIsOpen (!isOpen);
@@ -18,12 +19,12 @@ const Sidebar = ({children}) => {
         {
             path:"/",
             name:"Dashboard",
-            icon:<FaTh/>
+            icon:<FaBiohazard/>
         },
         {
             path:"/about",
             name:"About",
-            icon:<FaUserAlt/>
+            icon:<FaReact/>
         },
         {
             path:"/analytics",

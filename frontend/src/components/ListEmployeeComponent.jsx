@@ -4,11 +4,11 @@ import EmployeeService from '../services/EmployeeService'
 
 
 
-function ListEmployeeComponent(rey) {
+function ListEmployeeComponent(redireccionamiento) {
 
 
  
-        console.log(rey);
+        console.log(redireccionamiento);
 
 
 
