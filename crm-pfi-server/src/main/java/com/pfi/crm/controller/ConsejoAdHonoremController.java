@@ -6,9 +6,11 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -31,7 +33,7 @@ public class ConsejoAdHonoremController {
         return consejoAdHonoremService.getConsejoAdHonoremByIdContacto(id);
     }
 	
-	@GetMapping("/all")
+	@GetMapping({"/", "/all"})
 	//@PreAuthorize("hasRole('EMPLOYEE')")
     public List<ConsejoAdHonoremPayload> getConsejoAdHonorem() {
     	return  consejoAdHonoremService.getPersonasFisicas();
@@ -42,12 +44,12 @@ public class ConsejoAdHonoremController {
     	return consejoAdHonoremService.altaConsejoAdHonorem(payload);
     }
 	
-	@PostMapping({"/baja/{id}"})
+	@DeleteMapping({"/{id}", "/baja/{id}"})
     public void bajaConsejoAdHonorem(@PathVariable Long id) {
 		consejoAdHonoremService.bajaConsejoAdHonorem(id);
     }
 	
-	@PostMapping("/modificar")
+	@PutMapping({"/", "/modificar"})
     public ConsejoAdHonoremPayload modificarConsejoAdHonorem(@Valid @RequestBody ConsejoAdHonoremPayload payload) {
     	return consejoAdHonoremService.modificarConsejoAdHonorem(payload);
     }

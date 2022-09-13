@@ -1,14 +1,18 @@
 package com.pfi.crm.payload.response;
 
+import java.util.List;
+
 public class JwtAuthenticationResponse {
 	
 	private String userName;
 	private String token;
 	private String tokenType = "Bearer";
+	private List<String> roles;
 
-	public JwtAuthenticationResponse(String userName, String token) {
+	public JwtAuthenticationResponse(String userName, String token, List<String> roles) {
 		this.userName = userName;
 		this.token = token;
+		this.roles = roles;
 	}
 	
 	public String getUserName() {
@@ -33,6 +37,14 @@ public class JwtAuthenticationResponse {
 
 	public void setTokenType(String tokenType) {
 		this.tokenType = tokenType;
+	}
+
+	public List<String> getRoles() {
+		return roles;
+	}
+
+	public void setRoles(List<String> roles) {
+		this.roles = roles;
 	}
 	
 	

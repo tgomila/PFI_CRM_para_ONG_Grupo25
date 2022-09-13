@@ -6,9 +6,11 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -33,7 +35,7 @@ public class PersonaFisicaController {
         return personaFisicaService.getPersonaFisicaByIdContacto(id);
     }
 	
-	@GetMapping("/all")
+	@GetMapping({"/", "/all"})
 	//@PreAuthorize("hasRole('EMPLOYEE')")
     public List<PersonaFisicaPayload> getPersonaFisica() {
     	return  personaFisicaService.getPersonasFisicas();
@@ -44,12 +46,12 @@ public class PersonaFisicaController {
     	return personaFisicaService.altaPersonaFisica(payload);
     }
 	
-	@PostMapping({"/baja/{id}"})
+	@DeleteMapping({"/{id}", "/baja/{id}"})
     public void bajaPersonaFisica(@PathVariable Long id) {
 		personaFisicaService.bajaPersonaFisica(id);
     }
 	
-	@PostMapping("/modificar")
+	@PutMapping({"/", "/modificar"})
     public PersonaFisicaPayload modificarPersonaFisica(@Valid @RequestBody PersonaFisicaPayload payload) {
     	return personaFisicaService.modificarPersonaFisica(payload);
     }

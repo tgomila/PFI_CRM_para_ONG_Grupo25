@@ -6,9 +6,11 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -31,7 +33,7 @@ public class ProfesionalController {
         return profesionalService.getProfesionalByIdContacto(id);
     }
 	
-	@GetMapping("/all")
+	@GetMapping({"/", "/all"})
 	//@PreAuthorize("hasRole('EMPLOYEE')")
     public List<ProfesionalPayload> getProfesional() {
     	return  profesionalService.getProfesionales();
@@ -42,12 +44,12 @@ public class ProfesionalController {
     	return profesionalService.altaProfesional(payload);
     }
 	
-	@PostMapping({"/baja/{id}"})
+	@DeleteMapping({"/{id}", "/baja/{id}"})
     public void bajaProfesional(@PathVariable Long id) {
 		profesionalService.bajaProfesional(id);
     }
 	
-	@PostMapping("/modificar")
+	@PutMapping({"/", "/modificar"})
     public ProfesionalPayload modificarProfesional(@Valid @RequestBody ProfesionalPayload payload) {
     	return profesionalService.modificarProfesional(payload);
     }

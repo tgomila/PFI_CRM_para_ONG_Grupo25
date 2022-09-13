@@ -44,7 +44,9 @@ import java.io.Serializable;
 import java.net.URI;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -114,11 +116,14 @@ public class AuthController implements Serializable {
 						loginRequest.getPassword()));
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+		List<String> roles = userDetails.getAuthorities().stream()
+		        .map(item -> item.getAuthority())
+		        .collect(Collectors.toList());
 		System.out.println("userDetails: " + userDetails.getUsername() + " psw: " + userDetails.getPassword() + " auth: " + userDetails.getAuthorities().toString());
 		final String token = tokenProvider.generateToken(userDetails.getUsername(),String.valueOf(loginRequest.getTenantOrClientId()));
 		//Map the value into applicationScope bean
 		setMetaDataAfterLogin();
-		return ResponseEntity.ok(new JwtAuthenticationResponse(userDetails.getUsername(),token));
+		return ResponseEntity.ok(new JwtAuthenticationResponse(userDetails.getUsername(),token,roles));
 		
 		/*Authentication authentication = authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(

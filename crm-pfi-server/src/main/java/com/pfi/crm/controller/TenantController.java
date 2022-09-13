@@ -17,7 +17,7 @@ public class TenantController {
 	@Autowired
 	private MasterTenantService masterTenantService;
 	
-	@GetMapping("/all")
+	@GetMapping({"/", "/all"})
     public List<TenantPayload> getTenant() {
     	return  masterTenantService.getTenants();
 	}
