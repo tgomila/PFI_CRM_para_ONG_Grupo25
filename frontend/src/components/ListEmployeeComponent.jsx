@@ -2,7 +2,8 @@ import React, { useState, useEffect  } from "react";
 import EmployeeService from "../services/EmployeeService";
 
 
-import { useTable } from "react-table";
+import { useTable, usePagination } from "react-table";
+
 
 
 
@@ -12,27 +13,49 @@ function Table({ columns, data }) {
     getTableBodyProps,
     headerGroups,
     rows,
+    page,
+    nextPage,
+    previousPage,
+    canPreviousPage,
+    canNextPage,
+    pageOptions,
+    state,
+    gotoPage,
+    pageCount,
+    setPageSize,
     prepareRow
-  } = useTable({
-    columns,
-    data
-  });
+  } = useTable(
+    {
+      columns,
+      data,
+      initialState: { pageIndex: 0 }
+    },
+    usePagination
+  );
+
+
+
+
+  const { pageIndex, pageSize } = state;
 
   // Render the UI for your table
   return (
+    <div>
+
+      
     <table>
       <thead>
         {headerGroups.map((headerGroup) => (
           <tr {...headerGroup.getHeaderGroupProps()}>
             {headerGroup.headers.map((column) => (
-              <th {...column.getHeaderProps()}>{column.render("Header")}</th>
+              <th {...column.getHeaderProps()}>{column.render("Header").toUpperCase()}</th>
             ))}
           </tr>
         ))}
       </thead>
 
       <tbody {...getTableBodyProps()}>
-        {rows.map((row, i) => {
+        {page.map((row, i) => {
           prepareRow(row);
           return (
             <tr {...row.getRowProps()}>
@@ -44,6 +67,60 @@ function Table({ columns, data }) {
         })}
       </tbody>
     </table>
+
+
+    
+
+    <div>
+        <button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
+          {"<<"}
+        </button>{" "}
+        <button onClick={() => previousPage()} disabled={!canPreviousPage}>
+          Previous
+        </button>{" "}
+        <button onClick={() => nextPage()} disabled={!canNextPage}>
+          Next
+        </button>{" "}
+        <button onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage}>
+          {">>"}
+        </button>{" "}
+        <span>
+          Page{" "}
+          <strong>
+            {pageIndex + 1} of {pageOptions.length}
+          </strong>{" "}
+        </span>
+        <span>
+          | Go to page:{" "}
+          <input
+            type="number"
+            defaultValue={pageIndex + 1}
+            onChange={(e) => {
+              const pageNumber = e.target.value
+                ? Number(e.target.value) - 1
+                : 0;
+              gotoPage(pageNumber);
+            }}
+            style={{ width: "50px" }}
+          />
+        </span>{" "}
+        <select
+          value={pageSize}
+          onChange={(e) => setPageSize(Number(e.target.value))}
+        >
+          {[10, 25, 50].map((pageSize) => (
+            <option key={pageSize} value={pageSize}>
+              Show {pageSize}
+            </option>
+          ))}
+        </select>
+      </div>
+
+
+      
+    </div>
+
+
   );
 }
 
@@ -76,17 +153,14 @@ function ListEmployeeComponent(redireccionamiento) {
     // Fetch data
     // Update the document title using the browser API
 
-    setTimeout(() => {
       EmployeeService.getEmployees(redireccionamiento).then((res) => {
-        setEmployees(res.data);
+        setData(res.data);
       });
-    }, 3000);
     
     //console.log(employees);
     
 
-    setData(employees);
-  }, [employees]);
+  }, []);
 
   
 
@@ -154,71 +228,6 @@ function ListEmployeeComponent(redireccionamiento) {
 
       <Table columns={columns} data={data} />
 
-
-
-        {/*
-        <table className="table table-striped table-bordered">
-          <thead>
-
-
-                
-
-
-
-
-            <tr>
-              <th> Employee First Name</th>
-              <th> Employee Last Name</th>
-              <th> Employee Email Id</th>
-              <th> Actions</th>
-            </tr>
-          </thead>
-
-          <tbody>
-
-
-      
-
-            {
-            employees.map((employee) => (
-                
-
-
-
-              <tr key={employee.tenantClientId}>
-                <td> {employee.tenantClientId} </td>
-                <td> {employee.name}</td>
-                <td> {employee.tenantClientId}</td>
-                <td className="actionTable">
-                  <button
-                    onClick={() => this.editEmployee(employee.tenantClientId)}
-                    className="btn btn-info"
-                  >
-                    Update{" "}
-                  </button>
-                  <button
-                    style={{ marginLeft: "10px" }}
-                    onClick={() => this.deleteEmployee(employee.tenantClientId)}
-                    className="btn btn-danger"
-                  >
-                    Delete{" "}
-                  </button>
-                  <button
-                    style={{ marginLeft: "10px" }}
-                    onClick={() => this.viewEmployee(employee.tenantClientId)}
-                    className="btn btn-info"
-                  >
-                    View{" "}
-                  </button>
-                </td>
-              </tr>
-            
-            
-            ))}
-          </tbody>
-        </table>
-
-            */}
 
       </div>
     </div>
