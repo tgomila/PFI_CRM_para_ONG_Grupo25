@@ -53,46 +53,46 @@
   transform: translateY(2px);
 }
 
-.ListEmployeeComponent .tablaDinamica {
+.TablasDinamicas .tablaDinamica {
   height: 100%;
   margin: 0 auto;
   background: linear-gradient(45deg, #49a09d, #5f2c82);
   font-family: sans-serif;
   font-weight: 100;
 }
-.ListEmployeeComponent .tablaDinamica .container {
+.TablasDinamicas .tablaDinamica .container {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
 }
-.ListEmployeeComponent .tablaDinamica table {
+.TablasDinamicas .tablaDinamica table {
   width: 800px;
   border-collapse: collapse;
   overflow: hidden;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
 }
-.ListEmployeeComponent .tablaDinamica th,
-.ListEmployeeComponent .tablaDinamica td {
+.TablasDinamicas .tablaDinamica th,
+.TablasDinamicas .tablaDinamica td {
   padding: 15px;
   background-color: rgba(255, 255, 255, 0.2);
   color: #fff;
 }
-.ListEmployeeComponent .tablaDinamica th {
+.TablasDinamicas .tablaDinamica th {
   text-align: center;
 }
-.ListEmployeeComponent .tablaDinamica thead th {
+.TablasDinamicas .tablaDinamica thead th {
   background-color: #55608f;
 }
-.ListEmployeeComponent .tablaDinamica tbody tr:hover {
+.TablasDinamicas .tablaDinamica tbody tr:hover {
   background-color: rgba(255, 255, 255, 0.3);
 }
-.ListEmployeeComponent .tablaDinamica tbody td {
+.TablasDinamicas .tablaDinamica tbody td {
   position: relative;
   border-style: solid;
   border-color: white;
 }
-.ListEmployeeComponent .tablaDinamica tbody td:hover:before {
+.TablasDinamicas .tablaDinamica tbody td:hover:before {
   content: "";
   position: absolute;
   left: 0;
@@ -102,11 +102,11 @@
   background-color: rgba(255, 255, 255, 0.2);
   z-index: -1;
 }
-.ListEmployeeComponent .tablaDinamica .miDivSelect {
+.TablasDinamicas .tablaDinamica .miDivSelect {
   border-radius: 6px;
   height: 48px;
 }
-.ListEmployeeComponent .tablaDinamica .miDivSelect .selectAnimado {
+.TablasDinamicas .tablaDinamica .miDivSelect .selectAnimado {
   background-color: #3498DB;
   color: white;
   padding: 16px;
@@ -115,11 +115,11 @@
   border-radius: 6px;
   height: 48px;
 }
-.ListEmployeeComponent .tablaDinamica .miDivSelect .dropup {
+.TablasDinamicas .tablaDinamica .miDivSelect .dropup {
   position: relative;
   display: inline-block;
 }
-.ListEmployeeComponent .tablaDinamica .miDivSelect .dropup-content {
+.TablasDinamicas .tablaDinamica .miDivSelect .dropup-content {
   display: none;
   position: absolute;
   background-color: #f1f1f1;
@@ -128,18 +128,18 @@
   bottom: 50px;
   z-index: 1;
 }
-.ListEmployeeComponent .tablaDinamica .miDivSelect .dropup-content a {
+.TablasDinamicas .tablaDinamica .miDivSelect .dropup-content a {
   color: black;
   padding: 12px 16px;
   text-decoration: none;
   display: block;
 }
-.ListEmployeeComponent .tablaDinamica .miDivSelect .dropup-content a:hover {
+.TablasDinamicas .tablaDinamica .miDivSelect .dropup-content a:hover {
   background-color: #ccc;
 }
-.ListEmployeeComponent .tablaDinamica .miDivSelect .dropup:hover .dropup-content {
+.TablasDinamicas .tablaDinamica .miDivSelect .dropup:hover .dropup-content {
   display: block;
 }
-.ListEmployeeComponent .tablaDinamica .miDivSelect .dropup:hover .selectAnimado {
+.TablasDinamicas .tablaDinamica .miDivSelect .dropup:hover .selectAnimado {
   background-color: #2980B9;
-}/*# sourceMappingURL=ListEmployeeComponent.css.map */
+}/*# sourceMappingURL=TablasDinamicas.css.map */

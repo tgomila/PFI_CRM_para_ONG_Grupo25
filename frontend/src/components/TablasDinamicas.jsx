@@ -3,7 +3,7 @@ import EmployeeService from "../services/EmployeeService";
 
 import { useTable, usePagination } from "react-table";
 
-import "../Styles/ListEmployeeComponent.scss";
+import "../Styles/TablasDinamicas.scss";
 
 function Table({ columns, data }) {
   const {
@@ -35,7 +35,7 @@ function Table({ columns, data }) {
 
   // Render the UI for your table
   return (
-    <div className="ListEmployeeComponent">
+    <div className="TablasDinamicas">
       <div className="tablaDinamica">
         <table>
           <thead>
@@ -79,14 +79,14 @@ function Table({ columns, data }) {
             onClick={() => previousPage()}
             disabled={!canPreviousPage}
           >
-            Previous
+            Anterior
           </button>{" "}
           <button
             className="buttonAnimado"
             onClick={() => nextPage()}
             disabled={!canNextPage}
           >
-            Next
+            Siguiente
           </button>{" "}
           <button
             className="buttonAnimado"
@@ -96,13 +96,13 @@ function Table({ columns, data }) {
             {">>"}
           </button>{" "}
           <span>
-            Page{" "}
+            Página{" "}
             <strong>
-              {pageIndex + 1} of {pageOptions.length}
+              {pageIndex + 1} de {pageOptions.length}
             </strong>{" "}
           </span>
           <span>
-            | Go to page:{" "}
+            | Ir a la Página:{" "}
             <input
               type="number"
               defaultValue={pageIndex + 1}
@@ -128,7 +128,7 @@ function Table({ columns, data }) {
                     key={pageSize}
                     value={pageSize}
                   >
-                    Show {pageSize}
+                    Mostrar {pageSize}
                   </option>
                 ))}
               </select>
@@ -140,7 +140,7 @@ function Table({ columns, data }) {
   );
 }
 
-function ListEmployeeComponent(redireccionamiento) {
+function TablasDinamicas(redireccionamiento) {
   const [data, setData] = useState([]);
 
   console.log(redireccionamiento);
@@ -160,7 +160,6 @@ function ListEmployeeComponent(redireccionamiento) {
       setData(res.data);
     });
 
-    //console.log(employees);
   }, []);
 
   const columns = Object.keys(data[0] || []).map((key) => ({
@@ -168,15 +167,7 @@ function ListEmployeeComponent(redireccionamiento) {
     accessor: key,
   }));
 
-  React.useEffect(() => {
-    /*
-    // Update the document title using the browser API
-    EmployeeService.getEmployees(redireccionamiento).then((res) => {
-      setEmployees(res.data);
-    });
-    console.log(employees);
-*/
-  }, []);
+
 
   //this.addEmployee = this.addEmployee.bind(this);
   //this.editEmployee = this.editEmployee.bind(this);
@@ -208,14 +199,14 @@ function ListEmployeeComponent(redireccionamiento) {
   };
 
   return (
-    <div className="ListEmployeeComponent">
+    <div className="TablasDinamicas">
       <div className="ComponentePrincipal">
-        <h2 className="TituloComponentePrincipal">Employees List</h2>
+        <h2 className="TituloComponentePrincipal">Tablas Dinámicas</h2>
 
         <div className="row">
           <button className="buttonAnimado" onClick={addEmployee}>
             {" "}
-            Add Employee
+            Agregar Item a la Lista
           </button>
         </div>
         <br></br>
@@ -227,4 +218,4 @@ function ListEmployeeComponent(redireccionamiento) {
   );
 }
 
-export default ListEmployeeComponent;
+export default TablasDinamicas;

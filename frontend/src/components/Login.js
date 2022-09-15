@@ -12,7 +12,7 @@ const required = (value) => {
   if (!value) {
     return (
       <div className="alert alert-danger" role="alert">
-        This field is required!
+        ¡Este campo es obligatorio!
       </div>
     );
   }
@@ -79,7 +79,7 @@ const Login = () => {
   return (
     <div class="Login">
       <div class="login-box">
-        <h2>Login</h2>
+        <h2>Iniciar Sesión</h2>
         <img
           src="//ssl.gstatic.com/accounts/ui/avatar_2x.png"
           alt="profile-img"

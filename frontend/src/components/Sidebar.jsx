@@ -18,18 +18,13 @@ const Sidebar = ({children}) => {
     const menuItem=[
         {
             path:"/",
-            name:"Dashboard",
+            name:"Tablas Dinamicas",
             icon:<FaBiohazard/>
-        },
-        {
-            path:"/about",
-            name:"About",
-            icon:<FaReact/>
         },
         {
             path:"/analytics",
             name:"Analytics",
-            icon:<FaRegChartBar/>
+            icon:<FaReact/>
         },
         {
             path:"/comment",
