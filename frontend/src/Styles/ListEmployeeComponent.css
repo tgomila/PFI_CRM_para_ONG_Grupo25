@@ -1,0 +1,145 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+:root {
+  /* fonts*/
+  --font-poppins: "Poppins", sans-serif;
+  /*colores*/
+}
+
+.buttonAnimado {
+  align-items: center;
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+  background-image: radial-gradient(100% 100% at 100% 0, #5adaff 0, #5468ff 100%);
+  border: 0;
+  border-radius: 6px;
+  box-shadow: rgba(45, 35, 66, 0.4) 0 2px 4px, rgba(45, 35, 66, 0.3) 0 7px 13px -3px, rgba(58, 65, 111, 0.5) 0 -3px 0 inset;
+  box-sizing: border-box;
+  color: #fff;
+  cursor: pointer;
+  display: inline-flex;
+  height: 48px;
+  justify-content: center;
+  line-height: 1;
+  list-style: none;
+  overflow: hidden;
+  padding-left: 16px;
+  padding-right: 16px;
+  position: relative;
+  text-align: left;
+  text-decoration: none;
+  transition: box-shadow 0.15s, transform 0.15s;
+  -moz-user-select: none;
+   -ms-user-select: none;
+       user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  white-space: nowrap;
+  will-change: box-shadow, transform;
+  font-size: 18px;
+}
+
+.buttonAnimado:focus {
+  box-shadow: #3c4fe0 0 0 0 1.5px inset, rgba(45, 35, 66, 0.4) 0 2px 4px, rgba(45, 35, 66, 0.3) 0 7px 13px -3px, #3c4fe0 0 -3px 0 inset;
+}
+
+.buttonAnimado:hover {
+  box-shadow: rgba(45, 35, 66, 0.4) 0 4px 8px, rgba(45, 35, 66, 0.3) 0 7px 13px -3px, #3c4fe0 0 -3px 0 inset;
+  transform: translateY(-2px);
+}
+
+.buttonAnimado:active {
+  box-shadow: #3c4fe0 0 3px 7px inset;
+  transform: translateY(2px);
+}
+
+.ListEmployeeComponent .tablaDinamica {
+  height: 100%;
+  margin: 0 auto;
+  background: linear-gradient(45deg, #49a09d, #5f2c82);
+  font-family: sans-serif;
+  font-weight: 100;
+}
+.ListEmployeeComponent .tablaDinamica .container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.ListEmployeeComponent .tablaDinamica table {
+  width: 800px;
+  border-collapse: collapse;
+  overflow: hidden;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
+.ListEmployeeComponent .tablaDinamica th,
+.ListEmployeeComponent .tablaDinamica td {
+  padding: 15px;
+  background-color: rgba(255, 255, 255, 0.2);
+  color: #fff;
+}
+.ListEmployeeComponent .tablaDinamica th {
+  text-align: center;
+}
+.ListEmployeeComponent .tablaDinamica thead th {
+  background-color: #55608f;
+}
+.ListEmployeeComponent .tablaDinamica tbody tr:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+.ListEmployeeComponent .tablaDinamica tbody td {
+  position: relative;
+  border-style: solid;
+  border-color: white;
+}
+.ListEmployeeComponent .tablaDinamica tbody td:hover:before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -9999px;
+  bottom: -9999px;
+  background-color: rgba(255, 255, 255, 0.2);
+  z-index: -1;
+}
+.ListEmployeeComponent .tablaDinamica .miDivSelect {
+  border-radius: 6px;
+  height: 48px;
+}
+.ListEmployeeComponent .tablaDinamica .miDivSelect .selectAnimado {
+  background-color: #3498DB;
+  color: white;
+  padding: 16px;
+  font-size: 16px;
+  border: none;
+  border-radius: 6px;
+  height: 48px;
+}
+.ListEmployeeComponent .tablaDinamica .miDivSelect .dropup {
+  position: relative;
+  display: inline-block;
+}
+.ListEmployeeComponent .tablaDinamica .miDivSelect .dropup-content {
+  display: none;
+  position: absolute;
+  background-color: #f1f1f1;
+  color: black;
+  min-width: 160px;
+  bottom: 50px;
+  z-index: 1;
+}
+.ListEmployeeComponent .tablaDinamica .miDivSelect .dropup-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+.ListEmployeeComponent .tablaDinamica .miDivSelect .dropup-content a:hover {
+  background-color: #ccc;
+}
+.ListEmployeeComponent .tablaDinamica .miDivSelect .dropup:hover .dropup-content {
+  display: block;
+}
+.ListEmployeeComponent .tablaDinamica .miDivSelect .dropup:hover .selectAnimado {
+  background-color: #2980B9;
+}/*# sourceMappingURL=ListEmployeeComponent.css.map */

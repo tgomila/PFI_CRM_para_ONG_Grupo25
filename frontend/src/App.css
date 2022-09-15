@@ -48,10 +48,7 @@ body {
   color: white;
 }
 
-.ComponentePrincipal {
-  margin-left: 70px;
-  margin-bottom: 40px;
-}
+
 
 *{
   margin:0;
@@ -195,5 +192,9 @@ label {
 td{
   color: white;
   text-align: center;
+}
+
+.text-muted {
+  margin-left: 70px;
 }
 
