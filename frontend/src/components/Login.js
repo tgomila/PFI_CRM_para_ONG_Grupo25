@@ -6,7 +6,7 @@ import CheckButton from "react-validation/build/button";
 
 import AuthService from "../services/auth.service";
 
-import "./Login.css";
+import "../Styles/Login.scss";
 
 const required = (value) => {
   if (!value) {
@@ -77,79 +77,117 @@ const Login = () => {
   };
 
   return (
-    <div class="login-box">
-          <h2>Login</h2>
-          <img
-            src="//ssl.gstatic.com/accounts/ui/avatar_2x.png"
-            alt="profile-img"
-            className="profile-img-card"
-          />
+    <div class="Login">
+      <div class="login-box">
+        <h2>Login</h2>
+        <img
+          src="//ssl.gstatic.com/accounts/ui/avatar_2x.png"
+          alt="profile-img"
+          className="profile-img-card"
+        />
 
-          <Form onSubmit={handleLogin} ref={form}>
-            <div class="user-box">
-                <label className="miLabel"  htmlFor="usernameOrEmail">UsernameOrEmail:</label>
-                <Input
-                  type="text"
-                  className="miInput"
-                  name="usernameOrEmail"
-                  value={usernameOrEmail}
-                  onChange={onChangeUsernameOrEmail}
-                  validations={[required]}
-                />
+        <Form onSubmit={handleLogin} ref={form}>
+          <div class="user-box">
+            <label className="miLabel" htmlFor="usernameOrEmail">
+              UsernameOrEmail:
+            </label>
+            <Input
+              type="text"
+              className="miInput"
+              name="usernameOrEmail"
+              value={usernameOrEmail}
+              onChange={onChangeUsernameOrEmail}
+              validations={[required]}
+            />
+          </div>
+
+          <div class="user-box">
+            <label className="miLabel" htmlFor="password">
+              Password:
+            </label>
+            <Input
+              type="password"
+              className="miInput"
+              name="password"
+              value={password}
+              onChange={onChangePassword}
+              validations={[required]}
+            />
+          </div>
+
+          <div class="user-box">
+
+          <label className="miLabel" htmlFor="tenantOrClientId">
+                Base de datos Tenant:
+              </label>
+
+
+            <div class="divTenant1">
+              <Input
+                type="radio"
+                className="miInput"
+                name="tenantOrClientId"
+                value="100"
+                onChange={onChangeTenantOrClientId}
+                validations={[required]}
+              />
+              <label className="miLabel" htmlFor="tenantOrClientId">
+                Tenant 1
+              </label>
             </div>
 
-            <div class="user-box">
-                <label className="miLabel"  htmlFor="password">Password:</label>
-                <Input
-                  type="password"
-                  className="miInput"
-                  name="password"
-                  value={password}
-                  onChange={onChangePassword}
-                  validations={[required]}
-                />
+            <div class="divTenant1">
+              <Input
+                type="radio"
+                className="miInput"
+                name="tenantOrClientId"
+                value="200"
+                onChange={onChangeTenantOrClientId}
+                validations={[required]}
+              />
+              <label className="miLabel" htmlFor="tenantOrClientId">
+                Tenant 2
+              </label>
             </div>
 
-            <div class="user-box">
-                <label 
-                  className="miLabel" htmlFor="tenantOrClientId">Tenant o Client Id:</label>
-                <Input
-                  type="text"
-                  className="miInput"
-                  name="tenantOrClientId"
-                  value={tenantOrClientId}
-                  onChange={onChangeTenantOrClientId}
-                  validations={[required]}
-                />
+            <div class="divTenant1">
+              <Input
+                type="radio"
+                className="miInput"
+                name="tenantOrClientId"
+                value="300"
+                onChange={onChangeTenantOrClientId}
+                validations={[required]}
+              />
+              <label className="miLabel" htmlFor="tenantOrClientId">
+                Tenant 3
+              </label>
             </div>
+          </div>
 
+          <div className="form-group">
+            <button className="miBoton" href="#" disabled={loading}>
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+              {loading && (
+                <span className="spinner-border spinner-border-sm"></span>
+              )}
+              INGRESAR
+            </button>
+          </div>
 
-              <div className="form-group">
-                <button 
-                className="miBoton"
-                  href="#"
-                  disabled={loading}
-                >
-                  <span></span>
-                  <span></span>
-                  <span></span>
-                  <span></span>
-                  {loading && (
-                    <span className="spinner-border spinner-border-sm"></span>
-                  )}
-                  INGRESAR
-                </button>
+          {message && (
+            <div className="form-group">
+              <div className="alert alert-danger" role="alert">
+                {message}
               </div>
-
-            {message && (
-              <div className="form-group">
-                <div className="alert alert-danger" role="alert">
-                  {message}
-                </div>
-              </div>
-            )}
-            <CheckButton style={{ display: "none" }} ref={checkBtn} />
-          </Form>
+            </div>
+          )}
+          <CheckButton style={{ display: "none" }} ref={checkBtn} />
+        </Form>
+      </div>
     </div>
   );
 };

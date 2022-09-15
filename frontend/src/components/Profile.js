@@ -1,25 +1,28 @@
 import React from "react";
 import AuthService from "../services/auth.service";
 
+import "../Styles/Profile.scss";
+
 const Profile = () => {
   const currentUser = AuthService.getCurrentUser();
 
   return (
-    <div className="container">
-      <header className="jumbotron">
-        <h3>
-          <strong>{currentUser.userName}</strong> Profile
-        </h3>
-      </header>
-      <p>
-        <strong>Token:</strong> {currentUser.token.substring(0, 20)} ...{" "}
-        {currentUser.token.substr(currentUser.token.length - 20)}
-      </p>
-      <p>
-        <strong>tokenType:</strong> {currentUser.tokenType}
-      </p>
+    <div className="Profile">
+      <div className="container">
+        <header className="jumbotron">
+          <h3>
+            <strong>{currentUser.userName}</strong> Profile
+          </h3>
+        </header>
+        <p>
+          <strong>Token:</strong> {currentUser.token.substring(0, 20)} ...{" "}
+          {currentUser.token.substr(currentUser.token.length - 20)}
+        </p>
+        <p>
+          <strong>tokenType:</strong> {currentUser.tokenType}
+        </p>
 
-      {/* 
+        {/* 
 
       <p>
         <strong>Email:</strong> {currentUser.email}
@@ -31,7 +34,7 @@ const Profile = () => {
       </ul>
 
       */}
-
+      </div>
     </div>
   );
 };
