@@ -10,7 +10,9 @@ import {
     FaThList,
     FaBuilding,
     FaUserCheck,
-    FaDonate
+    FaDonate,
+    FaFileInvoiceDollar,
+    FaUsersCog
 }from "react-icons/fa";
 
 import {
@@ -90,12 +92,12 @@ const Sidebar = ({children}) => {
         {
             path:"/factura",
             name:"Factura",
-            icon:<FaShoppingBag/>
+            icon:<FaFileInvoiceDollar/>
         },
         {
             path:"/users",
             name:"Users",
-            icon:<FaThList/>
+            icon:<FaUsersCog/>
         }
     ]
     }
@@ -149,7 +151,7 @@ const Sidebar = ({children}) => {
             {
                 path:"/factura",
                 name:"Factura",
-                icon:<FaShoppingBag/>
+                icon:<FaFileInvoiceDollar/>
             }
         ]
     }
