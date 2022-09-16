@@ -4,11 +4,27 @@ import {
     FaBiohazard,
     FaBars,
     FaReact,
-    FaRegChartBar,
+    FaBeer,
     FaCommentAlt,
     FaShoppingBag,
-    FaThList
+    FaThList,
+    FaBuilding,
+    FaUserCheck,
+    FaDonate
 }from "react-icons/fa";
+
+import {
+    AiFillContacts
+}from "react-icons/ai";
+
+import {
+    GoPerson,
+    GoBriefcase,
+    GoRocket,
+    GoOrganization,
+    GoNote
+}from "react-icons/go";
+
 import { NavLink } from 'react-router-dom';
 
 //DOCUMENTACION ICONOS
@@ -29,47 +45,47 @@ const Sidebar = ({children}) => {
         {
             path:"/contacto",
             name:"Contacto",
-            icon:<FaBiohazard/>
+            icon:<AiFillContacts/>
         },
         {
             path:"/personafisica",
             name:"Persona",
-            icon:<FaReact/>
+            icon:<GoPerson/>
         },
         {
             path:"/beneficiario",
             name:"Beneficiario",
-            icon:<FaCommentAlt/>
+            icon:<GoRocket/>
         },
         {
             path:"/empleado",
             name:"Empleado",
-            icon:<FaShoppingBag/>
+            icon:<GoBriefcase/>
         },
         {
             path:"/colaborador",
             name:"Colaborador",
-            icon:<FaShoppingBag/>
+            icon:<GoOrganization/>
         },
         {
             path:"/consejoadhonorem",
             name:"Consejo Adhonorem",
-            icon:<FaShoppingBag/>
+            icon:<GoNote/>
         },
         {
             path:"/personajuridica",
             name:"Persona Juridica",
-            icon:<FaShoppingBag/>
+            icon:<FaBuilding/>
         },
         {
             path:"/profesional",
             name:"Profesional",
-            icon:<FaShoppingBag/>
+            icon:<FaUserCheck/>
         },
         {
             path:"/donacion",
             name:"Donacion",
-            icon:<FaShoppingBag/>
+            icon:<FaDonate/>
         },
         {
             path:"/factura",
@@ -85,50 +101,50 @@ const Sidebar = ({children}) => {
     }
     else if(user.roles.includes("ROLE_MODERATOR")){
         menuItem =[
-            {
-                path:"/contacto",
-                name:"Contacto",
-                icon:<FaBiohazard/>
-            },
-            {
-                path:"/personafisica",
-                name:"Persona",
-                icon:<FaReact/>
-            },
+        {
+            path:"/contacto",
+            name:"Contacto",
+            icon:<AiFillContacts/>
+        },
+        {
+            path:"/personafisica",
+            name:"Persona",
+            icon:<GoPerson/>
+        },
             {
                 path:"/beneficiario",
                 name:"Beneficiario",
-                icon:<FaCommentAlt/>
+                icon:<GoRocket/>
             },
             {
                 path:"/empleado",
                 name:"Empleado",
-                icon:<FaShoppingBag/>
+                icon:<GoBriefcase/>
             },
             {
                 path:"/colaborador",
                 name:"Colaborador",
-                icon:<FaShoppingBag/>
+                icon:<GoOrganization/>
             },
             {
                 path:"/consejoadhonorem",
                 name:"Consejo Adhonorem",
-                icon:<FaShoppingBag/>
+                icon:<GoNote/>
             },
             {
                 path:"/personajuridica",
                 name:"Persona Juridica",
-                icon:<FaShoppingBag/>
+                icon:<FaBuilding/>
             },
             {
                 path:"/profesional",
                 name:"Profesional",
-                icon:<FaShoppingBag/>
+                icon:<FaUserCheck/>
             },
             {
                 path:"/donacion",
                 name:"Donacion",
-                icon:<FaShoppingBag/>
+                icon:<FaDonate/>
             },
             {
                 path:"/factura",
@@ -139,70 +155,70 @@ const Sidebar = ({children}) => {
     }
     else if(user.roles.includes("ROLE_EMPLOYEE")){
         menuItem =[
-            {
-                path:"/contacto",
-                name:"Contacto",
-                icon:<FaBiohazard/>
-            },
-            {
-                path:"/personafisica",
-                name:"Persona",
-                icon:<FaReact/>
-            },
+        {
+            path:"/contacto",
+            name:"Contacto",
+            icon:<AiFillContacts/>
+        },
+        {
+            path:"/personafisica",
+            name:"Persona",
+            icon:<GoPerson/>
+        },
             {
                 path:"/beneficiario",
                 name:"Beneficiario",
-                icon:<FaCommentAlt/>
+                icon:<GoRocket/>
             },
             {
                 path:"/empleado",
                 name:"Empleado",
-                icon:<FaShoppingBag/>
+                icon:<GoBriefcase/>
             },
             {
                 path:"/colaborador",
                 name:"Colaborador",
-                icon:<FaShoppingBag/>
+                icon:<GoOrganization/>
             },
             {
                 path:"/consejoadhonorem",
                 name:"Consejo Adhonorem",
-                icon:<FaShoppingBag/>
+                icon:<GoNote/>
             },
             {
                 path:"/personajuridica",
                 name:"Persona Juridica",
-                icon:<FaShoppingBag/>
+                icon:<FaBuilding/>
             },
             {
                 path:"/profesional",
                 name:"Profesional",
-                icon:<FaShoppingBag/>
+                icon:<FaUserCheck/>
             }
         ]
     }
     else if(user.roles.includes("ROLE_USER")){
         menuItem =[
-            {
-                path:"/contacto",
-                name:"Contacto",
-                icon:<FaBiohazard/>
-            },
-            {
-                path:"/personafisica",
-                name:"Persona",
-                icon:<FaReact/>
-            },
+        {
+            path:"/contacto",
+            name:"Contacto",
+            icon:<AiFillContacts/>
+        },
+        {
+            path:"/personafisica",
+            name:"Persona",
+            icon:<GoPerson/>
+        },
             {
                 path:"/beneficiario",
                 name:"Beneficiario",
-                icon:<FaCommentAlt/>
+                icon:<GoRocket/>
             }
         ]
     }
 }
 else{
-    
+
 }
     
     return (
