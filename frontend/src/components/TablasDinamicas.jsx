@@ -160,7 +160,7 @@ function TablasDinamicas(redireccionamiento) {
       setData(res.data);
     });
 
-  }, []);
+  }, [redireccionamiento]);
 
   const columns = Object.keys(data[0] || []).map((key) => ({
     Header: key,
@@ -204,7 +204,7 @@ function TablasDinamicas(redireccionamiento) {
         <h2 className="TituloComponentePrincipal">Tablas Dinámicas</h2>
 
         <div className="row">
-          <button className="buttonAnimado" onClick={addEmployee}>
+          <button className="buttonAnimado" onClick={console.log("Agregar Item a la Lista")}>
             {" "}
             Agregar Item a la Lista
           </button>

@@ -32,6 +32,7 @@ import Register from "./components/Register";
 import Profile from "./components/Profile";
 
 import { useTable } from "react-table";
+import Bienvenido from "./components/Bienvenido";
 
 /*
 
@@ -56,7 +57,6 @@ const App = () => {
 
   useEffect(() => {
     const user = AuthService.getCurrentUser();
-
     if (user) {
       setCurrentUser(user);
       //setShowModeratorBoard(user.roles.includes("ROLE_MODERATOR"));
@@ -93,11 +93,11 @@ const App = () => {
       
       <nav className="navbar navbar-expand navbar-dark bg-dark">
         <Link to={"/"} className="navbar-brand">
-          PFI TOMÁS
+          COSMOS
         </Link>
         <div className="navbar-nav mr-auto">
           <li className="nav-item">
-            <Link to={"/home"} className="nav-link">
+            <Link to={"/"} className="nav-link">
               Bienvenido
             </Link>
           </li>
@@ -120,8 +120,8 @@ const App = () => {
 
           {currentUser && (
             <li className="nav-item">
-              <Link to={"/user"} className="nav-link">
-              Tabla Usuario
+              <Link to={"/"} className="nav-link">
+              Bienvenido
               </Link>
             </li>
           )}
@@ -160,26 +160,32 @@ const App = () => {
       <div className="sidebarYRoutes">
         <Sidebar style={{ marginLeft: "0px" }}>
           <Routes>
-            <Route path="/" element={<TablasDinamicas redireccionamiento='tenant' />} />
-            <Route
-              path="/dashboard"
-              element={<TablasDinamicas rey="contacto" />}
-            />
-            <Route
-              path="/about"
-              element={<TablasDinamicas rey="beneficiarios" />}
-            />
-            <Route path="/comment" element={<Comment />} />
-            <Route path="/analytics" element={<Analytics />} />
-            <Route path="/product" element={<Product />} />
-            <Route path="/productList" element={<ProductList />} />
+            <Route path="/" element={<Bienvenido redireccionamiento='beneficiario' />} />
+            <Route path="/contacto" element={<TablasDinamicas redireccionamiento='contacto' />} />
+            <Route path="/personafisica" element={<TablasDinamicas redireccionamiento='personafisica' />} />
+            <Route path="/beneficiario" element={<TablasDinamicas redireccionamiento='beneficiario' />} />
+            <Route path="/empleado" element={<TablasDinamicas redireccionamiento='empleado' />} />
+            <Route path="/colaborador" element={<TablasDinamicas redireccionamiento='colaborador' />} />
+            <Route path="/consejoadhonorem" element={<TablasDinamicas redireccionamiento='consejoadhonorem' />} />
+            <Route path="/personajuridica" element={<TablasDinamicas redireccionamiento='personajuridica' />} />
+            <Route path="/profesional" element={<TablasDinamicas redireccionamiento='profesional' />} />
+            <Route path="/donacion" element={<TablasDinamicas redireccionamiento='donacion' />} />
+            <Route path="/factura" element={<TablasDinamicas redireccionamiento='factura' />} />
+            <Route path="/users" element={<TablasDinamicas redireccionamiento='users' />} />
+            
 
-            <Route path="*" element={<Error404 />} />
+
+
+            {/* BARRA DE ARRIBA*/}
 
             <Route path="/login" element={<Login />} />
             <Route path="/admin" element={<BoardAdmin />} />
             <Route path="/register" element={<Register />} />
             <Route path="/profile" element={<Profile />} />
+
+            
+            <Route path="*" element={<Error404 />} />
+            
           </Routes>
         </Sidebar>
 

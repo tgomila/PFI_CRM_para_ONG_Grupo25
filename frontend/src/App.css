@@ -1,12 +1,12 @@
 
 html {
   height: 100%;
+  background: linear-gradient(0deg,#141e30, #243b55);
 }
 body {
   margin:0;
   padding:0;
   font-family: sans-serif;
-  background: linear-gradient(-90deg,#141e30, #243b55);
 }
 
 .App {
@@ -98,6 +98,7 @@ main{
   color: #fff;
   width: 200px;
   transition: all 0.5s;
+  margin-top: 56px;
 }
 .top_section{
   display: flex;
@@ -198,3 +199,13 @@ td{
   margin-left: 70px;
 }
 
+
+body{
+  
+  background-color: transparent !important;
+}
+
+.nomatch{
+  margin-top: 70px;
+
+}

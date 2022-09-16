@@ -1,5 +1,5 @@
-import axios from 'axios';
-
+import axios from "axios";
+import authHeader from "./auth-header";
 const EMPLOYEE_API_BASE_URL = "http://localhost:8080/api/";
 
 
@@ -10,7 +10,7 @@ class EmployeeService {
         const direccionURL = EMPLOYEE_API_BASE_URL + redireccionamiento.redireccionamiento + '/all';
         console.log(direccionURL);
 
-        return axios.get(EMPLOYEE_API_BASE_URL + redireccionamiento.redireccionamiento + '/all');
+        return axios.get(EMPLOYEE_API_BASE_URL + redireccionamiento.redireccionamiento + '/all', { headers: authHeader() });
     }
 
     createEmployee(employee){
