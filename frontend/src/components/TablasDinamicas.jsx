@@ -46,6 +46,15 @@ function Table({ columns, data }) {
                     {column.render("Header").toUpperCase()}
                   </th>
                 ))}
+
+                  <th>
+                    EDITAR
+                  </th>
+
+                  <th>
+                    BORRAR
+                  </th>
+    
               </tr>
             ))}
           </thead>
@@ -60,6 +69,31 @@ function Table({ columns, data }) {
                       <td {...cell.getCellProps()}>{cell.render("Cell")}</td>
                     );
                   })}
+
+<td>
+                    <button
+                      className="buttonAnimadoVerde"
+                      onClick={console.log("Agregar Item a la Lista")}
+                    >
+                      {" "}
+                      Editar
+                    </button>
+                  </td>
+
+
+                  <td>
+                    <button
+                      className="buttonAnimadoRojo"
+                      onClick={console.log("Agregar Item a la Lista")}
+                    >
+                      {" "}
+                      Borrar
+                    </button>
+                  </td>
+
+
+
+
                 </tr>
               );
             })}
@@ -68,28 +102,28 @@ function Table({ columns, data }) {
 
         <div>
           <button
-            className="buttonAnimado"
+            className="buttonAnimadoAzul"
             onClick={() => gotoPage(0)}
             disabled={!canPreviousPage}
           >
             {"<<"}
           </button>{" "}
           <button
-            className="buttonAnimado"
+            className="buttonAnimadoAzul"
             onClick={() => previousPage()}
             disabled={!canPreviousPage}
           >
             Anterior
           </button>{" "}
           <button
-            className="buttonAnimado"
+            className="buttonAnimadoAzul"
             onClick={() => nextPage()}
             disabled={!canNextPage}
           >
             Siguiente
           </button>{" "}
           <button
-            className="buttonAnimado"
+            className="buttonAnimadoAzul"
             onClick={() => gotoPage(pageCount - 1)}
             disabled={!canNextPage}
           >
@@ -159,15 +193,12 @@ function TablasDinamicas(redireccionamiento) {
     EmployeeService.getEmployees(redireccionamiento).then((res) => {
       setData(res.data);
     });
-
   }, [redireccionamiento]);
 
   const columns = Object.keys(data[0] || []).map((key) => ({
     Header: key,
     accessor: key,
   }));
-
-
 
   //this.addEmployee = this.addEmployee.bind(this);
   //this.editEmployee = this.editEmployee.bind(this);
@@ -204,7 +235,10 @@ function TablasDinamicas(redireccionamiento) {
         <h2 className="TituloComponentePrincipal">Tablas Dinámicas</h2>
 
         <div className="row">
-          <button className="buttonAnimado" onClick={console.log("Agregar Item a la Lista")}>
+          <button
+            className="buttonAnimadoAzul"
+            onClick={console.log("Agregar Item a la Lista")}
+          >
             {" "}
             Agregar Item a la Lista
           </button>

@@ -2,7 +2,13 @@
 html {
   height: 100%;
   background: transparent;
+
   
+    
+  min-height: 100vh;
+  
+  background: linear-gradient(90deg,#141e30, #243b55);
+
 }
 body {
   margin:0;
@@ -73,6 +79,7 @@ body{
 
 .principal{
   height: 100%;
+
 }
 
 
@@ -83,8 +90,10 @@ body{
 .miSideBar{
   height: 100%;
   
-  background: linear-gradient(0deg,#141e30, #243b55);
-    
+  min-height: 100vh;
+  
+
+  
 }
 
 .card.card-container{

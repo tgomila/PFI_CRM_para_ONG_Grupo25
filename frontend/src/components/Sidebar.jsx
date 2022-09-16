@@ -1,13 +1,7 @@
 import React, { useState } from 'react';
 import AuthService from "../services/auth.service";
 import {
-    FaBiohazard,
     FaBars,
-    FaReact,
-    FaBeer,
-    FaCommentAlt,
-    FaShoppingBag,
-    FaThList,
     FaBuilding,
     FaUserCheck,
     FaDonate,
