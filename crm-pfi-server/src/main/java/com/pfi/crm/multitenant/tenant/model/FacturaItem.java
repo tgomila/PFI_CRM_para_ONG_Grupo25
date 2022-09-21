@@ -11,7 +11,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.pfi.crm.multitenant.tenant.payload.FacturaItemPayload;
-import com.pfi.crm.multitenant.tenant.payload.FacturaPayload;
 
 @Entity
 @Table(name ="factura_item")

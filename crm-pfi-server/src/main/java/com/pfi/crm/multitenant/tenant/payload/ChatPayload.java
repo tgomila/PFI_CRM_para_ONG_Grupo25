@@ -9,6 +9,36 @@ public class ChatPayload {
 	private boolean leido;
 	
 	
+	//Actualizar cada vez que se agrega una nueva variable a la clase
+	class NombreDeColumnaParaTablaFrontend {
+		public String id = "ID";
+		public String userNameFrom = "Enviaro por";
+		public String userNameTo = "Enviado a";
+		public String mensaje = "Mensaje";
+		public String leido = "Leido Si/No";
+		public String getId() {
+			return id;
+		}
+		public String getUserNameFrom() {
+			return userNameFrom;
+		}
+		public String getUserNameTo() {
+			return userNameTo;
+		}
+		public String getMensaje() {
+			return mensaje;
+		}
+		public String getLeido() {
+			return leido;
+		}
+	}
+	public NombreDeColumnaParaTablaFrontend nombreDeColumnaParaTablaFrontend() {
+		return new NombreDeColumnaParaTablaFrontend();
+	}
+	
+	
+	
+	
 	public ChatPayload() {
 		super();
 	}
@@ -38,7 +68,7 @@ public class ChatPayload {
 	public void setMensaje(String mensaje) {
 		this.mensaje = mensaje;
 	}
-	public boolean isLeido() {
+	public boolean getLeido() {
 		return leido;
 	}
 	public void setLeido(boolean leido) {

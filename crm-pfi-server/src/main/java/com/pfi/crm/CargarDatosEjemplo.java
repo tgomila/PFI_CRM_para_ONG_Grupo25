@@ -1,7 +1,6 @@
 package com.pfi.crm;
 
 import java.time.LocalDate;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -10,11 +9,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import com.pfi.crm.mastertenant.config.DBContextHolder;
-import com.pfi.crm.multitenant.tenant.model.Role;
-import com.pfi.crm.multitenant.tenant.model.RoleName;
 import com.pfi.crm.multitenant.tenant.model.TipoPersonaJuridica;
 import com.pfi.crm.multitenant.tenant.payload.*;
-import com.pfi.crm.multitenant.tenant.repository.RoleRepository;
 import com.pfi.crm.multitenant.tenant.service.BeneficiarioService;
 import com.pfi.crm.multitenant.tenant.service.ColaboradorService;
 import com.pfi.crm.multitenant.tenant.service.ConsejoAdHonoremService;
@@ -25,10 +21,7 @@ import com.pfi.crm.multitenant.tenant.service.VoluntarioService;
 import com.pfi.crm.payload.request.SignUpRequest;
 
 @Component
-public class ApplicationStartup implements ApplicationListener<ApplicationReadyEvent> {
-	
-	@Autowired
-	private RoleRepository roleRepository;
+public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyEvent> {
 	
 	@Autowired
 	private BeneficiarioService beneficiarioService;
@@ -75,12 +68,12 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
 	public void cargarTenant1() {
 		// Setear base de datos o schema
 		DBContextHolder.setCurrentDb("tenant1");
-		Optional<Role> rol = roleRepository.findByName(RoleName.ROLE_USER);
-		if (!rol.isPresent()) {
-			roleRepository.save(new Role(RoleName.ROLE_USER));
-			roleRepository.save(new Role(RoleName.ROLE_ADMIN));
-			roleRepository.save(new Role(RoleName.ROLE_EMPLOYEE));
-			roleRepository.save(new Role(RoleName.ROLE_MODERATOR));
+		BeneficiarioPayload b = beneficiarioService.getBeneficiarioByIdContacto(Long.parseLong("1"));
+		if (null == b) {
+			//roleRepository.save(new Role(RoleName.ROLE_USER));
+			//roleRepository.save(new Role(RoleName.ROLE_ADMIN));
+			//roleRepository.save(new Role(RoleName.ROLE_EMPLOYEE));
+			//roleRepository.save(new Role(RoleName.ROLE_MODERATOR));
 
 			cargarBeneficiariosTenant1();
 			cargarVoluntariosTenant1();
@@ -97,12 +90,12 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
 	public void cargarTenant2() {
 		// Setear base de datos o schema
 		DBContextHolder.setCurrentDb("tenant2");
-		Optional<Role> rol = roleRepository.findByName(RoleName.ROLE_USER);
-		if (!rol.isPresent()) {
-			roleRepository.save(new Role(RoleName.ROLE_USER));
-			roleRepository.save(new Role(RoleName.ROLE_ADMIN));
-			roleRepository.save(new Role(RoleName.ROLE_EMPLOYEE));
-			roleRepository.save(new Role(RoleName.ROLE_MODERATOR));
+		BeneficiarioPayload b = beneficiarioService.getBeneficiarioByIdContacto(Long.parseLong("1"));
+		if (null == b) {
+			//roleRepository.save(new Role(RoleName.ROLE_USER));
+			//roleRepository.save(new Role(RoleName.ROLE_ADMIN));
+			//roleRepository.save(new Role(RoleName.ROLE_EMPLOYEE));
+			//roleRepository.save(new Role(RoleName.ROLE_MODERATOR));
 
 			cargarBeneficiariosTenant2();
 			cargarVoluntariosTenant2();
@@ -119,12 +112,12 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
 	public void cargarTenant3() {
 		// Setear base de datos o schema
 		DBContextHolder.setCurrentDb("tenant3");
-		Optional<Role> rol = roleRepository.findByName(RoleName.ROLE_USER);
-		if (!rol.isPresent()) {
-			roleRepository.save(new Role(RoleName.ROLE_USER));
-			roleRepository.save(new Role(RoleName.ROLE_ADMIN));
-			roleRepository.save(new Role(RoleName.ROLE_EMPLOYEE));
-			roleRepository.save(new Role(RoleName.ROLE_MODERATOR));
+		BeneficiarioPayload b = beneficiarioService.getBeneficiarioByIdContacto(Long.parseLong("1"));
+		if (null == b) {
+			//roleRepository.save(new Role(RoleName.ROLE_USER));
+			//roleRepository.save(new Role(RoleName.ROLE_ADMIN));
+			//roleRepository.save(new Role(RoleName.ROLE_EMPLOYEE));
+			//roleRepository.save(new Role(RoleName.ROLE_MODERATOR));
 		}
 	}
 	

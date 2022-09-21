@@ -9,7 +9,12 @@ import com.pfi.crm.multitenant.tenant.model.audit.DateAudit;
 //@MappedSuperclass
 public class Person extends DateAudit{
 
-    @Id @GeneratedValue(strategy= GenerationType.IDENTITY)
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 351444627902533075L;
+
+	@Id @GeneratedValue(strategy= GenerationType.IDENTITY)
 
     private long id;
 

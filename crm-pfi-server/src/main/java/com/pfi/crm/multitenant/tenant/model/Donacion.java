@@ -19,6 +19,11 @@ import com.pfi.crm.multitenant.tenant.payload.DonacionPayload;
 @Table(name="donacion")
 public class Donacion extends UserDateAudit{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4353814294309655078L;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;

@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.BeanIds;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -116,6 +115,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
     
     
+	@SuppressWarnings("rawtypes")
 	@Bean
 	public FilterRegistrationBean platformCorsFilter() {
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
@@ -134,6 +134,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		configAutenticacao.setMaxAge(3600L);
 		source.registerCorsConfiguration("/**", configAutenticacao);
 
+		@SuppressWarnings("unchecked")
 		FilterRegistrationBean bean = new FilterRegistrationBean(new CorsFilter(source));
 		bean.setOrder(-110);
 		return bean;

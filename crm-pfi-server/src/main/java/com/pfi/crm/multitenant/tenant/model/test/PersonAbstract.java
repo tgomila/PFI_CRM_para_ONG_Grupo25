@@ -8,8 +8,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.OrderBy;
 
-import com.pfi.crm.multitenant.tenant.model.audit.DateAudit;
-
 @MappedSuperclass
 public abstract class PersonAbstract{
 	@Id @GeneratedValue(strategy= GenerationType.IDENTITY)

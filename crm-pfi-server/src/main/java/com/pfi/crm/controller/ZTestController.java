@@ -6,7 +6,6 @@ import java.util.Date;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,7 +23,6 @@ import com.pfi.crm.multitenant.tenant.repository.test.CustomerRepository;
 import com.pfi.crm.multitenant.tenant.repository.test.EmployeeRepository;
 import com.pfi.crm.multitenant.tenant.repository.test.PersonRepository;
 import com.pfi.crm.multitenant.tenant.service.ContactoService;
-import com.pfi.crm.multitenant.tenant.service.EjemploService;
 
 @RestController
 @RequestMapping("/test")
@@ -36,8 +34,8 @@ public class ZTestController {
 	@Autowired
     private ContactoService contactoService;
 	
-	@Autowired
-    private EjemploService ejemploService;
+	//@Autowired
+    //private EjemploService ejemploService;
 
     @Autowired
     private EmployeeRepository employeeRepository;

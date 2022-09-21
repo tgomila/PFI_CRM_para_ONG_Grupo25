@@ -15,7 +15,7 @@ import com.pfi.crm.multitenant.tenant.repository.test.EmployeeRepository;
 import com.pfi.crm.multitenant.tenant.repository.test.PersonRepository;
 
 @Service
-public class EjemploService {
+public class zEjemploService {
 	
 	@Autowired
     private PersonRepository personRepository;
@@ -26,7 +26,7 @@ public class EjemploService {
     @Autowired
     private CustomerRepository customerRepository;
 
-    private static final Logger logger = LoggerFactory.getLogger(EjemploService.class);
+    private static final Logger logger = LoggerFactory.getLogger(zEjemploService.class);
     
     public Person savePerson(Person person) {
         return personRepository.save(person);

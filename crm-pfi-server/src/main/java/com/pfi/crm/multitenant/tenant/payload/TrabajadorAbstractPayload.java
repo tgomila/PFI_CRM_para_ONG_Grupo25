@@ -1,6 +1,5 @@
 package com.pfi.crm.multitenant.tenant.payload;
 
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 public class TrabajadorAbstractPayload extends PersonaFisicaAbstractPayload{

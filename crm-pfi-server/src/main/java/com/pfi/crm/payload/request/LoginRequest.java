@@ -5,6 +5,11 @@ import java.io.Serializable;
 import javax.validation.constraints.NotBlank;
 
 public class LoginRequest implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1731150829840411047L;
+
 	@NotBlank
     private String usernameOrEmail;
 

@@ -7,8 +7,6 @@ import java.util.function.Function;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -16,12 +14,8 @@ import org.springframework.stereotype.Component;
 import com.pfi.crm.constant.JWTConstants;
 
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.SignatureException;
-import io.jsonwebtoken.UnsupportedJwtException;
 
 @Component
 public class JwtTokenProvider implements Serializable {
@@ -39,6 +33,7 @@ public class JwtTokenProvider implements Serializable {
 	private long jwtExpirationInMs = JWTConstants.ACCESS_TOKEN_VALIDITY_SECONDS * 1000;
 
 	public String getUsernameFromToken(String token) {
+		logger.info("Username from token: " + getClaimFromToken(token, Claims::getSubject));
 		return getClaimFromToken(token, Claims::getSubject);
 	}
 
@@ -61,6 +56,7 @@ public class JwtTokenProvider implements Serializable {
 
 	private Boolean isTokenExpired(String token) {
 		final Date expiration = getExpirationDateFromToken(token);
+		logger.info("Fecha de vencimiento de token: " + expiration);
 		return expiration.before(new Date());
 	}
 

@@ -1,7 +1,5 @@
 package com.pfi.crm.multitenant.tenant.payload;
 
-import java.time.LocalDate;
-
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
