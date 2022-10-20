@@ -27,6 +27,35 @@ public class MasterTenantService {
 	public List<TenantPayload> getTenants() {
 		return masterTenantRepository.findAll().stream().map(e -> toPayload(e)).collect(Collectors.toList());
 	}
+	
+	public boolean existTenantId(String db_name) {
+		if(null == getTenantByDbName(db_name))
+			return false;
+		else
+			return true;
+	}
+	
+	private MasterTenant getTenantByDbName(String db_name) {
+		List<MasterTenant> tenants = masterTenantRepository.findAll();
+		for(int i=0; i<tenants.size(); i++) {
+			if(tenants.get(i).getDbName().equalsIgnoreCase(db_name)) {
+				return tenants.get(i);
+			}
+		}
+		return null;
+	}
+	
+	public TenantPayload altaTenant(TenantPayload payload) {
+		return masterTenantRepository.save(new MasterTenant(payload)).toPayload();
+	}
+	
+	public void bajaTenant(String db_name) {
+		MasterTenant tenant = getTenantByDbName(db_name);
+		if(tenant != null) {
+			masterTenantRepository.delete(tenant);
+		}
+		
+	}
 
 	private TenantPayload toPayload(MasterTenant m) {
 		TenantPayload p = new TenantPayload();

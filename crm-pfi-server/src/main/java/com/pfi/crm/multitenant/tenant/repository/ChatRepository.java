@@ -8,7 +8,7 @@ import com.pfi.crm.multitenant.tenant.model.Chat;
 
 public interface ChatRepository extends JpaRepository<Chat, Long>{
 	
-	Optional<Chat> findByFromUsername(String username);
+	Optional<Chat> findByUserNameFrom(String userNameFrom);
 	
-	Optional<Chat> findByToUsername(String username);
+	Optional<Chat> findByUserNameTo(String userNameTo);
 }

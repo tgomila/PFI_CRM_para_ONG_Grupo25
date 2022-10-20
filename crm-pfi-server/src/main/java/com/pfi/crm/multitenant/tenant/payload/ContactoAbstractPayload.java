@@ -28,8 +28,6 @@ public abstract class ContactoAbstractPayload {
 	private String telefono;
 	
 	
-	
-	
 	public Long getId() {
 		return id;
 	}

@@ -65,6 +65,14 @@ public class User extends DateAudit{
         this.email = email;
         this.password = password;
     }
+    
+    public void agregarRol(Role rol) {
+    	roles.add(rol);
+    }
+    
+    public void quitarRol(Role rol) {
+    	roles.remove(rol);
+    }
 
     public Long getId() {
         return id;

@@ -34,7 +34,7 @@ public class ChatService {
 	}
 	
 	public List<ChatPayload> getChatsByUsernameFrom(String usernameFrom) {
-		return chatRepository.findByFromUsername(usernameFrom).stream().map(e -> toPayload(e)).collect(Collectors.toList());
+		return chatRepository.findByUserNameFrom(usernameFrom).stream().map(e -> toPayload(e)).collect(Collectors.toList());
     }
 	
 	public Chat toModel(ChatPayload p) {

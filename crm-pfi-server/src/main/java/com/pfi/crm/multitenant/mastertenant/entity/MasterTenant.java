@@ -4,6 +4,8 @@ import java.io.Serializable;
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 
+import com.pfi.crm.multitenant.tenant.payload.TenantPayload;
+
 @Entity
 @Table(name = "tbl_tenant_master")
 public class MasterTenant implements Serializable {
@@ -45,6 +47,17 @@ public class MasterTenant implements Serializable {
 		this.password = password;
 		this.driverClass = driverClass;
 		this.status = status;
+	}
+
+	public MasterTenant(TenantPayload p) {
+		this.tenantClientId = p.getTenantClientId();
+		this.dbName = p.getName();
+		this.url = "jdbc:mysql://localhost:3306/" + p.getName()
+				+ "?useSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false";
+		this.userName = "root";
+		this.password = "1234";
+		this.driverClass = "com.mysql.cj.jdbc.Driver";
+		this.status = "Active";
 	}
 
 	public Integer getTenantClientId() {
@@ -108,5 +121,12 @@ public class MasterTenant implements Serializable {
 	public MasterTenant setStatus(String status) {
 		this.status = status;
 		return this;
+	}
+
+	public TenantPayload toPayload() {
+		TenantPayload p = new TenantPayload();
+		p.setTenantClientId(tenantClientId);
+		p.setName(dbName);
+		return p;
 	}
 }

@@ -1,5 +1,6 @@
 package com.pfi.crm.controller;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.pfi.crm.multitenant.tenant.model.Contacto;
 import com.pfi.crm.multitenant.tenant.payload.ContactoPayload;
+import com.pfi.crm.multitenant.tenant.payload.nombres_tabla.ContactoNombreTablaPayload;
 import com.pfi.crm.multitenant.tenant.service.ContactoService;
 
 @RestController
@@ -71,5 +73,10 @@ public class ContactoController {
 		m.setTelefono("1234-4567");
 
 		return m.toPayload();
+	}
+	
+	@GetMapping({"/nombres_tabla"})
+	public HashMap<String, String> getNombresTabla() {
+    	return  new ContactoNombreTablaPayload().getNombresContactoTabla();
 	}
 }

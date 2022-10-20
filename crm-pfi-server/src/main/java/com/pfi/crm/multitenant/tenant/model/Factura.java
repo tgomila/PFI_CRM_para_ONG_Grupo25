@@ -14,6 +14,9 @@ import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
+
 import com.pfi.crm.multitenant.tenant.model.audit.UserDateAudit;
 import com.pfi.crm.multitenant.tenant.payload.FacturaItemPayload;
 import com.pfi.crm.multitenant.tenant.payload.FacturaPayload;
@@ -40,6 +43,7 @@ public class Factura extends UserDateAudit {
 	private Contacto emisorFactura;
 	
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval=true)
+	@LazyCollection(LazyCollectionOption.FALSE)
 	private List<FacturaItem> itemsFactura;
 	
 	public Factura() {

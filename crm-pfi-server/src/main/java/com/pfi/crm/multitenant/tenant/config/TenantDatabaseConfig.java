@@ -95,7 +95,7 @@ public class TenantDatabaseConfig {
         properties.put(Environment.DIALECT, "org.hibernate.dialect.MySQL5Dialect");
         properties.put(Environment.SHOW_SQL, true);
         properties.put(Environment.FORMAT_SQL, true);
-        properties.put(Environment.HBM2DDL_AUTO, "none");//"create");
+        properties.put(Environment.HBM2DDL_AUTO, "none");//"none", "create"); //cambiar cuando creas tablas
         emfBean.setJpaPropertyMap(properties);
         return emfBean;
     }

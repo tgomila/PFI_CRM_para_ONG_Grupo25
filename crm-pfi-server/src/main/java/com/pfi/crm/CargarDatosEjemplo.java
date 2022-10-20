@@ -1,6 +1,7 @@
 package com.pfi.crm;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -9,19 +10,23 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import com.pfi.crm.mastertenant.config.DBContextHolder;
+import com.pfi.crm.multitenant.mastertenant.service.MasterTenantService;
+import com.pfi.crm.multitenant.tenant.model.Role;
+import com.pfi.crm.multitenant.tenant.model.RoleName;
 import com.pfi.crm.multitenant.tenant.model.TipoPersonaJuridica;
+import com.pfi.crm.multitenant.tenant.model.User;
 import com.pfi.crm.multitenant.tenant.payload.*;
-import com.pfi.crm.multitenant.tenant.service.BeneficiarioService;
-import com.pfi.crm.multitenant.tenant.service.ColaboradorService;
-import com.pfi.crm.multitenant.tenant.service.ConsejoAdHonoremService;
-import com.pfi.crm.multitenant.tenant.service.EmpleadoService;
-import com.pfi.crm.multitenant.tenant.service.PersonaJuridicaService;
-import com.pfi.crm.multitenant.tenant.service.ProfesionalService;
-import com.pfi.crm.multitenant.tenant.service.VoluntarioService;
-import com.pfi.crm.payload.request.SignUpRequest;
+import com.pfi.crm.multitenant.tenant.repository.RoleRepository;
+import com.pfi.crm.multitenant.tenant.service.*;
 
 @Component
 public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyEvent> {
+	
+	@Autowired
+	private RoleRepository roleRepository;
+	
+	@Autowired
+	private MasterTenantService masterTenantService;
 	
 	@Autowired
 	private BeneficiarioService beneficiarioService;
@@ -47,8 +52,8 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 	@Autowired
 	BCryptPasswordEncoder passwordEncoder;
 	
-	/*@Autowired
-	private AuthController AuthController;*/
+	@Autowired
+	private UserService userService;
 	
   /**
    * This event is executed as late as conceivably possible to indicate that 
@@ -58,6 +63,8 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 	public void onApplicationEvent(final ApplicationReadyEvent event) {
 		
 		// here your code ...
+		//cargarMasterTenantSiNoExisten();
+		
 		cargarTenant1();
 		cargarTenant2();
 		cargarTenant3();
@@ -65,15 +72,28 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		return;
 	}
 	
+	public void cargarMasterTenantSiNoExisten() {
+		if(!masterTenantService.existTenantId("tenant3"))
+			masterTenantService.altaTenant(new TenantPayload(300, "tenant3"));
+		
+		if(!masterTenantService.existTenantId("tenant2"))
+			masterTenantService.altaTenant(new TenantPayload(200, "tenant2"));
+		
+		if(!masterTenantService.existTenantId("tenant1"))
+				masterTenantService.altaTenant(new TenantPayload(100, "tenant1"));
+	}
+	
 	public void cargarTenant1() {
 		// Setear base de datos o schema
 		DBContextHolder.setCurrentDb("tenant1");
-		BeneficiarioPayload b = beneficiarioService.getBeneficiarioByIdContacto(Long.parseLong("1"));
-		if (null == b) {
-			//roleRepository.save(new Role(RoleName.ROLE_USER));
-			//roleRepository.save(new Role(RoleName.ROLE_ADMIN));
-			//roleRepository.save(new Role(RoleName.ROLE_EMPLOYEE));
-			//roleRepository.save(new Role(RoleName.ROLE_MODERATOR));
+		//BeneficiarioPayload b = beneficiarioService.getBeneficiarioByIdContacto(Long.parseLong("1"));
+		//if (null == b) {
+		Optional<Role> rol = roleRepository.findByName(RoleName.ROLE_USER);
+		if (!rol.isPresent()) {
+			roleRepository.save(new Role(RoleName.ROLE_USER));
+			roleRepository.save(new Role(RoleName.ROLE_PROFESIONAL));
+			roleRepository.save(new Role(RoleName.ROLE_EMPLOYEE));
+			roleRepository.save(new Role(RoleName.ROLE_ADMIN));
 
 			cargarBeneficiariosTenant1();
 			cargarVoluntariosTenant1();
@@ -82,20 +102,21 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 			cargarColaboradorTenant1();
 			cargarConsejoAdHonoremTenant1();
 			cargarPersonaJuridicaTenant1();
-
-			// cargarUsuariosTenant1();
+			cargarUsuariosTenant1();
 		}
 	}
 	
 	public void cargarTenant2() {
 		// Setear base de datos o schema
 		DBContextHolder.setCurrentDb("tenant2");
-		BeneficiarioPayload b = beneficiarioService.getBeneficiarioByIdContacto(Long.parseLong("1"));
-		if (null == b) {
-			//roleRepository.save(new Role(RoleName.ROLE_USER));
-			//roleRepository.save(new Role(RoleName.ROLE_ADMIN));
-			//roleRepository.save(new Role(RoleName.ROLE_EMPLOYEE));
-			//roleRepository.save(new Role(RoleName.ROLE_MODERATOR));
+		//BeneficiarioPayload b = beneficiarioService.getBeneficiarioByIdContacto(Long.parseLong("1"));
+		//if (null == b) {
+		Optional<Role> rol = roleRepository.findByName(RoleName.ROLE_USER);
+		if (!rol.isPresent()) {
+			roleRepository.save(new Role(RoleName.ROLE_USER));
+			roleRepository.save(new Role(RoleName.ROLE_PROFESIONAL));
+			roleRepository.save(new Role(RoleName.ROLE_EMPLOYEE));
+			roleRepository.save(new Role(RoleName.ROLE_ADMIN));
 
 			cargarBeneficiariosTenant2();
 			cargarVoluntariosTenant2();
@@ -105,19 +126,22 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 			cargarConsejoAdHonoremTenant2();
 			cargarPersonaJuridicaTenant2();
 
-			// cargarUsuariosTenant1();
+			cargarUsuariosTenant2();
 		}
 	}
 	
 	public void cargarTenant3() {
 		// Setear base de datos o schema
 		DBContextHolder.setCurrentDb("tenant3");
-		BeneficiarioPayload b = beneficiarioService.getBeneficiarioByIdContacto(Long.parseLong("1"));
-		if (null == b) {
-			//roleRepository.save(new Role(RoleName.ROLE_USER));
-			//roleRepository.save(new Role(RoleName.ROLE_ADMIN));
-			//roleRepository.save(new Role(RoleName.ROLE_EMPLOYEE));
-			//roleRepository.save(new Role(RoleName.ROLE_MODERATOR));
+		//BeneficiarioPayload b = beneficiarioService.getBeneficiarioByIdContacto(Long.parseLong("1"));
+		//if (null == b) {
+		Optional<Role> rol = roleRepository.findByName(RoleName.ROLE_USER);
+		if (!rol.isPresent()) {
+			roleRepository.save(new Role(RoleName.ROLE_USER));
+			roleRepository.save(new Role(RoleName.ROLE_PROFESIONAL));
+			roleRepository.save(new Role(RoleName.ROLE_EMPLOYEE));
+			roleRepository.save(new Role(RoleName.ROLE_ADMIN));
+			cargarUsuariosDefault();
 		}
 	}
 	
@@ -679,14 +703,13 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 	
 	public void cargarUsuariosTenant1() {
 		
-		SignUpRequest s = new SignUpRequest();
-		s.setName("Federico del tenant 1");
-		s.setUsername("fulano1");
-		s.setEmail("fulano1@gmail.com");
-		s.setPassword(passwordEncoder.encode("123456"));
+		cargarUsuariosDefault();
 		
+		String nombre = "Federico del tenant 1";
+		String username = "fulano1";
+		String email = "fulano1@gmail.com";
+		cargarUsuarioBasico(nombre, username, email, RoleName.ROLE_EMPLOYEE);
 		
-		//AuthController.registerUser(s);
 	}
 	
 	
@@ -1249,14 +1272,114 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 	
 	public void cargarUsuariosTenant2() {
 		
-		SignUpRequest s = new SignUpRequest();
-		s.setName("Federico del tenant 2");
-		s.setUsername("fulano2");
-		s.setEmail("fulano2@gmail.com");
-		s.setPassword(passwordEncoder.encode("123456"));
+		cargarUsuariosDefault();
 		
+		String nombre = "Federico del tenant 2";
+		String username = "fulano2";
+		String email = "fulano2@gmail.com";
+		cargarUsuarioBasico(nombre, username, email, RoleName.ROLE_EMPLOYEE);
+	}
+	
+	public void cargarUsuariosDefault() {
 		
-		//AuthController.registerUser(s);
+		cargarUsuarioBasico("admin", RoleName.ROLE_ADMIN);
+		cargarUsuarioBasico("employee", RoleName.ROLE_EMPLOYEE);
+		cargarUsuarioBasico("profesional", RoleName.ROLE_PROFESIONAL);
+		cargarUsuarioBasico("user", RoleName.ROLE_USER);
+		
+	}
+	
+	private void cargarUsuarioBasico(String nombre, RoleName rol) {
+		String name = nombre.substring(0, 1).toUpperCase() + nombre.substring(1);//primera letra mayúscula
+		String username = nombre;
+		String email = nombre + "@" + nombre + ".com";
+		cargarUsuarioBasico(name, username, email, rol);
+	}
+	
+	private void cargarUsuarioBasico(String name, String username, String email, RoleName rol) {
+		User user = new User();
+		user.setName(name);
+		user.setUsername(username);
+		user.setEmail(email);
+		user.setPassword(passwordEncoder.encode("123456"));
+		User result = userService.altaUsuario(user);
+		System.out.println("Usuario '" + result.getUsername() + "' dado de alta.");
+		if(rol!=null)
+			userService.agregarRol(username, rol);
 	}
 	
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//Basura de código
+/*@Override
+public void onApplicationEvent(final ApplicationReadyEvent event) {
+	
+	// here your code ...
+	//La regla es, tenant3 es stop, creamos tenant2, luego 1 (mayor a menor), si existe tenant3, no cargarTenant
+	
+	//Primero no existe ningun tenant
+	if(!masterTenantService.existTenantId("tenant3") 
+			&& !masterTenantService.existTenantId("tenant2")
+			&& !masterTenantService.existTenantId("tenant1")) {
+		masterTenantService.altaTenant(new TenantPayload(300, "tenant3"));
+		PfiApplication.restart();
+	}
+	System.out.println("\n\nENTRE ACAAAAAAAAAAAAAAAAAA\n\n");
+	//cargarTenant3();
+	
+	
+	//2da vuelta, ya se crearon las tablas de tenant 3
+	if(!masterTenantService.existTenantId("tenant2")
+			&& masterTenantService.existTenantId("tenant3")) {
+		cargarTenant3();
+		masterTenantService.bajaTenant("tenant3");
+		masterTenantService.altaTenant(new TenantPayload(200, "tenant2"));
+		PfiApplication.restart();
+	}
+	
+	//3era vuelta, ya se crearon las tablas de tenant 2 y las cargo
+	//Ahora preparo todo para tenant 1 dando de baja tenant 2 y dando de alta tenant 1
+	if(masterTenantService.existTenantId("tenant2") 
+			&& !masterTenantService.existTenantId("tenant1")
+			&& !masterTenantService.existTenantId("tenant3")) {
+		cargarTenant2();
+		masterTenantService.bajaTenant("tenant2");
+		masterTenantService.altaTenant(new TenantPayload(100, "tenant1"));
+		PfiApplication.restart();
+	}
+	
+	//4ta vuelta, ya se crearon las tablas de tenant 1 y las cargo
+	//Ahora cargo los otros 2 tenants a la bd y listo
+	if(masterTenantService.existTenantId("tenant1") 
+			&& !masterTenantService.existTenantId("tenant2")
+			&& !masterTenantService.existTenantId("tenant3")) {
+		cargarTenant1();
+		masterTenantService.altaTenant(new TenantPayload(100, "tenant2"));
+		masterTenantService.altaTenant(new TenantPayload(100, "tenant3"));
+	}
+	
+	
+	
+	
+	
+	return;
+}*/
