@@ -14,6 +14,7 @@
         <li><a href="#introducción">Introducción</a></li>
         <li><a href="#objetivos">Objetivos</a></li>
         <li><a href="#alcance">Alcance</a></li>
+        <li><a href="#construido-en">Construido en</a></li>
       </ul>
     </li>
     <li>
@@ -27,7 +28,6 @@
         <li><a href="#instrucción-cómo-correr-el-frontend">Instrucción cómo correr el frontend</a></li>
       </ul>
     </li>
-    <li><a href="#utilidad">Utilidad</a></li>
     <li><a href="#roadmap">Roadmap</a></li>
     <li><a href="#contacto">Contacto</a></li>
   </ol>
@@ -87,7 +87,7 @@ Este proyecto deja fuera de su alcance:
 
 
 
-### Alcance
+### Construido en
 * Frontend: React
 * Backend: Java 18 con framework SpringBoot.
 * Base de Datos: MySQL.
@@ -107,6 +107,8 @@ Para más información leer la documentación.
 * Java SDK 18.
 
 <p align="right">(<a href="#readme-top">volver a arriba</a>)</p>
+
+
 
 #### Instrucciones:
 1)	Descargar el proyecto backend.
@@ -215,7 +217,7 @@ Para más información leer la documentación.
 //TODO
 ```
 
-<p align="right">(<a href="#readme-top">volver a arriba</a>)</p>
+<p align="right">(<a href="#readme-top">volver arriba</a>)</p>
 
 
 <!-- ROADMAP -->
@@ -224,18 +226,18 @@ Para más información leer la documentación.
 - [x] Base de Datos
 - [x] Backend multitenancy
 - [x] Frontend multitenancy
-- [ ] conversaciones
+- [ ] Conversaciones (chat springboot o de nube)
 - [ ] Actividades y programa actividades (list actividades).
 - [ ] Taller/Actividad
 - [ ] Inventario (Producto, cantidad, precio, notas, subtotal) --> Clase producto
-- [ ] préstamos
-- [ ] insumos
+- [ ] Préstamos
+- [ ] Insumos
 - [ ] Proyectos
-- [ ] oauth
-- [ ] modulos
-- [ ] tutoriales de video
+- [ ] OAuth
+- [ ] Módulos
+- [ ] Tutoriales de video
 
-<p align="right">(<a href="#readme-top">volver a arriba</a>)</p>
+<p align="right">(<a href="#readme-top">volver arriba</a>)</p>
 
 
 
@@ -244,14 +246,14 @@ Para más información leer la documentación.
 
 Tomás Gomila - [Facebook](https://www.facebook.com/tomas.gomila) - [Instagram](https://www.instagram.com/tomas.gomila/) - tomasgomila@gmail.com
 
-Project Link: [https://github.com/tgomila/PFI_CRM_para_ONG_Grupo25](https://github.com/tgomila/PFI_CRM_para_ONG_Grupo25)
+Link del Proyecto: [https://github.com/tgomila/PFI_CRM_para_ONG_Grupo25](https://github.com/tgomila/PFI_CRM_para_ONG_Grupo25)
 
-<p align="right">(<a href="#readme-top">volver a arriba</a>)</p>
+<p align="right">(<a href="#readme-top">volver arriba</a>)</p>
 
 
 <!-- LINKS & IMAGES -->
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
-[linkedin-url]: [https://linkedin.com/in/othneildrew](https://www.linkedin.com/in/tomas-gomila/)
+[linkedin-url]: https://www.linkedin.com/in/tomas-gomila/
 [paso-tenant3-mysql-screenshot]: images/PasoTenant3MySQL.png
 [paso-tenant2-mysql-screenshot]: images/PasoTenant2MySQL.png
 [paso-tenant1-mysql-screenshot]: images/PasoTenant1MySQL.png
