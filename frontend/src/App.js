@@ -172,6 +172,21 @@ const App = () => {
             <Route path="/donacion" element={<TablasDinamicas redireccionamiento='donacion' />} />
             <Route path="/factura" element={<TablasDinamicas redireccionamiento='factura' />} />
             <Route path="/users" element={<TablasDinamicas redireccionamiento='users' />} />
+
+
+
+            {/* Agregar item*/}
+            <Route path="/contacto/add" element={<CreateEmployeeComponent />} />
+            <Route path="/personafisica/add" element={<CreateEmployeeComponent />} />
+            <Route path="/beneficiario/add" element={<CreateEmployeeComponent />} />
+            <Route path="/empleado/add" element={<CreateEmployeeComponent />} />
+            <Route path="/colaborador/add" element={<CreateEmployeeComponent />} />
+            <Route path="/consejoadhonorem/add" element={<CreateEmployeeComponent />} />
+            <Route path="/personajuridica/add" element={<CreateEmployeeComponent />} />
+            <Route path="/profesional/add" element={<CreateEmployeeComponent />} />
+            <Route path="/donacion/add" element={<CreateEmployeeComponent />} />
+            <Route path="/factura/add" element={<CreateEmployeeComponent />} />
+            <Route path="/users/add" element={<CreateEmployeeComponent />} />
             
 
 

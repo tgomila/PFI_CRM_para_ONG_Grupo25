@@ -1,9 +1,20 @@
 import React, { useState, useEffect } from "react";
 import EmployeeService from "../services/EmployeeService";
+import CreateEmployeeComponent from "./CreateEmployeeComponent";
 
 import { useTable, usePagination } from "react-table";
 
 import "../Styles/TablasDinamicas.scss";
+
+import { useNavigate } from 'react-router-dom';    
+
+
+import {
+  Route,
+  Routes,
+  BrowserRouter
+} from "react-router-dom";
+
 
 function Table({ columns, data }) {
   const {
@@ -176,8 +187,12 @@ function Table({ columns, data }) {
 
 function TablasDinamicas(redireccionamiento) {
   const [data, setData] = useState([]);
+  const [direccion, setDireccion] = useState(redireccionamiento);
 
   console.log(redireccionamiento);
+
+  
+  const navigate = useNavigate();
 
   const [employees, setEmployees] = useState([]);
 
@@ -186,6 +201,8 @@ function TablasDinamicas(redireccionamiento) {
   //Se llama al Endpoint y se trae todo los datos
   const componentDidMount = () => {};
 
+
+
   useEffect(() => {
     // Fetch data
     // Update the document title using the browser API
@@ -193,6 +210,11 @@ function TablasDinamicas(redireccionamiento) {
     EmployeeService.getEmployees(redireccionamiento).then((res) => {
       setData(res.data);
     });
+
+    setDireccion(redireccionamiento);
+
+    console.log(direccion);
+
   }, [redireccionamiento]);
 
   const columns = Object.keys(data[0] || []).map((key) => ({
@@ -235,13 +257,11 @@ function TablasDinamicas(redireccionamiento) {
         <h2 className="TituloComponentePrincipal">Tablas Dinámicas</h2>
 
         <div className="row">
-          <button
-            className="buttonAnimadoAzul"
-            onClick={console.log("Agregar Item a la Lista")}
-          >
-            {" "}
-            Agregar Item a la Lista
-          </button>
+
+        <button className="btn btn-primary" onClick={() => navigate( window.location.pathname + "/add", {state:{seccionURL:redireccionamiento.redireccionamiento, firstName:"nico",lastName:"retamar",emailId:"nico@retamar.com"}})}> Add Employee</button>
+    
+
+
         </div>
         <br></br>
         <div className="row">

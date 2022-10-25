@@ -68,7 +68,8 @@ const Login = () => {
             error.toString();
 
           setLoading(false);
-          setMessage(resMessage);
+          setMessage(resMessage === "Bad credentials" ? "Usuario o Contraseña incorrecta!" : 
+          resMessage === "Request failed with status code 400" ? "Seleccione Tenant!" : resMessage);
         }
       );
     } else {

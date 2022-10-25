@@ -13,8 +13,8 @@ class EmployeeService {
         return axios.get(EMPLOYEE_API_BASE_URL + redireccionamiento.redireccionamiento + '/all', { headers: authHeader() });
     }
 
-    createEmployee(employee){
-        return axios.post(EMPLOYEE_API_BASE_URL, employee);
+    createEmployee(redireccionamiento, employee){
+        return axios.post(EMPLOYEE_API_BASE_URL + redireccionamiento.redireccionamiento + '/alta', employee , { headers: authHeader() });
     }
 
     getEmployeeById(employeeId){
