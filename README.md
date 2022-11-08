@@ -122,6 +122,7 @@ Para más información leer la documentación.
             `db_name` varchar(50) NOT NULL,
             `url` varchar(100) NOT NULL,
             `user_name` varchar(50) NOT NULL,
+            `tenant_name` varchar(100) NOT NULL,
             `password` varchar(100) NOT NULL,
             `driver_class` varchar(100) NOT NULL,
             `status` varchar(10) NOT NULL,
@@ -149,13 +150,13 @@ Para más información leer la documentación.
     
         [![PasoTenant3MySQL][paso-tenant3-mysql-screenshot]]
         ```
-        '300', 'tenant3', 'com.mysql.cj.jdbc.Driver', '1234', 'Active', 'jdbc:mysql://localhost:3306/tenant3?useSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false', 'root'
+        '300', 'tenant3', 'ONG Sapito', 'jdbc:mysql://localhost:3306/tenant3?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false', 'root', '1234', 'com.mysql.cj.jdbc.Driver', 'Active'
         ```
 6)	Ahora volve a eclipse, com.pri.crm.PfiApplication.java, hace click derecho --> Run As --> Spring Boot App.
 7)	Una vez que se haya ejecutado, dale a “Stop”. Ya se crearon las tablas para “tenant3”, ahora hay que crear las tablas para tenant2 y tenant1.
 8)	En MySQL en la tabla de master_db, modifica los datos del tenant1 y que sean para tenant2:
     ```
-    '200', 'tenant2', 'com.mysql.cj.jdbc.Driver', '1234', 'Active', 'jdbc:mysql://localhost:3306/tenant2?useSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false', 'root'
+    '200', 'tenant2', 'ONG Comida para los chicos', 'jdbc:mysql://localhost:3306/tenant2?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false', 'root', '1234', 'com.mysql.cj.jdbc.Driver', 'Active'
     ```
     * En MySQL debería verse así:
     
@@ -170,7 +171,7 @@ Para más información leer la documentación.
 9)	Una vez que se haya ejecutado, dale a “Stop”. Ya se crearon las tablas para “tenant2”, ahora hay que crear las tablas para tenant1.
 10)	En MySQL en la tabla de master_db, modifica los datos del tenant2 y que sean para tenant1:
     ```
-    '100', 'tenant1', 'com.mysql.cj.jdbc.Driver', '1234', 'Active', 'jdbc:mysql://localhost:3306/tenant1?useSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false', 'root'
+    '100', 'tenant1', 'ONG Mi Arbolito', 'jdbc:mysql://localhost:3306/tenant1?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false', 'root', '1234', 'com.mysql.cj.jdbc.Driver', 'Active'
     ```
     * En MySQL debería verse así:
     
@@ -185,9 +186,9 @@ Para más información leer la documentación.
 11) Una vez que se haya ejecutado, dale a “Stop”. Ya se crearon las tablas para “tenant1”.
 12) En MySQL en la tabla de master_db, agrega todos los tenants. Se deja un ejemplo que se puede copiar:
     ```
-    '100', 'tenant1', 'com.mysql.cj.jdbc.Driver', '1234', 'Active', 'jdbc:mysql://localhost:3306/tenant1?useSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false', 'root'
-    '200', 'tenant2', 'com.mysql.cj.jdbc.Driver', '1234', 'Active', 'jdbc:mysql://localhost:3306/tenant2?useSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false', 'root'
-    '300', 'tenant3', 'com.mysql.cj.jdbc.Driver', '1234', 'Active', 'jdbc:mysql://localhost:3306/tenant3?useSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false', 'root'
+    '100', 'tenant1', 'ONG Mi Arbolito', 'jdbc:mysql://localhost:3306/tenant1?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false', 'root', '1234', 'com.mysql.cj.jdbc.Driver', 'Active'
+    '200', 'tenant2', 'ONG Comida para los chicos', 'jdbc:mysql://localhost:3306/tenant2?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false', 'root', '1234', 'com.mysql.cj.jdbc.Driver', 'Active'
+    '300', 'tenant3', 'ONG Sapito', 'jdbc:mysql://localhost:3306/tenant3?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false', 'root', '1234', 'com.mysql.cj.jdbc.Driver', 'Active'
     ```
     * En MySQL debería verse así:
     
