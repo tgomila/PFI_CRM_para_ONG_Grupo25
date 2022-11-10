@@ -1,11 +1,11 @@
 import axios from "axios";
 import authHeader from "./auth-header";
+import * as constantsURL from "../components/constants/ConstantsURL";
 
+// Esto chequea si el token está expirado en clases superiores, para luego cerrar sesión automáticamente.
 
-// NO ENTRA ACA
-
-
-const API_URL = "http://localhost:8080/api/test/";
+//const API_URL = "http://localhost:8080/api/test/";
+const API_URL = constantsURL.API_BASE_URL + "test/";
 
 const getPublicContent = () => {
   return axios.get(API_URL + "all");
@@ -15,8 +15,12 @@ const getUserBoard = () => {
   return axios.get(API_URL + "user", { headers: authHeader() });
 };
 
-const getModeratorBoard = () => {
-  return axios.get(API_URL + "mod", { headers: authHeader() });
+const getProfesionalBoard = () => {
+  return axios.get(API_URL + "profesional", { headers: authHeader() });
+};
+
+const getEmployeeBoard = () => {
+  return axios.get(API_URL + "employee", { headers: authHeader() });
 };
 
 const getAdminBoard = () => {
@@ -26,7 +30,8 @@ const getAdminBoard = () => {
 const UserService = {
   getPublicContent,
   getUserBoard,
-  getModeratorBoard,
+  getProfesionalBoard,
+  getEmployeeBoard,
   getAdminBoard,
 };
 

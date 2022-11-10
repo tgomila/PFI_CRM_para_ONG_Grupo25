@@ -222,9 +222,8 @@ function TablasDinamicas(redireccionamiento) {
 
   }, [redireccionamiento]);
 
-  //const columns = Object.keys(data[0] || []).map((key) => ({
-  //const columns = Object.keys(columnNames || []).map((key) => ({
   const columns = Object.entries(columnNames || []).map(([key,value]) => ({
+  //const columns = Object.keys(columnNames || []).map((key) => ({
     Header: value.toString(),
     accessor: key,
   }));

@@ -95,7 +95,7 @@ const Sidebar = ({children}) => {
         }
     ]
     }
-    else if(user.roles.includes("ROLE_MODERATOR")){
+    else if(user.roles.includes("ROLE_PROFESIONAL")){
         menuItem =[
         {
             path:"/contacto",

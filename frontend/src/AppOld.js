@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Component  } from "react";
 import logo from "./logo.svg";
 import "./App.css";
 import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import TablasDinamicas from "./components/TablasDinamicas";
-import ContactoTabla from "./components/ContactoTabla";
 import FooterComponent from "./components/FooterComponent";
 import CreateEmployeeComponent from "./components/CreateEmployeeComponent";
 import UpdateEmployeeComponent from "./components/UpdateEmployeeComponent";
@@ -26,6 +25,7 @@ import Comment from "./pages/Comment.jsx";
 import Product from "./pages/Product.jsx";
 import ProductList from "./pages/ProductList.jsx";
 import AuthService from "./services/auth.service";
+import AuthVerify from "./common/auth-verify";
 import Login from "./components/Login";
 import BoardAdmin from "./components/BoardAdmin";
 import EventBus from "./common/EventBus";

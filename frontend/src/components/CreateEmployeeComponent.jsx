@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import EmployeeService from '../services/EmployeeService';
+import BaseService from '../services/BaseService';
 import {useLocation} from 'react-router-dom';
 
 function CreateEmployeeComponent() {
@@ -21,7 +21,7 @@ function CreateEmployeeComponent() {
         if(location.state.id === '_add'){
             return
         }else{
-            EmployeeService.getEmployeeById(location.state.id).then( (res) =>{
+            BaseService.getById(location.state.id).then( (res) =>{
                 let employee = res.data;
                 location.setState({firstName: employee.firstName,
                     lastName: employee.lastName,
@@ -39,11 +39,11 @@ function CreateEmployeeComponent() {
 
         // step 5
         if(location.state.id === '_add'){
-            EmployeeService.createEmployee(employee).then(res =>{
+            BaseService.create(employee).then(res =>{
                 location.props.history.push('/employees');
             });
         }else{
-            EmployeeService.updateEmployee(employee, location.state.id).then( res => {
+            BaseService.update(employee, location.state.id).then( res => {
                 location.props.history.push('/employees');
             });
         }

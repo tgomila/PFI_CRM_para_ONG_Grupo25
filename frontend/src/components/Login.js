@@ -1,8 +1,9 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Form from "react-validation/build/form";
 import Input from "react-validation/build/input";
 import CheckButton from "react-validation/build/button";
+import TenantService from "../services/tenant.service";
 
 import AuthService from "../services/auth.service";
 
@@ -18,7 +19,21 @@ const required = (value) => {
   }
 };
 
-const Login = () => {
+//const Login = () => {
+function Login() {
+
+  const [tenants, setTenants] = useState([]);
+
+  useEffect(() => {
+    TenantService.getAll().then((res) => {
+      setTenants(res.data);
+    });
+
+  }, []);
+
+  console.log("Tenants");
+  console.log(tenants);
+
   let navigate = useNavigate();
 
   const form = useRef();
@@ -46,6 +61,7 @@ const Login = () => {
   };
 
   const handleLogin = (e) => {
+
     e.preventDefault();
 
     setMessage("");
@@ -120,9 +136,7 @@ const Login = () => {
 
           <label className="miLabel" htmlFor="tenantOrClientId">
                 Base de datos Tenant:
-              </label>
-
-
+          </label>
             <div class="divTenant1">
               <Input
                 type="radio"
