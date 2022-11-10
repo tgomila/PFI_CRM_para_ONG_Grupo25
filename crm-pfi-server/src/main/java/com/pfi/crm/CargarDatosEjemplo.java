@@ -73,14 +73,14 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 	}
 	
 	public void cargarMasterTenantSiNoExisten() {
-		if(!masterTenantService.existTenantId("tenant3"))
-			masterTenantService.altaTenant(new TenantPayload(300, "tenant3"));
+		//if(!masterTenantService.existTenantId("tenant3"))
+		//	masterTenantService.altaTenant(new TenantPayload(300, "tenant3", "ONG Sapito"));
 		
-		if(!masterTenantService.existTenantId("tenant2"))
-			masterTenantService.altaTenant(new TenantPayload(200, "tenant2"));
+		//if(!masterTenantService.existTenantId("tenant2"))
+		//	masterTenantService.altaTenant(new TenantPayload(200, "tenant2", "ONG Comida para los chicos"));
 		
-		if(!masterTenantService.existTenantId("tenant1"))
-				masterTenantService.altaTenant(new TenantPayload(100, "tenant1"));
+		//if(!masterTenantService.existTenantId("tenant1"))
+		//		masterTenantService.altaTenant(new TenantPayload(100, "tenant1", "ONG Mi Arbolito"));
 	}
 	
 	public void cargarTenant1() {
@@ -159,6 +159,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		m.setTelefono("1234-4567");
 
 		// PersonaFisica
+		m.setDni(1235678);
 		m.setNombre("Felipe");
 		m.setApellido("Garcia");
 		m.setFechaNacimiento(LocalDate.of(2010, 1, 20));
@@ -187,6 +188,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		m.setTelefono("1234-4567");
 
 		// PersonaFisica
+		m.setDni(1235678);
 		m.setNombre("josefina");
 		m.setApellido("Ruiz");
 		m.setFechaNacimiento(LocalDate.of(2012, 9, 14));
@@ -216,6 +218,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		m.setTelefono("1234-4567");
 
 		// PersonaFisica
+		m.setDni(1235678);
 		m.setNombre("josefina");
 		m.setApellido("Ruiz");
 		m.setFechaNacimiento(LocalDate.of(2010, 9, 14));
@@ -246,6 +249,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		m.setTelefono("9516-6545");
 
 		// PersonaFisica
+		m.setDni(1235678);
 		m.setNombre("Cecilia");
 		m.setApellido("Lopez");
 		m.setFechaNacimiento(LocalDate.of(2010, 9, 14));
@@ -275,6 +279,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		m.setTelefono("1234-4567");
 
 		// PersonaFisica
+		m.setDni(1297349);
 		m.setNombre("Julio");
 		m.setApellido("Roque");
 		m.setFechaNacimiento(LocalDate.of(1990, 1, 20));
@@ -295,6 +300,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		m.setTelefono("9466-7813");
 
 		// PersonaFisica
+		m.setDni(1297349);
 		m.setNombre("Santiago");
 		m.setApellido("Gomez");
 		m.setFechaNacimiento(LocalDate.of(1990, 1, 20));
@@ -313,6 +319,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		m.setTelefono("6516-7896");
 
 		// PersonaFisica
+		m.setDni(1297349);
 		m.setNombre("Agustina");
 		m.setApellido("Campos");
 		m.setFechaNacimiento(LocalDate.of(1920, 7, 14));
@@ -337,6 +344,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		m.setTelefono("1234-4567");
 
 		// PersonaFisica
+		m.setDni(1235678);
 		m.setNombre("Esteban");
 		m.setApellido("Quito");
 		m.setFechaNacimiento(LocalDate.of(1990, 1, 20));
@@ -358,6 +366,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		m.setTelefono("1234-4567");
 
 		// PersonaFisica
+		m.setDni(1235678);
 		m.setNombre("Ricardo");
 		m.setApellido("Frachia");
 		m.setFechaNacimiento(LocalDate.of(1990, 1, 20));
@@ -381,6 +390,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		m.setTelefono("1234-4567");
 
 		// PersonaFisica
+		m.setDni(654164);
 		m.setNombre("Julieta");
 		m.setApellido("Veraniegos");
 		m.setFechaNacimiento(LocalDate.of(1990, 1, 20));
@@ -402,6 +412,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		m.setTelefono("1234-4567");
 
 		// PersonaFisica
+		m.setDni(654164);
 		m.setNombre("Liliana");
 		m.setApellido("Feracios");
 		m.setFechaNacimiento(LocalDate.of(1990, 1, 20));
@@ -423,6 +434,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		m.setTelefono("1234-4567");
 
 		// PersonaFisica
+		m.setDni(1235678);
 		m.setNombre("Gabriel");
 		m.setApellido("Luchetti");
 		m.setFechaNacimiento(LocalDate.of(1990, 1, 20));
@@ -447,6 +459,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		m.setTelefono("1234-4567");
 
 		// PersonaFisica
+		m.setDni(1235678);
 		m.setNombre("Nahuel");
 		m.setApellido("Vacca");
 		m.setFechaNacimiento(LocalDate.of(1985, 3, 17));
@@ -471,6 +484,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		m.setTelefono("6541-5616");
 
 		// PersonaFisica
+		m.setDni(1235678);
 		m.setNombre("Zara");
 		m.setApellido("Gimenez");
 		m.setFechaNacimiento(LocalDate.of(1985, 3, 17));
@@ -497,6 +511,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		m.setTelefono("1234-4567");
 
 		// PersonaFisica
+		m.setDni(1235678);
 		m.setNombre("Micaela");
 		m.setApellido("Gimenez");
 		m.setFechaNacimiento(LocalDate.of(1987, 6, 24));
@@ -520,6 +535,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		m.setTelefono("1234-4567");
 
 		// PersonaFisica
+		m.setDni(27894284);
 		m.setNombre("Trinidad");
 		m.setApellido("Cabellos");
 		m.setFechaNacimiento(LocalDate.of(1987, 6, 24));
@@ -541,6 +557,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		m.setTelefono("6541-3854");
 
 		// PersonaFisica
+		m.setDni(2756419);
 		m.setNombre("Susana");
 		m.setApellido("Dora");
 		m.setFechaNacimiento(LocalDate.of(1987, 6, 24));
@@ -571,6 +588,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		m.setTelefono("4436-9567");
 
 		// PersonaFisica
+		m.setDni(1235678);
 		m.setNombre("Pedro");
 		m.setApellido("Diarse");
 		m.setFechaNacimiento(LocalDate.of(1997, 1, 20));
@@ -593,6 +611,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		m.setTelefono("4657-1656");
 
 		// PersonaFisica
+		m.setDni(274569465);
 		m.setNombre("Felicitas");
 		m.setApellido("visines");
 		m.setFechaNacimiento(LocalDate.of(1984, 10, 12));
@@ -616,6 +635,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		m.setTelefono("6541-9841");
 
 		// PersonaFisica
+		m.setDni(274569465);
 		m.setNombre("Juan");
 		m.setApellido("Quintana");
 		m.setFechaNacimiento(LocalDate.of(1998, 2, 22));
@@ -727,6 +747,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		m.setTelefono("1234-4567");
 
 		// PersonaFisica
+		m.setDni(1235678);
 		m.setNombre("Felicitas");
 		m.setApellido("tron");
 		m.setFechaNacimiento(LocalDate.of(2010, 1, 20));
@@ -755,6 +776,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		m.setTelefono("1234-4567");
 
 		// PersonaFisica
+		m.setDni(45123456);
 		m.setNombre("Ricardo");
 		m.setApellido("Sojo");
 		m.setFechaNacimiento(LocalDate.of(2012, 7, 10));
@@ -784,6 +806,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		m.setTelefono("1234-4567");
 
 		// PersonaFisica
+		m.setDni(1235678);
 		m.setNombre("josefina");
 		m.setApellido("Ruiz");
 		m.setFechaNacimiento(LocalDate.of(2010, 9, 14));
@@ -814,6 +837,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		m.setTelefono("4970-1876");
 
 		// PersonaFisica
+		m.setDni(44123456);
 		m.setNombre("Agustin");
 		m.setApellido("Peña");
 		m.setFechaNacimiento(LocalDate.of(2010, 2, 20));
@@ -843,6 +867,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		m.setTelefono("1234-4567");
 
 		// PersonaFisica
+		m.setDni(25745349);
 		m.setNombre("Martin");
 		m.setApellido("Lopez");
 		m.setFechaNacimiento(LocalDate.of(1990, 5, 10));
@@ -863,6 +888,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		m.setTelefono("9466-7813");
 
 		// PersonaFisica
+		m.setDni(2049753);
 		m.setNombre("Franco");
 		m.setApellido("Wellington");
 		m.setFechaNacimiento(LocalDate.of(1990, 3, 10));
@@ -881,6 +907,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		m.setTelefono("7818-3617");
 
 		// PersonaFisica
+		m.setDni(1297349);
 		m.setNombre("Camila");
 		m.setApellido("Campos");
 		m.setFechaNacimiento(LocalDate.of(1920, 7, 17));
@@ -905,6 +932,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		m.setTelefono("1234-4567");
 
 		// PersonaFisica
+		m.setDni(1235678);
 		m.setNombre("Eugenia");
 		m.setApellido("Varela");
 		m.setFechaNacimiento(LocalDate.of(1984, 2, 15));
@@ -926,6 +954,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		m.setTelefono("1234-4567");
 
 		// PersonaFisica
+		m.setDni(1235678);
 		m.setNombre("Alejandro");
 		m.setApellido("Gris");
 		m.setFechaNacimiento(LocalDate.of(1980, 1, 20));
@@ -949,6 +978,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		m.setTelefono("1234-4567");
 
 		// PersonaFisica
+		m.setDni(26166542);
 		m.setNombre("Fernanda");
 		m.setApellido("Arevalo");
 		m.setFechaNacimiento(LocalDate.of(1990, 1, 20));
@@ -970,6 +1000,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		m.setTelefono("1234-4567");
 
 		// PersonaFisica
+		m.setDni(654164);
 		m.setNombre("Susana");
 		m.setApellido("Miento");
 		m.setFechaNacimiento(LocalDate.of(1990, 1, 20));
@@ -991,6 +1022,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		m.setTelefono("1234-4567");
 
 		// PersonaFisica
+		m.setDni(1235678);
 		m.setNombre("Florencia");
 		m.setApellido("Altamirano");
 		m.setFechaNacimiento(LocalDate.of(1990, 1, 20));
@@ -1015,6 +1047,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		m.setTelefono("1234-4567");
 
 		// PersonaFisica
+		m.setDni(1235678);
 		m.setNombre("Emilio");
 		m.setApellido("Paz");
 		m.setFechaNacimiento(LocalDate.of(1985, 3, 17));
@@ -1039,6 +1072,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		m.setTelefono("6541-5616");
 
 		// PersonaFisica
+		m.setDni(1235678);
 		m.setNombre("Patricia");
 		m.setApellido("Castro");
 		m.setFechaNacimiento(LocalDate.of(1985, 3, 17));
@@ -1065,6 +1099,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		m.setTelefono("1234-4567");
 
 		// PersonaFisica
+		m.setDni(1235678);
 		m.setNombre("Josefina");
 		m.setApellido("Marruecos");
 		m.setFechaNacimiento(LocalDate.of(1982, 6, 24));
@@ -1088,6 +1123,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		m.setTelefono("1234-4567");
 
 		// PersonaFisica
+		m.setDni(27894284);
 		m.setNombre("Karina");
 		m.setApellido("Rekini");
 		m.setFechaNacimiento(LocalDate.of(1987, 6, 24));
@@ -1109,6 +1145,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		m.setTelefono("6123-3854");
 
 		// PersonaFisica
+		m.setDni(2756419);
 		m.setNombre("Jorge");
 		m.setApellido("Gomez");
 		m.setFechaNacimiento(LocalDate.of(1987, 6, 24));
@@ -1139,6 +1176,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		m.setTelefono("4436-9567");
 
 		// PersonaFisica
+		m.setDni(1235678);
 		m.setNombre("Matias");
 		m.setApellido("Pelorroso");
 		m.setFechaNacimiento(LocalDate.of(1997, 1, 20));
@@ -1161,6 +1199,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		m.setTelefono("4657-1656");
 
 		// PersonaFisica
+		m.setDni(274569465);
 		m.setNombre("Julieta");
 		m.setApellido("Namias");
 		m.setFechaNacimiento(LocalDate.of(1984, 10, 12));
@@ -1184,6 +1223,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		m.setTelefono("6541-9841");
 
 		// PersonaFisica
+		m.setDni(274569465);
 		m.setNombre("Mario");
 		m.setApellido("Perez");
 		m.setFechaNacimiento(LocalDate.of(1998, 2, 22));

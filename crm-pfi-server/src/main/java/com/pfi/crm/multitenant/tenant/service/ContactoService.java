@@ -3,7 +3,7 @@ package com.pfi.crm.multitenant.tenant.service;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
+//import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,7 +26,7 @@ public class ContactoService {
     }
 	
 	public List<Contacto> getContactos() {
-		return contactoRepository.findAll();
+		return contactoRepository.findAllByEstadoActivoContactoTrue();
 		//return contactoRepository.findAll().filter(a -> a.getEstadoActivoContacto()).collect(Collectors.toList());
     }
 	

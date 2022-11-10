@@ -10,6 +10,8 @@ import com.pfi.crm.multitenant.tenant.payload.TenantPayload;
 @Table(name = "tbl_tenant_master")
 public class MasterTenant implements Serializable {
 
+	private static final long serialVersionUID = 1L;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "tenant_client_id")
@@ -18,8 +20,12 @@ public class MasterTenant implements Serializable {
 	@Size(max = 50)
 	@Column(name = "db_name", nullable = false)
 	private String dbName;
-
+	
 	@Size(max = 100)
+	@Column(name = "tenant_name", nullable = false)
+	private String tenantName;
+
+	@Size(max = 250)
 	@Column(name = "url", nullable = false)
 	private String url;
 
@@ -39,9 +45,11 @@ public class MasterTenant implements Serializable {
 	public MasterTenant() {
 	}
 
-	public MasterTenant(@Size(max = 50) String dbName, @Size(max = 100) String url, @Size(max = 50) String userName,
-			@Size(max = 100) String password, @Size(max = 100) String driverClass, @Size(max = 10) String status) {
+	public MasterTenant(@Size(max = 50) String dbName, @Size(max = 50) String tenantName, @Size(max = 100) String url,
+			@Size(max = 50) String userName, @Size(max = 100) String password, @Size(max = 100) String driverClass,
+			@Size(max = 10) String status) {
 		this.dbName = dbName;
+		this.tenantName = tenantName;
 		this.url = url;
 		this.userName = userName;
 		this.password = password;
@@ -51,9 +59,11 @@ public class MasterTenant implements Serializable {
 
 	public MasterTenant(TenantPayload p) {
 		this.tenantClientId = p.getTenantClientId();
-		this.dbName = p.getName();
-		this.url = "jdbc:mysql://localhost:3306/" + p.getName()
+		this.dbName = p.getDbName();
+		this.tenantName = p.getTenantName();
+		this.url = "jdbc:mysql://localhost:3306/" + p.getDbName()
 				+ "?useSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false";
+		this.tenantName = p.getTenantName();
 		this.userName = "root";
 		this.password = "1234";
 		this.driverClass = "com.mysql.cj.jdbc.Driver";
@@ -76,6 +86,14 @@ public class MasterTenant implements Serializable {
 	public MasterTenant setDbName(String dbName) {
 		this.dbName = dbName;
 		return this;
+	}
+
+	public String getTenantName() {
+		return tenantName;
+	}
+
+	public void setTenantName(String tenantName) {
+		this.tenantName = tenantName;
 	}
 
 	public String getUrl() {
@@ -126,7 +144,8 @@ public class MasterTenant implements Serializable {
 	public TenantPayload toPayload() {
 		TenantPayload p = new TenantPayload();
 		p.setTenantClientId(tenantClientId);
-		p.setName(dbName);
+		p.setDbName(dbName);
+		p.setTenantName(tenantName);
 		return p;
 	}
 }

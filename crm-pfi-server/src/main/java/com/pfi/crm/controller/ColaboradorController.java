@@ -1,6 +1,7 @@
 package com.pfi.crm.controller;
 
 import java.time.LocalDate;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.pfi.crm.multitenant.tenant.model.Colaborador;
 import com.pfi.crm.multitenant.tenant.payload.ColaboradorPayload;
+import com.pfi.crm.multitenant.tenant.payload.nombres_tabla.ColaboradorNombreTablaPayload;
 import com.pfi.crm.multitenant.tenant.service.ColaboradorService;
 
 @RestController
@@ -53,6 +55,11 @@ public class ColaboradorController  {
     public ColaboradorPayload modificarColaborador(@Valid @RequestBody ColaboradorPayload payload) {
     	return colaboradorService.modificarColaborador(payload);
     }
+	
+	@GetMapping({"/nombres_tabla"})
+	public LinkedHashMap<String, String> getNombresTabla() {
+		return new ColaboradorNombreTablaPayload().getNombresColaboradorTabla();
+	}
 	
 	
 	

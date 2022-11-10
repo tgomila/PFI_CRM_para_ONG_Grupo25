@@ -1,6 +1,7 @@
 package com.pfi.crm.controller;
 
 import java.time.LocalDate;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.pfi.crm.multitenant.tenant.model.Profesional;
 import com.pfi.crm.multitenant.tenant.payload.ProfesionalPayload;
+import com.pfi.crm.multitenant.tenant.payload.nombres_tabla.ProfesionalNombreTablaPayload;
 import com.pfi.crm.multitenant.tenant.service.ProfesionalService;
 
 @RestController
@@ -53,6 +55,11 @@ public class ProfesionalController {
     public ProfesionalPayload modificarProfesional(@Valid @RequestBody ProfesionalPayload payload) {
     	return profesionalService.modificarProfesional(payload);
     }
+	
+	@GetMapping({"/nombres_tabla"})
+	public LinkedHashMap<String, String> getNombresTabla() {
+		return new ProfesionalNombreTablaPayload().getNombresProfesionalTabla();
+	}
 	
 	
 	

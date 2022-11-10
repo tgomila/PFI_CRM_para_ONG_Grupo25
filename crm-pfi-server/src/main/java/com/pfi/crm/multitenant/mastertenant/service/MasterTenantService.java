@@ -61,7 +61,8 @@ public class MasterTenantService {
 		TenantPayload p = new TenantPayload();
 		
 		p.setTenantClientId(m.getTenantClientId());
-		p.setName(m.getDbName());
+		p.setDbName(m.getDbName());
+		p.setTenantName(m.getTenantName());
 		
 		return p;
 	}

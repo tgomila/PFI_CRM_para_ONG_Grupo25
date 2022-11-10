@@ -3,17 +3,19 @@ package com.pfi.crm.multitenant.tenant.payload;
 public class TenantPayload {
 	
 	private Integer tenantClientId;
-	private String name;
+	private String dbName;
+	private String tenantName;
 	
 	
 	public TenantPayload() {
 		super();
 	}
 	
-	public TenantPayload(Integer tenantClientId, String dbName) {
+	public TenantPayload(Integer tenantClientId, String dbName, String tenantName) {
 		super();
 		this.tenantClientId = tenantClientId;
-		this.name = dbName;
+		this.dbName = dbName;
+		this.tenantName = tenantName;
 	}
 	
 	
@@ -25,12 +27,20 @@ public class TenantPayload {
 		this.tenantClientId = tenantClientId;
 	}
 
-	public String getName() {
-		return name;
+	public String getDbName() {
+		return dbName;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setDbName(String dbName) {
+		this.dbName = dbName;
+	}
+
+	public String getTenantName() {
+		return tenantName;
+	}
+
+	public void setTenantName(String tenantName) {
+		this.tenantName = tenantName;
 	}
 	
 }

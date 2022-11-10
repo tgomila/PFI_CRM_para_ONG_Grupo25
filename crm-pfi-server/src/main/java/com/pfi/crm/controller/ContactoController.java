@@ -1,6 +1,6 @@
 package com.pfi.crm.controller;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -38,6 +38,7 @@ public class ContactoController {
 	@GetMapping({"/", "/all"})
 	//@PreAuthorize("hasRole('EMPLOYEE')")
     public List<ContactoPayload> getContactos() {
+		System.out.println("\n\n\n----------------------------Entre acá /all-----------------------------------\n\n\n");
     	return  contactoService.getContactos().stream().map(e -> contactoService.toPayload(e)).collect(Collectors.toList());
 	}
 	
@@ -56,11 +57,16 @@ public class ContactoController {
     	return contactoService.modificarContacto(new Contacto(payload)).toPayload();
     }
 	
+	@GetMapping({"/nombres_tabla"})
+	public LinkedHashMap<String, String> getNombresTabla() {
+		return  new ContactoNombreTablaPayload().getNombresContactoTabla();
+	}
+	
 	// TEST
 	// Devuelve un ejemplo de contacto payload
 
 	@GetMapping("/test")
-	public ContactoPayload altaConsejoAdHonoremTest(/* @Valid @RequestBody ContactoPayload payload */) {
+	public ContactoPayload getContactoTest(/* @Valid @RequestBody ContactoPayload payload */) {
 
 		Contacto m = new Contacto();
 
@@ -73,10 +79,5 @@ public class ContactoController {
 		m.setTelefono("1234-4567");
 
 		return m.toPayload();
-	}
-	
-	@GetMapping({"/nombres_tabla"})
-	public HashMap<String, String> getNombresTabla() {
-    	return  new ContactoNombreTablaPayload().getNombresContactoTabla();
 	}
 }

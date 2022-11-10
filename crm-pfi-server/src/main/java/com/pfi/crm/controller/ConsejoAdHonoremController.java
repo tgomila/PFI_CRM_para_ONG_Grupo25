@@ -1,6 +1,7 @@
 package com.pfi.crm.controller;
 
 import java.time.LocalDate;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.pfi.crm.multitenant.tenant.model.ConsejoAdHonorem;
 import com.pfi.crm.multitenant.tenant.payload.ConsejoAdHonoremPayload;
+import com.pfi.crm.multitenant.tenant.payload.nombres_tabla.ConsejoAdHonoremNombreTablaPayload;
 import com.pfi.crm.multitenant.tenant.service.ConsejoAdHonoremService;
 
 @RestController
@@ -53,6 +55,11 @@ public class ConsejoAdHonoremController {
     public ConsejoAdHonoremPayload modificarConsejoAdHonorem(@Valid @RequestBody ConsejoAdHonoremPayload payload) {
     	return consejoAdHonoremService.modificarConsejoAdHonorem(payload);
     }
+	
+	@GetMapping({"/nombres_tabla"})
+	public LinkedHashMap<String, String> getNombresTabla() {
+		return new ConsejoAdHonoremNombreTablaPayload().getNombresConsejoAdHonoremTabla();
+	}
 	
 	
 	

@@ -1,5 +1,6 @@
 package com.pfi.crm.controller;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.pfi.crm.multitenant.tenant.model.PersonaJuridica;
 import com.pfi.crm.multitenant.tenant.model.TipoPersonaJuridica;
 import com.pfi.crm.multitenant.tenant.payload.PersonaJuridicaPayload;
+import com.pfi.crm.multitenant.tenant.payload.nombres_tabla.PersonaJuridicaNombreTablaPayload;
 import com.pfi.crm.multitenant.tenant.service.PersonaJuridicaService;
 
 @RestController
@@ -53,6 +55,11 @@ public class PersonaJuridicaController {
     public PersonaJuridicaPayload modificarPersonaJuridica(@Valid @RequestBody PersonaJuridicaPayload payload) {
     	return personaJuridicaService.modificarPersonaJuridica(payload);
     }
+	
+	@GetMapping({"/nombres_tabla"})
+	public LinkedHashMap<String, String> getNombresTabla() {
+		return new PersonaJuridicaNombreTablaPayload().getNombresPersonaJuridicaTabla();
+	}
 	
 	
 	

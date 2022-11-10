@@ -1,11 +1,11 @@
 package com.pfi.crm.multitenant.tenant.payload.nombres_tabla;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 public abstract class ContactoNombreTablaAbstractPayload {
 	
-	public HashMap<String, String> getNombresContactoTabla(){
-		HashMap<String, String> nombres = new HashMap<String, String>();
+	public LinkedHashMap<String, String> getNombresContactoTabla(){
+		LinkedHashMap<String, String> nombres = new LinkedHashMap<String, String>();
 		nombres.put("nombreDescripcion", "Nombre/Descripción");
 		nombres.put("cuit", "Cuit");
 		nombres.put("domicilio", "Domicilio");

@@ -1,6 +1,7 @@
 package com.pfi.crm.controller;
 
 import java.time.LocalDate;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.pfi.crm.multitenant.tenant.model.Voluntario;
 import com.pfi.crm.multitenant.tenant.payload.VoluntarioPayload;
+import com.pfi.crm.multitenant.tenant.payload.nombres_tabla.VoluntarioNombreTablaPayload;
 import com.pfi.crm.multitenant.tenant.service.VoluntarioService;
 
 @RestController
@@ -53,6 +55,11 @@ public class VoluntarioController {
     public VoluntarioPayload modificarVoluntario(@Valid @RequestBody VoluntarioPayload payload) {
     	return voluntarioService.modificarVoluntario(payload);
     }
+	
+	@GetMapping({"/nombres_tabla"})
+	public LinkedHashMap<String, String> getNombresTabla() {
+		return new VoluntarioNombreTablaPayload().getNombresVoluntarioTabla();
+	}
 	
 	
 	

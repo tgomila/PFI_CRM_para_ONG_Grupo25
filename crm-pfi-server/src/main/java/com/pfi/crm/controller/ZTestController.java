@@ -6,6 +6,8 @@ import java.util.Date;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,8 +26,10 @@ import com.pfi.crm.multitenant.tenant.repository.test.EmployeeRepository;
 import com.pfi.crm.multitenant.tenant.repository.test.PersonRepository;
 import com.pfi.crm.multitenant.tenant.service.ContactoService;
 
+//Se usa para "test conexión" para ver si un login token esta expirado, abajo de todo
 @RestController
 @RequestMapping("/test")
+@CrossOrigin(origins = "*", maxAge = 3600)
 public class ZTestController {
 	
 	@Autowired
@@ -135,4 +139,37 @@ public class ZTestController {
     	
     	return voluntarioRepository.save(voluntario);
     }
+    
+    
+    
+    
+    //test conexión
+	@GetMapping("/all")
+	public String allAccess() {
+		return "Public Content.";
+	}
+	
+	@GetMapping("/user")
+	@PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_PROFESIONAL') or hasRole('ROLE_EMPLOYEE') or hasRole('ROLE_ADMIN')")
+	public String userAccess() {
+		return "User Content.";
+	}
+	
+	@GetMapping("/profesional")
+	@PreAuthorize("hasRole('ROLE_PROFESIONAL')")
+	public String profesionalAccess() {
+		return "Profesional Board.";
+	}
+	
+	@GetMapping("/employee")
+	@PreAuthorize("hasRole('ROLE_EMPLOYEE')")
+	public String employeeAccess() {
+		return "Employee Board.";
+	}
+	
+	@GetMapping("/admin")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	public String adminAccess() {
+		return "Admin Board.";
+	}
 }
