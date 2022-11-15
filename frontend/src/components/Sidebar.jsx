@@ -38,11 +38,7 @@ const Sidebar = ({children}) => {
 
     if (user.roles.includes("ROLE_ADMIN")) {
         menuItem =[
-        {
-            path:"/contacto",
-            name:"Contacto",
-            icon:<AiFillContacts/>
-        },
+        
         {
             path:"/personafisica",
             name:"Persona",
@@ -93,7 +89,15 @@ const Sidebar = ({children}) => {
             name:"Users",
             icon:<FaUsersCog/>
         }
-    ]
+    ];
+
+    const aux = {
+        path:"/contacto",
+        name:"Contacto",
+        icon:<AiFillContacts/>
+    };
+    menuItem.push(aux);
+
     }
     else if(user.roles.includes("ROLE_PROFESIONAL")){
         menuItem =[
