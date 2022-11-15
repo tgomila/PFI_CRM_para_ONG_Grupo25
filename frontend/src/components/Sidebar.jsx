@@ -7,7 +7,7 @@ import {
     FaDonate,
     FaFileInvoiceDollar,
     FaUsersCog
-}from "react-icons/fa";
+} from "react-icons/fa";
 
 import {
     AiFillContacts
@@ -205,12 +205,12 @@ const Sidebar = ({children}) => {
             name:"Persona",
             icon:<GoPerson/>
         },
-            {
-                path:"/beneficiario",
-                name:"Beneficiario",
-                icon:<GoRocket/>
-            }
-        ]
+        {
+            path:"/beneficiario",
+            name:"Beneficiario",
+            icon:<GoRocket/>
+        }
+    ]
     }
 }
 else{

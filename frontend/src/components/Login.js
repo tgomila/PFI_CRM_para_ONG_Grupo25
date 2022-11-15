@@ -135,49 +135,28 @@ function Login() {
           <div class="user-box">
 
           <label className="miLabel" htmlFor="tenantOrClientId">
-                Base de datos Tenant:
+                Seleccione ONG:
           </label>
-            <div class="divTenant1">
-              <Input
-                type="radio"
-                className="miInput"
-                name="tenantOrClientId"
-                value="100"
-                onChange={onChangeTenantOrClientId}
-                validations={[required]}
-              />
-              <label className="miLabel" htmlFor="tenantOrClientId">
-                Tenant 1
-              </label>
-            </div>
+            
+            {
+              tenants.map((tenantItem) => (
+                <div class="divTenant1">
+                  <Input
+                    type="radio"
+                    className="miInput"
+                    name={"tenantOrClientId"}
+                    value={tenantItem.tenantClientId}
+                    onChange={onChangeTenantOrClientId}
+                    validations={[required]}
+                  />
+                  <label className="miLabel" htmlFor="tenantOrClientId">
+                    {tenantItem.tenantName}
+                  </label>
+                </div>
+              )
 
-            <div class="divTenant1">
-              <Input
-                type="radio"
-                className="miInput"
-                name="tenantOrClientId"
-                value="200"
-                onChange={onChangeTenantOrClientId}
-                validations={[required]}
-              />
-              <label className="miLabel" htmlFor="tenantOrClientId">
-                Tenant 2
-              </label>
-            </div>
-
-            <div class="divTenant1">
-              <Input
-                type="radio"
-                className="miInput"
-                name="tenantOrClientId"
-                value="300"
-                onChange={onChangeTenantOrClientId}
-                validations={[required]}
-              />
-              <label className="miLabel" htmlFor="tenantOrClientId">
-                Tenant 3
-              </label>
-            </div>
+              )
+            }
           </div>
 
           <div className="form-group">

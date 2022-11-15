@@ -81,7 +81,7 @@ function Table({ columns, data }) {
                     );
                   })}
 
-<td>
+                  <td>
                     <button
                       className="buttonAnimadoVerde"
                       onClick={console.log("Agregar Item a la Lista")}
