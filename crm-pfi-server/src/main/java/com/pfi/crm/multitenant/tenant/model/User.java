@@ -49,15 +49,15 @@ public class User extends DateAudit{
 	@OrderBy("nombreDescripcion ASC")
 	private Contacto contacto;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "roles_usuario",
-            joinColumns = @JoinColumn(name = "usuario_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<Role> roles = new HashSet<>();
+	@ManyToMany(fetch = FetchType.EAGER)
+	@JoinTable(name = "roles_usuario",
+			joinColumns = @JoinColumn(name = "usuario_id"),
+			inverseJoinColumns = @JoinColumn(name = "role_id"))
+	private Set<Role> roles = new HashSet<Role>();
 
-    public User() {
+	public User() {
 
-    }
+	}
 
     public User(String nombre, String username, String email, String password) {
         this.name = nombre;

@@ -15,7 +15,7 @@ import com.pfi.crm.constant.JWTConstants;
 import com.pfi.crm.mastertenant.config.DBContextHolder;
 import com.pfi.crm.multitenant.mastertenant.entity.MasterTenant;
 import com.pfi.crm.multitenant.mastertenant.service.MasterTenantService;
-import com.pfi.crm.util.JwtTokenProvider;
+import com.pfi.crm.util.JwtTokenProviderUtil;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.SignatureException;
@@ -37,7 +37,7 @@ import java.util.Arrays;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Autowired
-    private JwtTokenProvider tokenProvider;
+    private JwtTokenProviderUtil tokenProvider;
 
     @Autowired
     private JwtUserDetailsService jwtUserDetailsService;

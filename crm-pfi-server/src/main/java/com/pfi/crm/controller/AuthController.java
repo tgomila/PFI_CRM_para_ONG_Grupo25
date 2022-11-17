@@ -15,7 +15,7 @@ import com.pfi.crm.payload.request.SignUpRequest;
 import com.pfi.crm.payload.response.ApiResponse;
 import com.pfi.crm.payload.response.JwtAuthenticationResponse;
 import com.pfi.crm.security.UserTenantInformation;
-import com.pfi.crm.util.JwtTokenProvider;
+import com.pfi.crm.util.JwtTokenProviderUtil;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -69,7 +69,7 @@ public class AuthController implements Serializable {
 	private BCryptPasswordEncoder passwordEncoder;
 
 	@Autowired
-	private JwtTokenProvider tokenProvider;
+	private JwtTokenProviderUtil tokenProvider;
 
 	// Codigo Tenant
 	@Autowired

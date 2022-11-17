@@ -18,11 +18,11 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
 @Component
-public class JwtTokenProvider implements Serializable {
+public class JwtTokenProviderUtil implements Serializable {
 
    private static final long serialVersionUID = -9196821855724850633L;
 
-	private static final Logger logger = LoggerFactory.getLogger(JwtTokenProvider.class);
+	private static final Logger logger = LoggerFactory.getLogger(JwtTokenProviderUtil.class);
 
 	//@Value("${app.jwtSecretKey}")//anteriormente se lo sacaba de application.properties
 	//private String jwtSecretKey;
