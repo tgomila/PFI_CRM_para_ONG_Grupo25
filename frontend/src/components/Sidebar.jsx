@@ -11,7 +11,7 @@ import {
 
 import {
     AiFillContacts
-}from "react-icons/ai";
+} from "react-icons/ai";
 
 import {
     GoPerson,
@@ -19,227 +19,167 @@ import {
     GoRocket,
     GoOrganization,
     GoNote
-}from "react-icons/go";
+} from "react-icons/go";
 
 import { NavLink } from 'react-router-dom';
+import modulosService from '../services/modulosService';
 
 //DOCUMENTACION ICONOS
 // https://react-icons.github.io/react-icons/icons?name=fa
-const Sidebar = ({children}) => {
-    const[isOpen ,setIsOpen] = useState(false);
-    const toggle = () => setIsOpen (!isOpen);
-
+const Sidebar = ({ children }) => {
+    const [isOpen, setIsOpen] = useState(false);
+    const toggle = () => setIsOpen(!isOpen);
+    const [modulos, setModulos] = useState(false);
 
     const user = AuthService.getCurrentUser();
 
-    let menuItem =[];
+    let mockSERVICIODEMODULOS = ["Persona", "Beneficiario","Empleado","Colaborador","Consejo Adhonorem","Persona Juridica","Profesional","Donacion","Factura","Users"];
 
-    if(user){
+    let menuItem = [];
 
-    if (user.roles.includes("ROLE_ADMIN")) {
-        menuItem =[
+    if (user) {
+
+
+        //ATENCION!!!! DESCOMENTAR CUANDO ESTÉ LISTO EL SERVICIO
+        //ATENCION!!!! DESCOMENTAR CUANDO ESTÉ LISTO EL SERVICIO
+        //ATENCION!!!! DESCOMENTAR CUANDO ESTÉ LISTO EL SERVICIO
+        //ATENCION!!!! DESCOMENTAR CUANDO ESTÉ LISTO EL SERVICIO
+        //ATENCION!!!! DESCOMENTAR CUANDO ESTÉ LISTO EL SERVICIO
+        /*
+                useEffect(() => {
+                    // Fetch data
+                    // Update the document title using the browser API
+                
+                    //Lista de modulos a mostrar
+                    modulosService.getAll().then((res) => {
+                      setModulos(res.data);
         
-        {
-            path:"/personafisica",
-            name:"Persona",
-            icon:<GoPerson/>
-        },
-        {
-            path:"/beneficiario",
-            name:"Beneficiario",
-            icon:<GoRocket/>
-        },
-        {
-            path:"/empleado",
-            name:"Empleado",
-            icon:<GoBriefcase/>
-        },
-        {
-            path:"/colaborador",
-            name:"Colaborador",
-            icon:<GoOrganization/>
-        },
-        {
-            path:"/consejoadhonorem",
-            name:"Consejo Adhonorem",
-            icon:<GoNote/>
-        },
-        {
-            path:"/personajuridica",
-            name:"Persona Juridica",
-            icon:<FaBuilding/>
-        },
-        {
-            path:"/profesional",
-            name:"Profesional",
-            icon:<FaUserCheck/>
-        },
-        {
-            path:"/donacion",
-            name:"Donacion",
-            icon:<FaDonate/>
-        },
-        {
-            path:"/factura",
-            name:"Factura",
-            icon:<FaFileInvoiceDollar/>
-        },
-        {
-            path:"/users",
-            name:"Users",
-            icon:<FaUsersCog/>
-        }
-    ];
+        
+        
+                    });
+                
+                
+                  }, []);
+        */
 
-    const aux = {
-        path:"/contacto",
-        name:"Contacto",
-        icon:<AiFillContacts/>
-    };
-    menuItem.push(aux);
+            menuItem = mockSERVICIODEMODULOS.map((item) => {
+                //debugger;
+                switch (item) {
+                    case 'Persona':
+                        return {
+                            path: "/personafisica",
+                            name: "Persona",
+                            icon: <GoPerson />
+                        }
+                        break;
 
-    }
-    else if(user.roles.includes("ROLE_PROFESIONAL")){
-        menuItem =[
-        {
-            path:"/contacto",
-            name:"Contacto",
-            icon:<AiFillContacts/>
-        },
-        {
-            path:"/personafisica",
-            name:"Persona",
-            icon:<GoPerson/>
-        },
-            {
-                path:"/beneficiario",
-                name:"Beneficiario",
-                icon:<GoRocket/>
-            },
-            {
-                path:"/empleado",
-                name:"Empleado",
-                icon:<GoBriefcase/>
-            },
-            {
-                path:"/colaborador",
-                name:"Colaborador",
-                icon:<GoOrganization/>
-            },
-            {
-                path:"/consejoadhonorem",
-                name:"Consejo Adhonorem",
-                icon:<GoNote/>
-            },
-            {
-                path:"/personajuridica",
-                name:"Persona Juridica",
-                icon:<FaBuilding/>
-            },
-            {
-                path:"/profesional",
-                name:"Profesional",
-                icon:<FaUserCheck/>
-            },
-            {
-                path:"/donacion",
-                name:"Donacion",
-                icon:<FaDonate/>
-            },
-            {
-                path:"/factura",
-                name:"Factura",
-                icon:<FaFileInvoiceDollar/>
+                    case 'Beneficiario':
+                        return {
+                            path: "/beneficiario",
+                            name: "Beneficiario",
+                            icon: <GoRocket />
+                        }
+                        break;
+
+                    case 'Empleado':
+                        return {
+                            path: "/empleado",
+                            name: "Empleado",
+                            icon: <GoBriefcase />
+                        }
+                        break;
+
+                    case 'Colaborador':
+                        return {
+                            path: "/colaborador",
+                            name: "Colaborador",
+                            icon: <GoOrganization />
+                        }
+                        break;
+
+                    case 'Consejo Adhonorem':
+                        return {
+                            path: "/consejoadhonorem",
+                            name: "Consejo Adhonorem",
+                            icon: <GoNote />
+                        }
+                        break;
+
+
+                    case 'Persona Juridica':
+                        return {
+                            path: "/personajuridica",
+                            name: "Persona Juridica",
+                            icon: <FaBuilding />
+                        }
+                        break;
+
+
+                    case 'Profesional':
+                        return {
+                            path: "/profesional",
+                            name: "Profesional",
+                            icon: <FaUserCheck />
+                        }
+                        break;
+
+
+                    case 'Donacion':
+                        return {
+                            path: "/donacion",
+                            name: "Donacion",
+                            icon: <FaDonate />
+                        }
+                        break;
+
+                    case 'Factura':
+                        return {
+                            path: "/factura",
+                            name: "Factura",
+                            icon: <FaFileInvoiceDollar />
+                        }
+                        break;
+
+
+                    case 'Users':
+                        return {
+                            path: "/users",
+                            name: "Users",
+                            icon: <FaUsersCog />
+                        }
+                        break;
+
+                }
+
             }
-        ]
-    }
-    else if(user.roles.includes("ROLE_EMPLOYEE")){
-        menuItem =[
-        {
-            path:"/contacto",
-            name:"Contacto",
-            icon:<AiFillContacts/>
-        },
-        {
-            path:"/personafisica",
-            name:"Persona",
-            icon:<GoPerson/>
-        },
-            {
-                path:"/beneficiario",
-                name:"Beneficiario",
-                icon:<GoRocket/>
-            },
-            {
-                path:"/empleado",
-                name:"Empleado",
-                icon:<GoBriefcase/>
-            },
-            {
-                path:"/colaborador",
-                name:"Colaborador",
-                icon:<GoOrganization/>
-            },
-            {
-                path:"/consejoadhonorem",
-                name:"Consejo Adhonorem",
-                icon:<GoNote/>
-            },
-            {
-                path:"/personajuridica",
-                name:"Persona Juridica",
-                icon:<FaBuilding/>
-            },
-            {
-                path:"/profesional",
-                name:"Profesional",
-                icon:<FaUserCheck/>
-            }
-        ]
-    }
-    else if(user.roles.includes("ROLE_USER")){
-        menuItem =[
-        {
-            path:"/contacto",
-            name:"Contacto",
-            icon:<AiFillContacts/>
-        },
-        {
-            path:"/personafisica",
-            name:"Persona",
-            icon:<GoPerson/>
-        },
-        {
-            path:"/beneficiario",
-            name:"Beneficiario",
-            icon:<GoRocket/>
-        }
-    ]
-    }
-}
-else{
 
-}
-    
+            );
+        
+
+    }
+    else {
+
+    }
+
     return (
         <div className="miSideBar">
-           <div style={{width: isOpen ? "200px" : "50px"}} className="sidebar">
-               <div className="top_section">
-                   <h1 style={{display: isOpen ? "block" : "none"}} className="logo">Logo</h1>
-                   <div style={{marginLeft: isOpen ? "50px" : "0px"}} className="bars">
-                       <FaBars onClick={toggle}/>
-                   </div>
-               </div>
-               {
-                   menuItem.map((item, index)=>(
-                       <NavLink to={item.path} key={index} className="link" activeclassName="active">
-                           <div className="icon">{item.icon}</div>
-                           <div style={{display: isOpen ? "block" : "none"}} className="link_text">{item.name}</div>
-                       </NavLink>
-                   ))
-               }
-           </div>
-           <main>{children}</main>
+            <div style={{ width: isOpen ? "200px" : "50px" }} className="sidebar">
+                <div className="top_section">
+                    <h1 style={{ display: isOpen ? "block" : "none" }} className="logo">Logo</h1>
+                    <div style={{ marginLeft: isOpen ? "50px" : "0px" }} className="bars">
+                        <FaBars onClick={toggle} />
+                    </div>
+                </div>
+                {
+                    menuItem.map((item, index) => (
+                        <NavLink to={item.path} key={index} className="link" activeclassName="active">
+                            <div className="icon">{item.icon}</div>
+                            <div style={{ display: isOpen ? "block" : "none" }} className="link_text">{item.name}</div>
+                        </NavLink>
+                    ))
+                }
+            </div>
+            <main>{children}</main>
         </div>
     );
 };

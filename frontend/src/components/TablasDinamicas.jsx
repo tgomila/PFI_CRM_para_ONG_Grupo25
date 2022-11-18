@@ -84,7 +84,6 @@ function Table({ columns, data }) {
                   <td>
                     <button
                       className="buttonAnimadoVerde"
-                      onClick={console.log("Agregar Item a la Lista")}
                     >
                       {" "}
                       Editar
@@ -95,7 +94,6 @@ function Table({ columns, data }) {
                   <td>
                     <button
                       className="buttonAnimadoRojo"
-                      onClick={console.log("Agregar Item a la Lista")}
                     >
                       {" "}
                       Borrar

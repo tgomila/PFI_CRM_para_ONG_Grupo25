@@ -34,6 +34,9 @@ class BaseService {
         const direccionURL = BACKEND_API_BASE_URL + redireccionamiento.redireccionamiento + '/nombres_tabla';
         return axios.get(BACKEND_API_BASE_URL + redireccionamiento.redireccionamiento + '/nombres_tabla', { headers: authHeader() });
     }
+
+
+    
 }
 
 export default new BaseService( )
