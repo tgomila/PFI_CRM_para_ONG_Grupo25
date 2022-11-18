@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from "react";
 import AuthService from "../services/auth.service";
 import {
     FaBars,
@@ -35,32 +35,28 @@ const Sidebar = ({ children }) => {
 
     let mockSERVICIODEMODULOS = ["Persona", "Beneficiario","Empleado","Colaborador","Consejo Adhonorem","Persona Juridica","Profesional","Donacion","Factura","Users"];
 
+    
     let menuItem = [];
+    useEffect(() => {
+        // Fetch data
+        // Update the document title using the browser API
+    
+        //Lista de modulos a mostrar
+        modulosService.getAll().then((res) => {
+          menuItem = res.data;
 
+
+
+        });
+    
+    
+      }, []);
     if (user) {
 
 
-        //ATENCION!!!! DESCOMENTAR CUANDO ESTÉ LISTO EL SERVICIO
-        //ATENCION!!!! DESCOMENTAR CUANDO ESTÉ LISTO EL SERVICIO
-        //ATENCION!!!! DESCOMENTAR CUANDO ESTÉ LISTO EL SERVICIO
-        //ATENCION!!!! DESCOMENTAR CUANDO ESTÉ LISTO EL SERVICIO
-        //ATENCION!!!! DESCOMENTAR CUANDO ESTÉ LISTO EL SERVICIO
-        /*
-                useEffect(() => {
-                    // Fetch data
-                    // Update the document title using the browser API
-                
-                    //Lista de modulos a mostrar
-                    modulosService.getAll().then((res) => {
-                      setModulos(res.data);
-        
-        
-        
-                    });
-                
-                
-                  }, []);
-        */
+
+           
+     
 
             menuItem = mockSERVICIODEMODULOS.map((item) => {
                 //debugger;

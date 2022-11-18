@@ -27,6 +27,7 @@ import Product from "./pages/Product.jsx";
 import ProductList from "./pages/ProductList.jsx";
 import AuthService from "./services/auth.service";
 import Login from "./components/Login";
+import Marketplace from "./components/Marketplace";
 import BoardAdmin from "./components/BoardAdmin";
 import EventBus from "./common/EventBus";
 import Register from "./components/Register";
@@ -173,6 +174,7 @@ const App = () => {
             <Route path="/donacion" element={<TablasDinamicas redireccionamiento='donacion' />} />
             <Route path="/factura" element={<TablasDinamicas redireccionamiento='factura' />} />
             <Route path="/users" element={<TablasDinamicas redireccionamiento='users' />} />
+            <Route path="/Marketplace" element={<Marketplace  />} />
 
 
 
