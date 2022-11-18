@@ -1,6 +1,8 @@
 package com.pfi.crm.multitenant.tenant.service;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,7 +12,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import com.pfi.crm.exception.ResourceNotFoundException;
 import com.pfi.crm.multitenant.tenant.model.ModuloVisibilidadPorRol;
+import com.pfi.crm.multitenant.tenant.model.ModuloVisibilidadPorRolTipo;
 import com.pfi.crm.multitenant.tenant.model.RoleName;
+import com.pfi.crm.multitenant.tenant.payload.ModuloItemPayload;
+import com.pfi.crm.multitenant.tenant.payload.ModuloPayload;
 import com.pfi.crm.multitenant.tenant.repository.ModuloVisibilidadPorRolRepository;
 
 @Service
@@ -56,7 +61,16 @@ public class ModuloVisibilidadPorRolService {
 		//return moduloVisibilidadPorRolRepository.findByRoleName(roleName).stream().map(e -> toPayload(e)).collect(Collectors.toList());
     }
 	
+	public ModuloPayload toPayload(ModuloVisibilidadPorRol modulo) {
+		ModuloPayload payload = new ModuloPayload();
+		payload.setRol(modulo.getRole().toString());
+		payload.setItems(itemsToPayload(modulo.getModulos()));
+		
+		return payload;
+	}
 	
-	//TODO Payload
+	private Set<ModuloItemPayload> itemsToPayload(Set<ModuloVisibilidadPorRolTipo> itemsModel) {
+		return itemsModel.stream().map(e -> e.toPayload()).collect(Collectors.toSet());
+	}
 	
 }

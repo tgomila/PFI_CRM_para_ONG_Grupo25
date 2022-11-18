@@ -2,6 +2,7 @@ package com.pfi.crm.multitenant.tenant.model;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -15,7 +16,8 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
+
+import com.pfi.crm.multitenant.tenant.payload.ModuloPayload;
 
 @Entity
 @Table(name = "modulo_visibilidad_por_rol"//, uniqueConstraints = {
@@ -69,6 +71,13 @@ public class ModuloVisibilidadPorRol {
 	
 	public void agregarModulo(ModuloEnum moduloEnum, ModuloTipoVisibilidadEnum tipoVisibilidad) {
 		modulos.add(new ModuloVisibilidadPorRolTipo(null, moduloEnum, tipoVisibilidad));
+	}
+	
+	public ModuloPayload toPayload() {
+		ModuloPayload payload = new ModuloPayload();
+		payload.setRol(this.getRole().toString());
+		payload.setItems(this.getModulos().stream().map(e -> e.toPayload()).collect(Collectors.toSet()));
+		return payload;
 	}
 
 	public Long getId() {

@@ -11,6 +11,8 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.NaturalId;
 
+import com.pfi.crm.multitenant.tenant.payload.ModuloItemPayload;
+
 @Entity
 @Table(name = "modulo_visibilidad_por_rol_tipo")
 public class ModuloVisibilidadPorRolTipo {
@@ -50,6 +52,15 @@ public class ModuloVisibilidadPorRolTipo {
 		this.id = id;
 		this.moduloEnum = moduloEnum;
 		this.tipoVisibilidad = tipoVisibilidad;
+	}
+	
+	public ModuloItemPayload toPayload(){
+		ModuloItemPayload itemPayload = new ModuloItemPayload();
+		itemPayload.setName(moduloEnum.getName());
+		itemPayload.setPath(moduloEnum.getPath());
+		itemPayload.setIconName(moduloEnum.getIconName());
+		itemPayload.setTipoVisibilidad(tipoVisibilidad.toString());
+		return itemPayload;
 	}
 
 	public Long getId() {

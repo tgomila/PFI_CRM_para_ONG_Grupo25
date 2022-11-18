@@ -22,6 +22,7 @@ public class ProfesionalService {
 	@Autowired
 	private ProfesionalRepository profesionalRepository;
 	
+	@SuppressWarnings("unused")
 	private static final Logger logger = LoggerFactory.getLogger(ProfesionalService.class);
 	
 	public ProfesionalPayload getProfesionalByIdContacto(@PathVariable Long id) {
