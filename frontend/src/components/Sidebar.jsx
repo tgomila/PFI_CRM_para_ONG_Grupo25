@@ -21,6 +21,11 @@ import {
     GoNote
 } from "react-icons/go";
 
+
+import {
+    MdLocalGroceryStore
+} from "react-icons/md";
+
 import { NavLink } from 'react-router-dom';
 import modulosService from '../services/modulosService';
 
@@ -33,9 +38,9 @@ const Sidebar = ({ children }) => {
 
     const user = AuthService.getCurrentUser();
 
-    let mockSERVICIODEMODULOS = ["Persona", "Beneficiario","Empleado","Colaborador","Consejo Adhonorem","Persona Juridica","Profesional","Donacion","Factura","Users"];
+    let mockSERVICIODEMODULOS = ["Persona", "Beneficiario","Empleado","Colaborador","Consejo Adhonorem","Persona Juridica","Profesional","Donacion","Factura","Users","Marketplace"];
 
-    
+
     let menuItem = [];
     useEffect(() => {
         // Fetch data
@@ -144,6 +149,14 @@ const Sidebar = ({ children }) => {
                             icon: <FaUsersCog />
                         }
                         break;
+
+                        case 'Marketplace':
+                            return {
+                                path: "/marketplace",
+                                name: "Marketplace",
+                                icon: <MdLocalGroceryStore />
+                            }
+                            break;
 
                 }
 
