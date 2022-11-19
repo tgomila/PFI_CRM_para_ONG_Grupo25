@@ -28,6 +28,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 	@Autowired
 	private RoleRepository roleRepository;
 	
+	@SuppressWarnings("unused")
 	@Autowired
 	private MasterTenantService masterTenantService;
 	

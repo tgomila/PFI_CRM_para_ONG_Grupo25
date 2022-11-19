@@ -1,21 +1,22 @@
 package com.pfi.crm.multitenant.tenant.payload;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
 public class ModuloPayload {
 	
 	String rol;
 	
-	Set<ModuloItemPayload> items;
+	List<ModuloItemPayload> items;
 	
 	
 	public ModuloPayload() {
 		super();
-		items = new HashSet<ModuloItemPayload>();
+		items = new ArrayList<ModuloItemPayload>();
 	}
 
-	public ModuloPayload(String rol, Set<ModuloItemPayload> items) {
+	public ModuloPayload(String rol, List<ModuloItemPayload> items) {
 		super();
 		this.rol = rol;
 		this.items = items;
@@ -23,6 +24,15 @@ public class ModuloPayload {
 
 	public void agregarItem(ModuloItemPayload item) {
 		items.add(item);
+	}
+	
+	class myItemComparator implements Comparator<ModuloItemPayload>
+	{
+	   
+	    public int compare(ModuloItemPayload s1, ModuloItemPayload s2)
+	    {
+	        return s1.getOrder()-s2.getOrder();
+	    }
 	}
 
 	
@@ -35,11 +45,11 @@ public class ModuloPayload {
 		this.rol = rol;
 	}
 
-	public Set<ModuloItemPayload> getItems() {
+	public List<ModuloItemPayload> getItems() {
 		return items;
 	}
 
-	public void setItems(Set<ModuloItemPayload> items) {
+	public void setItems(List<ModuloItemPayload> items) {
 		this.items = items;
 	}
 	

@@ -26,7 +26,8 @@ public class zEjemploService {
     @Autowired
     private CustomerRepository customerRepository;
 
-    private static final Logger logger = LoggerFactory.getLogger(zEjemploService.class);
+    @SuppressWarnings("unused")
+	private static final Logger logger = LoggerFactory.getLogger(zEjemploService.class);
     
     public Person savePerson(Person person) {
         return personRepository.save(person);

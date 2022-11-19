@@ -56,6 +56,7 @@ public class ModuloVisibilidadPorRolTipo {
 	
 	public ModuloItemPayload toPayload(){
 		ModuloItemPayload itemPayload = new ModuloItemPayload();
+		itemPayload.setOrder(moduloEnum.getOrder());
 		itemPayload.setName(moduloEnum.getName());
 		itemPayload.setPath(moduloEnum.getPath());
 		itemPayload.setIconName(moduloEnum.getIconName());
@@ -85,6 +86,10 @@ public class ModuloVisibilidadPorRolTipo {
 
 	public void setTipoVisibilidad(ModuloTipoVisibilidadEnum tipoVisibilidad) {
 		this.tipoVisibilidad = tipoVisibilidad;
+	}
+	
+	public int getOrder() {
+		return moduloEnum.getOrder();
 	}
 	
 }

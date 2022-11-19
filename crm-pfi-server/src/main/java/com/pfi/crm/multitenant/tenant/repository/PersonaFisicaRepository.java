@@ -3,10 +3,11 @@ package com.pfi.crm.multitenant.tenant.repository;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 
 import com.pfi.crm.multitenant.tenant.model.PersonaFisica;
 
+@Repository
 public interface PersonaFisicaRepository extends JpaRepository<PersonaFisica, Long> {
     
 	//Probar SELECT e FROM  Employee e WHERE e.active=?1

@@ -2,6 +2,7 @@ package com.pfi.crm.multitenant.tenant.payload;
 
 public class ModuloItemPayload {
 	
+	private int order;
 	private String name;
 	private String path;
 	private String iconName;
@@ -11,8 +12,9 @@ public class ModuloItemPayload {
 		super();
 	}
 	
-	public ModuloItemPayload(String name, String path, String iconName, String tipoVisibilidad) {
+	public ModuloItemPayload(int order, String name, String path, String iconName, String tipoVisibilidad) {
 		super();
+		this.order = order;
 		this.name = name;
 		this.path = path;
 		this.iconName = iconName;
@@ -22,10 +24,18 @@ public class ModuloItemPayload {
 
 
 	//Getters and Setters
+	public int getOrder() {
+		return order;
+	}
+
+	public void setOrder(int order) {
+		this.order = order;
+	}
+	
 	public String getName() {
 		return name;
 	}
-	
+
 	public void setName(String name) {
 		this.name = name;
 	}

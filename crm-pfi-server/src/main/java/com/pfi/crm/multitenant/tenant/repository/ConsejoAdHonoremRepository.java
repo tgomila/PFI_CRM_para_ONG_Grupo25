@@ -3,11 +3,11 @@ package com.pfi.crm.multitenant.tenant.repository;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import com.pfi.crm.multitenant.tenant.model.ConsejoAdHonorem;
 
-
-
+@Repository
 public interface ConsejoAdHonoremRepository extends JpaRepository<ConsejoAdHonorem, Long> {
     
 	//Probar

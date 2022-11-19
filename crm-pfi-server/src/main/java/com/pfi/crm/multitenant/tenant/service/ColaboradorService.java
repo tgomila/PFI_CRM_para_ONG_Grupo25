@@ -22,6 +22,7 @@ public class ColaboradorService {
 	@Autowired
 	private ColaboradorRepository colaboradorRepository;
 	
+	@SuppressWarnings("unused")
 	private static final Logger logger = LoggerFactory.getLogger(ColaboradorService.class);
 	
 	public ColaboradorPayload getColaboradorByIdContacto(@PathVariable Long id) {

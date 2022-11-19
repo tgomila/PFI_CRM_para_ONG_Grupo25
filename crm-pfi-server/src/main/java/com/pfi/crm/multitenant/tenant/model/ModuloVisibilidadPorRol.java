@@ -1,7 +1,8 @@
 package com.pfi.crm.multitenant.tenant.model;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
@@ -41,7 +42,7 @@ public class ModuloVisibilidadPorRol {
 	@JoinTable(name = "modulo_visibilidad_por_rol_join_tipo",
 			joinColumns = @JoinColumn(name = "modulo_visibilidad_por_rol_id"),
 			inverseJoinColumns = @JoinColumn(name = "modulo_tipo_visibilidad_por_rol_id"))
-	private Set<ModuloVisibilidadPorRolTipo> modulos = new LinkedHashSet<ModuloVisibilidadPorRolTipo>();
+	private List<ModuloVisibilidadPorRolTipo> modulos = new ArrayList<ModuloVisibilidadPorRolTipo>();
 	
 	//@ElementCollection
 	//@MapKeyColumn(name = "modulo_enum")
@@ -58,7 +59,7 @@ public class ModuloVisibilidadPorRol {
 		super();
 	}
 
-	public ModuloVisibilidadPorRol(Long id, Role role, Set<ModuloVisibilidadPorRolTipo> modulos) {
+	public ModuloVisibilidadPorRol(Long id, Role role, List<ModuloVisibilidadPorRolTipo> modulos) {
 		super();
 		this.id = id;
 		this.role = role;
@@ -75,10 +76,22 @@ public class ModuloVisibilidadPorRol {
 	
 	public ModuloPayload toPayload() {
 		ModuloPayload payload = new ModuloPayload();
-		payload.setRol(this.getRole().toString());
-		payload.setItems(this.getModulos().stream().map(e -> e.toPayload()).collect(Collectors.toSet()));
+		payload.setRol(this.getRole().getName().toString());
+		payload.setItems(this.getModulos().stream().map(e -> e.toPayload()).collect(Collectors.toList()));
 		return payload;
 	}
+	
+	class myItemComparator implements Comparator<ModuloVisibilidadPorRolTipo>
+	{
+	   
+	    public int compare(ModuloVisibilidadPorRolTipo s1, ModuloVisibilidadPorRolTipo s2)
+	    {
+	        return s1.getModuloEnum().getOrder()-s2.getModuloEnum().getOrder();
+	    }
+	}
+	
+	
+	
 
 	public Long getId() {
 		return id;
@@ -96,11 +109,11 @@ public class ModuloVisibilidadPorRol {
 		this.role = role;
 	}
 
-	public Set<ModuloVisibilidadPorRolTipo> getModulos() {
+	public List<ModuloVisibilidadPorRolTipo> getModulos() {
 		return modulos;
 	}
 
-	public void setModulos(Set<ModuloVisibilidadPorRolTipo> modulos) {
+	public void setModulos(List<ModuloVisibilidadPorRolTipo> modulos) {
 		this.modulos = modulos;
 	}
 	

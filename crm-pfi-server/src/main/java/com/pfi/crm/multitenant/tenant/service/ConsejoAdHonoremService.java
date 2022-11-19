@@ -22,6 +22,7 @@ public class ConsejoAdHonoremService {
 	@Autowired
 	private ConsejoAdHonoremRepository consejoAdHonoremRepository;
 	
+	@SuppressWarnings("unused")
 	private static final Logger logger = LoggerFactory.getLogger(ConsejoAdHonoremService.class);
 	
 	public ConsejoAdHonoremPayload getConsejoAdHonoremByIdContacto(@PathVariable Long id) {

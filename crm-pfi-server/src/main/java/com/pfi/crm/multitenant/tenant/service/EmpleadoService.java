@@ -22,6 +22,7 @@ public class EmpleadoService {
 	@Autowired
 	private EmpleadoRepository empleadoRepository;
 	
+	@SuppressWarnings("unused")
 	private static final Logger logger = LoggerFactory.getLogger(EmpleadoService.class);
 	
 	public EmpleadoPayload getEmpleadoByIdContacto(@PathVariable Long id) {

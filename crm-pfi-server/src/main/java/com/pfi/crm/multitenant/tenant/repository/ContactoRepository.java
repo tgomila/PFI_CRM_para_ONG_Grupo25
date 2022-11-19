@@ -5,9 +5,11 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 
 import com.pfi.crm.multitenant.tenant.model.Contacto;
 
+@Repository
 public interface ContactoRepository extends JpaRepository<Contacto, Long> {
 	
 	//Los QUERY's es para ver si el contacto esta activo, "e" es entity

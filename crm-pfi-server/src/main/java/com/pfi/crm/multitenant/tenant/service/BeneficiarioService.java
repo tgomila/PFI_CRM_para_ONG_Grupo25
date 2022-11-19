@@ -22,6 +22,7 @@ public class BeneficiarioService {
 	@Autowired
 	private BeneficiarioRepository beneficiarioRepository;
 	
+	@SuppressWarnings("unused")
 	private static final Logger logger = LoggerFactory.getLogger(BeneficiarioService.class);
 	
 	public BeneficiarioPayload getBeneficiarioByIdContacto(@PathVariable Long id) {

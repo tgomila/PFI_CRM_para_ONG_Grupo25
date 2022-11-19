@@ -22,6 +22,7 @@ public class VoluntarioService {
 	@Autowired
 	private VoluntarioRepository voluntarioRepository;
 	
+	@SuppressWarnings("unused")
 	private static final Logger logger = LoggerFactory.getLogger(VoluntarioService.class);
 	
 	public VoluntarioPayload getVoluntarioByIdContacto(@PathVariable Long id) {

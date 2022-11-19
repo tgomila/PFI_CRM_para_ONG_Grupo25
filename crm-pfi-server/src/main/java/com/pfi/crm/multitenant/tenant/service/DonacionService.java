@@ -25,6 +25,7 @@ public class DonacionService  {
 	@Autowired
 	private ContactoService contactoService;
 	
+	@SuppressWarnings("unused")
 	private static final Logger logger = LoggerFactory.getLogger(DonacionService.class);
 	
 	public DonacionPayload getDonacionById(@PathVariable Long id) {

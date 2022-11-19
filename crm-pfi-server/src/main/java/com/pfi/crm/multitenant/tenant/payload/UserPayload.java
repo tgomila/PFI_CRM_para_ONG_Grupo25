@@ -14,6 +14,7 @@ import com.pfi.crm.multitenant.tenant.model.Role;
 
 public class UserPayload {
 	
+	@SuppressWarnings("unused")
 	private Long id;
 	@Size(max = 40)
 	private String name;
