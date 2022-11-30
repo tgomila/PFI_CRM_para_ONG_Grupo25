@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import com.pfi.crm.exception.ResourceNotFoundException;
 import com.pfi.crm.multitenant.tenant.model.Voluntario;
 import com.pfi.crm.multitenant.tenant.payload.VoluntarioPayload;
-import com.pfi.crm.multitenant.tenant.repository.VoluntarioRepository;
+import com.pfi.crm.multitenant.tenant.persistence.repository.VoluntarioRepository;
 
 @Service
 public class VoluntarioService {

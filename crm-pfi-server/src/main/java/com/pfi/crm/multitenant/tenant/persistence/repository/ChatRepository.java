@@ -1,4 +1,4 @@
-package com.pfi.crm.multitenant.tenant.repository;
+package com.pfi.crm.multitenant.tenant.persistence.repository;
 
 import java.util.Optional;
 

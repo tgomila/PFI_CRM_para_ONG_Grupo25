@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import com.pfi.crm.exception.ResourceNotFoundException;
 import com.pfi.crm.multitenant.tenant.model.PersonaFisica;
 import com.pfi.crm.multitenant.tenant.payload.PersonaFisicaPayload;
-import com.pfi.crm.multitenant.tenant.repository.PersonaFisicaRepository;
-import com.pfi.crm.multitenant.tenant.repository.PersonaJuridicaRepository;
+import com.pfi.crm.multitenant.tenant.persistence.repository.PersonaFisicaRepository;
+import com.pfi.crm.multitenant.tenant.persistence.repository.PersonaJuridicaRepository;
 
 @Service
 public class PersonaFisicaService {

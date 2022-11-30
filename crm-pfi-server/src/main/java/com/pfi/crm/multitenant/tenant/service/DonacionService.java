@@ -14,7 +14,7 @@ import com.pfi.crm.exception.ResourceNotFoundException;
 import com.pfi.crm.multitenant.tenant.model.Contacto;
 import com.pfi.crm.multitenant.tenant.model.Donacion;
 import com.pfi.crm.multitenant.tenant.payload.DonacionPayload;
-import com.pfi.crm.multitenant.tenant.repository.DonacionRepository;
+import com.pfi.crm.multitenant.tenant.persistence.repository.DonacionRepository;
 
 @Service
 public class DonacionService  {

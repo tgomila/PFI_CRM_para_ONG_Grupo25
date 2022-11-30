@@ -20,10 +20,10 @@ import com.pfi.crm.multitenant.tenant.model.test.Customer;
 import com.pfi.crm.multitenant.tenant.model.test.Employee;
 import com.pfi.crm.multitenant.tenant.model.test.Person;
 import com.pfi.crm.multitenant.tenant.payload.ContactoPayload;
-import com.pfi.crm.multitenant.tenant.repository.VoluntarioRepository;
-import com.pfi.crm.multitenant.tenant.repository.test.CustomerRepository;
-import com.pfi.crm.multitenant.tenant.repository.test.EmployeeRepository;
-import com.pfi.crm.multitenant.tenant.repository.test.PersonRepository;
+import com.pfi.crm.multitenant.tenant.persistence.repository.VoluntarioRepository;
+import com.pfi.crm.multitenant.tenant.persistence.repository.test.CustomerRepository;
+import com.pfi.crm.multitenant.tenant.persistence.repository.test.EmployeeRepository;
+import com.pfi.crm.multitenant.tenant.persistence.repository.test.PersonRepository;
 import com.pfi.crm.multitenant.tenant.service.ContactoService;
 
 //Se usa para "test conexión" para ver si un login token esta expirado, abajo de todo

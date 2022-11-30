@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import com.pfi.crm.exception.ResourceNotFoundException;
 import com.pfi.crm.multitenant.tenant.model.Profesional;
 import com.pfi.crm.multitenant.tenant.payload.ProfesionalPayload;
-import com.pfi.crm.multitenant.tenant.repository.ProfesionalRepository;
+import com.pfi.crm.multitenant.tenant.persistence.repository.ProfesionalRepository;
 
 @Service
 public class ProfesionalService {

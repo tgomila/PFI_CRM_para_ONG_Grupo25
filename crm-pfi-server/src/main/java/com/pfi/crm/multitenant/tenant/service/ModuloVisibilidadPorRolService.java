@@ -17,8 +17,8 @@ import com.pfi.crm.multitenant.tenant.model.ModuloVisibilidadPorRol;
 import com.pfi.crm.multitenant.tenant.model.RoleName;
 import com.pfi.crm.multitenant.tenant.model.User;
 import com.pfi.crm.multitenant.tenant.payload.ModuloPayload;
-import com.pfi.crm.multitenant.tenant.repository.ModuloVisibilidadPorRolRepository;
-import com.pfi.crm.multitenant.tenant.repository.UserRepository;
+import com.pfi.crm.multitenant.tenant.persistence.repository.ModuloVisibilidadPorRolRepository;
+import com.pfi.crm.multitenant.tenant.persistence.repository.UserRepository;
 import com.pfi.crm.security.UserPrincipal;
 
 @Service

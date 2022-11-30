@@ -2,7 +2,7 @@ package com.pfi.crm.security;
 
 import com.pfi.crm.exception.ResourceNotFoundException;
 import com.pfi.crm.multitenant.tenant.model.User;
-import com.pfi.crm.multitenant.tenant.repository.UserRepository;
+import com.pfi.crm.multitenant.tenant.persistence.repository.UserRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;

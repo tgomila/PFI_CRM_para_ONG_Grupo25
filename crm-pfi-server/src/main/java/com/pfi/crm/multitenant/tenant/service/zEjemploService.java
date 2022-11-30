@@ -10,9 +10,9 @@ import org.springframework.stereotype.Service;
 import com.pfi.crm.multitenant.tenant.model.test.Customer;
 import com.pfi.crm.multitenant.tenant.model.test.Employee;
 import com.pfi.crm.multitenant.tenant.model.test.Person;
-import com.pfi.crm.multitenant.tenant.repository.test.CustomerRepository;
-import com.pfi.crm.multitenant.tenant.repository.test.EmployeeRepository;
-import com.pfi.crm.multitenant.tenant.repository.test.PersonRepository;
+import com.pfi.crm.multitenant.tenant.persistence.repository.test.CustomerRepository;
+import com.pfi.crm.multitenant.tenant.persistence.repository.test.EmployeeRepository;
+import com.pfi.crm.multitenant.tenant.persistence.repository.test.PersonRepository;
 
 @Service
 public class zEjemploService {

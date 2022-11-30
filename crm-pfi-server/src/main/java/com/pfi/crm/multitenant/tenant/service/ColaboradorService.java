@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import com.pfi.crm.exception.ResourceNotFoundException;
 import com.pfi.crm.multitenant.tenant.model.Colaborador;
 import com.pfi.crm.multitenant.tenant.payload.ColaboradorPayload;
-import com.pfi.crm.multitenant.tenant.repository.ColaboradorRepository;
+import com.pfi.crm.multitenant.tenant.persistence.repository.ColaboradorRepository;
 
 @Service
 public class ColaboradorService {

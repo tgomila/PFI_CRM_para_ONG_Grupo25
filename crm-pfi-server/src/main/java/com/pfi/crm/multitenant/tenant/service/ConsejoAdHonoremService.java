@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import com.pfi.crm.exception.ResourceNotFoundException;
 import com.pfi.crm.multitenant.tenant.model.ConsejoAdHonorem;
 import com.pfi.crm.multitenant.tenant.payload.ConsejoAdHonoremPayload;
-import com.pfi.crm.multitenant.tenant.repository.ConsejoAdHonoremRepository;
+import com.pfi.crm.multitenant.tenant.persistence.repository.ConsejoAdHonoremRepository;
 
 @Service
 public class ConsejoAdHonoremService {

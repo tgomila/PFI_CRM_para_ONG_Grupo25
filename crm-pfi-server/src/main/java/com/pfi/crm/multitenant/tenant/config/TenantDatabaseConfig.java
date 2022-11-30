@@ -24,10 +24,10 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @Configuration
 @EnableTransactionManagement
 @ComponentScan(basePackages = { 
-		"com.pfi.crm.multitenant.tenant.repository", 
+		"com.pfi.crm.multitenant.tenant.persistence.repository", 
 		"com.pfi.crm.multitenant.tenant.model" })
 @EnableJpaRepositories(basePackages = {
-		"com.pfi.crm.multitenant.tenant.repository", 
+		"com.pfi.crm.multitenant.tenant.persistence.repository", 
 		"com.pfi.crm.multitenant.tenant.service" },
         entityManagerFactoryRef = "tenantEntityManagerFactory",
         transactionManagerRef = "tenantTransactionManager")

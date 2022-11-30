@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import com.pfi.crm.exception.ResourceNotFoundException;
 import com.pfi.crm.multitenant.tenant.model.Contacto;
 import com.pfi.crm.multitenant.tenant.payload.ContactoPayload;
-import com.pfi.crm.multitenant.tenant.repository.ContactoRepository;
+import com.pfi.crm.multitenant.tenant.persistence.repository.ContactoRepository;
 
 @Service
 public class ContactoService {

@@ -11,7 +11,8 @@ public enum ModuloEnum {
 	PROFESIONAL(8, "Profesional", "/profesional", "FaUserCheck"),
 	DONACION(9, "Donacion", "/donacion", "FaDonate"),
 	FACTURA(10, "Factura", "/factura", "FaFileInvoiceDollar"),
-	USERS(11, "Users", "/users", "FaUsersCog");
+	USERS(11, "Users", "/users", "FaUsersCog"),
+	MARKETPLACE(12, "Marketplace", "/marketplace", "MdLocalGroceryStore");
 	
 	
 	private final int order;

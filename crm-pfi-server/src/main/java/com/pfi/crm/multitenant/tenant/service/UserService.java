@@ -11,8 +11,8 @@ import com.pfi.crm.exception.ResourceNotFoundException;
 import com.pfi.crm.multitenant.tenant.model.Role;
 import com.pfi.crm.multitenant.tenant.model.RoleName;
 import com.pfi.crm.multitenant.tenant.model.User;
-import com.pfi.crm.multitenant.tenant.repository.RoleRepository;
-import com.pfi.crm.multitenant.tenant.repository.UserRepository;
+import com.pfi.crm.multitenant.tenant.persistence.repository.RoleRepository;
+import com.pfi.crm.multitenant.tenant.persistence.repository.UserRepository;
 
 @Service
 public class UserService {

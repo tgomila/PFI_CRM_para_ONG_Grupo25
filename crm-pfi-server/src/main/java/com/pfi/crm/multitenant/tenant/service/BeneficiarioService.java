@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import com.pfi.crm.exception.ResourceNotFoundException;
 import com.pfi.crm.multitenant.tenant.model.Beneficiario;
 import com.pfi.crm.multitenant.tenant.payload.BeneficiarioPayload;
-import com.pfi.crm.multitenant.tenant.repository.BeneficiarioRepository;
+import com.pfi.crm.multitenant.tenant.persistence.repository.BeneficiarioRepository;
 
 @Service
 public class BeneficiarioService {

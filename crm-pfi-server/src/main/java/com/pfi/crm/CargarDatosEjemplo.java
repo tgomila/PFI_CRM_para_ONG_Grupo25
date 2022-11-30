@@ -19,7 +19,7 @@ import com.pfi.crm.multitenant.tenant.model.RoleName;
 import com.pfi.crm.multitenant.tenant.model.TipoPersonaJuridica;
 import com.pfi.crm.multitenant.tenant.model.User;
 import com.pfi.crm.multitenant.tenant.payload.*;
-import com.pfi.crm.multitenant.tenant.repository.RoleRepository;
+import com.pfi.crm.multitenant.tenant.persistence.repository.RoleRepository;
 import com.pfi.crm.multitenant.tenant.service.*;
 
 @Component
@@ -188,6 +188,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		modulo.agregarModulo(ModuloEnum.DONACION, ModuloTipoVisibilidadEnum.EDITAR);
 		modulo.agregarModulo(ModuloEnum.FACTURA, ModuloTipoVisibilidadEnum.EDITAR);
 		modulo.agregarModulo(ModuloEnum.USERS, ModuloTipoVisibilidadEnum.EDITAR);
+		modulo.agregarModulo(ModuloEnum.MARKETPLACE, ModuloTipoVisibilidadEnum.EDITAR);
 		ModuloVisibilidadPorRolService.altaModuloVisibilidadPorRol(modulo);
 	}	
 	

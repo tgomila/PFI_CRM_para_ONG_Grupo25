@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import com.pfi.crm.exception.ResourceNotFoundException;
 import com.pfi.crm.multitenant.tenant.model.Empleado;
 import com.pfi.crm.multitenant.tenant.payload.EmpleadoPayload;
-import com.pfi.crm.multitenant.tenant.repository.EmpleadoRepository;
+import com.pfi.crm.multitenant.tenant.persistence.repository.EmpleadoRepository;
 
 @Service
 public class EmpleadoService {
