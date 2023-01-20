@@ -25,7 +25,7 @@ public class ChatService {
     }
 	
 	public List<ChatPayload> getChats() {
-		return chatRepository.findAll().stream().map(e -> toPayload(e)).collect(Collectors.toList());
+		return chatRepository.findAll().stream().map(e -> e.toPayload()).collect(Collectors.toList());
     }
 	
 	public ChatPayload altaChat (ChatPayload payload) {
@@ -34,10 +34,10 @@ public class ChatService {
 	}
 	
 	public List<ChatPayload> getChatsByUsernameFrom(String usernameFrom) {
-		return chatRepository.findByUserNameFrom(usernameFrom).stream().map(e -> toPayload(e)).collect(Collectors.toList());
+		return chatRepository.findByUserNameFrom(usernameFrom).stream().map(e -> e.toPayload()).collect(Collectors.toList());
     }
 	
-	public Chat toModel(ChatPayload p) {
+	/*public Chat toModel(ChatPayload p) {
 		Chat m = new Chat();
 		m.setId(p.getId());
 		m.setUserNameFrom(p.getUserNameFrom());
@@ -55,5 +55,5 @@ public class ChatService {
 		p.setMensaje(m.getMensaje());
 		p.setLeido(m.getLeido());
 		return p;
-	}
+	}*/
 }

@@ -74,9 +74,27 @@ public class ModuloVisibilidadPorRol {
 		modulos.add(new ModuloVisibilidadPorRolTipo(null, moduloEnum, tipoVisibilidad));
 	}
 	
+	/**
+	 * quitar un modulo item de la instancia.
+	 * @param moduloEnum
+	 * @return True si debe guardarse en BD, False si no es necesario
+	 */
+	public boolean quitarModulo(ModuloEnum moduloEnum) {
+		List<ModuloVisibilidadPorRolTipo> aux = new ArrayList<ModuloVisibilidadPorRolTipo>();
+		boolean mereceGuardarseEnBD = false;
+		for(ModuloVisibilidadPorRolTipo modulo: modulos) {
+			if(!modulo.getModuloEnum().equals(moduloEnum))
+				aux.add(modulo);
+			else
+				mereceGuardarseEnBD = true;
+		}
+		this.setModulos(aux);
+		return mereceGuardarseEnBD;
+	}
+	
 	public ModuloPayload toPayload() {
 		ModuloPayload payload = new ModuloPayload();
-		payload.setRol(this.getRole().getName().toString());
+		payload.setRol(this.getRole().getRoleName().toString());
 		payload.setItems(this.getModulos().stream().map(e -> e.toPayload()).collect(Collectors.toList()));
 		return payload;
 	}

@@ -1,5 +1,8 @@
 package com.pfi.crm.multitenant.tenant.persistence.dao;
 
-public interface ContactoDao {
+import com.pfi.crm.multitenant.tenant.model.Contacto;
+import com.pfi.crm.multitenant.tenant.persistence.filter.ContactoFilter;
+
+public interface ContactoDao extends BaseDao<Contacto, Long, ContactoFilter> {
 	
 }

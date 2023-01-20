@@ -27,6 +27,22 @@ public abstract class ContactoAbstractPayload {
 	@Size(max = 30)
 	private String telefono;
 	
+	public ContactoAbstractPayload modificarContacto(ContactoAbstractPayload ap) {
+		// Contacto
+		//this.setId(p.getId());
+		//this.setEstadoActivoContacto(true);
+		//this.setFechaAltaContacto(LocalDate.now());
+		//this.setFechaBajaContacto(null);
+		this.setNombreDescripcion(ap.getNombreDescripcion());
+		this.setCuit(ap.getCuit());
+		this.setDomicilio(ap.getDomicilio());
+		this.setEmail(ap.getEmail());
+		this.setTelefono(ap.getTelefono());
+		// Fin Contacto
+		
+		return this;
+	}
+	
 	
 	public Long getId() {
 		return id;

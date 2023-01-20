@@ -2,7 +2,6 @@ package com.pfi.crm.controller;
 
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
@@ -16,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.pfi.crm.multitenant.tenant.model.Contacto;
 import com.pfi.crm.multitenant.tenant.payload.ContactoPayload;
 import com.pfi.crm.multitenant.tenant.payload.nombres_tabla.ContactoNombreTablaPayload;
 import com.pfi.crm.multitenant.tenant.service.ContactoService;
@@ -39,12 +37,13 @@ public class ContactoController {
 	//@PreAuthorize("hasRole('EMPLOYEE')")
     public List<ContactoPayload> getContactos() {
 		System.out.println("\n\n\n----------------------------Entre acá /all-----------------------------------\n\n\n");
-    	return  contactoService.getContactos().stream().map(e -> contactoService.toPayload(e)).collect(Collectors.toList());
+    	//return  contactoService.getContactos().stream().map(e -> contactoService.toPayload(e)).collect(Collectors.toList());
+		return  contactoService.getContactos();
 	}
 	
 	@PostMapping({"/", "/alta"})
     public ContactoPayload altaContacto(@Valid @RequestBody ContactoPayload payload) {
-    	return contactoService.altaContacto(new Contacto(payload)).toPayload();
+    	return contactoService.altaContacto(payload);
     }
 	
 	@DeleteMapping({"/{id}", "/baja/{id}"})
@@ -54,7 +53,7 @@ public class ContactoController {
 	
 	@PutMapping({"/", "/modificar"})
     public ContactoPayload modificarContacto(@Valid @RequestBody ContactoPayload payload) {
-    	return contactoService.modificarContacto(new Contacto(payload)).toPayload();
+    	return contactoService.modificarContacto(payload);
     }
 	
 	@GetMapping({"/nombres_tabla"})
@@ -68,16 +67,16 @@ public class ContactoController {
 	@GetMapping("/test")
 	public ContactoPayload getContactoTest(/* @Valid @RequestBody ContactoPayload payload */) {
 
-		Contacto m = new Contacto();
+		ContactoPayload p = new ContactoPayload();
 
 		// Contacto
-		m.setEstadoActivoContacto(true);
-		m.setNombreDescripcion("Contacto Don Roque");
-		m.setCuit("20-1235678-9");
-		m.setDomicilio("Avenida siempre falsa 123, piso 4, depto A");
-		m.setEmail("felipe@gmail.com");
-		m.setTelefono("1234-4567");
+		//m.setEstadoActivoContacto(true);
+		p.setNombreDescripcion("Contacto Don Roque");
+		p.setCuit("20-1235678-9");
+		p.setDomicilio("Avenida siempre falsa 123, piso 4, depto A");
+		p.setEmail("felipe@gmail.com");
+		p.setTelefono("1234-4567");
 
-		return m.toPayload();
+		return p;
 	}
 }

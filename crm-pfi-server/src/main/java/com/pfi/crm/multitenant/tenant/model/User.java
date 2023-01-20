@@ -2,12 +2,14 @@ package com.pfi.crm.multitenant.tenant.model;
 
 import org.hibernate.annotations.NaturalId;
 
+import com.pfi.crm.exception.ResourceNotFoundException;
 import com.pfi.crm.multitenant.tenant.model.audit.DateAudit;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -72,6 +74,35 @@ public class User extends DateAudit{
     
     public void quitarRol(Role rol) {
     	roles.remove(rol);
+    }
+    
+    public RoleName getRoleMasValuado() {
+    	Set<RoleName> roles = new HashSet<RoleName>();
+    	getRoles().forEach((rol) -> roles.add(rol.getRoleName()));
+    	
+		//Por prioridad
+    	RoleName rolSuperior;
+		if(roles.contains(RoleName.ROLE_ADMIN))
+			rolSuperior = RoleName.ROLE_ADMIN;
+		else if(roles.contains(RoleName.ROLE_EMPLOYEE))
+			rolSuperior = RoleName.ROLE_EMPLOYEE;
+		else if(roles.contains(RoleName.ROLE_PROFESIONAL))
+			rolSuperior = RoleName.ROLE_PROFESIONAL;
+		else if(roles.contains(RoleName.ROLE_USER))
+			rolSuperior = RoleName.ROLE_USER;
+		else {
+			new ResourceNotFoundException("roles", "currentUser", this);
+			rolSuperior = RoleName.ROLE_DEFAULT;
+		}
+    	
+    	/*if(roles.size() == 0) {
+    		new ResourceNotFoundException("roles", "currentUser", this);
+    		return null;
+    	}
+    	rolSuperior = roles.stream().max(Comparator.comparing(r -> r.getPriority())).get();
+    	*/
+		
+    	return rolSuperior;
     }
 
     public Long getId() {

@@ -1,6 +1,5 @@
 package com.pfi.crm.multitenant.tenant.service;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -32,7 +31,7 @@ public class ProfesionalService {
 	
 	public List<ProfesionalPayload> getProfesionales() {
 		//return profesionalRepository.findAll();
-		return profesionalRepository.findAll().stream().map(e -> toPayload(e)).collect(Collectors.toList());
+		return profesionalRepository.findAll().stream().map(e -> e.toPayload()).collect(Collectors.toList());
     }
 	
 	public ProfesionalPayload altaProfesional (ProfesionalPayload payload) {
@@ -75,7 +74,7 @@ public class ProfesionalService {
 	
 	
 	// Conversiones Payload Model
-	public Profesional toModel(ProfesionalPayload p) {
+	/*public Profesional toModel(ProfesionalPayload p) {
 
 		Profesional m = new Profesional();
 
@@ -144,5 +143,5 @@ public class ProfesionalService {
 		// Fin Profesional
 
 		return p;
-	}
+	}*/
 }

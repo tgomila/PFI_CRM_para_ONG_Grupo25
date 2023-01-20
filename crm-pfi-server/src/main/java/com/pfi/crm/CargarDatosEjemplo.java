@@ -1,7 +1,11 @@
 package com.pfi.crm;
 
 import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -144,18 +148,29 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 	}
 	
 	public void cargarRolesYModulos() {
-		Role role = roleRepository.save(new Role(RoleName.ROLE_USER));
-		cargarModuloVisibilidadRolUser(role);
-		role = roleRepository.save(new Role(RoleName.ROLE_PROFESIONAL));
-		cargarModuloVisibilidadRolProfesional(role);
-		role = roleRepository.save(new Role(RoleName.ROLE_EMPLOYEE));
-		cargarModuloVisibilidadRolEmployee(role);
-		role = roleRepository.save(new Role(RoleName.ROLE_ADMIN));
-		cargarModuloVisibilidadRolAdmin(role);
+		
+		List<RoleName> rolesOrdenados = Arrays.asList(RoleName.values()).stream()
+				.sorted(Comparator.comparingInt(RoleName::getPriority))
+				.collect(Collectors.toList());
+		
+		//rolesOrdenados.stream().map(r -> cargarModuloVisibilidadRolUser(roleRepository.save(new Role(r))) );
+		for(RoleName roleName: rolesOrdenados) {
+			Role role = roleRepository.save(new Role(roleName));
+			cargarModuloVisibilidadRolUser(role);
+		}
+		
+		//Role role = roleRepository.save(new Role(RoleName.ROLE_USER));
+		//cargarModuloVisibilidadRolUser(role);
+		//role = roleRepository.save(new Role(RoleName.ROLE_PROFESIONAL));
+		//cargarModuloVisibilidadRolProfesional(role);
+		//role = roleRepository.save(new Role(RoleName.ROLE_EMPLOYEE));
+		//cargarModuloVisibilidadRolEmployee(role);
+		//role = roleRepository.save(new Role(RoleName.ROLE_ADMIN));
+		//cargarModuloVisibilidadRolAdmin(role);
 	}
 	
 	public void cargarModuloVisibilidadPorRol(Role role) {
-		switch(role.getName()) {
+		switch(role.getRoleName()) {
 		case ROLE_ADMIN:
 			cargarModuloVisibilidadRolAdmin(role);
 			break;

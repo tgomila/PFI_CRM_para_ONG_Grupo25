@@ -28,6 +28,10 @@ public class MasterTenantService {
 		return masterTenantRepository.findAll().stream().map(e -> toPayload(e)).collect(Collectors.toList());
 	}
 	
+	public List<String> getDbNames() {
+		return masterTenantRepository.findAll().stream().map(e -> e.getDbName()).collect(Collectors.toList());
+	}
+	
 	public boolean existTenantId(String db_name) {
 		if(null == getTenantByDbName(db_name))
 			return false;

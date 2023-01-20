@@ -1,6 +1,5 @@
 package com.pfi.crm.multitenant.tenant.service;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -32,7 +31,7 @@ public class BeneficiarioService {
 	
 	public List<BeneficiarioPayload> getBeneficiarios() {
 		//return beneficiarioRepository.findAll();
-		return beneficiarioRepository.findAll().stream().map(e -> toPayload(e)).collect(Collectors.toList());
+		return beneficiarioRepository.findAll().stream().map(e -> e.toPayload()).collect(Collectors.toList());
     }
 	
 	public BeneficiarioPayload altaBeneficiario (BeneficiarioPayload payload) {
@@ -75,7 +74,7 @@ public class BeneficiarioService {
 	
 	
 	// Conversiones Payload Model
-	public Beneficiario toModel(BeneficiarioPayload p) {
+	/*public Beneficiario toModel(BeneficiarioPayload p) {
 
 		Beneficiario m = new Beneficiario();
 
@@ -148,5 +147,5 @@ public class BeneficiarioService {
 		// Fin Beneficiario
 
 		return p;
-	}
+	}*/
 }

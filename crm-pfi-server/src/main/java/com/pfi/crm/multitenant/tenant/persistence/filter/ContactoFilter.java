@@ -3,6 +3,7 @@ package com.pfi.crm.multitenant.tenant.persistence.filter;
 public class ContactoFilter {
 	
 	private Long id;
+	private String nombreDescripcion;
 	private String cuit;
 	private String domicilio;
 	private String email;
@@ -14,6 +15,12 @@ public class ContactoFilter {
 	}
 	public void setId(Long id) {
 		this.id = id;
+	}
+	public String getNombreDescripcion() {
+		return nombreDescripcion;
+	}
+	public void setNombreDescripcion(String nombreDescripcion) {
+		this.nombreDescripcion = nombreDescripcion;
 	}
 	public String getCuit() {
 		return cuit;

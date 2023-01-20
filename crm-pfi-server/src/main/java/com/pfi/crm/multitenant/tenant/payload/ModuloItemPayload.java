@@ -7,21 +7,25 @@ public class ModuloItemPayload {
 	private String path;
 	private String iconName;
 	private String tipoVisibilidad;
+	private double priceOneMonth;
+	private double priceOneYear;
 	
 	public ModuloItemPayload() {
 		super();
 	}
 	
-	public ModuloItemPayload(int order, String name, String path, String iconName, String tipoVisibilidad) {
+	public ModuloItemPayload(int order, String name, String path, String iconName, String tipoVisibilidad,
+			double priceOneMonth, double priceOneYear) {
 		super();
 		this.order = order;
 		this.name = name;
 		this.path = path;
 		this.iconName = iconName;
 		this.tipoVisibilidad = tipoVisibilidad;
+		this.priceOneMonth = priceOneMonth;
+		this.priceOneYear = priceOneYear;
 	}
-
-
+	
 
 	//Getters and Setters
 	public int getOrder() {
@@ -62,6 +66,22 @@ public class ModuloItemPayload {
 	
 	public void setTipoVisibilidad(String tipoVisibilidad) {
 		this.tipoVisibilidad = tipoVisibilidad;
+	}
+
+	public double getPriceOneMonth() {
+		return priceOneMonth;
+	}
+
+	public void setPriceOneMonth(double priceOneMonth) {
+		this.priceOneMonth = priceOneMonth;
+	}
+
+	public double getPriceOneYear() {
+		return priceOneYear;
+	}
+
+	public void setPriceOneYear(double priceOneYear) {
+		this.priceOneYear = priceOneYear;
 	}
 	
 	

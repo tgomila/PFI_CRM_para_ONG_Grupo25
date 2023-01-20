@@ -61,6 +61,8 @@ public class ModuloVisibilidadPorRolTipo {
 		itemPayload.setPath(moduloEnum.getPath());
 		itemPayload.setIconName(moduloEnum.getIconName());
 		itemPayload.setTipoVisibilidad(tipoVisibilidad.toString());
+		itemPayload.setPriceOneMonth(moduloEnum.getPriceOneMonth());
+		itemPayload.setPriceOneYear(moduloEnum.getPriceOneYear());
 		return itemPayload;
 	}
 
@@ -90,6 +92,14 @@ public class ModuloVisibilidadPorRolTipo {
 	
 	public int getOrder() {
 		return moduloEnum.getOrder();
+	}
+	
+	public double getPriceOneMonth() {
+		return moduloEnum.getPriceOneMonth();
+	}
+	
+	public double getPriceOneYear() {
+		return moduloEnum.getPriceOneYear();
 	}
 	
 }

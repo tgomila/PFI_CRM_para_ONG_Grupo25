@@ -129,23 +129,6 @@ public class Contacto extends UserDateAudit{
 	
 	
 	// Payloads
-	/*public Contacto toModel(ContactoPayload p) {
-
-		// Contacto
-		Contacto m = new Contacto();
-		m.setId(p.getId());
-		m.setEstadoActivoContacto(true);
-		m.setFechaAltaContacto(LocalDate.now());
-		m.setFechaBajaContacto(null);
-		m.setNombreDescripcion(p.getNombreDescripcion());
-		m.setCuit(p.getCuit());
-		m.setDomicilio(p.getDomicilio());
-		m.setEmail(p.getEmail());
-		m.setTelefono(p.getTelefono());
-
-		return m;
-	}*/
-
 	public ContactoPayload toPayload() {
 
 		ContactoPayload p = new ContactoPayload();
@@ -161,4 +144,38 @@ public class Contacto extends UserDateAudit{
 
 		return p;
 	}
+	
+	public void modificar(ContactoPayload p) {
+		// Contacto
+		//this.setId(p.getId());
+		//this.setEstadoActivoContacto(true);
+		//this.setFechaAltaContacto(LocalDate.now());
+		//this.setFechaBajaContacto(null);
+		this.setNombreDescripcion(p.getNombreDescripcion());
+		this.setCuit(p.getCuit());
+		this.setDomicilio(p.getDomicilio());
+		this.setEmail(p.getEmail());
+		this.setTelefono(p.getTelefono());
+		// Fin Contacto
+	}
+	
+	
+	/*public Contacto toModel(ContactoPayload p) {
+
+	// Contacto
+	Contacto m = new Contacto();
+	m.setId(p.getId());
+	m.setEstadoActivoContacto(true);
+	m.setFechaAltaContacto(LocalDate.now());
+	m.setFechaBajaContacto(null);
+	m.setNombreDescripcion(p.getNombreDescripcion());
+	m.setCuit(p.getCuit());
+	m.setDomicilio(p.getDomicilio());
+	m.setEmail(p.getEmail());
+	m.setTelefono(p.getTelefono());
+
+	return m;
+}*/
+	
+	
 }

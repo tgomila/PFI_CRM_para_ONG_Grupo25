@@ -1,6 +1,5 @@
 package com.pfi.crm.multitenant.tenant.service;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -11,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import com.pfi.crm.exception.BadRequestException;
 import com.pfi.crm.exception.ResourceNotFoundException;
 import com.pfi.crm.multitenant.tenant.model.ConsejoAdHonorem;
 import com.pfi.crm.multitenant.tenant.payload.ConsejoAdHonoremPayload;
@@ -32,7 +32,7 @@ public class ConsejoAdHonoremService {
 	
 	public List<ConsejoAdHonoremPayload> getPersonasFisicas() {
 		//return ConsejoAdHonoremRepository.findAll();
-		return consejoAdHonoremRepository.findAll().stream().map(e -> toPayload(e)).collect(Collectors.toList());
+		return consejoAdHonoremRepository.findAll().stream().map(e -> e.toPayload()).collect(Collectors.toList());
     }
 	
 	public ConsejoAdHonoremPayload altaConsejoAdHonorem (ConsejoAdHonoremPayload payload) {
@@ -68,14 +68,15 @@ public class ConsejoAdHonoremService {
 				return consejoAdHonoremRepository.save(model).toPayload();				
 			}
 			//si llegue aca devuelvo null
+			throw new BadRequestException("No se ha encontrado el Consejo Ad Honorem con ID: " + payload.getId());//return null;
 		}
-		return null;
+		throw new BadRequestException("No se puede modificar Consejo Ad Honorem sin ID");//return null;
 	}
 	
 	
 	
 	// Conversiones Payload Model
-	public ConsejoAdHonorem toModel(ConsejoAdHonoremPayload p) {
+	/*public ConsejoAdHonorem toModel(ConsejoAdHonoremPayload p) {
 
 		ConsejoAdHonorem m = new ConsejoAdHonorem();
 
@@ -134,5 +135,5 @@ public class ConsejoAdHonoremService {
 		// Fin ConsejoAdHonorem
 
 		return p;
-	}
+	}*/
 }

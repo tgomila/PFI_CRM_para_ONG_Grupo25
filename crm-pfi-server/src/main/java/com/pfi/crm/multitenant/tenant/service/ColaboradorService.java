@@ -1,6 +1,5 @@
 package com.pfi.crm.multitenant.tenant.service;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -32,7 +31,7 @@ public class ColaboradorService {
 	
 	public List<ColaboradorPayload> getColaboradores() {
 		//return colaboradorRepository.findAll();
-		return colaboradorRepository.findAll().stream().map(e -> toPayload(e)).collect(Collectors.toList());
+		return colaboradorRepository.findAll().stream().map(e -> e.toPayload()).collect(Collectors.toList());
     }
 	
 	public ColaboradorPayload altaColaborador (ColaboradorPayload payload) {
@@ -75,7 +74,7 @@ public class ColaboradorService {
 	
 	
 	// Conversiones Payload Model
-	public Colaborador toModel(ColaboradorPayload p) {
+	/*public Colaborador toModel(ColaboradorPayload p) {
 
 		Colaborador m = new Colaborador();
 
@@ -144,5 +143,5 @@ public class ColaboradorService {
 		// Fin Colaborador
 
 		return p;
-	}
+	}*/
 }
