@@ -38,7 +38,7 @@ public class PersonaFisicaController {
     }
 	
 	@GetMapping({"/", "/all"})
-	//@PreAuthorize("hasRole('EMPLOYEE')")
+	//@PreAuthorize("hasRole('ROLE_EMPLOYEE')")
     public List<PersonaFisicaPayload> getPersonaFisica() {
     	return  personaFisicaService.getPersonasFisicas();
 	}

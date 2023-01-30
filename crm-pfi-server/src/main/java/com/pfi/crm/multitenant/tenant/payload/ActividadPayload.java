@@ -1,14 +1,14 @@
 package com.pfi.crm.multitenant.tenant.payload;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ActividadPayload {
 	
 	private Long id;
-	private LocalDate fechaHoraDesde;	
-	private LocalDate fechaHoraHasta;
+	private LocalDateTime fechaHoraDesde;	
+	private LocalDateTime fechaHoraHasta;
 	private List<BeneficiarioPayload> beneficiarios;
 	private List<ProfesionalPayload> profesionales;
 	private String descripcion;
@@ -38,19 +38,19 @@ public class ActividadPayload {
 		this.id = id;
 	}
 
-	public LocalDate getFechaHoraDesde() {
+	public LocalDateTime getFechaHoraDesde() {
 		return fechaHoraDesde;
 	}
 
-	public void setFechaHoraDesde(LocalDate fechaHoraDesde) {
+	public void setFechaHoraDesde(LocalDateTime fechaHoraDesde) {
 		this.fechaHoraDesde = fechaHoraDesde;
 	}
 
-	public LocalDate getFechaHoraHasta() {
+	public LocalDateTime getFechaHoraHasta() {
 		return fechaHoraHasta;
 	}
 
-	public void setFechaHoraHasta(LocalDate fechaHoraHasta) {
+	public void setFechaHoraHasta(LocalDateTime fechaHoraHasta) {
 		this.fechaHoraHasta = fechaHoraHasta;
 	}
 

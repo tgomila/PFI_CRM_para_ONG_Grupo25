@@ -37,7 +37,7 @@ public class DonacionController {
     }
 	
 	@GetMapping({"/", "/all"})
-	//@PreAuthorize("hasRole('EMPLOYEE')")
+	//@PreAuthorize("hasRole('ROLE_EMPLOYEE')")
     public List<DonacionPayload> getDonacion() {
     	return  donacionService.getDonaciones();
 	}

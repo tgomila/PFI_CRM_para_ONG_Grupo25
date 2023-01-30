@@ -1,6 +1,6 @@
 package com.pfi.crm.multitenant.tenant.model;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,6 +15,7 @@ import javax.persistence.Table;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
+import com.pfi.crm.exception.ResourceNotFoundException;
 import com.pfi.crm.multitenant.tenant.model.audit.UserDateAudit;
 import com.pfi.crm.multitenant.tenant.payload.ActividadPayload;
 
@@ -29,11 +30,9 @@ public class Actividad extends UserDateAudit {
 	private Long id;
 	
 	private boolean estadoActivoActividad;
-	private LocalDate fechaAltaActividad;
-	private LocalDate fechaBajaActividad;
 	
-	private LocalDate fechaHoraDesde;	
-	private LocalDate fechaHoraHasta;
+	private LocalDateTime fechaHoraDesde;	
+	private LocalDateTime fechaHoraHasta;
 	
 	private String descripcion;
 	
@@ -47,23 +46,48 @@ public class Actividad extends UserDateAudit {
 	@OrderBy("idProfesional ASC")
 	private List<Profesional> profesionales;
 	
-	public Actividad() {
+	/*public Actividad() {
 		super();
-		fechaAltaActividad = LocalDate.now();
+		this.setEstadoActivoActividad(true);
 		beneficiarios = new ArrayList<Beneficiario>();
 		profesionales = new ArrayList<Profesional>();
-	}
+	}*/
 	
 	public Actividad(ActividadPayload p) {
 		super();
+		if(p.getFechaHoraDesde() == null)
+			new ResourceNotFoundException("Actividad", "fechaDesde", p.getFechaHoraDesde());
+		if(p.getFechaHoraHasta() == null)
+			new ResourceNotFoundException("Actividad", "fechaHasta", p.getFechaHoraHasta());
 		this.id = p.getId();
-		this.fechaAltaActividad = null;
-		this.fechaBajaActividad = null;
+		this.estadoActivoActividad = true;
 		this.fechaHoraDesde = p.getFechaHoraDesde();
 		this.fechaHoraHasta = p.getFechaHoraHasta();
 		this.descripcion = p.getDescripcion();
+		beneficiarios = new ArrayList<Beneficiario>();
+		profesionales = new ArrayList<Profesional>();
 		p.getBeneficiarios().forEach((b) -> beneficiarios.add(new Beneficiario(b)));
 		p.getProfesionales().forEach((pr) -> profesionales.add(new Profesional(pr)));
+	}
+	
+	/**
+	 * 
+	 * @param payload
+	 * @param profesionales, sacados de la BD.
+	 * @param beneficiarios, sacados de la BD.
+	 */
+	public void modificar(ActividadPayload payload, List<Profesional> profesionales, List<Beneficiario> beneficiarios) {
+		if(payload.getFechaHoraDesde() == null)
+			new ResourceNotFoundException("Actividad", "fechaDesde", payload.getFechaHoraDesde());
+		if(payload.getFechaHoraHasta() == null)
+			new ResourceNotFoundException("Actividad", "fechaHasta", payload.getFechaHoraHasta());
+		if(payload.getDescripcion() == null)
+			new ResourceNotFoundException("Actividad", "descripción", payload.getDescripcion());
+		
+		this.fechaHoraDesde = payload.getFechaHoraDesde();
+		this.fechaHoraHasta = payload.getFechaHoraHasta();
+		this.descripcion = payload.getDescripcion();
+		
 	}
 	
 	
@@ -96,35 +120,19 @@ public class Actividad extends UserDateAudit {
 		this.estadoActivoActividad = estadoActivoActividad;
 	}
 
-	public LocalDate getFechaAltaActividad() {
-		return fechaAltaActividad;
-	}
-
-	public void setFechaAltaActividad(LocalDate fechaAltaActividad) {
-		this.fechaAltaActividad = fechaAltaActividad;
-	}
-
-	public LocalDate getFechaBajaActividad() {
-		return fechaBajaActividad;
-	}
-
-	public void setFechaBajaActividad(LocalDate fechaBajaActividad) {
-		this.fechaBajaActividad = fechaBajaActividad;
-	}
-
-	public LocalDate getFechaHoraDesde() {
+	public LocalDateTime getFechaHoraDesde() {
 		return fechaHoraDesde;
 	}
 
-	public void setFechaHoraDesde(LocalDate fechaHoraDesde) {
+	public void setFechaHoraDesde(LocalDateTime fechaHoraDesde) {
 		this.fechaHoraDesde = fechaHoraDesde;
 	}
 
-	public LocalDate getFechaHoraHasta() {
+	public LocalDateTime getFechaHoraHasta() {
 		return fechaHoraHasta;
 	}
 
-	public void setFechaHoraHasta(LocalDate fechaHoraHasta) {
+	public void setFechaHoraHasta(LocalDateTime fechaHoraHasta) {
 		this.fechaHoraHasta = fechaHoraHasta;
 	}
 

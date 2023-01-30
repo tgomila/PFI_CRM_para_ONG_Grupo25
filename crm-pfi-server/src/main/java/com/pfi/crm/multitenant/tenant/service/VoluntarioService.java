@@ -1,6 +1,5 @@
 package com.pfi.crm.multitenant.tenant.service;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -32,7 +31,7 @@ public class VoluntarioService {
 	
 	public List<VoluntarioPayload> getVoluntarios() {
 		//return voluntarioRepository.findAll();
-		return voluntarioRepository.findAll().stream().map(e -> toPayload(e)).collect(Collectors.toList());
+		return voluntarioRepository.findAll().stream().map(e -> e.toPayload()).collect(Collectors.toList());
     }
 	
 	public VoluntarioPayload altaVoluntario (VoluntarioPayload payload) {
@@ -75,7 +74,7 @@ public class VoluntarioService {
 	
 	
 	// Conversiones Payload Model
-	public Voluntario toModel(VoluntarioPayload p) {
+	/*public Voluntario toModel(VoluntarioPayload p) {
 
 		Voluntario m = new Voluntario();
 
@@ -132,5 +131,5 @@ public class VoluntarioService {
 		// Fin Voluntario
 
 		return p;
-	}
+	}*/
 }

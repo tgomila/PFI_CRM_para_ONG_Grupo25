@@ -36,7 +36,7 @@ public class PersonaJuridicaController {
     }
 	
 	@GetMapping({"/", "/all"})
-	//@PreAuthorize("hasRole('EMPLOYEE')")
+	//@PreAuthorize("hasRole('ROLE_EMPLOYEE')")
     public List<PersonaJuridicaPayload> getPersonaJuridica() {
     	return  personaJuridicaService.getPersonasJuridicas();
 	}

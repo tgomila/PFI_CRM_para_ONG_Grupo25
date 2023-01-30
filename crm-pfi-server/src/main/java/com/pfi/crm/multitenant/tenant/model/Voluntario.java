@@ -22,13 +22,17 @@ public class Voluntario extends PersonaFisicaAbstract {
 	//Constructores
 	public Voluntario() {
 		super();
-		this.estadoActivoVoluntario = true;
+		this.setFechaAltaContacto(LocalDate.now());
+		this.setEstadoActivoPersonaFisica(true);
+		this.setEstadoActivoVoluntario(true);
 	}
 
 	public Voluntario(Long idVoluntario) {
 		super();
+		this.setFechaAltaContacto(LocalDate.now());
+		this.setEstadoActivoPersonaFisica(true);
+		this.setEstadoActivoVoluntario(true);
 		this.idVoluntario = idVoluntario;
-		this.estadoActivoVoluntario = true;
 	}
 	
 	public Voluntario(VoluntarioPayload p) {

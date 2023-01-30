@@ -26,15 +26,19 @@ public class ConsejoAdHonorem extends PersonaFisicaAbstract {
 	//Constructores
 	public ConsejoAdHonorem() {
 		super();
-		this.estadoActivoConsejoAdHonorem = true;
+		this.setFechaAltaContacto(LocalDate.now());
+		this.setEstadoActivoPersonaFisica(true);
+		this.setEstadoActivoConsejoAdHonorem(true);
 	}
 	
 	
 	public ConsejoAdHonorem(Long idConsejoAdHonorem, String funcion) {
 		super();
+		this.setFechaAltaContacto(LocalDate.now());
+		this.setEstadoActivoPersonaFisica(true);
+		this.setEstadoActivoConsejoAdHonorem(true);
 		this.idConsejoAdHonorem = idConsejoAdHonorem;
 		this.funcion = funcion;
-		this.estadoActivoConsejoAdHonorem = true;
 	}
 	
 	public ConsejoAdHonorem(ConsejoAdHonoremPayload p) {

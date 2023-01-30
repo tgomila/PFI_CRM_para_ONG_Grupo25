@@ -35,7 +35,7 @@ public class DonacionService  {
 	
 	public List<DonacionPayload> getDonaciones() {
 		//return donacionRepository.findAll();
-		return donacionRepository.findAll().stream().map(e -> toPayload(e)).collect(Collectors.toList());
+		return donacionRepository.findAll().stream().map(e -> e.toPayload()).collect(Collectors.toList());
     }
 	
 	public DonacionPayload altaDonacion (DonacionPayload payload) {
@@ -88,7 +88,7 @@ public class DonacionService  {
 	
 	
 	// Conversiones Payload Model
-	public Donacion toModel(DonacionPayload p) {
+	/*public Donacion toModel(DonacionPayload p) {
 
 		Donacion m = new Donacion();
 		
@@ -112,5 +112,5 @@ public class DonacionService  {
 		p.setDescripcion(m.getDescripcion());
 
 		return p;
-	}
+	}*/
 }

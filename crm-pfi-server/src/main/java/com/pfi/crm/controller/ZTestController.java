@@ -69,7 +69,7 @@ public class ZTestController {
     
     @PostMapping("/testContacto")
     public ContactoPayload getContacto(@Valid @RequestBody ContactoPayload payload) {
-    	return contactoService.altaContacto(new Contacto(payload)).toPayload();
+    	return contactoService.altaContacto(payload);
     }
     
     @PostMapping("/testEntities")

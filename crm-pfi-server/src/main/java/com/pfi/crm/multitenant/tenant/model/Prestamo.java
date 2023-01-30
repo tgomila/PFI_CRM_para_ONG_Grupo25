@@ -43,6 +43,16 @@ public class Prestamo extends UserDateAudit {
 		this.prestatario = new Contacto(p.getPrestatario());
 	}
 	
+	public void modificar(PrestamoPayload p, Contacto prestamista, Contacto prestatario) {
+		this.id = p.getId();
+		this.descripcion = p.getDescripcion();
+		this.cantidad = p.getCantidad();
+		this.fechaPrestamoInicio = p.getFechaPrestamoInicio();
+		this.fechaPrestamoFin = p.getFechaPrestamoFin();
+		this.prestamista = prestamista;
+		this.prestatario = prestatario;
+	}
+	
 	
 	public PrestamoPayload toPayload() {
 		PrestamoPayload p = new PrestamoPayload();

@@ -1,8 +1,10 @@
 package com.pfi.crm.multitenant.tenant.model;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -13,6 +15,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
+import com.pfi.crm.exception.BadRequestException;
 import com.pfi.crm.multitenant.tenant.model.audit.UserDateAudit;
 import com.pfi.crm.multitenant.tenant.payload.ProgramaDeActividadesPayload;
 
@@ -30,8 +33,8 @@ public class ProgramaDeActividades extends UserDateAudit {
 	private Long id;
 	
 	private boolean estadoActivoPrograma;
-	private LocalDate fechaAltaPrograma;
-	private LocalDate fechaBajaPrograma;
+	private LocalDateTime fechaAltaPrograma;
+	private LocalDateTime fechaBajaPrograma;
 	
 	private String descripcion;
 	
@@ -41,49 +44,84 @@ public class ProgramaDeActividades extends UserDateAudit {
 	
 	public ProgramaDeActividades() {
 		super();
-		fechaAltaPrograma = LocalDate.now();
+		estadoActivoPrograma = true;
+		fechaAltaPrograma = LocalDateTime.now();
 		actividades = new ArrayList<Actividad>();
 	}
 	
-	public ProgramaDeActividades(ProgramaDeActividadesPayload p) {
+	public ProgramaDeActividades(ProgramaDeActividadesPayload p, List<Actividad> actividades) {
 		super();
 		this.id = p.getId();
-		this.fechaAltaPrograma = null;
-		this.fechaBajaPrograma = null;
+		estadoActivoPrograma = true;
+		fechaAltaPrograma = LocalDateTime.now();
+		//p.getActividades().forEach((a) -> actividades.add(new Actividad(a)));
+		modificar(p, actividades);
+	}
+	
+	public void modificar(ProgramaDeActividadesPayload p, List<Actividad> actividades) {
 		this.descripcion = p.getDescripcion();
-		p.getActividades().forEach((a) -> actividades.add(new Actividad(a)));
+		this.actividades = actividades;
+		//p.getActividades().forEach((a) -> actividades.add(new Actividad(a)));
+		ordenarActividades();
 	}
 	
 	
 	public ProgramaDeActividadesPayload toPayload() {
+		ordenarActividades();
 		ProgramaDeActividadesPayload p = new ProgramaDeActividadesPayload();
 		p.setId(id);
 		p.setFechaDesde(this.getFechaInicio());
 		p.setFechaHasta(this.getFechaFin());
-		p.setFechaAltaPrograma(fechaAltaPrograma);
-		p.setFechaBajaPrograma(fechaBajaPrograma);
 		actividades.forEach((m) -> p.agregarActividad(m.toPayload()));
 		return p;
 	}
 	
-	public LocalDate getFechaInicio() {
-		List<Actividad> copy = new ArrayList<>(actividades);
-		return copy.stream()
-				.filter(actividad -> actividad!=null && actividad.getFechaHoraDesde()!=null)
-				.map(Actividad::getFechaHoraDesde)
-				.min(LocalDate::compareTo)
-				.orElse(null);
-				//.get();
+	public LocalDateTime getFechaInicio() {
+		ordenarActividades();
+		if(actividades.isEmpty())
+			throw new BadRequestException("No hay actividades dentro del programa");
+		else
+			return actividades.get(0).getFechaHoraDesde();
+		
+
+		//List<Actividad> copy = new ArrayList<>(actividades);
+		//return copy.stream()
+		//		.filter(actividad -> actividad!=null && actividad.getFechaHoraDesde()!=null)
+		//		.map(Actividad::getFechaHoraDesde)
+		//		.min(LocalDateTime::compareTo)
+		//		//.orElse(null);
+		//		.get();
 	}
 	
-	public LocalDate getFechaFin() {
+	public LocalDateTime getFechaFin() {
 		List<Actividad> copy = new ArrayList<>(actividades);
 		return copy.stream()
-				.filter(actividad -> actividad!=null && actividad.getFechaHoraDesde()!=null)
-				.map(Actividad::getFechaHoraDesde)
-				.max(LocalDate::compareTo)
-				.orElse(null);
-				//.get();
+				.filter(actividad -> actividad!=null && actividad.getFechaHoraHasta()!=null)
+				.map(Actividad::getFechaHoraHasta)
+				.max(LocalDateTime::compareTo)
+				.get();
+	}
+	
+	public void agregarActividad(Actividad actividad) {
+		actividades.add(actividad);
+		ordenarActividades();
+	}
+	
+	public void ordenarActividades() {
+		actividades = ordenarActividades(actividades);
+	}
+	
+	public List<Actividad> ordenarActividades(List<Actividad> actividadesSinOrdenar) {
+		if(actividadesSinOrdenar == null)
+			actividadesSinOrdenar = new ArrayList<Actividad>();
+		if(actividadesSinOrdenar.isEmpty())
+			return actividadesSinOrdenar;
+		
+		List<Actividad> actividadesOrdenadas = actividadesSinOrdenar
+                .stream()
+                .sorted(Comparator.comparing(Actividad::getFechaHoraDesde))
+                .collect(Collectors.toList());
+		return actividadesOrdenadas;
 	}
 	
 	//Getters and Setters
@@ -100,23 +138,19 @@ public class ProgramaDeActividades extends UserDateAudit {
 	}
 
 	public void setEstadoActivoPrograma(boolean estadoActivoPrograma) {
+		if(!estadoActivoPrograma)
+			this.fechaBajaPrograma = LocalDateTime.now();
+		else
+			this.fechaBajaPrograma = null;
 		this.estadoActivoPrograma = estadoActivoPrograma;
 	}
 
-	public LocalDate getFechaAltaPrograma() {
+	public LocalDateTime getFechaAltaPrograma() {
 		return fechaAltaPrograma;
 	}
 
-	public void setFechaAltaPrograma(LocalDate fechaAltaPrograma) {
-		this.fechaAltaPrograma = fechaAltaPrograma;
-	}
-
-	public LocalDate getFechaBajaPrograma() {
+	public LocalDateTime getFechaBajaPrograma() {
 		return fechaBajaPrograma;
-	}
-
-	public void setFechaBajaPrograma(LocalDate fechaBajaPrograma) {
-		this.fechaBajaPrograma = fechaBajaPrograma;
 	}
 
 	public String getDescripcion() {

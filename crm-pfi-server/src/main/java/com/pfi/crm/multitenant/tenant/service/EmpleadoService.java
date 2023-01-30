@@ -1,8 +1,6 @@
 package com.pfi.crm.multitenant.tenant.service;
 
-import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -26,13 +24,13 @@ public class EmpleadoService {
 	private static final Logger logger = LoggerFactory.getLogger(EmpleadoService.class);
 	
 	public EmpleadoPayload getEmpleadoByIdContacto(@PathVariable Long id) {
-        return empleadoRepository.findByPersonaFisica_Contacto_Id(id).orElseThrow(
-                () -> new ResourceNotFoundException("Empleado", "id", id)).toPayload();
+		return empleadoRepository.findByPersonaFisica_Contacto_Id(id).orElseThrow(
+        		() -> new ResourceNotFoundException("Empleado", "id", id)).toPayload();
     }
 	
 	public List<EmpleadoPayload> getEmpleados() {
 		//return empleadoRepository.findAll();
-		return empleadoRepository.findAll().stream().map(e -> toPayload(e)).collect(Collectors.toList());
+		return empleadoRepository.findAll().stream().map(e -> e.toPayload()).collect(Collectors.toList());
     }
 	
 	public EmpleadoPayload altaEmpleado (EmpleadoPayload payload) {
@@ -43,23 +41,23 @@ public class EmpleadoService {
 	public void bajaEmpleado(Long id) {
 		
 		//Si Optional es null o no, lo conocemos con ".isPresent()".		
-		Optional<Empleado> optionalModel = empleadoRepository.findByPersonaFisica_Contacto_Id(id);
-		if(optionalModel.isPresent()) {
-			Empleado m = optionalModel.get();
-			m.setEstadoActivoEmpleado(false);
-			m.setContacto(null);
-			m.setPersonaFisica(null);
-			empleadoRepository.save(m);
-			empleadoRepository.delete(m);											//Temporalmente se elimina de la BD			
-		}
-		else {
-			//No existe persona Fisica
-		}
-		
+		Empleado m = empleadoRepository.findByPersonaFisica_Contacto_Id(id).orElseThrow(
+				() -> new ResourceNotFoundException("Empleado", "id", id));
+		//Empleado m = optionalModel.get();
+		m.setEstadoActivoEmpleado(false);
+		m.setContacto(null);
+		m.setPersonaFisica(null);
+		empleadoRepository.save(m);
+		empleadoRepository.delete(m);
 	}
 	
 	public EmpleadoPayload modificarEmpleado(EmpleadoPayload payload) {
-		if (payload != null && payload.getId() != null) {
+		Empleado model = empleadoRepository.findByPersonaFisica_Contacto_Id(payload.getId()).orElseThrow(
+				() -> new ResourceNotFoundException("Empleado", "id", payload.getId()));
+		model.modificar(payload);
+		return empleadoRepository.save(model).toPayload();	
+		
+		/*if (payload != null && payload.getId() != null) {
 			//Necesito el id de persona Fisica o se crearia uno nuevo
 			Optional<Empleado> optional = empleadoRepository.findByPersonaFisica_Contacto_Id(payload.getId());
 			if(optional.isPresent()) {   //Si existe
@@ -68,14 +66,15 @@ public class EmpleadoService {
 				return empleadoRepository.save(model).toPayload();				
 			}
 			//si llegue aca devuelvo null
+			new ResourceNotFoundException("Empleado", "id", "null");
 		}
-		return null;
+		return null;*/
 	}
 	
 	
 	
 	// Conversiones Payload Model
-	public Empleado toModel(EmpleadoPayload p) {
+	/*public Empleado toModel(EmpleadoPayload p) {
 
 		Empleado m = new Empleado();
 
@@ -146,5 +145,5 @@ public class EmpleadoService {
 		// Fin Empleado
 
 		return p;
-	}
+	}*/
 }

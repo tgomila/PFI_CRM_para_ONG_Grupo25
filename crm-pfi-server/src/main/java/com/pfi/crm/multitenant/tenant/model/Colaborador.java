@@ -26,14 +26,18 @@ public class Colaborador extends TrabajadorAbstract{
 	//Constructor
 	public Colaborador() {
 		super();
-		estadoActivoColaborador = true;
+		this.setFechaAltaContacto(LocalDate.now());
+		this.setEstadoActivoPersonaFisica(true);
+		this.setEstadoActivoColaborador(true);
 	}
 
 	public Colaborador(Long idColaborador, String area) {
 		super();
+		this.setFechaAltaContacto(LocalDate.now());
+		this.setEstadoActivoPersonaFisica(true);
+		this.setEstadoActivoColaborador(true);
 		this.idColaborador = idColaborador;
 		this.area = area;
-		estadoActivoColaborador = true;
 	}
 	
 	

@@ -26,11 +26,16 @@ public class Profesional extends TrabajadorAbstract{
 	//Constructores
 	public Profesional() {
 		super();
-		estadoActivoProfesional = true;
+		this.setFechaAltaContacto(LocalDate.now());
+		this.setEstadoActivoPersonaFisica(true);
+		this.setEstadoActivoProfesional(true);
 	}
 
 	public Profesional(Long idProfesional, String profesion) {
 		super();
+		this.setFechaAltaContacto(LocalDate.now());
+		this.setEstadoActivoPersonaFisica(true);
+		this.setEstadoActivoProfesional(true);
 		this.idProfesional = idProfesional;
 		this.profesion = profesion;
 		this.estadoActivoProfesional = true;

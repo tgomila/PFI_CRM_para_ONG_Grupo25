@@ -36,7 +36,7 @@ public class ColaboradorController  {
     }
 	
 	@GetMapping({"/", "/all"})
-	//@PreAuthorize("hasRole('EMPLOYEE')")
+	//@PreAuthorize("hasRole('ROLE_EMPLOYEE')")
     public List<ColaboradorPayload> getColaborador() {
     	return  colaboradorService.getColaboradores();
 	}

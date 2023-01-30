@@ -1,6 +1,5 @@
 package com.pfi.crm.multitenant.tenant.service;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -34,7 +33,7 @@ public class PersonaFisicaService {
 	
 	public List<PersonaFisicaPayload> getPersonasFisicas() {
 		//return personaFisicaRepository.findAll();
-		return personaFisicaRepository.findAll().stream().map(e -> toPayload(e)).collect(Collectors.toList());
+		return personaFisicaRepository.findAll().stream().map(e -> e.toPayload()).collect(Collectors.toList());
     }
 	
 	public PersonaFisicaPayload altaPersonaFisica (PersonaFisicaPayload payload) {
@@ -78,7 +77,7 @@ public class PersonaFisicaService {
 	
 	
 	//Conversiones Payload Model
-	public PersonaFisica toModel (PersonaFisicaPayload p) {
+	/*public PersonaFisica toModel (PersonaFisicaPayload p) {
 		
 		PersonaFisica m = new PersonaFisica();
 		
@@ -127,5 +126,5 @@ public class PersonaFisicaService {
 		// Fin Persona Juridica
 		
 		return p;
-	}
+	}*/
 }

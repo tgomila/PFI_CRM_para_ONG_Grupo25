@@ -25,8 +25,8 @@ public class BeneficiarioService {
 	private static final Logger logger = LoggerFactory.getLogger(BeneficiarioService.class);
 	
 	public BeneficiarioPayload getBeneficiarioByIdContacto(@PathVariable Long id) {
-        return beneficiarioRepository.findByPersonaFisica_Contacto_Id(id).orElseThrow(
-                () -> new ResourceNotFoundException("Beneficiario", "id", id)).toPayload();
+		return beneficiarioRepository.findByPersonaFisica_Contacto_Id(id).orElseThrow(
+				() -> new ResourceNotFoundException("Beneficiario", "id", id)).toPayload();
     }
 	
 	public List<BeneficiarioPayload> getBeneficiarios() {

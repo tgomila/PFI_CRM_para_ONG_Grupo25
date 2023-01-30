@@ -5,12 +5,12 @@ import java.math.BigDecimal;
 public class ProductoPayload {
 	
 	private Long id;
+	private String tipo;
 	private String descripcion;
 	private BigDecimal precioVenta;
 	private int cantFijaCompra;
 	private int cantMinimaStock;
 	private int stockActual;
-	private boolean estadoActivo;
 	private boolean fragil;
 	private ContactoPayload proveedor;
 	
@@ -19,7 +19,7 @@ public class ProductoPayload {
 		cantFijaCompra = 0;
 		cantMinimaStock = 0;
 		stockActual = 0;
-		proveedor = new ContactoPayload();
+		//proveedor = new ContactoPayload();
 	}
 	
 	
@@ -30,6 +30,14 @@ public class ProductoPayload {
 
 	public void setId(Long id) {
 		this.id = id;
+	}
+
+	public String getTipo() {
+		return tipo;
+	}
+
+	public void setTipo(String tipo) {
+		this.tipo = tipo;
 	}
 
 	public String getDescripcion() {
@@ -70,14 +78,6 @@ public class ProductoPayload {
 
 	public void setStockActual(int stockActual) {
 		this.stockActual = stockActual;
-	}
-
-	public boolean isEstadoActivo() {
-		return estadoActivo;
-	}
-
-	public void setEstadoActivo(boolean estadoActivo) {
-		this.estadoActivo = estadoActivo;
 	}
 
 	public boolean isFragil() {

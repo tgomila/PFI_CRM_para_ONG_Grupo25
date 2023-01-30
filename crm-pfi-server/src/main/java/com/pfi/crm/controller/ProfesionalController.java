@@ -36,7 +36,7 @@ public class ProfesionalController {
     }
 	
 	@GetMapping({"/", "/all"})
-	//@PreAuthorize("hasRole('EMPLOYEE')")
+	//@PreAuthorize("hasRole('ROLE_EMPLOYEE')")
     public List<ProfesionalPayload> getProfesional() {
     	return  profesionalService.getProfesionales();
 	}

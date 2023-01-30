@@ -30,6 +30,9 @@ public class Empleado extends TrabajadorAbstract{
 	
 	public Empleado(Long idEmpleado, String funcion, String descripcion) {
 		super();
+		this.setFechaAltaContacto(LocalDate.now());
+		this.setEstadoActivoPersonaFisica(true);
+		this.setEstadoActivoEmpleado(true);
 		this.idEmpleado = idEmpleado;
 		this.funcion = funcion;
 		this.descripcion = descripcion;

@@ -34,7 +34,7 @@ public class ContactoController {
     }
 	
 	@GetMapping({"/", "/all"})
-	//@PreAuthorize("hasRole('EMPLOYEE')")
+	//@PreAuthorize("hasRole('ROLE_EMPLOYEE')")
     public List<ContactoPayload> getContactos() {
 		System.out.println("\n\n\n----------------------------Entre acá /all-----------------------------------\n\n\n");
     	//return  contactoService.getContactos().stream().map(e -> contactoService.toPayload(e)).collect(Collectors.toList());

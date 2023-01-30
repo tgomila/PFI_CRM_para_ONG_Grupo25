@@ -35,13 +35,19 @@ public class Beneficiario extends PersonaFisicaAbstract {
 	//Constructor
 	public Beneficiario() {
 		super();
-		seRetiraSolo = false;	//Inicializo por las dudas
-		estadoActivoBeneficiario = true;
+		this.setFechaAltaContacto(LocalDate.now());
+		this.setEstadoActivoPersonaFisica(true);
+		this.setEstadoActivoBeneficiario(true);
+		this.setSeRetiraSolo(false);	//Inicializo por las dudas
 	}
 	
 	public Beneficiario(Long idBeneficiario, Long idONG, Long legajo, String lugarDeNacimiento, boolean seRetiraSolo,
 			String cuidadosEspeciales, String escuela, String grado, String turno) {
 		super();
+		this.setFechaAltaContacto(LocalDate.now());
+		this.setEstadoActivoPersonaFisica(true);
+		this.setEstadoActivoBeneficiario(true);
+		this.setSeRetiraSolo(false);	//Inicializo por las dudas
 		this.idBeneficiario = idBeneficiario;
 		this.idONG = idONG;
 		this.legajo = legajo;
@@ -51,7 +57,6 @@ public class Beneficiario extends PersonaFisicaAbstract {
 		this.escuela = escuela;
 		this.grado = grado;
 		this.turno = turno;
-		this.estadoActivoBeneficiario = true;
 	}
 	
 	public Beneficiario(BeneficiarioPayload p) {

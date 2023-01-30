@@ -36,7 +36,7 @@ public class EmpleadoController {
     }
 	
 	@GetMapping({"/", "/all"})
-	//@PreAuthorize("hasRole('EMPLOYEE')")
+	//@PreAuthorize("hasRole('ROLE_EMPLOYEE')")
     public List<EmpleadoPayload> getEmpleado() {
     	return  empleadoService.getEmpleados();
 	}

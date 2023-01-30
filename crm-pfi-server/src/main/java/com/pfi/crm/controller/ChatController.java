@@ -32,7 +32,7 @@ public class ChatController {
     }
 	
 	@GetMapping({"/", "/all"})
-	//@PreAuthorize("hasRole('EMPLOYEE')")
+	//@PreAuthorize("hasRole('ROLE_EMPLOYEE')")
     public List<ChatPayload> getChat() {
     	return  chatService.getChats();
 	}

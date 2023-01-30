@@ -15,7 +15,11 @@ public class ProyectoPayload {
 	public ProyectoPayload() {
 		super();
 		fechaInicio = LocalDate.now();
-		involucrados = new ArrayList<>();
+		involucrados = new ArrayList<PersonaFisicaPayload>();
+	}
+	
+	public void agregarInvolucrado(PersonaFisicaPayload p) {
+		involucrados.add(p);
 	}
 
 	public Long getId() {

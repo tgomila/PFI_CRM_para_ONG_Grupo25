@@ -1,16 +1,19 @@
 package com.pfi.crm.multitenant.tenant.payload;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ProgramaDeActividadesPayload {
 	
 	private Long id;
-	private LocalDate fechaDesde;
-	private LocalDate fechaHasta;
-	private LocalDate fechaAltaPrograma;
-	private LocalDate fechaBajaPrograma;
+	
+	//Datos simbólicos solo para mostrar en pantalla, no se guardan.
+	private LocalDateTime fechaDesde;
+	private LocalDateTime fechaHasta;
+	
 	private List<ActividadPayload> actividades;
 	private String descripcion;
 	
@@ -21,9 +24,20 @@ public class ProgramaDeActividadesPayload {
 	
 	public void agregarActividad(ActividadPayload actividad) {
 		actividades.add(actividad);
+		ordenarActividades();
 	}
 	
-	
+	private void ordenarActividades() {
+		if(actividades == null)
+			actividades = new ArrayList<ActividadPayload>();
+		if(actividades.isEmpty())
+			return;
+		
+		actividades = actividades
+                .stream()
+                .sorted(Comparator.comparing(ActividadPayload::getFechaHoraDesde))
+                .collect(Collectors.toList());
+	}
 	
 
 	public Long getId() {
@@ -34,36 +48,20 @@ public class ProgramaDeActividadesPayload {
 		this.id = id;
 	}
 
-	public LocalDate getFechaDesde() {
+	public LocalDateTime getFechaDesde() {
 		return fechaDesde;
 	}
 
-	public void setFechaDesde(LocalDate fechaDesde) {
+	public void setFechaDesde(LocalDateTime fechaDesde) {
 		this.fechaDesde = fechaDesde;
 	}
 
-	public LocalDate getFechaHasta() {
+	public LocalDateTime getFechaHasta() {
 		return fechaHasta;
 	}
 
-	public void setFechaHasta(LocalDate fechaHasta) {
+	public void setFechaHasta(LocalDateTime fechaHasta) {
 		this.fechaHasta = fechaHasta;
-	}
-
-	public LocalDate getFechaAltaPrograma() {
-		return fechaAltaPrograma;
-	}
-
-	public void setFechaAltaPrograma(LocalDate fechaAltaPrograma) {
-		this.fechaAltaPrograma = fechaAltaPrograma;
-	}
-
-	public LocalDate getFechaBajaPrograma() {
-		return fechaBajaPrograma;
-	}
-
-	public void setFechaBajaPrograma(LocalDate fechaBajaPrograma) {
-		this.fechaBajaPrograma = fechaBajaPrograma;
 	}
 
 	public List<ActividadPayload> getActividades() {

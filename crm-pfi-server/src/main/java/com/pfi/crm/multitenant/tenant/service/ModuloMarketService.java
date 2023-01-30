@@ -28,7 +28,7 @@ public class ModuloMarketService {
 	}
 	
 	public List<ModuloMarketPayload> getModuloMarkets() {
-		return moduloMarketRepository.findAll().stream().map(e -> toPayload(e)).collect(Collectors.toList());
+		return moduloMarketRepository.findAll().stream().map(e -> e.toPayload()).collect(Collectors.toList());
 	}
 	
 	public ModuloMarketPayload altaModuloMarket(ModuloMarket moduloMarket) {
@@ -181,7 +181,7 @@ public class ModuloMarketService {
 	
 	
 	
-	public ModuloMarketPayload toPayload(ModuloMarket m) {
+	/*public ModuloMarketPayload toPayload(ModuloMarket m) {
 		ModuloMarketPayload p = new ModuloMarketPayload();
 		p.setId(m.getId());
 		p.setModuloEnum(m.getModuloEnum());
@@ -190,5 +190,5 @@ public class ModuloMarketService {
 		p.setFechaMaximaSuscripcion(m.getFechaMaximaSuscripcion());
 		p.setSuscripcionActiva(m.isSuscripcionActiva());
 		return p;
-	}
+	}*/
 }

@@ -1,21 +1,16 @@
 package com.pfi.crm.multitenant.tenant.payload;
 
-import java.time.LocalDate;
-
 public class InsumoPayload {
 	
 	private Long id;
-	private LocalDate fechaInsumo;
-	private int cantidad;
-	private ProductoPayload producto;
-	private ContactoPayload responsableInsumo;
+	private String tipo;
+	private String descripcion;
+	private int stockActual;
+	private boolean fragil;
 	
 	public InsumoPayload() {
 		super();
-		fechaInsumo = LocalDate.now();
-		cantidad = 0;
-		producto = null;
-		responsableInsumo = null;
+		stockActual = 0;
 	}
 
 	public Long getId() {
@@ -26,37 +21,35 @@ public class InsumoPayload {
 		this.id = id;
 	}
 
-	public LocalDate getFechaInsumo() {
-		return fechaInsumo;
+	public String getTipo() {
+		return tipo;
 	}
 
-	public void setFechaInsumo(LocalDate fechaInsumo) {
-		this.fechaInsumo = fechaInsumo;
+	public void setTipo(String tipo) {
+		this.tipo = tipo;
 	}
 
-	public int getCantidad() {
-		return cantidad;
+	public String getDescripcion() {
+		return descripcion;
 	}
 
-	public void setCantidad(int cantidad) {
-		this.cantidad = cantidad;
+	public void setDescripcion(String descripcion) {
+		this.descripcion = descripcion;
 	}
 
-	public ProductoPayload getProducto() {
-		return producto;
+	public int getStockActual() {
+		return stockActual;
 	}
 
-	public void setProducto(ProductoPayload producto) {
-		this.producto = producto;
+	public void setStockActual(int stockActual) {
+		this.stockActual = stockActual;
 	}
 
-	public ContactoPayload getResponsableInsumo() {
-		return responsableInsumo;
+	public boolean isFragil() {
+		return fragil;
 	}
 
-	public void setResponsableInsumo(ContactoPayload responsableInsumo) {
-		this.responsableInsumo = responsableInsumo;
+	public void setFragil(boolean fragil) {
+		this.fragil = fragil;
 	}
-	
-	
 }

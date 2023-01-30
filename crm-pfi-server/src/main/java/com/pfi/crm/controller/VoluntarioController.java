@@ -36,7 +36,7 @@ public class VoluntarioController {
     }
 	
 	@GetMapping({"/", "/all"})
-	//@PreAuthorize("hasRole('EMPLOYEE')")
+	//@PreAuthorize("hasRole('ROLE_EMPLOYEE')")
     public List<VoluntarioPayload> getVoluntario() {
     	return  voluntarioService.getVoluntarios();
 	}

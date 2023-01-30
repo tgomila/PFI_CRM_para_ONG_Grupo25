@@ -1,83 +1,59 @@
 package com.pfi.crm.multitenant.tenant.model;
 
-import java.math.BigDecimal;
-
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
-import com.pfi.crm.multitenant.tenant.payload.ProductoPayload;
+import com.pfi.crm.multitenant.tenant.payload.InsumoPayload;
 
 @Entity
-@Table(name ="producto")
-public class Producto {
+@Table(name ="insumo")
+public class Insumo {
 	
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	private String tipo;
 	private String descripcion;
-	private BigDecimal precioVenta;
-	private int cantFijaCompra;
-	private int cantMinimaStock;
 	private int stockActual;
 	private boolean estadoActivo;
 	private boolean fragil;
 	
-	@ManyToOne(cascade = CascadeType.ALL)
-	@OrderBy("nombreDescripcion ASC")
-	private Contacto proveedor;
 	
-	//Constructores
-	public Producto() {
+	public Insumo() {
 		super();
+		this.estadoActivo = true;
 	}
 	
-	
-	public Producto(ProductoPayload p) {
+	public Insumo(InsumoPayload p) {
 		super();
 		this.id = p.getId();
 		this.tipo = p.getTipo();
 		this.descripcion = p.getDescripcion();
-		this.precioVenta = p.getPrecioVenta();
-		this.cantFijaCompra = p.getCantFijaCompra();
-		this.cantMinimaStock = p.getCantMinimaStock();
 		this.stockActual = p.getStockActual();
 		this.estadoActivo = true;
 		this.fragil = p.isFragil();
 	}
 	
-	public void modificar(ProductoPayload p) {
+	public void modificar(InsumoPayload p) {
 		this.tipo = p.getTipo();
 		this.descripcion = p.getDescripcion();
-		this.precioVenta = p.getPrecioVenta();
-		this.cantFijaCompra = p.getCantFijaCompra();
-		this.cantMinimaStock = p.getCantMinimaStock();
 		this.stockActual = p.getStockActual();
 		this.fragil = p.isFragil();
 	}
 	
-	public ProductoPayload toPayload() {
-		ProductoPayload p = new ProductoPayload();
-		
+	public InsumoPayload toPayload() {
+		InsumoPayload p = new InsumoPayload();
 		p.setId(id);
 		p.setTipo(tipo);
 		p.setDescripcion(descripcion);
-		p.setPrecioVenta(precioVenta);
-		p.setCantFijaCompra(cantFijaCompra);
-		p.setCantMinimaStock(cantMinimaStock);
 		p.setStockActual(stockActual);
 		p.setFragil(fragil);
-		
 		return p;
 	}
 
-	//Getters and Setters
 	public Long getId() {
 		return id;
 	}
@@ -102,30 +78,6 @@ public class Producto {
 		this.descripcion = descripcion;
 	}
 
-	public BigDecimal getPrecioVenta() {
-		return precioVenta;
-	}
-
-	public void setPrecioVenta(BigDecimal precioVenta) {
-		this.precioVenta = precioVenta;
-	}
-
-	public int getCantFijaCompra() {
-		return cantFijaCompra;
-	}
-
-	public void setCantFijaCompra(int cantFijaCompra) {
-		this.cantFijaCompra = cantFijaCompra;
-	}
-
-	public int getCantMinimaStock() {
-		return cantMinimaStock;
-	}
-
-	public void setCantMinimaStock(int cantMinimaStock) {
-		this.cantMinimaStock = cantMinimaStock;
-	}
-
 	public int getStockActual() {
 		return stockActual;
 	}
@@ -148,14 +100,6 @@ public class Producto {
 
 	public void setFragil(boolean fragil) {
 		this.fragil = fragil;
-	}
-	
-	public Contacto getProveedor() {
-		return proveedor;
-	}
-
-	public void setProveedor(Contacto proveedor) {
-		this.proveedor = proveedor;
 	}
 	
 }
