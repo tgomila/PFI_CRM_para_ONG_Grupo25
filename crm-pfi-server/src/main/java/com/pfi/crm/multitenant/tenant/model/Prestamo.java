@@ -61,8 +61,10 @@ public class Prestamo extends UserDateAudit {
 		p.setCantidad(cantidad);
 		p.setFechaPrestamoInicio(fechaPrestamoInicio);
 		p.setFechaPrestamoFin(fechaPrestamoFin);
-		p.setPrestamista(prestamista.toPayload());
-		p.setPrestatario(prestatario.toPayload());
+		if(prestamista != null)
+			p.setPrestamista(prestamista.toPayload());
+		if(prestatario != null)
+			p.setPrestatario(prestatario.toPayload());
 		return p;
 	}
 	

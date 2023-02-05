@@ -3,11 +3,9 @@ package com.pfi.crm.multitenant.tenant.model;
 import java.math.BigDecimal;
 
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.pfi.crm.multitenant.tenant.payload.FacturaItemPayload;
@@ -24,88 +22,35 @@ public class FacturaItem {
 	private BigDecimal precioUnitario;
 	private BigDecimal precio;
 	
-	@ManyToOne(fetch = FetchType.LAZY, optional = false)
-	private Factura factura;
+	//@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	//private Factura factura;
 	
-	//Constructores
-	public FacturaItem() {
-		super();
-	}
-	
-	
+	//Constructor
 	public FacturaItem(FacturaItemPayload p) {
 		super();
 		this.id = p.getId();
+		modificar(p);
+	}
+	
+	public void modificar(FacturaItemPayload p) {
 		this.descripcion = p.getDescripcion();
 		this.unidades = p.getUnidades();
 		this.precioUnitario = p.getPrecioUnitario();
 		this.precio = p.getPrecio();
 	}
 	
-	
-	
-	//Getters and Setters
-	public Long getId() {
-		return id;
+	public boolean isEquals(FacturaItemPayload p) {
+		boolean equal = true;
+		if(!this.id.equals(p.getId())
+				|| !this.descripcion.equals(p.getDescripcion())
+				|| !(this.unidades == p.getUnidades())
+				|| !this.precioUnitario.equals(p.getPrecioUnitario())
+				|| !this.precio.equals(p.getPrecio())) {
+			equal = false;
+		}
+		return equal;
+			
 	}
-
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-
-	public String getDescripcion() {
-		return descripcion;
-	}
-
-
-	public void setDescripcion(String descripcion) {
-		this.descripcion = descripcion;
-	}
-
-
-	public int getUnidades() {
-		return unidades;
-	}
-
-
-	public void setUnidades(int unidades) {
-		this.unidades = unidades;
-	}
-
-
-	public BigDecimal getPrecioUnitario() {
-		return precioUnitario;
-	}
-
-
-	public void setPrecioUnitario(BigDecimal precioUnitario) {
-		this.precioUnitario = precioUnitario;
-	}
-
-
-	public BigDecimal getPrecio() {
-		return precio;
-	}
-
-
-	public void setPrecio(BigDecimal precio) {
-		this.precio = precio;
-	}
-
-
-	public Factura getFactura() {
-		return factura;
-	}
-
-
-	public void setFactura(Factura factura) {
-		this.factura = factura;
-	}
-	
-	
-	
 	
 	public FacturaItemPayload toPayload() {
 		FacturaItemPayload p = new FacturaItemPayload();
@@ -117,5 +62,48 @@ public class FacturaItem {
 		p.setPrecio(precio);
 		
 		return p;
+	}
+	
+	
+	
+	//Getters and Setters
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getDescripcion() {
+		return descripcion;
+	}
+
+	public void setDescripcion(String descripcion) {
+		this.descripcion = descripcion;
+	}
+
+	public int getUnidades() {
+		return unidades;
+	}
+
+	public void setUnidades(int unidades) {
+		this.unidades = unidades;
+	}
+
+	public BigDecimal getPrecioUnitario() {
+		return precioUnitario;
+	}
+
+	public void setPrecioUnitario(BigDecimal precioUnitario) {
+		this.precioUnitario = precioUnitario;
+	}
+
+	public BigDecimal getPrecio() {
+		return precio;
+	}
+
+	public void setPrecio(BigDecimal precio) {
+		this.precio = precio;
 	}
 }

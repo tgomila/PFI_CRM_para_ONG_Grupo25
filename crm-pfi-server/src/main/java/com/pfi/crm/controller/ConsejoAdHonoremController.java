@@ -38,7 +38,7 @@ public class ConsejoAdHonoremController {
 	@GetMapping({"/", "/all"})
 	//@PreAuthorize("hasRole('ROLE_EMPLOYEE')")
     public List<ConsejoAdHonoremPayload> getConsejoAdHonorem() {
-    	return  consejoAdHonoremService.getPersonasFisicas();
+    	return  consejoAdHonoremService.getConsejoAdHonorems();
 	}
 	
 	@PostMapping({"/", "/alta"})

@@ -1,6 +1,8 @@
 package com.pfi.crm;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
@@ -32,12 +34,14 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 	@Autowired
 	private RoleRepository roleRepository;
 	
-	@SuppressWarnings("unused")
 	@Autowired
 	private MasterTenantService masterTenantService;
 	
 	@Autowired
 	private ModuloVisibilidadPorRolService ModuloVisibilidadPorRolService;
+	
+	@Autowired
+	private ContactoService contactoService;
 	
 	@Autowired
 	private BeneficiarioService beneficiarioService;
@@ -66,6 +70,21 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 	@Autowired
 	private UserService userService;
 	
+	@Autowired
+	private ProductoService productoService;
+	
+	@Autowired
+	private InsumoService insumoService;
+	
+	@Autowired
+	private FacturaService facturaService;
+	
+	@Autowired
+	private PrestamoService prestamoService;
+	
+	@Autowired
+	private ProgramaDeActividadesService programaDeActividadesService;
+	
   /**
    * This event is executed as late as conceivably possible to indicate that 
    * the application is ready to service requests.
@@ -74,16 +93,77 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 	public void onApplicationEvent(final ApplicationReadyEvent event) {
 		
 		// here your code ...
-		//cargarMasterTenantSiNoExisten();
+		cargarMasterTenantSiNoExisten();
 		
-		cargarTenant1();
-		cargarTenant2();
-		cargarTenant3();
+		//cargarTenant1();
+		//cargarTenant2();
+		//cargarTenant3();
 		
 		return;
 	}
 	
+	//No funciona versión automatizada
 	public void cargarMasterTenantSiNoExisten() {
+		List<TenantPayload> tenants = masterTenantService.getTenants();
+		
+		if(tenants.size() == 0) {
+			masterTenantService.altaTenant(new TenantPayload(300, "tenant3", "ONG Sapito"));
+			System.out.println("\n\n***Reinicie para cargar datos del tenant3.***\n\n");
+			System.out.println("Y asegure antes que TenantDatabaseConfig.java esté en 'create' en casi final de la línea");
+			return;
+		}
+		if(tenants.size() == 1) {
+			String tenantDeAlta = tenants.get(0).getDbName();
+			
+			//Cargar datos tenant3
+			if(tenantDeAlta.equalsIgnoreCase("tenant3")) {
+				cargarTenant3();
+				System.out.println("Datos cargados de tenant3.");
+				masterTenantService.altaTenant(new TenantPayload(200, "tenant2", "ONG Comida para los chicos"));
+				masterTenantService.bajaTenant("tenant3");
+				System.out.println("\nHa finalizado la carga de datos de tenant3");
+				System.out.println("\n\n***Reinicie para cargar datos del tenant2.***\n\n");
+				return;
+			}
+			
+			//Cargar datos tenant2
+			if(tenantDeAlta.equalsIgnoreCase("tenant2")) {
+				cargarTenant2();
+				System.out.println("Datos cargados de tenant2.");
+				masterTenantService.altaTenant(new TenantPayload(100, "tenant1", "ONG Mi Arbolito"));
+				masterTenantService.bajaTenant("tenant2");
+				System.out.println("\nHa finalizado la carga de datos de tenant2");
+				System.out.println("\n\n***Reinicie para cargar datos del tenant1.***\n\n");
+				return;
+			}
+			
+			//Cargar datos tenant1
+			if(tenantDeAlta.equalsIgnoreCase("tenant1")) {
+				cargarTenant1();
+				System.out.println("Datos cargados de tenant1.");
+				
+				masterTenantService.altaTenant(new TenantPayload(200, "tenant2", "ONG Comida para los chicos"));
+				masterTenantService.altaTenant(new TenantPayload(300, "tenant3", "ONG Sapito"));
+				System.out.println("\n\n***Todos los datos de tenants ya han sido cargados. Por favor realice los pasos.***\n\n");
+				System.out.println("Pasos a realizar:\n"
+						+ "  1) Vaya a TenantDatabaseConfig.java y cambie 'create' a 'none'.\n"
+						+ "  2) Apague el servidor.\n"
+						+ "  3) Guarde el archivo editado.\n"
+						+ "  4) Vuelva a encender, y ya esta.\n"
+				);
+				return;
+			}
+		}
+		
+		if(tenants.size() == 2) {
+			System.out.println("Chequear si los tenants estan bien cargados.");
+			return;
+		}
+		if(tenants.size() == 3) {
+			System.out.println("Tenants bien cargados. Continue con el desarrollo");
+			return;
+		}
+
 		//if(!masterTenantService.existTenantId("tenant3"))
 		//	masterTenantService.altaTenant(new TenantPayload(300, "tenant3", "ONG Sapito"));
 		
@@ -92,6 +172,8 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		
 		//if(!masterTenantService.existTenantId("tenant1"))
 		//		masterTenantService.altaTenant(new TenantPayload(100, "tenant1", "ONG Mi Arbolito"));
+		
+
 	}
 	
 	public void cargarTenant1() {
@@ -99,7 +181,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		DBContextHolder.setCurrentDb("tenant1");
 		//BeneficiarioPayload b = beneficiarioService.getBeneficiarioByIdContacto(Long.parseLong("1"));
 		//if (null == b) {
-		Optional<Role> rol = roleRepository.findByName(RoleName.ROLE_USER);
+		Optional<Role> rol = roleRepository.findByRoleName(RoleName.ROLE_USER);
 		if (!rol.isPresent()) {
 			cargarRolesYModulos();
 
@@ -111,6 +193,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 			cargarConsejoAdHonoremTenant1();
 			cargarPersonaJuridicaTenant1();
 			cargarUsuariosTenant1();
+			cargarProductosInsumosFacturaPrestamoProgramaDeActividadesTenant1();
 		}
 	}
 	
@@ -119,7 +202,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		DBContextHolder.setCurrentDb("tenant2");
 		//BeneficiarioPayload b = beneficiarioService.getBeneficiarioByIdContacto(Long.parseLong("1"));
 		//if (null == b) {
-		Optional<Role> rol = roleRepository.findByName(RoleName.ROLE_USER);
+		Optional<Role> rol = roleRepository.findByRoleName(RoleName.ROLE_USER);
 		if (!rol.isPresent()) {
 			cargarRolesYModulos();
 
@@ -130,8 +213,8 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 			cargarColaboradorTenant2();
 			cargarConsejoAdHonoremTenant2();
 			cargarPersonaJuridicaTenant2();
-
 			cargarUsuariosTenant2();
+			cargarProductosInsumosFacturaPrestamoProgramaDeActividadesTenant2();
 		}
 	}
 	
@@ -140,7 +223,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		DBContextHolder.setCurrentDb("tenant3");
 		//BeneficiarioPayload b = beneficiarioService.getBeneficiarioByIdContacto(Long.parseLong("1"));
 		//if (null == b) {
-		Optional<Role> rol = roleRepository.findByName(RoleName.ROLE_USER);
+		Optional<Role> rol = roleRepository.findByRoleName(RoleName.ROLE_USER);
 		if (!rol.isPresent()) {
 			cargarRolesYModulos();
 			cargarUsuariosDefault();
@@ -834,6 +917,131 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		
 	}
 	
+	public void cargarProductosInsumosFacturaPrestamoProgramaDeActividadesTenant1() {
+		
+		//Producto
+		ContactoPayload proveedor1 = new ContactoPayload();
+		proveedor1.setNombreDescripcion("Juguetería los 3 chanchitos");
+		proveedor1.setCuit("20-12345678-9");
+		proveedor1.setDomicilio("Av. Independencia 1000");
+		proveedor1.setEmail("jugueterialos3chanchitos@abierto.com");
+		proveedor1.setTelefono("1234-5678");
+		proveedor1 = contactoService.altaContacto(proveedor1);
+		
+		ProductoPayload producto1 = new ProductoPayload();
+		producto1.setTipo("Juego de mesa");
+		producto1.setDescripcion("Rompecabeza");
+		producto1.setPrecioVenta(BigDecimal.valueOf(1250.00));
+		producto1.setCantFijaCompra(5);
+		producto1.setCantMinimaStock(15);
+		producto1.setStockActual(25);
+		producto1.setFragil(false);
+		producto1.setProveedor(proveedor1);
+		producto1 = productoService.altaProducto(producto1);
+		
+		ProductoPayload producto2 = new ProductoPayload();
+		producto2.setTipo("Comida/Juguete");
+		producto2.setDescripcion("Huevo de chocolate con sorpresa");
+		producto2.setPrecioVenta(BigDecimal.valueOf(400.00));
+		producto2.setCantFijaCompra(20);
+		producto2.setCantMinimaStock(50);
+		producto2.setStockActual(60);
+		producto2.setFragil(true);
+		producto2.setProveedor(proveedor1);
+		producto2 = productoService.altaProducto(producto2);
+		
+		//Insumos
+		InsumoPayload insumo1 = new InsumoPayload();
+		insumo1.setTipo("Juguetes para los chicos");
+		insumo1.setDescripcion("Autitos");
+		insumo1.setStockActual(25);
+		insumo1.setFragil(false);
+		insumo1 = insumoService.altaInsumo(insumo1);
+		
+		InsumoPayload insumo2 = new InsumoPayload();
+		insumo2.setTipo("Vaso");
+		insumo2.setDescripcion("Vasos de vidrio");
+		insumo2.setStockActual(50);
+		insumo2.setFragil(true);
+		insumo2 = insumoService.altaInsumo(insumo2);
+		
+		//Factura
+		LocalDateTime today = LocalDateTime.now();
+		LocalDateTime todayMinus1month = today.minusMonths(1);
+		LocalDateTime fechaFactura1 = LocalDateTime.of(todayMinus1month.getYear(), todayMinus1month.getMonth(), 20, 13, 15);
+		FacturaPayload factura1 = new FacturaPayload();
+		factura1.setFecha(fechaFactura1);
+		factura1.setCliente(null);
+		factura1.setEmisorFactura(proveedor1);
+		//
+		FacturaItemPayload factura1_item1 = new FacturaItemPayload();
+		factura1_item1.setDescripcion(producto1.getDescripcion());
+		factura1_item1.setUnidades(producto1.getCantFijaCompra()*3);
+		factura1_item1.setPrecioUnitario(producto1.getPrecioVenta());
+		factura1_item1.setPrecio(producto1.getPrecioVenta().multiply(BigDecimal.valueOf(factura1_item1.getUnidades())));
+		factura1.agregarItemFactura(factura1_item1);
+		//
+		FacturaItemPayload factura1_item2 = new FacturaItemPayload();
+		factura1_item2.setDescripcion(producto2.getDescripcion());
+		factura1_item2.setUnidades(producto2.getCantFijaCompra()*4);
+		factura1_item2.setPrecioUnitario(producto2.getPrecioVenta());
+		factura1_item2.setPrecio(producto2.getPrecioVenta().multiply(BigDecimal.valueOf(factura1_item2.getUnidades())));
+		factura1.agregarItemFactura(factura1_item2);
+		//
+		factura1 = facturaService.altaFactura(factura1);
+		
+		LocalDateTime fechaFactura2 = LocalDateTime.of(todayMinus1month.getYear(), todayMinus1month.getMonth(), 25, 17, 30);
+		FacturaPayload factura2 = new FacturaPayload();
+		factura2.setFecha(fechaFactura2);
+		factura2.setCliente(null);
+		factura2.setEmisorFactura(proveedor1);
+		//
+		FacturaItemPayload factura2_item1 = new FacturaItemPayload();
+		factura2_item1.setDescripcion(producto1.getDescripcion());
+		factura2_item1.setUnidades(producto1.getCantFijaCompra()*4);
+		factura2_item1.setPrecioUnitario(producto1.getPrecioVenta());
+		factura2_item1.setPrecio(producto1.getPrecioVenta().multiply(BigDecimal.valueOf(factura2_item1.getUnidades())));
+		factura2.agregarItemFactura(factura2_item1);
+		//
+		FacturaItemPayload factura2_item2 = new FacturaItemPayload();
+		factura2_item2.setDescripcion(producto2.getDescripcion());
+		factura2_item2.setUnidades(producto2.getCantFijaCompra()*6);
+		factura2_item2.setPrecioUnitario(producto2.getPrecioVenta());
+		factura2_item2.setPrecio(producto2.getPrecioVenta().multiply(BigDecimal.valueOf(factura2_item2.getUnidades())));
+		factura2.agregarItemFactura(factura2_item2);
+		//
+		factura2 = facturaService.altaFactura(factura2);
+		
+		
+		//Prestamo
+		List<EmpleadoPayload> empleados = empleadoService.getEmpleados();
+		List<BeneficiarioPayload> beneficiarios = beneficiarioService.getBeneficiarios();
+		ContactoPayload empleado1 = contactoService.getContactoById(empleados.get(0).getId());
+		ContactoPayload beneficiario1 = contactoService.getContactoById(beneficiarios.get(0).getId());
+		
+		PrestamoPayload prestamo1 = new PrestamoPayload();
+		prestamo1.setDescripcion("Radio a pilas Panasonic");
+		prestamo1.setCantidad(1);
+		prestamo1.setFechaPrestamoInicio(LocalDate.now());
+		prestamo1.setFechaPrestamoFin(LocalDate.now().plusMonths(2));
+		prestamo1.setPrestamista(empleado1);
+		prestamo1.setPrestatario(beneficiario1);
+		prestamo1 = prestamoService.altaPrestamo(prestamo1);
+		
+		//Programa de actividades
+		List<ProfesionalPayload> profesionales = profesionalService.getProfesionales();
+		ProgramaDeActividadesPayload programa = new ProgramaDeActividadesPayload();
+		ActividadPayload actividad = new ActividadPayload();
+		actividad.setFechaHoraDesde(LocalDateTime.of(todayMinus1month.getYear(), todayMinus1month.getMonth(), 1, 12, 00));
+		actividad.setFechaHoraHasta(actividad.getFechaHoraDesde().plusHours(3));
+		actividad.agregarProfesional(profesionales.get(0));
+		actividad.agregarBeneficiario(beneficiarios.get(0));
+		actividad.agregarBeneficiario(beneficiarios.get(1));
+		actividad.setDescripcion("Clases a beneficiarios por el profesor: " + actividad.getProfesionales().get(0).getNombre()+" "+actividad.getProfesionales().get(0).getApellido());
+		programa.agregarActividadesPorSemana(10, actividad);
+		programa.setDescripcion(actividad.getDescripcion());
+		programaDeActividadesService.altaProgramaDeActividades(programa);
+	}
 	
 	
 	
@@ -1420,6 +1628,146 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		String username = "fulano2";
 		String email = "fulano2@gmail.com";
 		cargarUsuarioBasico(nombre, username, email, RoleName.ROLE_EMPLOYEE);
+	}
+	
+
+	
+	public void cargarProductosInsumosFacturaPrestamoProgramaDeActividadesTenant2() {
+		
+		//Producto
+		ContactoPayload proveedor1 = new ContactoPayload();
+		proveedor1.setNombreDescripcion("kiosco 7 dias");
+		proveedor1.setCuit("20-12345678-9");
+		proveedor1.setDomicilio("9 de julio 1000");
+		proveedor1.setEmail("kiosco7dias@abierto.com");
+		proveedor1.setTelefono("4123-4567");
+		proveedor1 = contactoService.altaContacto(proveedor1);
+
+		ContactoPayload proveedor2 = new ContactoPayload();
+		proveedor2.setNombreDescripcion("Bazar cocineros en acción");
+		proveedor2.setCuit("20-12345678-9");
+		proveedor2.setDomicilio("Av. Independencia 1000");
+		proveedor2.setEmail("bazarcocinerosenaccion@abierto.com");
+		proveedor2.setTelefono("1234-5678");
+		proveedor2 = contactoService.altaContacto(proveedor2);
+		
+		ProductoPayload producto1 = new ProductoPayload();
+		producto1.setTipo("Galletita");
+		producto1.setDescripcion("Galletitas rellenas");
+		producto1.setPrecioVenta(BigDecimal.valueOf(250.00));
+		producto1.setCantFijaCompra(10);
+		producto1.setCantMinimaStock(100);
+		producto1.setStockActual(120);
+		producto1.setFragil(false);
+		producto1.setProveedor(proveedor1);
+		producto1 = productoService.altaProducto(producto1);
+		
+		ProductoPayload producto2 = new ProductoPayload();
+		producto2.setTipo("Botella");
+		producto2.setDescripcion("Agua");
+		producto2.setPrecioVenta(BigDecimal.valueOf(125.00));
+		producto2.setCantFijaCompra(10);
+		producto2.setCantMinimaStock(100);
+		producto2.setStockActual(100);
+		producto2.setFragil(false);
+		producto2.setProveedor(proveedor1);
+		producto2 = productoService.altaProducto(producto2);
+		
+		ProductoPayload producto3 = new ProductoPayload();
+		producto3.setTipo("Cubierto");
+		producto3.setDescripcion("Tenedor, cuchillo (sin filo), cuchara de aluminio");
+		producto3.setPrecioVenta(BigDecimal.valueOf(1000.00));
+		producto3.setCantFijaCompra(10);
+		producto3.setCantMinimaStock(100);
+		producto3.setStockActual(150);
+		producto3.setFragil(false);
+		producto3.setProveedor(proveedor2);
+		producto3 = productoService.altaProducto(producto3);
+		
+		//Insumos
+		InsumoPayload insumo1 = new InsumoPayload();
+		insumo1.setTipo("Cubiertos");
+		insumo1.setDescripcion("Tenedor, cuchillo (sin filo), cuchara de aluminio");
+		insumo1.setStockActual(100);
+		insumo1.setFragil(false);
+		insumo1 = insumoService.altaInsumo(insumo1);
+		
+		InsumoPayload insumo2 = new InsumoPayload();
+		insumo2.setTipo("Vaso");
+		insumo2.setDescripcion("Vasos de vidrio");
+		insumo2.setStockActual(50);
+		insumo2.setFragil(true);
+		insumo2 = insumoService.altaInsumo(insumo2);
+		
+		//Factura
+		LocalDateTime today = LocalDateTime.now();
+		LocalDateTime todayMinus1month = today.minusMonths(1);
+		LocalDateTime fechaFactura1 = LocalDateTime.of(todayMinus1month.getYear(), todayMinus1month.getMonth(), 20, 13, 15);
+		FacturaPayload factura1 = new FacturaPayload();
+		factura1.setFecha(fechaFactura1);
+		factura1.setCliente(null);
+		factura1.setEmisorFactura(proveedor1);
+		//
+		FacturaItemPayload factura1_item1 = new FacturaItemPayload();
+		factura1_item1.setDescripcion(producto1.getDescripcion());
+		factura1_item1.setUnidades(producto1.getCantFijaCompra()*2);
+		factura1_item1.setPrecioUnitario(producto1.getPrecioVenta());
+		factura1_item1.setPrecio(producto1.getPrecioVenta().multiply(BigDecimal.valueOf(factura1_item1.getUnidades())));
+		factura1.agregarItemFactura(factura1_item1);
+		//
+		FacturaItemPayload factura1_item2 = new FacturaItemPayload();
+		factura1_item2.setDescripcion(producto2.getDescripcion());
+		factura1_item2.setUnidades(producto2.getCantFijaCompra()*4);
+		factura1_item2.setPrecioUnitario(producto2.getPrecioVenta());
+		factura1_item2.setPrecio(producto2.getPrecioVenta().multiply(BigDecimal.valueOf(factura1_item2.getUnidades())));
+		factura1.agregarItemFactura(factura1_item2);
+		//
+		factura1 = facturaService.altaFactura(factura1);
+		
+		LocalDateTime fechaFactura2 = LocalDateTime.of(todayMinus1month.getYear(), todayMinus1month.getMonth(), 25, 17, 30);
+		FacturaPayload factura2 = new FacturaPayload();
+		factura2.setFecha(fechaFactura2);
+		factura2.setCliente(null);
+		factura2.setEmisorFactura(proveedor1);
+		//
+		FacturaItemPayload factura2_item1 = new FacturaItemPayload();
+		factura2_item1.setDescripcion(producto3.getDescripcion());
+		factura2_item1.setUnidades(producto3.getCantFijaCompra()*4);
+		factura2_item1.setPrecioUnitario(producto3.getPrecioVenta());
+		factura2_item1.setPrecio(producto3.getPrecioVenta().multiply(BigDecimal.valueOf(factura2_item1.getUnidades())));
+		factura2.agregarItemFactura(factura2_item1);
+		//
+		factura2 = facturaService.altaFactura(factura2);
+		
+		
+		//Prestamo
+		List<EmpleadoPayload> empleados = empleadoService.getEmpleados();
+		List<BeneficiarioPayload> beneficiarios = beneficiarioService.getBeneficiarios();
+		ContactoPayload empleado1 = contactoService.getContactoById(empleados.get(0).getId());
+		ContactoPayload beneficiario1 = contactoService.getContactoById(beneficiarios.get(0).getId());
+		
+		PrestamoPayload prestamo1 = new PrestamoPayload();
+		prestamo1.setDescripcion("Vaso plástico superhéroes");
+		prestamo1.setCantidad(2);
+		prestamo1.setFechaPrestamoInicio(LocalDate.now());
+		prestamo1.setFechaPrestamoFin(LocalDate.now().plusMonths(2));
+		prestamo1.setPrestamista(empleado1);
+		prestamo1.setPrestatario(beneficiario1);
+		prestamo1 = prestamoService.altaPrestamo(prestamo1);
+		
+		//Programa de actividades
+		List<ProfesionalPayload> profesionales = profesionalService.getProfesionales();
+		ProgramaDeActividadesPayload programa = new ProgramaDeActividadesPayload();
+		ActividadPayload actividad = new ActividadPayload();
+		actividad.setFechaHoraDesde(LocalDateTime.of(todayMinus1month.getYear(), todayMinus1month.getMonth(), 1, 12, 00));
+		actividad.setFechaHoraHasta(actividad.getFechaHoraDesde().plusHours(3));
+		actividad.agregarProfesional(profesionales.get(0));
+		actividad.agregarBeneficiario(beneficiarios.get(0));
+		actividad.agregarBeneficiario(beneficiarios.get(1));
+		actividad.setDescripcion("Prácticas de cocina a beneficiarios por el profesor: " + actividad.getProfesionales().get(0).getNombre()+" "+actividad.getProfesionales().get(0).getApellido());
+		programa.agregarActividadesPorSemana(10, actividad);
+		programa.setDescripcion(actividad.getDescripcion());
+		programaDeActividadesService.altaProgramaDeActividades(programa);
 	}
 	
 	public void cargarUsuariosDefault() {

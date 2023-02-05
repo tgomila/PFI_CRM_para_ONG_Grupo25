@@ -54,8 +54,35 @@ public class ActividadService {
 		return this.altaActividadModel(p).toPayload();
 	}
 	
-	public Actividad altaActividadModel(ActividadPayload p) {
-		Actividad m = new Actividad(p);
+	public Actividad altaActividadModel(ActividadPayload payload) {
+		
+		//Esto evita que puedan modificar models beneficiarios y profesional
+		List<Beneficiario> beneficiarios = new ArrayList<Beneficiario>();
+		if(payload.getBeneficiarios() != null) {
+			for(BeneficiarioPayload b: payload.getBeneficiarios()) {
+				if(b.getId() != null) {
+					Beneficiario item = beneficiarioRepository.findById(b.getId()).orElseThrow(
+							() -> new ResourceNotFoundException("Beneficiario", "id", b.getId()));
+					beneficiarios.add(item);
+				}
+				
+			}
+		}
+		
+
+		List<Profesional> profesionales = new ArrayList<Profesional>();
+		if(payload.getProfesionales() != null) {
+			for(ProfesionalPayload p: payload.getProfesionales()) {
+				if(p.getId() != null) {
+					Profesional item = profesionalRepository.findByPersonaFisica_Contacto_Id(p.getId()).orElseThrow(
+							() -> new ResourceNotFoundException("Profesional", "id", p.getId()));
+					profesionales.add(item);
+				}
+				
+			}
+		}
+		
+		Actividad m = new Actividad(payload, beneficiarios, profesionales);
 		m.setId(null);
 		return actividadRepository.save(m);
 	}
@@ -85,7 +112,7 @@ public class ActividadService {
 		if(payload.getBeneficiarios() != null) {
 			for(BeneficiarioPayload b: payload.getBeneficiarios()) {
 				if(b.getId() != null) {
-					Beneficiario item = beneficiarioRepository.findById(b.getId()).orElseThrow(
+					Beneficiario item = beneficiarioRepository.findByPersonaFisica_Contacto_Id(b.getId()).orElseThrow(
 							() -> new ResourceNotFoundException("Beneficiario", "id", b.getId()));
 					beneficiarios.add(item);
 				}
@@ -98,7 +125,7 @@ public class ActividadService {
 		if(payload.getProfesionales() != null) {
 			for(ProfesionalPayload p: payload.getProfesionales()) {
 				if(p.getId() != null) {
-					Profesional item = profesionalRepository.findById(p.getId()).orElseThrow(
+					Profesional item = profesionalRepository.findByPersonaFisica_Contacto_Id(p.getId()).orElseThrow(
 							() -> new ResourceNotFoundException("Profesional", "id", p.getId()));
 					profesionales.add(item);
 				}
@@ -108,6 +135,43 @@ public class ActividadService {
 		
 		model.modificar(payload, profesionales, beneficiarios);
 		return actividadRepository.save(model);
+	}
+	
+	public void bajaBeneficiarioEnActividades(Long idContacto) {
+		Beneficiario beneficiario = beneficiarioRepository.findByPersonaFisica_Contacto_Id(idContacto).orElseThrow(
+				() -> new ResourceNotFoundException("Beneficiario", "id", idContacto));
+		List<Actividad> actividades = actividadRepository.findAll();
+		List<Actividad> actividadesAModificar = new ArrayList<Actividad>();
+		for(Actividad actividad: actividades) {
+			if(actividad.getBeneficiarios().contains(beneficiario)) {
+				actividad.getBeneficiarios().remove(beneficiario);
+				actividadesAModificar.add(actividad);
+			}
+		}
+		if(!actividadesAModificar.isEmpty())
+			actividadRepository.saveAll(actividadesAModificar);
+	}
+	
+
+	
+	public void bajaProfesionalEnActividades(Long idContacto) {
+		Profesional profesional = profesionalRepository.findByPersonaFisica_Contacto_Id(idContacto).orElseThrow(
+				() -> new ResourceNotFoundException("Profesional", "id", idContacto));
+		List<Actividad> actividades = actividadRepository.findAll();
+		List<Actividad> actividadesAModificar = new ArrayList<Actividad>();
+		for(Actividad actividad: actividades) {
+			if(actividad.getProfesionales().contains(profesional)) {
+				actividad.getProfesionales().remove(profesional);
+				actividadesAModificar.add(actividad);
+			}
+		}
+		if(!actividadesAModificar.isEmpty())
+			actividadRepository.saveAll(actividadesAModificar);
+	}
+	
+	
+	public boolean existeActividad(Long id) {
+		return actividadRepository.existsById(id);
 	}
 	
 }

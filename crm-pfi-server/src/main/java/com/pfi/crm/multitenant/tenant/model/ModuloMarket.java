@@ -1,6 +1,6 @@
 package com.pfi.crm.multitenant.tenant.model;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Period;
 
 import javax.persistence.Entity;
@@ -28,10 +28,10 @@ public class ModuloMarket {
 	private ModuloEnum moduloEnum;
 	
 	private boolean prueba7DiasUtilizada;
-	private LocalDate fechaPrueba7DiasUtilizada;
+	private LocalDateTime fechaPrueba7DiasUtilizada;
 	
 	//Null significa que nunca se ha suscripto.
-	private LocalDate fechaMaximaSuscripcion;
+	private LocalDateTime fechaMaximaSuscripcion;
 	
 	//Este boolean no es altamente necesario, pero permite saber si esta vencido (por fecha) pero la suscripcion esta
 	//  activa, para el evento crónológico a las 00hs, cambiar la visibilidad de los roles a que no vean este módulo.
@@ -62,21 +62,21 @@ public class ModuloMarket {
 	}
 	
 	//Métodos sobre fecha de suscripción.
-	public LocalDate sumarUnMes() {
+	public LocalDateTime sumarUnMes() {
 		Period oneMonth = Period.ofMonths(1);
 		return sumarPeriodoASuscripcion(oneMonth);
 	}
 	
-	public LocalDate sumarUnAnio() {
+	public LocalDateTime sumarUnAnio() {
 		Period oneYear = Period.ofYears(1);
 		return sumarPeriodoASuscripcion(oneYear);
 	}
 	
-	private LocalDate sumarPeriodoASuscripcion(Period plusTime) {
+	private LocalDateTime sumarPeriodoASuscripcion(Period plusTime) {
 		if(moduloEnum.isFreeModule())
 			throw new BadRequestException("No se puede suscribir a un módulo gratuito");//return null;
-		if(fechaMaximaSuscripcion == null || fechaMaximaSuscripcion.isBefore(LocalDate.now())) {
-			fechaMaximaSuscripcion = LocalDate.now().plus(plusTime);
+		if(fechaMaximaSuscripcion == null || fechaMaximaSuscripcion.isBefore(LocalDateTime.now())) {
+			fechaMaximaSuscripcion = LocalDateTime.now().plus(plusTime);
 		}
 		else {
 			fechaMaximaSuscripcion = fechaMaximaSuscripcion.plus(plusTime);
@@ -88,12 +88,12 @@ public class ModuloMarket {
 	public boolean activarSieteDiasGratis() {
 		if(moduloEnum.isFreeModule() || prueba7DiasUtilizada)
 			return false;
-		fechaPrueba7DiasUtilizada = LocalDate.now();
-		if(fechaMaximaSuscripcion == null || fechaMaximaSuscripcion.isBefore(LocalDate.now())) {
-			fechaMaximaSuscripcion = LocalDate.now().plusDays(7);
+		fechaPrueba7DiasUtilizada = LocalDateTime.now();
+		if(fechaMaximaSuscripcion == null || fechaMaximaSuscripcion.isBefore(LocalDateTime.now())) {
+			fechaMaximaSuscripcion = LocalDateTime.now().plusDays(7).plusHours(1);
 		}
 		else {
-			fechaMaximaSuscripcion = fechaMaximaSuscripcion.plusDays(7);
+			fechaMaximaSuscripcion = fechaMaximaSuscripcion.plusDays(7).plusHours(1);
 		}
 		prueba7DiasUtilizada = true;
 		this.suscripcionActiva = true;
@@ -109,7 +109,7 @@ public class ModuloMarket {
 			return false;
 		if(fechaMaximaSuscripcion == null)
 			return true; //null significa nunca se ha suscripto
-		return !fechaMaximaSuscripcion.isAfter(LocalDate.now());
+		return !fechaMaximaSuscripcion.isAfter(LocalDateTime.now());
 	}
 	
 	public boolean isPaidModule() {
@@ -145,19 +145,19 @@ public class ModuloMarket {
 		this.prueba7DiasUtilizada = prueba7DiasUtilizada;
 	}
 
-	public LocalDate getFechaPrueba7DiasUtilizada() {
+	public LocalDateTime getFechaPrueba7DiasUtilizada() {
 		return fechaPrueba7DiasUtilizada;
 	}
 
-	public void setFechaPrueba7DiasUtilizada(LocalDate fechaPrueba7DiasUtilizada) {
+	public void setFechaPrueba7DiasUtilizada(LocalDateTime fechaPrueba7DiasUtilizada) {
 		this.fechaPrueba7DiasUtilizada = fechaPrueba7DiasUtilizada;
 	}
 
-	public LocalDate getFechaMaximaSuscripcion() {
+	public LocalDateTime getFechaMaximaSuscripcion() {
 		return fechaMaximaSuscripcion;
 	}
 
-	public void setFechaMaximaSuscripcion(LocalDate fechaMaximaSuscripcion) {
+	public void setFechaMaximaSuscripcion(LocalDateTime fechaMaximaSuscripcion) {
 		this.fechaMaximaSuscripcion = fechaMaximaSuscripcion;
 	}
 

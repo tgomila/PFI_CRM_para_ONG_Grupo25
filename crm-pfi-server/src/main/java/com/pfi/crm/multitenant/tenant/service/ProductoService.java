@@ -34,7 +34,7 @@ public class ProductoService {
 	
 	public ProductoPayload altaProducto(ProductoPayload p) {
 		p.setId(null);
-		Producto m = new Producto();
+		Producto m = new Producto(p);
 		m.setEstadoActivo(true);
 		return productoRepository.save(m).toPayload();
 	}

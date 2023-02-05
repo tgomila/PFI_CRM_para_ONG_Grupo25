@@ -11,5 +11,5 @@ import com.pfi.crm.multitenant.tenant.model.RoleName;
 @Repository
 public interface ModuloVisibilidadPorRolRepository extends JpaRepository<ModuloVisibilidadPorRol, Long> {
 	
-	Optional<ModuloVisibilidadPorRol> findByRoleName(RoleName roleName);
+	Optional<ModuloVisibilidadPorRol> findByRoleRoleName(RoleName roleName);
 }

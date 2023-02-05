@@ -34,22 +34,11 @@ public class Producto {
 	private Contacto proveedor;
 	
 	//Constructores
-	public Producto() {
-		super();
-	}
-	
-	
 	public Producto(ProductoPayload p) {
 		super();
 		this.id = p.getId();
-		this.tipo = p.getTipo();
-		this.descripcion = p.getDescripcion();
-		this.precioVenta = p.getPrecioVenta();
-		this.cantFijaCompra = p.getCantFijaCompra();
-		this.cantMinimaStock = p.getCantMinimaStock();
-		this.stockActual = p.getStockActual();
 		this.estadoActivo = true;
-		this.fragil = p.isFragil();
+		this.modificar(p);
 	}
 	
 	public void modificar(ProductoPayload p) {

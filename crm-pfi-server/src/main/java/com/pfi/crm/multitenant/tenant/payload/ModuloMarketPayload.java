@@ -1,6 +1,6 @@
 package com.pfi.crm.multitenant.tenant.payload;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import com.pfi.crm.multitenant.tenant.model.ModuloEnum;
 
@@ -12,9 +12,9 @@ public class ModuloMarketPayload {
 	
 	private boolean prueba7DiasUtilizada;
 	
-	private LocalDate fechaPrueba7DiasUtilizada;
+	private LocalDateTime fechaPrueba7DiasUtilizada;
 	
-	private LocalDate fechaMaximaSuscripcion;
+	private LocalDateTime fechaMaximaSuscripcion;
 	
 	private boolean suscripcionActiva;
 	
@@ -63,19 +63,19 @@ public class ModuloMarketPayload {
 		this.prueba7DiasUtilizada = prueba7DiasUtilizada;
 	}
 
-	public LocalDate getFechaPrueba7DiasUtilizada() {
+	public LocalDateTime getFechaPrueba7DiasUtilizada() {
 		return fechaPrueba7DiasUtilizada;
 	}
 
-	public void setFechaPrueba7DiasUtilizada(LocalDate fechaPrueba7DiasUtilizada) {
+	public void setFechaPrueba7DiasUtilizada(LocalDateTime fechaPrueba7DiasUtilizada) {
 		this.fechaPrueba7DiasUtilizada = fechaPrueba7DiasUtilizada;
 	}
 
-	public LocalDate getFechaMaximaSuscripcion() {
+	public LocalDateTime getFechaMaximaSuscripcion() {
 		return fechaMaximaSuscripcion;
 	}
 
-	public void setFechaMaximaSuscripcion(LocalDate fechaMaximaSuscripcion) {
+	public void setFechaMaximaSuscripcion(LocalDateTime fechaMaximaSuscripcion) {
 		this.fechaMaximaSuscripcion = fechaMaximaSuscripcion;
 	}
 

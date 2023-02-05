@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import javax.persistence.Entity;
@@ -20,7 +21,7 @@ import com.pfi.crm.multitenant.tenant.model.audit.UserDateAudit;
 import com.pfi.crm.multitenant.tenant.payload.ProgramaDeActividadesPayload;
 
 @Entity
-@Table(name ="factura")
+@Table(name ="programa")
 public class ProgramaDeActividades extends UserDateAudit {
 
 	/**
@@ -32,7 +33,7 @@ public class ProgramaDeActividades extends UserDateAudit {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	private boolean estadoActivoPrograma;
+	private Boolean estadoActivoPrograma;
 	private LocalDateTime fechaAltaPrograma;
 	private LocalDateTime fechaBajaPrograma;
 	
@@ -96,7 +97,9 @@ public class ProgramaDeActividades extends UserDateAudit {
 	public LocalDateTime getFechaFin() {
 		List<Actividad> copy = new ArrayList<>(actividades);
 		return copy.stream()
-				.filter(actividad -> actividad!=null && actividad.getFechaHoraHasta()!=null)
+				.filter(Objects::nonNull)
+				//.filter(actividad -> {return actividad!=null && actividad.getFechaHoraHasta()!=null;})
+				.filter(actividad -> actividad.getFechaHoraHasta()!=null)
 				.map(Actividad::getFechaHoraHasta)
 				.max(LocalDateTime::compareTo)
 				.get();
@@ -129,12 +132,12 @@ public class ProgramaDeActividades extends UserDateAudit {
 		return id;
 	}
 
-	public void setId(Long id) {
-		this.id = id;
+	public Boolean getEstadoActivoPrograma() {
+		return estadoActivoPrograma;
 	}
 
-	public boolean isEstadoActivoPrograma() {
-		return estadoActivoPrograma;
+	public void setEstadoActivoPrograma(Boolean estadoActivoPrograma) {
+		this.estadoActivoPrograma = estadoActivoPrograma;
 	}
 
 	public void setEstadoActivoPrograma(boolean estadoActivoPrograma) {

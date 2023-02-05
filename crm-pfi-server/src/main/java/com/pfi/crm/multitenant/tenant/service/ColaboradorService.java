@@ -1,7 +1,6 @@
 package com.pfi.crm.multitenant.tenant.service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -10,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import com.pfi.crm.exception.BadRequestException;
 import com.pfi.crm.exception.ResourceNotFoundException;
 import com.pfi.crm.multitenant.tenant.model.Colaborador;
 import com.pfi.crm.multitenant.tenant.payload.ColaboradorPayload;
@@ -42,33 +42,28 @@ public class ColaboradorService {
 	public void bajaColaborador(Long id) {
 		
 		//Si Optional es null o no, lo conocemos con ".isPresent()".		
-		Optional<Colaborador> optionalModel = colaboradorRepository.findByPersonaFisica_Contacto_Id(id);
-		if(optionalModel.isPresent()) {
-			Colaborador m = optionalModel.get();
-			m.setEstadoActivoColaborador(false);
-			m.setContacto(null);
-			m.setPersonaFisica(null);
-			colaboradorRepository.save(m);
-			colaboradorRepository.delete(m);											//Temporalmente se elimina de la BD			
-		}
-		else {
-			//No existe persona Fisica
-		}
-		
+		Colaborador m = colaboradorRepository.findByPersonaFisica_Contacto_Id(id).orElseThrow(
+                () -> new ResourceNotFoundException("Colaborador", "id", id));
+		m.setEstadoActivoColaborador(false);
+		m.setContacto(null);
+		m.setPersonaFisica(null);
+		colaboradorRepository.save(m);
+		colaboradorRepository.delete(m);	//Temporalmente se elimina de la BD
 	}
 	
 	public ColaboradorPayload modificarColaborador(ColaboradorPayload payload) {
 		if (payload != null && payload.getId() != null) {
 			//Necesito el id de persona Fisica o se crearia uno nuevo
-			Optional<Colaborador> optional = colaboradorRepository.findByPersonaFisica_Contacto_Id(payload.getId());
-			if(optional.isPresent()) {   //Si existe
-				Colaborador model = optional.get();
-				model.modificar(payload);
-				return colaboradorRepository.save(model).toPayload();				
-			}
-			//si llegue aca devuelvo null
+			Colaborador model = colaboradorRepository.findByPersonaFisica_Contacto_Id(payload.getId()).orElseThrow(
+	                () -> new ResourceNotFoundException("Colaborador", "id", payload.getId()));
+			model.modificar(payload);
+			return colaboradorRepository.save(model).toPayload();
 		}
-		return null;
+		throw new BadRequestException("No se puede modificar Colaborador sin ID");
+	}
+	
+	public boolean existeColaboradorPorIdContacto(Long id) {
+		return colaboradorRepository.existsByPersonaFisica_Contacto_Id(id);
 	}
 	
 	

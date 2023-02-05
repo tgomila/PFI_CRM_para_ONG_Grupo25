@@ -1,7 +1,6 @@
 package com.pfi.crm.multitenant.tenant.service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -10,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import com.pfi.crm.exception.BadRequestException;
 import com.pfi.crm.exception.ResourceNotFoundException;
 import com.pfi.crm.multitenant.tenant.model.Profesional;
 import com.pfi.crm.multitenant.tenant.payload.ProfesionalPayload;
@@ -20,6 +20,9 @@ public class ProfesionalService {
 	
 	@Autowired
 	private ProfesionalRepository profesionalRepository;
+	
+	@Autowired
+	private ActividadService actividadService;
 	
 	@SuppressWarnings("unused")
 	private static final Logger logger = LoggerFactory.getLogger(ProfesionalService.class);
@@ -42,33 +45,34 @@ public class ProfesionalService {
 	public void bajaProfesional(Long id) {
 		
 		//Si Optional es null o no, lo conocemos con ".isPresent()".		
-		Optional<Profesional> optionalModel = profesionalRepository.findByPersonaFisica_Contacto_Id(id);
-		if(optionalModel.isPresent()) {
-			Profesional m = optionalModel.get();
-			m.setEstadoActivoProfesional(false);
-			m.setContacto(null);
-			m.setPersonaFisica(null);
-			profesionalRepository.save(m);
-			profesionalRepository.delete(m);											//Temporalmente se elimina de la BD			
-		}
-		else {
-			//No existe persona Fisica
-		}
+		Profesional m = profesionalRepository.findByPersonaFisica_Contacto_Id(id).orElseThrow(
+                () -> new ResourceNotFoundException("Profesional", "id", id));
+		m.setEstadoActivoProfesional(false);
+		m.setContacto(null);
+		m.setPersonaFisica(null);
+		profesionalRepository.save(m);
+		
+		//Eliminar objeto en todo lo que esta asociado Profesional
+		actividadService.bajaProfesionalEnActividades(m.getId());
+		
+		
+		profesionalRepository.delete(m);	//Temporalmente se elimina de la BD	
 		
 	}
 	
 	public ProfesionalPayload modificarProfesional(ProfesionalPayload payload) {
 		if (payload != null && payload.getId() != null) {
 			//Necesito el id de persona Fisica o se crearia uno nuevo
-			Optional<Profesional> optional = profesionalRepository.findByPersonaFisica_Contacto_Id(payload.getId());
-			if(optional.isPresent()) {   //Si existe
-				Profesional model = optional.get();
-				model.modificar(payload);
-				return profesionalRepository.save(model).toPayload();				
-			}
-			//si llegue aca devuelvo null
+			Profesional model = profesionalRepository.findByPersonaFisica_Contacto_Id(payload.getId()).orElseThrow(
+	                () -> new ResourceNotFoundException("Profesional", "id", payload.getId()));
+			model.modificar(payload);
+			return profesionalRepository.save(model).toPayload();
 		}
-		return null;
+		throw new BadRequestException("No se puede modificar Profesional sin ID");
+	}
+	
+	public boolean existeProfesionalPorIdContacto(Long id) {
+		return profesionalRepository.existsByPersonaFisica_Contacto_Id(id);
 	}
 	
 	

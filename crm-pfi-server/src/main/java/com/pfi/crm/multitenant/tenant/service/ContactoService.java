@@ -22,9 +22,18 @@ public class ContactoService {
 	@Autowired
 	private ContactoRepository contactoRepository;
 	
-	public Contacto getContactoById(@PathVariable Long id) {
+	@Autowired
+	private PersonaFisicaService personaFisicaService;
+	
+	@Autowired
+	private UserService userService;
+	
+	@Autowired
+	private FacturaService facturaService;
+	
+	public ContactoPayload getContactoById(@PathVariable Long id) {
 		return contactoRepository.findById(id).orElseThrow(
-                () -> new ResourceNotFoundException("Contacto", "id", id));
+                () -> new ResourceNotFoundException("Contacto", "id", id)).toPayload();
     }
 	
 	public List<ContactoPayload> getContactos() {
@@ -43,18 +52,22 @@ public class ContactoService {
 	public void bajaContacto(Long id) {
 		
 		//Si Optional es null o no, lo conocemos con ".isPresent()".		
-		Optional<Contacto> optionalModel = contactoRepository.findById(id);
-		if(optionalModel.isPresent()) {
-			Contacto m = optionalModel.get();
-			m.setEstadoActivoContacto(false);
-			m.setFechaBajaContacto(LocalDate.now());
-			contactoRepository.save(m);
-			//contactoRepository.delete(m);											//Temporalmente se elimina de la BD			
-		}
-		else {
-			//No existe contacto
-		}
+		Contacto m = contactoRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("Contacto", "id", id));
+		m.setEstadoActivoContacto(false);
+		m.setFechaBajaContacto(LocalDate.now());
 		
+		//Dar de baja a personaFisica y todo su alrededor
+		personaFisicaService.bajaPersonaFisica(id);
+		
+		//Dar de baja su user
+		userService.bajaUsuariosPorContacto(id);
+		
+		//Mantener facturas pero quitar su contacto
+		facturaService.quitarContactoDeSusFacturas(id);
+		
+		contactoRepository.save(m);
+		contactoRepository.delete(m);		//Temporalmente se elimina de la BD
 	}
 	
 	public ContactoPayload modificarContacto(ContactoPayload payload) {

@@ -22,6 +22,18 @@ public class ProgramaDeActividadesPayload {
 		actividades = new ArrayList<ActividadPayload>();
 	}
 	
+	public void agregarActividadesPorSemana(int cantidadActividades, ActividadPayload actividadARepetir) {
+		for(int i=0; i < cantidadActividades; i++) {
+			ActividadPayload p = new ActividadPayload();
+			p.setFechaHoraDesde(actividadARepetir.getFechaHoraDesde().plusWeeks(i));
+			p.setFechaHoraHasta(actividadARepetir.getFechaHoraHasta().plusWeeks(i));
+			p.setBeneficiarios(actividadARepetir.getBeneficiarios());
+			p.setProfesionales(actividadARepetir.getProfesionales());
+			actividades.add(p);
+		}
+		ordenarActividades();
+	}
+	
 	public void agregarActividad(ActividadPayload actividad) {
 		actividades.add(actividad);
 		ordenarActividades();
@@ -37,6 +49,9 @@ public class ProgramaDeActividadesPayload {
                 .stream()
                 .sorted(Comparator.comparing(ActividadPayload::getFechaHoraDesde))
                 .collect(Collectors.toList());
+		
+		fechaDesde = actividades.get(0).getFechaHoraDesde();
+		fechaHasta = actividades.get(actividades.size() - 1).getFechaHoraHasta();
 	}
 	
 

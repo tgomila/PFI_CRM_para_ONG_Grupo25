@@ -1,5 +1,6 @@
 package com.pfi.crm.multitenant.tenant.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,9 +9,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import com.pfi.crm.exception.AppException;
 import com.pfi.crm.exception.ResourceNotFoundException;
+import com.pfi.crm.multitenant.tenant.model.Contacto;
 import com.pfi.crm.multitenant.tenant.model.Role;
 import com.pfi.crm.multitenant.tenant.model.RoleName;
 import com.pfi.crm.multitenant.tenant.model.User;
+import com.pfi.crm.multitenant.tenant.persistence.repository.ContactoRepository;
 import com.pfi.crm.multitenant.tenant.persistence.repository.RoleRepository;
 import com.pfi.crm.multitenant.tenant.persistence.repository.UserRepository;
 
@@ -22,6 +25,9 @@ public class UserService {
 	
 	@Autowired
 	private RoleRepository roleRepository;
+	
+	@Autowired
+	private ContactoRepository contactoRepository;
 	
 	public User getUserById(@PathVariable Long id) {
 		return userRepository.findById(id).orElseThrow(
@@ -40,7 +46,7 @@ public class UserService {
 	
 	public User agregarRol(String username, RoleName rol) {
 		User user = userRepository.findByUsername(username).get();
-		Role newUserRole = roleRepository.findByName(rol)
+		Role newUserRole = roleRepository.findByRoleName(rol)
                 .orElseThrow(() -> new AppException("User Role not set."));
 		if(user == null)
 			return null;
@@ -52,7 +58,7 @@ public class UserService {
 	
 	public User quitarRol(String username, RoleName rol) {
 		User user = userRepository.findByUsername(username).get();
-		Role newUserRole = roleRepository.findByName(rol)
+		Role newUserRole = roleRepository.findByRoleName(rol)
                 .orElseThrow(() -> new AppException("User Role not set."));
 		if(user == null)
 			return null;
@@ -61,6 +67,24 @@ public class UserService {
 		user.quitarRol(newUserRole);
 		return userRepository.save(user);
 	}
+	
+	public void bajaUsuariosPorContacto(Long id) {
+		Contacto contacto = contactoRepository.findById(id).orElseThrow(
+				() -> new ResourceNotFoundException("Contacto", "id", id));
+		List<User> usuarios = userRepository.findAll();
+		List<User> usuariosAModificar = new ArrayList<User>();
+		for(User usuario: usuarios) {
+			if(usuario.getContacto().equals(contacto)) {
+				usuario.setContacto(null);
+				usuariosAModificar.add(usuario);
+			}
+		}
+		if(!usuariosAModificar.isEmpty())
+			userRepository.saveAll(usuariosAModificar);
+		
+	}
+	
+	
 	
 	/*public void bajaUser(Long id) {
 		

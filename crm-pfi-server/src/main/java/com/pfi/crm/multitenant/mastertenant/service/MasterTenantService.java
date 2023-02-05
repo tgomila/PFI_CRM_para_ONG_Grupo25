@@ -50,7 +50,25 @@ public class MasterTenantService {
 	}
 	
 	public TenantPayload altaTenant(TenantPayload payload) {
+		if(payload.getTenantClientId() == null || payload.getTenantClientId() < 1) {
+			//Busco un id adecuado
+			Integer newTenantId = 100;
+			while(existsTenantById(newTenantId))
+				newTenantId+=100;
+			payload.setTenantClientId(newTenantId);
+			payload.setDbName("tenant" + newTenantId.intValue()/100);
+		}
 		return masterTenantRepository.save(new MasterTenant(payload)).toPayload();
+	}
+	
+	private boolean existsTenantById(Integer idTenant) {
+		List<MasterTenant> tenants = masterTenantRepository.findAll();
+		for(MasterTenant tenant: tenants) {
+			if(tenant.getTenantClientId().equals(idTenant)) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	public void bajaTenant(String db_name) {

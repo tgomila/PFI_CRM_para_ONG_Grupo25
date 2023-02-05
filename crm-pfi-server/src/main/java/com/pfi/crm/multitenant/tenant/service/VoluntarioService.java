@@ -1,7 +1,6 @@
 package com.pfi.crm.multitenant.tenant.service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -10,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import com.pfi.crm.exception.BadRequestException;
 import com.pfi.crm.exception.ResourceNotFoundException;
 import com.pfi.crm.multitenant.tenant.model.Voluntario;
 import com.pfi.crm.multitenant.tenant.payload.VoluntarioPayload;
@@ -41,34 +41,29 @@ public class VoluntarioService {
 	
 	public void bajaVoluntario(Long id) {
 		
-		//Si Optional es null o no, lo conocemos con ".isPresent()".		
-		Optional<Voluntario> optionalModel = voluntarioRepository.findByPersonaFisica_Contacto_Id(id);
-		if(optionalModel.isPresent()) {
-			Voluntario m = optionalModel.get();
-			m.setEstadoActivoVoluntario(false);
-			m.setContacto(null);
-			m.setPersonaFisica(null);
-			voluntarioRepository.save(m);
-			voluntarioRepository.delete(m);											//Temporalmente se elimina de la BD			
-		}
-		else {
-			//No existe persona Fisica
-		}
+		Voluntario m = voluntarioRepository.findByPersonaFisica_Contacto_Id(id).orElseThrow(
+                () -> new ResourceNotFoundException("Voluntario", "id", id));
+		m.setEstadoActivoVoluntario(false);
+		m.setContacto(null);
+		m.setPersonaFisica(null);
+		voluntarioRepository.save(m);
+		voluntarioRepository.delete(m);	//Temporalmente se elimina de la BD
 		
 	}
 	
 	public VoluntarioPayload modificarVoluntario(VoluntarioPayload payload) {
 		if (payload != null && payload.getId() != null) {
 			//Necesito el id de persona Fisica o se crearia uno nuevo
-			Optional<Voluntario> optional = voluntarioRepository.findByPersonaFisica_Contacto_Id(payload.getId());
-			if(optional.isPresent()) {   //Si existe
-				Voluntario model = optional.get();
-				model.modificar(payload);
-				return voluntarioRepository.save(model).toPayload();				
-			}
-			//si llegue aca devuelvo null
+			Voluntario model = voluntarioRepository.findByPersonaFisica_Contacto_Id(payload.getId()).orElseThrow(
+	                () -> new ResourceNotFoundException("Voluntario", "id", payload.getId()));
+			model.modificar(payload);
+			return voluntarioRepository.save(model).toPayload();
 		}
-		return null;
+		throw new BadRequestException("No se puede modificar Voluntario sin ID");
+	}
+	
+	public boolean existeVoluntarioPorIdContacto(Long id) {
+		return voluntarioRepository.existsByPersonaFisica_Contacto_Id(id);
 	}
 	
 	

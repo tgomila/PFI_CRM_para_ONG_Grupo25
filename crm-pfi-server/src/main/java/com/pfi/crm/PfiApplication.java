@@ -7,7 +7,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
-import org.springframework.scheduling.annotation.EnableScheduling;
 
 import javax.annotation.PostConstruct;
 import java.util.TimeZone;
@@ -17,7 +16,6 @@ import java.util.TimeZone;
 		PfiApplication.class,
 		Jsr310JpaConverters.class
 })
-@EnableScheduling
 public class PfiApplication {
 	
 	@Autowired

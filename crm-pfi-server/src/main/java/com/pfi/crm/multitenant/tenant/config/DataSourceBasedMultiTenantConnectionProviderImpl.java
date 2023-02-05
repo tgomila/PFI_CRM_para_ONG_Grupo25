@@ -17,6 +17,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import com.pfi.crm.mastertenant.config.DBContextHolder;
 import com.pfi.crm.multitenant.mastertenant.entity.MasterTenant;
 import com.pfi.crm.multitenant.mastertenant.repository.MasterTenantRepository;
+import com.pfi.crm.multitenant.mastertenant.service.MasterTenantService;
+import com.pfi.crm.multitenant.tenant.payload.TenantPayload;
 import com.pfi.crm.util.DataSourceUtil;
 
 @Configuration
@@ -34,11 +36,21 @@ public class DataSourceBasedMultiTenantConnectionProviderImpl extends AbstractDa
     @Autowired
     ApplicationContext applicationContext;
 
+    @Autowired
+    private MasterTenantService masterTenantService;
+
     @Override
     protected DataSource selectAnyDataSource() {
         // This method is called more than once. So check if the data source map
         // is empty. If it is then rescan master_tenant table for all tenant
         if (dataSourcesMtApp.isEmpty()) {
+        	//TODO quitar este if más adelante
+        	if(masterTenantRepository.count() == 0) {
+        		masterTenantService.altaTenant(new TenantPayload(300, "tenant3", "ONG Sapito"));
+    			System.out.println("\n\n***Ante la duda asegure antes que TenantDatabaseConfig.java esté en 'create' en casi final de la línea***\n\n");
+        		
+        	}
+        	//Fin if
             List<MasterTenant> masterTenants = masterTenantRepository.findAll();
             LOGGER.info("selectAnyDataSource() method call...Total tenants:" + masterTenants.size());
             for (MasterTenant masterTenant : masterTenants) {

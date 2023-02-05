@@ -1,7 +1,6 @@
 package com.pfi.crm.multitenant.tenant.service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -30,7 +29,7 @@ public class ConsejoAdHonoremService {
                 () -> new ResourceNotFoundException("ConsejoAdHonorem", "id", id)).toPayload();
     }
 	
-	public List<ConsejoAdHonoremPayload> getPersonasFisicas() {
+	public List<ConsejoAdHonoremPayload> getConsejoAdHonorems() {
 		//return ConsejoAdHonoremRepository.findAll();
 		return consejoAdHonoremRepository.findAll().stream().map(e -> e.toPayload()).collect(Collectors.toList());
     }
@@ -43,34 +42,29 @@ public class ConsejoAdHonoremService {
 	public void bajaConsejoAdHonorem(Long id) {
 		
 		//Si Optional es null o no, lo conocemos con ".isPresent()".		
-		Optional<ConsejoAdHonorem> optionalModel = consejoAdHonoremRepository.findByPersonaFisica_Contacto_Id(id);
-		if(optionalModel.isPresent()) {
-			ConsejoAdHonorem m = optionalModel.get();
-			m.setEstadoActivoConsejoAdHonorem(false);
-			m.setContacto(null);
-			m.setPersonaFisica(null);
-			consejoAdHonoremRepository.save(m);
-			consejoAdHonoremRepository.delete(m);											//Temporalmente se elimina de la BD			
-		}
-		else {
-			//No existe persona Fisica
-		}
+		ConsejoAdHonorem m = consejoAdHonoremRepository.findByPersonaFisica_Contacto_Id(id).orElseThrow(
+                () -> new ResourceNotFoundException("ConsejoAdHonorem", "id", id));
+		m.setEstadoActivoConsejoAdHonorem(false);
+		m.setContacto(null);
+		m.setPersonaFisica(null);
+		consejoAdHonoremRepository.save(m);
+		consejoAdHonoremRepository.delete(m);	//Temporalmente se elimina de la BD
 		
 	}
 	
 	public ConsejoAdHonoremPayload modificarConsejoAdHonorem(ConsejoAdHonoremPayload payload) {
 		if (payload != null && payload.getId() != null) {
 			//Necesito el id de persona Fisica o se crearia uno nuevo
-			Optional<ConsejoAdHonorem> optional = consejoAdHonoremRepository.findByPersonaFisica_Contacto_Id(payload.getId());
-			if(optional.isPresent()) {   //Si existe
-				ConsejoAdHonorem model = optional.get();
-				model.modificar(payload);
-				return consejoAdHonoremRepository.save(model).toPayload();				
-			}
-			//si llegue aca devuelvo null
-			throw new BadRequestException("No se ha encontrado el Consejo Ad Honorem con ID: " + payload.getId());//return null;
+			ConsejoAdHonorem model = consejoAdHonoremRepository.findByPersonaFisica_Contacto_Id(payload.getId()).orElseThrow(
+					() -> new ResourceNotFoundException("Consejo Ad Honorem", "id", payload.getId()));
+			model.modificar(payload);
+			return consejoAdHonoremRepository.save(model).toPayload();	
 		}
-		throw new BadRequestException("No se puede modificar Consejo Ad Honorem sin ID");//return null;
+		throw new BadRequestException("No se puede modificar Consejo Ad Honorem sin ID");
+	}
+	
+	public boolean existeConsejoAdHonoremPorIdContacto(Long id) {
+		return consejoAdHonoremRepository.existsByPersonaFisica_Contacto_Id(id);
 	}
 	
 	

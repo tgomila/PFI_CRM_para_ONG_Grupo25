@@ -1,7 +1,6 @@
 package com.pfi.crm.multitenant.tenant.service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -10,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import com.pfi.crm.exception.BadRequestException;
 import com.pfi.crm.exception.ResourceNotFoundException;
 import com.pfi.crm.multitenant.tenant.model.Beneficiario;
 import com.pfi.crm.multitenant.tenant.payload.BeneficiarioPayload;
@@ -21,12 +21,15 @@ public class BeneficiarioService {
 	@Autowired
 	private BeneficiarioRepository beneficiarioRepository;
 	
+	@Autowired
+	private ActividadService actividadService;
+	
 	@SuppressWarnings("unused")
 	private static final Logger logger = LoggerFactory.getLogger(BeneficiarioService.class);
 	
 	public BeneficiarioPayload getBeneficiarioByIdContacto(@PathVariable Long id) {
 		return beneficiarioRepository.findByPersonaFisica_Contacto_Id(id).orElseThrow(
-				() -> new ResourceNotFoundException("Beneficiario", "id", id)).toPayload();
+				() -> new ResourceNotFoundException("Beneficiario contacto", "id", id)).toPayload();
     }
 	
 	public List<BeneficiarioPayload> getBeneficiarios() {
@@ -42,33 +45,33 @@ public class BeneficiarioService {
 	public void bajaBeneficiario(Long id) {
 		
 		//Si Optional es null o no, lo conocemos con ".isPresent()".		
-		Optional<Beneficiario> optionalModel = beneficiarioRepository.findByPersonaFisica_Contacto_Id(id);
-		if(optionalModel.isPresent()) {
-			Beneficiario m = optionalModel.get();
-			m.setEstadoActivoBeneficiario(false);
-			m.setContacto(null);
-			m.setPersonaFisica(null);
-			beneficiarioRepository.save(m);
-			beneficiarioRepository.delete(m);											//Temporalmente se elimina de la BD			
-		}
-		else {
-			//No existe persona Fisica
-		}
+		Beneficiario m = beneficiarioRepository.findByPersonaFisica_Contacto_Id(id).orElseThrow(
+				() -> new ResourceNotFoundException("Beneficiario", "id", id));
+		m.setEstadoActivoBeneficiario(false);
+		m.setContacto(null);
+		m.setPersonaFisica(null);
+		beneficiarioRepository.save(m);
+		
+		//Eliminar objeto en todo lo que esta asociado Beneficiario
+		actividadService.bajaBeneficiarioEnActividades(m.getId());
+		
+		beneficiarioRepository.delete(m);	//Temporalmente se elimina de la BD			
 		
 	}
 	
 	public BeneficiarioPayload modificarBeneficiario(BeneficiarioPayload payload) {
 		if (payload != null && payload.getId() != null) {
 			//Necesito el id de persona Fisica o se crearia uno nuevo
-			Optional<Beneficiario> optional = beneficiarioRepository.findByPersonaFisica_Contacto_Id(payload.getId());
-			if(optional.isPresent()) {   //Si existe
-				Beneficiario model = optional.get();
-				model.modificar(payload);
-				return beneficiarioRepository.save(model).toPayload();				
-			}
-			//si llegue aca devuelvo null
+			Beneficiario model = beneficiarioRepository.findByPersonaFisica_Contacto_Id(payload.getId()).orElseThrow(
+					() -> new ResourceNotFoundException("Beneficiario", "id", payload.getId()));
+			model.modificar(payload);
+			return beneficiarioRepository.save(model).toPayload();
 		}
-		return null;
+		throw new BadRequestException("No se puede modificar Beneficiario sin ID");
+	}
+	
+	public boolean existeBeneficiarioPorIdContacto(Long id) {
+		return beneficiarioRepository.existsByPersonaFisica_Contacto_Id(id);
 	}
 	
 	

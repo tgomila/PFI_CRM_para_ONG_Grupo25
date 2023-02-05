@@ -4,11 +4,12 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.ManyToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
@@ -36,12 +37,12 @@ public class Actividad extends UserDateAudit {
 	
 	private String descripcion;
 	
-	@OneToMany()//fetch = FetchType.EAGER) //Fue reemplazado el fetch por lazyCollection
+	@ManyToMany(cascade = CascadeType.MERGE)//fetch = FetchType.EAGER) //Fue reemplazado el fetch por lazyCollection
 	@LazyCollection(LazyCollectionOption.FALSE)
 	@OrderBy("idBeneficiario ASC")
 	private List<Beneficiario> beneficiarios;
 	
-	@OneToMany()//fetch = FetchType.EAGER)
+	@ManyToMany(cascade = CascadeType.MERGE)//fetch = FetchType.EAGER)
 	@LazyCollection(LazyCollectionOption.FALSE)
 	@OrderBy("idProfesional ASC")
 	private List<Profesional> profesionales;
@@ -53,7 +54,7 @@ public class Actividad extends UserDateAudit {
 		profesionales = new ArrayList<Profesional>();
 	}*/
 	
-	public Actividad(ActividadPayload p) {
+	public Actividad(ActividadPayload p, List<Beneficiario> beneficiarios, List<Profesional> profesionales) {
 		super();
 		if(p.getFechaHoraDesde() == null)
 			new ResourceNotFoundException("Actividad", "fechaDesde", p.getFechaHoraDesde());
@@ -64,10 +65,13 @@ public class Actividad extends UserDateAudit {
 		this.fechaHoraDesde = p.getFechaHoraDesde();
 		this.fechaHoraHasta = p.getFechaHoraHasta();
 		this.descripcion = p.getDescripcion();
-		beneficiarios = new ArrayList<Beneficiario>();
-		profesionales = new ArrayList<Profesional>();
-		p.getBeneficiarios().forEach((b) -> beneficiarios.add(new Beneficiario(b)));
-		p.getProfesionales().forEach((pr) -> profesionales.add(new Profesional(pr)));
+		this.beneficiarios = new ArrayList<Beneficiario>(beneficiarios);
+		this.profesionales = new ArrayList<Profesional>(profesionales);
+		
+		//beneficiarios = new ArrayList<Beneficiario>();
+		//profesionales = new ArrayList<Profesional>();
+		//p.getBeneficiarios().forEach((b) -> beneficiarios.add(new Beneficiario(b)));
+		//p.getProfesionales().forEach((pr) -> profesionales.add(new Profesional(pr)));
 	}
 	
 	/**

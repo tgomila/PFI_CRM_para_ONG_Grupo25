@@ -1,11 +1,12 @@
 package com.pfi.crm.multitenant.tenant.model;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -34,37 +35,37 @@ public class Factura extends UserDateAudit {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	private LocalDate fecha;
-	@ManyToOne(cascade = CascadeType.ALL)
+	private LocalDateTime fecha;
+	
+	@ManyToOne(fetch=FetchType.EAGER, cascade = CascadeType.MERGE)
 	@OrderBy("nombreDescripcion ASC")
 	private Contacto cliente;
 	
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne(fetch=FetchType.EAGER, cascade = CascadeType.MERGE)
 	private Contacto emisorFactura;
 	
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval=true)
 	@LazyCollection(LazyCollectionOption.FALSE)
 	private List<FacturaItem> itemsFactura;
 	
-	public Factura() {
-		super();
-		cliente = new Contacto();
-		itemsFactura = new ArrayList<FacturaItem>();
-	}
 	
 	
 	
-	
-	public Factura(FacturaPayload p) {
+	public Factura(FacturaPayload p, Contacto cliente, Contacto emisorFactura) {
 		super();
 		this.id = p.getId();
-		this.fecha = p.getFecha();
-		this.cliente = new Contacto(p.getCliente());
-		this.emisorFactura = new Contacto(p.getEmisorFactura());
+		modificar(p, cliente, emisorFactura, null);
 		itemsFactura = new ArrayList<FacturaItem>();
 		for(FacturaItemPayload item:  p.getItemsFactura()) {
 			itemsFactura.add(new FacturaItem(item));
 		}
+	}
+	
+	public void modificar(FacturaPayload p, Contacto cliente, Contacto emisorFactura, List<FacturaItem> itemsFactura) {
+		this.fecha = p.getFecha();
+		this.cliente = cliente;
+		this.emisorFactura = emisorFactura;
+		this.itemsFactura = itemsFactura;
 	}
 
 
@@ -79,11 +80,11 @@ public class Factura extends UserDateAudit {
 		this.id = id;
 	}
 
-	public LocalDate getFecha() {
+	public LocalDateTime getFecha() {
 		return fecha;
 	}
 
-	public void setFecha(LocalDate fecha) {
+	public void setFecha(LocalDateTime fecha) {
 		this.fecha = fecha;
 	}
 
@@ -119,8 +120,10 @@ public class Factura extends UserDateAudit {
 		
 		p.setId(id);
 		p.setFecha(fecha);
-		p.setCliente(cliente.toPayload());
-		p.setEmisorFactura(emisorFactura.toPayload());
+		if(p.getCliente() != null)
+			p.setCliente(cliente.toPayload());
+		if(p.getEmisorFactura() != null)
+			p.setEmisorFactura(emisorFactura.toPayload());
 		itemsFactura = new ArrayList<FacturaItem>();
 		for(FacturaItem item:  itemsFactura) {
 			p.agregarItemFactura(item.toPayload());

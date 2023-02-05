@@ -1,21 +1,19 @@
 package com.pfi.crm.multitenant.tenant.payload;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 public class FacturaPayload {
 	
 	private Long id;
-	private LocalDate fecha;
+	private LocalDateTime fecha;
 	private ContactoPayload cliente;
 	private ContactoPayload emisorFactura;
 	private List<FacturaItemPayload> itemsFactura;
 	
 	public FacturaPayload() {
 		super();
-		cliente = new ContactoPayload();
-		emisorFactura = new ContactoPayload();
 		itemsFactura = new ArrayList<FacturaItemPayload>();
 	}
 	
@@ -31,10 +29,10 @@ public class FacturaPayload {
 	public void setId(Long id) {
 		this.id = id;
 	}
-	public LocalDate getFecha() {
+	public LocalDateTime getFecha() {
 		return fecha;
 	}
-	public void setFecha(LocalDate fecha) {
+	public void setFecha(LocalDateTime fecha) {
 		this.fecha = fecha;
 	}
 	public ContactoPayload getCliente() {

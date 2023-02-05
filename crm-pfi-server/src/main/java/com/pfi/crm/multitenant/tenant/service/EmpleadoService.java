@@ -25,7 +25,7 @@ public class EmpleadoService {
 	
 	public EmpleadoPayload getEmpleadoByIdContacto(@PathVariable Long id) {
 		return empleadoRepository.findByPersonaFisica_Contacto_Id(id).orElseThrow(
-        		() -> new ResourceNotFoundException("Empleado", "id", id)).toPayload();
+        		() -> new ResourceNotFoundException("Empleado contacto", "id", id)).toPayload();
     }
 	
 	public List<EmpleadoPayload> getEmpleados() {
@@ -69,6 +69,10 @@ public class EmpleadoService {
 			new ResourceNotFoundException("Empleado", "id", "null");
 		}
 		return null;*/
+	}
+	
+	public boolean existeEmpleadoPorIdContacto(Long id) {
+		return empleadoRepository.existsByPersonaFisica_Contacto_Id(id);
 	}
 	
 	

@@ -30,7 +30,7 @@ public class ContactoController {
 	
 	@GetMapping("/{id}")
     public ContactoPayload getContactoById(@PathVariable Long id) {
-        return contactoService.getContactoById(id).toPayload();
+        return contactoService.getContactoById(id);
     }
 	
 	@GetMapping({"/", "/all"})

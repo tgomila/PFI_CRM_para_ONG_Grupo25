@@ -6,6 +6,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import com.pfi.crm.exception.ResourceNotFoundException;
@@ -15,6 +16,7 @@ import com.pfi.crm.multitenant.tenant.payload.ActividadPayload;
 import com.pfi.crm.multitenant.tenant.payload.ProgramaDeActividadesPayload;
 import com.pfi.crm.multitenant.tenant.persistence.repository.ProgramaDeActividadesRepository;
 
+@Service
 public class ProgramaDeActividadesService {
 	
 	@Autowired
@@ -38,7 +40,7 @@ public class ProgramaDeActividadesService {
 		//Dar de alta a actividades que no tengan id (nuevas actividades)
 		List<Actividad> actividadesDelPrograma = new ArrayList<Actividad>();
 		for(ActividadPayload actividadPayload: payload.getActividades()) {
-			Actividad actividadModel;
+			Actividad actividadModel = null;
 			if(actividadPayload.getId() == null) //Si la actividad no existe en la BD.
 				actividadModel = actividadService.altaActividadModel(actividadPayload);
 			else

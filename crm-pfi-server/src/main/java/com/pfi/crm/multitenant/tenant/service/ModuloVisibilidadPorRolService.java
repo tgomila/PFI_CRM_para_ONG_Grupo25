@@ -57,7 +57,7 @@ public class ModuloVisibilidadPorRolService {
 		System.out.println("El rol superior es: " + rolSuperior.getName());
 		
 		
-		Optional<ModuloVisibilidadPorRol> optional = moduloVisibilidadPorRolRepository.findByRoleName(rolSuperior);
+		Optional<ModuloVisibilidadPorRol> optional = moduloVisibilidadPorRolRepository.findByRoleRoleName(rolSuperior);
 		if(optional.isPresent()) {   //Si existe
 			return optional.get().toPayload();
 		}
@@ -65,7 +65,7 @@ public class ModuloVisibilidadPorRolService {
 	}
 	
 	public ModuloPayload getModulosVisibilidadPorRol(RoleName roleName){
-		Optional<ModuloVisibilidadPorRol> optional = moduloVisibilidadPorRolRepository.findByRoleName(roleName);
+		Optional<ModuloVisibilidadPorRol> optional = moduloVisibilidadPorRolRepository.findByRoleRoleName(roleName);
 		if(optional.isPresent()) {   //Si existe
 			return optional.get().toPayload();
 		}
@@ -78,11 +78,11 @@ public class ModuloVisibilidadPorRolService {
 	
 	public ModuloPayload altaModuloVisibilidadPorRol(ModuloPayload moduloPayload) {
 		RoleName roleName = RoleName.valueOf(moduloPayload.getRol());
-		Role rol = roleRepository.findByName(roleName).orElseThrow(
+		Role rol = roleRepository.findByRoleName(roleName).orElseThrow(
 				() -> new ResourceNotFoundException("Role", "role_name", moduloPayload.getRol()));
 		
 		//Verifico que no esté de alta el módulo con mismo RoleName antes del alta
-		Optional<ModuloVisibilidadPorRol> optional = moduloVisibilidadPorRolRepository.findByRoleName(roleName);
+		Optional<ModuloVisibilidadPorRol> optional = moduloVisibilidadPorRolRepository.findByRoleRoleName(roleName);
 		if(optional.isPresent()) {   //Si existe
 			throw new BadRequestException("Módulo visibilidad por rol " + roleName.toString() + " ya está dado de alta.");
 		}
