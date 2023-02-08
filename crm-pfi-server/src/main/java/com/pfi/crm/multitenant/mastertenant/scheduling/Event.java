@@ -37,7 +37,6 @@ public class Event {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(Event.class);
 	
-	//TODO comprobar
 	@Scheduled(cron = "*/5 * * * * MON-FRI")//"*/5 * * * * MON-FRI"
 	public void eventoCada5segundos() {
 		LOGGER.info("Test evento cada 5 segundos");
@@ -45,7 +44,7 @@ public class Event {
 	
 	
 	//Setear check cada 1 día a las 00hs, horario utc
-	@Scheduled(cron = "*/20 * * * * MON-FRI")//"0 0 0 * * ?")//, zone="America/Argentina/Buenos_Aires")
+	@Scheduled(cron = "*/50 * * * * MON-FRI")//"0 0 0 * * ?")//, zone="America/Argentina/Buenos_Aires")
 	public void eventoDiario() {
 		moduloCheckSuscripcion();
 	}

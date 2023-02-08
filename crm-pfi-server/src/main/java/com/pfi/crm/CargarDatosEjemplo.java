@@ -160,6 +160,10 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 			return;
 		}
 		if(tenants.size() == 3) {
+			//Ante la duda si posee create, hago chequeo de cargar datos por si se borraron
+			cargarTenant1();
+			cargarTenant2();
+			cargarTenant3();
 			System.out.println("Tenants bien cargados. Continue con el desarrollo");
 			return;
 		}
