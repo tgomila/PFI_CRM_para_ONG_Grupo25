@@ -17,9 +17,6 @@ import org.springframework.stereotype.Component;
 
 import com.pfi.crm.mastertenant.config.DBContextHolder;
 import com.pfi.crm.multitenant.mastertenant.service.MasterTenantService;
-import com.pfi.crm.multitenant.tenant.model.ModuloEnum;
-import com.pfi.crm.multitenant.tenant.model.ModuloTipoVisibilidadEnum;
-import com.pfi.crm.multitenant.tenant.model.ModuloVisibilidadPorRol;
 import com.pfi.crm.multitenant.tenant.model.Role;
 import com.pfi.crm.multitenant.tenant.model.RoleName;
 import com.pfi.crm.multitenant.tenant.model.TipoPersonaJuridica;
@@ -248,8 +245,8 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		
 		//rolesOrdenados.stream().map(r -> roleRepository.save(new Role(r)) );
 		for(RoleName roleName: rolesOrdenados) {
-			Role role = roleRepository.save(new Role(roleName));
-			//cargarModuloVisibilidadPorRol(role);
+			roleRepository.save(new Role(roleName));
+			//cargarModuloVisibilidadPorRol(role); //Es del role que devuelve el service de arriba
 		}
 		moduloVisibilidadPorRolService.agregarTodosLosModulos();
 		moduloMarketService.chequearYDarDeAltaModulosMarket();
