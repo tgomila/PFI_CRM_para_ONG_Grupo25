@@ -95,7 +95,7 @@ public class ModuloMarket {
 		else {
 			fechaMaximaSuscripcion = fechaMaximaSuscripcion.plusDays(7).plusHours(1);
 		}
-		prueba7DiasUtilizada = true;
+		this.prueba7DiasUtilizada = true;
 		this.suscripcionActiva = true;
 		return prueba7DiasUtilizada;
 	}
@@ -109,7 +109,7 @@ public class ModuloMarket {
 			return false;
 		if(fechaMaximaSuscripcion == null)
 			return true; //null significa nunca se ha suscripto
-		return !fechaMaximaSuscripcion.isAfter(LocalDateTime.now());
+		return !fechaMaximaSuscripcion.isAfter(LocalDateTime.now()); //Si fechaMaximaSuscripcion es antes o fecha/hora actual.
 	}
 	
 	public boolean isPaidModule() {

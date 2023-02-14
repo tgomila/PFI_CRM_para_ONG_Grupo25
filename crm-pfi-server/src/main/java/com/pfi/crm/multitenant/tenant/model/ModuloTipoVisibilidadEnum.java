@@ -4,5 +4,6 @@ public enum ModuloTipoVisibilidadEnum {
 	//CRUD
 	EDITAR,
 	SOLO_VISTA,
-	NO_VISTA
+	NO_VISTA,
+	SIN_SUSCRIPCION
 }

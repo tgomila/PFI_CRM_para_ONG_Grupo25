@@ -1,5 +1,6 @@
 package com.pfi.crm.multitenant.tenant.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -15,11 +16,11 @@ import com.pfi.crm.exception.ResourceNotFoundException;
 import com.pfi.crm.multitenant.tenant.model.ModuloEnum;
 import com.pfi.crm.multitenant.tenant.model.ModuloTipoVisibilidadEnum;
 import com.pfi.crm.multitenant.tenant.model.ModuloVisibilidadPorRol;
+import com.pfi.crm.multitenant.tenant.model.ModuloVisibilidadPorRolTipo;
 import com.pfi.crm.multitenant.tenant.model.Role;
 import com.pfi.crm.multitenant.tenant.model.RoleName;
 import com.pfi.crm.multitenant.tenant.model.User;
 import com.pfi.crm.multitenant.tenant.payload.ModuloItemPayload;
-import com.pfi.crm.multitenant.tenant.payload.ModuloMarketPayload;
 import com.pfi.crm.multitenant.tenant.payload.ModuloPayload;
 import com.pfi.crm.multitenant.tenant.persistence.repository.ModuloVisibilidadPorRolRepository;
 import com.pfi.crm.multitenant.tenant.persistence.repository.RoleRepository;
@@ -41,7 +42,7 @@ public class ModuloVisibilidadPorRolService {
 	@Autowired
 	private RoleRepository roleRepository;
 	
-	private static final Logger logger = LoggerFactory.getLogger(ModuloVisibilidadPorRolService.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ModuloVisibilidadPorRolService.class);
 	
 	public ModuloVisibilidadPorRol getModuloVisibilidadPorRolById(@PathVariable Long id) {
 		return moduloVisibilidadPorRolRepository.findById(id).orElseThrow(
@@ -57,11 +58,8 @@ public class ModuloVisibilidadPorRolService {
 		System.out.println("El rol superior es: " + rolSuperior.getName());
 		
 		
-		Optional<ModuloVisibilidadPorRol> optional = moduloVisibilidadPorRolRepository.findByRoleRoleName(rolSuperior);
-		if(optional.isPresent()) {   //Si existe
-			return optional.get().toPayload();
-		}
-		return null;
+		return moduloVisibilidadPorRolRepository.findByRoleRoleName(rolSuperior).orElseThrow(
+                () -> new ResourceNotFoundException("ModuloVisibilidadPorRol", "Role->RoleName", rolSuperior.toString())).toPayload();
 	}
 	
 	public ModuloPayload getModulosVisibilidadPorRol(RoleName roleName){
@@ -76,7 +74,227 @@ public class ModuloVisibilidadPorRolService {
 		return moduloVisibilidadPorRolRepository.findAll().stream().map(e -> e.toPayload()).collect(Collectors.toList());
     }
 	
-	public ModuloPayload altaModuloVisibilidadPorRol(ModuloPayload moduloPayload) {
+	public List<ModuloPayload> agregarTodosLosModulos() {
+		List<ModuloVisibilidadPorRol> modulos = moduloVisibilidadPorRolRepository.findAll();
+		List<ModuloPayload> dadosDeAlta = new ArrayList<ModuloPayload>();
+		for(RoleName roleName: RoleName.values()) {//Recorro todos los roles para dar de alta.
+			ModuloVisibilidadPorRol alta = null;
+			for(ModuloVisibilidadPorRol modAlta: modulos) {//Corroboro si está dado de alta módulo con dicho rol.
+				if(modAlta.getRole().getRoleName().equals(roleName)) {//Si está dado de alta, descarto su alta.
+					alta = modAlta;
+					LOGGER.info("Módulo visibilidad por rol " + roleName.toString() + " ya está dado de alta.");
+					//throw new BadRequestException("Módulo visibilidad por rol " + roleName.toString() + " ya está dado de alta.");
+					break;
+				}
+			}
+			boolean seHaAgregadoOModificado = false;
+			if(alta != null) {	//Si existe ya dado de alta.
+				//Solo corroboro si tiene todos los módulos dados de alta
+				seHaAgregadoOModificado = alta.agregarTodosLosModulosTipoOrdenadoYNoRepetido();
+			}
+			else {//No existe en BD, doy de alta
+				Role rol = roleRepository.findByRoleName(roleName).orElseThrow(
+						() -> new ResourceNotFoundException("Role", "role_name", roleName.toString()));
+				alta = new ModuloVisibilidadPorRol(rol);
+				seHaAgregadoOModificado = true;
+			}
+			if(seHaAgregadoOModificado)
+				dadosDeAlta.add(moduloVisibilidadPorRolRepository.save(alta).toPayload());
+		}
+		LOGGER.info("Todos los módulos han sido dados de alta. Total de " + dadosDeAlta.size() + " módulos dados de alta.");
+		return dadosDeAlta;
+	}
+	
+	public void suscripcionCompleta() {
+		List<ModuloVisibilidadPorRol> modulos = moduloVisibilidadPorRolRepository.findAll();
+		for(ModuloVisibilidadPorRol m: modulos) {
+			m.suscribir();
+		}
+		moduloVisibilidadPorRolRepository.saveAll(modulos);
+	}
+	
+	public void desuscripcionCompleta() {
+		List<ModuloVisibilidadPorRol> modulos = moduloVisibilidadPorRolRepository.findAll();
+		for(ModuloVisibilidadPorRol m: modulos) {
+			m.desuscribir();
+		}
+		moduloVisibilidadPorRolRepository.saveAll(modulos);
+	}
+	
+	public void suscripcion(ModuloEnum moduloEnum) {
+		if(moduloEnum.equals(ModuloEnum.MARKETPLACE))
+			throw new BadRequestException("No se puede suscribir a MarketPlace");
+		if(moduloEnum.isFreeModule())
+			throw new BadRequestException("No se puede suscribir a un módulo gratuito");
+		List<ModuloVisibilidadPorRol> modulos = moduloVisibilidadPorRolRepository.findAll();
+		modulos.stream().forEach(m -> m.suscribir(moduloEnum));
+		moduloVisibilidadPorRolRepository.saveAll(modulos);
+	}
+	
+	public void desuscripcion(ModuloEnum moduloEnum) {
+		if(moduloEnum.equals(ModuloEnum.MARKETPLACE))
+			throw new BadRequestException("No se puede desuscribir a MarketPlace");
+		if(moduloEnum.isFreeModule())
+			throw new BadRequestException("No se puede desuscribir a un módulo gratuito");
+		List<ModuloVisibilidadPorRol> modulos = moduloVisibilidadPorRolRepository.findAll();
+		modulos.stream().forEach(m -> m.desuscribir(moduloEnum));
+		moduloVisibilidadPorRolRepository.saveAll(modulos);
+	}
+	
+	public void desuscripcion(RoleName roleName) {
+		ModuloVisibilidadPorRol modulo = moduloVisibilidadPorRolRepository.findByRoleRoleName(roleName).orElseThrow(
+                () -> new ResourceNotFoundException("ModuloVisibilidadPorRol", "Role->RoleName", roleName.toString()));
+		modulo.desuscribir();
+		moduloVisibilidadPorRolRepository.save(modulo);
+	}
+	
+	public ModuloPayload modificarModuloVisibilidadTipos(ModuloPayload moduloNuevo) {
+		RoleName roleName = RoleName.valueOf(moduloNuevo.getRol());
+		//Role rol = roleRepository.findByRoleName(roleName).orElseThrow(
+		//		() -> new ResourceNotFoundException("Role", "role_name", roleName.toString()));
+		ModuloVisibilidadPorRol moduloBD = moduloVisibilidadPorRolRepository.findByRoleRoleName(roleName).orElseThrow(
+                () -> new ResourceNotFoundException("ModuloVisibilidadPorRol", "Role->RoleName", roleName.toString()));
+		boolean huboModificaciones = false;	//inicializo false, si no hay modificaciones, no hago save para no desperdiciar tiempo.
+		for(ModuloItemPayload pNew: moduloNuevo.getItems()) {	//Recorro módulos a modificar
+			ModuloEnum pNewEnum = ModuloEnum.valueOf(pNew.getModuloEnum());
+			for(ModuloVisibilidadPorRolTipo mBD: moduloBD.getModulos()) {	//Recorro módulos existentes
+				if(pNewEnum.equals(mBD.getModuloEnum())) {					//Encontré el modulo a modificar? Si/No
+					ModuloTipoVisibilidadEnum pNewVisibilidad = ModuloTipoVisibilidadEnum.valueOf(pNew.getTipoVisibilidad());
+					if(mBD.setTipoVisibilidad(pNewVisibilidad)) {			//Modifico, si hubo modificación hago save
+						huboModificaciones = true;					//Hago save si encontré, sino no desperdicio tiempo save a BD.
+					}
+				}
+			}
+		}
+		if(huboModificaciones)
+			return moduloVisibilidadPorRolRepository.save(moduloBD).toPayload();
+		else
+			return null;
+	}
+	
+	private ModuloVisibilidadPorRol modificarModuloVisibilidadTipos(ModuloVisibilidadPorRol moduloNuevo) {
+		//ModuloVisibilidadPorRol moduloBD = moduloVisibilidadPorRolRepository.findByRole(moduloNuevo.getRole()).orElseThrow(
+		//		() -> new ResourceNotFoundException("ModuloVisibilidadPorRol", "Role->RoleName", moduloNuevo.getRole().toString()));
+		Optional<ModuloVisibilidadPorRol> optionalModuloBD = moduloVisibilidadPorRolRepository.findByRole(moduloNuevo.getRole());
+		if(!optionalModuloBD.isPresent()) {
+			this.agregarTodosLosModulos();
+		}
+		ModuloVisibilidadPorRol moduloBD = optionalModuloBD.get();
+		boolean huboModificaciones = false;	//inicializo false, si no hay modificaciones, no hago save para no desperdiciar tiempo.
+		for(ModuloVisibilidadPorRolTipo mNew: moduloNuevo.getModulos()) {	//Recorro módulos a modificar
+			for(ModuloVisibilidadPorRolTipo mBD: moduloBD.getModulos()) {	//Recorro módulos existentes
+				if(mNew.getModuloEnum().equals(mBD.getModuloEnum())) {		//Encontré el modulo a modificar? Si/No
+					if(mBD.setTipoVisibilidad(mNew.getTipoVisibilidad())) {	//Modifico, si hubo modificación hago save
+						huboModificaciones = true;							//Hago save si encontré, sino no desperdicio tiempo save a BD.
+					}
+				}
+			}
+		}
+		if(huboModificaciones)
+			return moduloVisibilidadPorRolRepository.save(moduloBD);
+		else
+			return null;
+	}
+	
+	/**
+	 * Requiere roles cargados.
+	 */
+	public void cargarVisibilidadSuscripcionDefault() {
+		agregarTodosLosModulos();
+		suscripcionCompleta();
+		cargarTodosLosModulosConSuscripcionDefault();
+	}
+	
+	private void cargarTodosLosModulosConSuscripcionDefault() {
+		List<Role> roles = roleRepository.findAll();
+		for(Role role: roles) {
+			ModuloVisibilidadPorRol modulo = new ModuloVisibilidadPorRol();
+			modulo.setRole(role);
+			switch(role.getRoleName()) {
+			case ROLE_ADMIN:
+				modulo.setModulos(obtenerModuloVisibilidadRolAdmin());
+				break;
+			case ROLE_EMPLOYEE:
+				modulo.setModulos(obtenerModuloVisibilidadRolEmployee());
+				break;
+			case ROLE_PROFESIONAL:
+				modulo.setModulos(obtenerModuloVisibilidadRolProfesional());
+				break;
+			case ROLE_USER:
+				modulo.setModulos(obtenerModuloVisibilidadRolUser());
+				break;
+			case ROLE_DEFAULT:
+				modulo.setModulos(obtenerModuloVisibilidadRolDefault());
+				break;
+			default:
+				break;
+			}
+			modificarModuloVisibilidadTipos(modulo);
+		}
+	}
+	
+	private List<ModuloVisibilidadPorRolTipo> obtenerModuloVisibilidadRolDefault() {
+		List<ModuloVisibilidadPorRolTipo> moduloTipos = new ArrayList<ModuloVisibilidadPorRolTipo>();
+		return moduloTipos;
+	}
+	
+	private List<ModuloVisibilidadPorRolTipo> obtenerModuloVisibilidadRolUser() {
+		List<ModuloVisibilidadPorRolTipo> moduloTipos = obtenerModuloVisibilidadRolDefault();
+		moduloTipos.add(new ModuloVisibilidadPorRolTipo(ModuloEnum.CONTACTO, ModuloTipoVisibilidadEnum.SOLO_VISTA));
+		moduloTipos.add(new ModuloVisibilidadPorRolTipo(ModuloEnum.PERSONA, ModuloTipoVisibilidadEnum.SOLO_VISTA));
+		moduloTipos.add(new ModuloVisibilidadPorRolTipo(ModuloEnum.BENEFICIARIO, ModuloTipoVisibilidadEnum.SOLO_VISTA));
+		return moduloTipos;
+	}
+	
+	public List<ModuloVisibilidadPorRolTipo> obtenerModuloVisibilidadRolProfesional() {
+		List<ModuloVisibilidadPorRolTipo> moduloTipos = obtenerModuloVisibilidadRolUser();
+		moduloTipos.add(new ModuloVisibilidadPorRolTipo(ModuloEnum.EMPLEADO, ModuloTipoVisibilidadEnum.SOLO_VISTA));
+		moduloTipos.add(new ModuloVisibilidadPorRolTipo(ModuloEnum.COLABORADOR, ModuloTipoVisibilidadEnum.SOLO_VISTA));
+		moduloTipos.add(new ModuloVisibilidadPorRolTipo(ModuloEnum.CONSEJOADHONOREM, ModuloTipoVisibilidadEnum.SOLO_VISTA));
+		moduloTipos.add(new ModuloVisibilidadPorRolTipo(ModuloEnum.PERSONAJURIDICA, ModuloTipoVisibilidadEnum.SOLO_VISTA));
+		moduloTipos.add(new ModuloVisibilidadPorRolTipo(ModuloEnum.PROFESIONAL, ModuloTipoVisibilidadEnum.SOLO_VISTA));
+		
+		moduloTipos.add(new ModuloVisibilidadPorRolTipo(ModuloEnum.ACTIVIDAD, ModuloTipoVisibilidadEnum.SOLO_VISTA));
+		moduloTipos.add(new ModuloVisibilidadPorRolTipo(ModuloEnum.PROGRAMA_DE_ACTIVIDADES, ModuloTipoVisibilidadEnum.SOLO_VISTA));
+		moduloTipos.add(new ModuloVisibilidadPorRolTipo(ModuloEnum.PRODUCTO, ModuloTipoVisibilidadEnum.SOLO_VISTA));
+		moduloTipos.add(new ModuloVisibilidadPorRolTipo(ModuloEnum.DONACION, ModuloTipoVisibilidadEnum.EDITAR));
+		moduloTipos.add(new ModuloVisibilidadPorRolTipo(ModuloEnum.FACTURA, ModuloTipoVisibilidadEnum.EDITAR));
+		moduloTipos.add(new ModuloVisibilidadPorRolTipo(ModuloEnum.PRESTAMO, ModuloTipoVisibilidadEnum.SOLO_VISTA));
+		moduloTipos.add(new ModuloVisibilidadPorRolTipo(ModuloEnum.PROYECTO, ModuloTipoVisibilidadEnum.SOLO_VISTA));
+		moduloTipos.add(new ModuloVisibilidadPorRolTipo(ModuloEnum.CHAT, ModuloTipoVisibilidadEnum.EDITAR));
+		return moduloTipos;
+	}	
+	
+	public List<ModuloVisibilidadPorRolTipo> obtenerModuloVisibilidadRolEmployee() {
+		List<ModuloVisibilidadPorRolTipo> moduloTipos = obtenerModuloVisibilidadRolProfesional();
+		moduloTipos.stream().map(m -> m.setTipoVisibilidad(ModuloTipoVisibilidadEnum.EDITAR));
+		return moduloTipos;
+	}
+	
+	public List<ModuloVisibilidadPorRolTipo> obtenerModuloVisibilidadRolAdmin() {
+		List<ModuloVisibilidadPorRolTipo> moduloTipos = obtenerModuloVisibilidadRolEmployee();
+		moduloTipos.add(new ModuloVisibilidadPorRolTipo(ModuloEnum.MARKETPLACE, ModuloTipoVisibilidadEnum.EDITAR));
+		moduloTipos.stream().map(m -> m.setTipoVisibilidad(ModuloTipoVisibilidadEnum.EDITAR));
+		return moduloTipos;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	//Basura de código. Esto era cuando se permitía dar de baja.
+	
+	/*public ModuloPayload altaModuloVisibilidadPorRol(ModuloPayload moduloPayload) {
 		RoleName roleName = RoleName.valueOf(moduloPayload.getRol());
 		Role rol = roleRepository.findByRoleName(roleName).orElseThrow(
 				() -> new ResourceNotFoundException("Role", "role_name", moduloPayload.getRol()));
@@ -107,10 +325,23 @@ public class ModuloVisibilidadPorRolService {
 		//Luego de corroborar que no haya visibilidad vencida, lo doy de alta
 		moduloVisibilidadPorRol.setId(null);
 		return moduloVisibilidadPorRolRepository.save(moduloVisibilidadPorRol).toPayload();
-	}
+	}*/
 	
-	public boolean bajaModuloVisibilidadPorRol(Long id) {
+	/**
+	 * No debería usarse
+	 * @param id de módulo
+	 * @return true si se realizó, false si hubo error
+	 */
+	/*public boolean bajaModuloVisibilidadPorRol(Long id) {
 		try {
+			ModuloVisibilidadPorRol rolBaja = moduloVisibilidadPorRolRepository.findById(id).orElseThrow(
+	                () -> new ResourceNotFoundException("ModuloVisibilidadPorRol", "id", id));
+			List<ModuloVisibilidadPorRolTipo> modulosTipo = rolBaja.getModulos();
+			rolBaja.setModulos(null);
+			moduloVisibilidadPorRolRepository.save(rolBaja);	//quito sus modulo tipo de bd
+			for(ModuloVisibilidadPorRolTipo moduloTipo: modulosTipo)	//y ahora los doy de baja de la bd, ya que no dependen de nada
+				moduloVisibilidadPorRolTipoRepository.deleteById(moduloTipo.getId());
+			//Una vez eliminado sus módulos tipo, elimino el módulo general.
 			moduloVisibilidadPorRolRepository.deleteById(id);
 			return true;
 		} catch (Exception ex) {
@@ -127,7 +358,23 @@ public class ModuloVisibilidadPorRolService {
 				moduloVisibilidadPorRolRepository.save(modulo);
 		}
 		
-	}
+	}*/
+	
+	/*public void darTodaVisibilidadAdmin() {
+		Optional<ModuloVisibilidadPorRol> optional = moduloVisibilidadPorRolRepository.findByRoleRoleName(RoleName.ROLE_ADMIN);
+		
+		if(!optional.isPresent()) {   //Si no existe
+			throw new BadRequestException("No existe visibilidad de módulo de admin en BD");
+		
+		ModuloVisibilidadPorRol modulo = optional.get();
+		modulo
+		for(ModuloVisibilidadPorRol modulo: moduloVisibilidadPorRols) {
+			boolean deboGuardar = modulo.quitarModulo(moduloEnum);
+			if(deboGuardar)
+				moduloVisibilidadPorRolRepository.save(modulo);
+		}
+		
+	}*/
 	
 	//public ModuloVisibilidadPorRol modificarModuloVisibilidadPorRol(ModuloPayload payload) {
 	//	ModuloVisibilidadPorRol model = new ModuloVisibilidadPorRol(payload);

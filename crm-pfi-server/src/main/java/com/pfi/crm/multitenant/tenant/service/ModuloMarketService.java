@@ -3,24 +3,39 @@ package com.pfi.crm.multitenant.tenant.service;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import com.pfi.crm.exception.BadRequestException;
 import com.pfi.crm.exception.ResourceNotFoundException;
+import com.pfi.crm.mastertenant.config.DBContextHolder;
 import com.pfi.crm.multitenant.tenant.model.ModuloEnum;
 import com.pfi.crm.multitenant.tenant.model.ModuloMarket;
+import com.pfi.crm.multitenant.tenant.model.Role;
+import com.pfi.crm.multitenant.tenant.model.RoleName;
 import com.pfi.crm.multitenant.tenant.payload.ModuloMarketPayload;
 import com.pfi.crm.multitenant.tenant.persistence.repository.ModuloMarketRepository;
+import com.pfi.crm.multitenant.tenant.persistence.repository.RoleRepository;
 
 @Service
 public class ModuloMarketService {
 	
 	@Autowired
 	private ModuloMarketRepository moduloMarketRepository;
+	
+	@Autowired
+	private ModuloVisibilidadPorRolService moduloVisibilidadPorRolService;
+	
+	@Autowired
+	private RoleRepository roleRepository;
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(ModuloMarketService.class);
 	
 	public ModuloMarketPayload getModuloMarketById(@PathVariable Long id) {
 		return moduloMarketRepository.findById(id).orElseThrow(
@@ -41,9 +56,26 @@ public class ModuloMarketService {
 		}
 	}
 	
+	/**
+	 * Incluye suscripción a su módulo
+	 * @param moduloMarket
+	 * @return ModuloMarketPayload guardado
+	 */
 	private ModuloMarketPayload modificarModuloMarket(ModuloMarket moduloMarket) {
 		ModuloMarket m = getModuloMarketModelByModuloEnum(moduloMarket.getModuloEnum());
 		moduloMarket.setId(m.getId());
+		//Si acabo de cambiar las fechas de no tener suscripción a tener suscripción, suscribo.
+		if(m.poseeSuscripcionVencida() && moduloMarket.poseeSuscripcionActiva()) {
+			moduloVisibilidadPorRolService.suscripcion(moduloMarket.getModuloEnum());
+			m.setSuscripcionActiva(true);
+		}
+		else if(m.poseeSuscripcionActiva() && moduloMarket.poseeSuscripcionVencida()) {
+			moduloVisibilidadPorRolService.desuscripcion(moduloMarket.getModuloEnum());
+			m.setSuscripcionActiva(false);
+		}
+		m.setPrueba7DiasUtilizada(moduloMarket.isPrueba7DiasUtilizada());
+		m.setFechaPrueba7DiasUtilizada(moduloMarket.getFechaPrueba7DiasUtilizada());
+		m.setFechaMaximaSuscripcion(moduloMarket.getFechaMaximaSuscripcion());
 		return moduloMarketRepository.save(moduloMarket).toPayload();
 	}
 	
@@ -90,6 +122,27 @@ public class ModuloMarketService {
 		
 		m.activarSieteDiasGratis();
 		return this.modificarModuloMarket(m);
+	}
+	
+	public List<ModuloMarketPayload> activarPrueba7dias() {
+		List<ModuloMarket> modulos = moduloMarketRepository.findAll();
+		List<ModuloMarketPayload> modulosModificados = new ArrayList<ModuloMarketPayload>();
+		if(modulos.isEmpty())
+			return new ArrayList<ModuloMarketPayload>();
+		for(ModuloMarket m: modulos) {
+			if(m.isPrueba7DiasUtilizada()) {
+				if(m.getFechaPrueba7DiasUtilizada() != null)
+					LOGGER.info("La prueba gratuita de 7 días ya ha sido "
+							+ "utilizada el día " + m.getFechaPrueba7DiasUtilizada().toString());
+				else
+					LOGGER.info("La prueba gratuita de 7 días ya ha sido utilizada");
+			}
+			else {
+				m.activarSieteDiasGratis();
+				modulosModificados.add(this.modificarModuloMarket(m));
+			}
+		}
+		return modulosModificados;
 	}
 	
 	public ModuloMarketPayload suscripcionBasicMes(ModuloEnum moduloEnum) {
@@ -144,39 +197,115 @@ public class ModuloMarketService {
 		return modulosSuscriptos;
 	}
 	
+	//Se ejecutará este método en Event.java 1 vez por día a la medianoche
+	public void comprobarSuscripciones() {
+		if(!cargoBienTenant()) {
+			return;
+		}
+		chequearYDarDeAltaModulosMarket(); //Ejecuto ante la duda
+		
+		List<ModuloMarket> modulos = moduloMarketRepository.findAll();
+		List<ModuloMarket> modificar = new ArrayList<ModuloMarket>();
+		for(ModuloMarket modulo: modulos) {
+			
+			//Si acabo de cambiar las fechas de no tener suscripción a tener suscripción, suscribo.
+			if(!modulo.isSuscripcionActiva() && modulo.poseeSuscripcionActiva()) {
+				moduloVisibilidadPorRolService.suscripcion(modulo.getModuloEnum());
+				modulo.setSuscripcionActiva(true);
+				modificar.add(modulo);
+				LOGGER.info("Se cambiará la suscripción de " + modulo.getModuloEnum().toString() + " y ModuloVisibilidadPorRolTipo a suscripción activa.");
+			}
+			//Si acabo de cambiar las fechas de tener suscripción a no tener suscripción, desuscribo.
+			else if(modulo.isSuscripcionActiva() && modulo.poseeSuscripcionVencida()) {
+				moduloVisibilidadPorRolService.desuscripcion(modulo.getModuloEnum());
+				modulo.setSuscripcionActiva(false);
+				modificar.add(modulo);
+				LOGGER.info("Se cambiará la suscripción de " + modulo.getModuloEnum().toString() + " y ModuloVisibilidadPorRolTipo a suscripción vencida.");
+			}
+			else
+				LOGGER.info("La suscripción de " + modulo.getModuloEnum().toString() + " no cambiará. Se encuentra ok");
+		}
+		if(!modificar.isEmpty()) {
+			moduloMarketRepository.saveAll(modificar);
+			LOGGER.info("Se ha cambiado suscripciones activas o vencidas");
+		}
+	}
+	
+	/**
+	 * 
+	 * @return True si ha cargado bien el tenant, false si no lo ha hecho (Multitenancy)
+	 */
+	private boolean cargoBienTenant() {
+		Optional<Role> rol = roleRepository.findByRoleName(RoleName.ROLE_USER);
+		if (rol.isPresent()) {
+			return true;
+		}
+		else {
+			String tenantName = DBContextHolder.getCurrentDb();
+			LOGGER.info("Chequear tenant '" + tenantName + "' mal cargado");
+			return false;
+		}
+	}
+	
+	/**
+	 * 
+	 * @param moduloEnum
+	 * @return solo suscripción activa o vencida por sistema, no corrobora por fechas
+	 */
 	public Boolean poseeSuscripcionActiva(ModuloEnum moduloEnum) {
 		ModuloMarket moduloMarket = getModuloMarketModelByModuloEnum(moduloEnum);
-		return moduloMarket.poseeSuscripcionActiva();
+		return moduloMarket.isSuscripcionActiva();//moduloMarket.poseeSuscripcionActiva();
 	}
 	
+	/**
+	 * 
+	 * @param moduloEnum
+	 * @return solo suscripción activa o vencida por sistema, no corrobora por fechas
+	 */
 	public Boolean poseeSuscripcionVencida(ModuloEnum moduloEnum) {
 		ModuloMarket moduloMarket = getModuloMarketModelByModuloEnum(moduloEnum);
-		return moduloMarket.poseeSuscripcionVencida();
+		return !moduloMarket.isSuscripcionActiva();//moduloMarket.poseeSuscripcionVencida();
 	}
 	
+	/**
+	 * 
+	 * @return solo suscripción activa o vencida por sistema, no corrobora por fechas
+	 */
 	public List<ModuloMarketPayload> getModuloMarketVencidos() {
 		List<ModuloMarket> moduloMarkets = moduloMarketRepository.findAll();
 		List<ModuloMarketPayload> moduloMarketsVencidos = new ArrayList<ModuloMarketPayload>();
 		for(ModuloMarket modulo: moduloMarkets) {
-			if(modulo.poseeSuscripcionVencida())
+			if(!modulo.isSuscripcionActiva())//modulo.poseeSuscripcionVencida())
 				moduloMarketsVencidos.add(modulo.toPayload());
 		}
 		return moduloMarketsVencidos;
 	}
 	
 	
-	public List<ModuloMarketPayload> chequearYDarDeAltaModulos() {
+	public List<ModuloMarketPayload> chequearYDarDeAltaModulosMarket() {
 		List<ModuloEnum> modulosDeAlta = moduloMarketRepository.findAll().stream().map(ModuloMarket::getModuloEnum).collect(Collectors.toList());
 		List<ModuloEnum> todosLosModulos = Arrays.asList(ModuloEnum.values());
 		
 		List<ModuloEnum> modulosFaltantesADarDeAlta = new ArrayList<>(todosLosModulos);
 		modulosFaltantesADarDeAlta.removeAll(modulosDeAlta);
 		
-		List<ModuloMarketPayload> dadosDeAlta = modulosDeAlta.stream()
-				.map(e -> moduloMarketRepository.save(new ModuloMarket(e)).toPayload())
-				.collect(Collectors.toList());
+		if(!modulosFaltantesADarDeAlta.isEmpty()) {
+			List<ModuloMarket> auxDarDeAltaTodoJunto = modulosFaltantesADarDeAlta.stream()
+					.map(e -> new ModuloMarket(e)).collect(Collectors.toList());
+			
+			//Guardo todo junto, para que sea 1 consula y sea algo más rápido.
+			List<ModuloMarketPayload> dadosDeAlta = moduloMarketRepository.saveAll(auxDarDeAltaTodoJunto).stream()
+					.map(e -> e.toPayload()).collect(Collectors.toList());
+			
+			//List<ModuloMarketPayload> dadosDeAlta = modulosFaltantesADarDeAlta.stream()
+			//		.map(e -> moduloMarketRepository.save(new ModuloMarket(e)).toPayload())
+			//		.collect(Collectors.toList());
+			
+			return dadosDeAlta;
+		}
+		else
+			return new ArrayList<ModuloMarketPayload>();
 		
-		return dadosDeAlta;
 	}
 	
 	

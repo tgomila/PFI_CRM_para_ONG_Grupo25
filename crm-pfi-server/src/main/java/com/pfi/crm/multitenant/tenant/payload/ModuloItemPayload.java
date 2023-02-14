@@ -1,8 +1,12 @@
 package com.pfi.crm.multitenant.tenant.payload;
 
+import com.pfi.crm.multitenant.tenant.model.ModuloEnum;
+import com.pfi.crm.multitenant.tenant.model.ModuloTipoVisibilidadEnum;
+
 public class ModuloItemPayload {
 	
 	private int order;
+	private String moduloEnum;
 	private String name;
 	private String path;
 	private String iconName;
@@ -14,10 +18,23 @@ public class ModuloItemPayload {
 		super();
 	}
 	
-	public ModuloItemPayload(int order, String name, String path, String iconName, String tipoVisibilidad,
-			double priceOneMonth, double priceOneYear) {
+	public ModuloItemPayload(ModuloEnum moduloEnum, ModuloTipoVisibilidadEnum tipoVisibilidad) {
+		super();
+		this.order = moduloEnum.getOrder();
+		this.moduloEnum = moduloEnum.toString();
+		this.name = moduloEnum.getName();
+		this.path = moduloEnum.getPath();
+		this.iconName = moduloEnum.getIconName();
+		this.tipoVisibilidad = tipoVisibilidad.toString();
+		this.priceOneMonth = moduloEnum.getPriceOneMonth();
+		this.priceOneYear = moduloEnum.getPriceOneYear();
+	}
+	
+	public ModuloItemPayload(int order, String moduloEnum, String name, String path, String iconName,
+			String tipoVisibilidad, double priceOneMonth, double priceOneYear) {
 		super();
 		this.order = order;
+		this.moduloEnum = moduloEnum;
 		this.name = name;
 		this.path = path;
 		this.iconName = iconName;
@@ -36,6 +53,14 @@ public class ModuloItemPayload {
 		this.order = order;
 	}
 	
+	public String getModuloEnum() {
+		return moduloEnum;
+	}
+
+	public void setModuloEnum(String moduloEnum) {
+		this.moduloEnum = moduloEnum;
+	}
+
 	public String getName() {
 		return name;
 	}

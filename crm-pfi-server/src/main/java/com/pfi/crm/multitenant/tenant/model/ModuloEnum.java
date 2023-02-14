@@ -10,10 +10,18 @@ public enum ModuloEnum {
 	CONSEJOADHONOREM(6, "Consejo Adhonorem", "/consejoadhonorem", "GoNote", 0.00),
 	PERSONAJURIDICA(7, "Persona Juridica", "/personajuridica", "FaBuilding", 0.00),
 	PROFESIONAL(8, "Profesional", "/profesional", "FaUserCheck", 0.00),
-	DONACION(9, "Donacion", "/donacion", "FaDonate", 0.00),
-	FACTURA(10, "Factura", "/factura", "FaFileInvoiceDollar", 2.00),
-	USERS(11, "Users", "/users", "FaUsersCog", 0.00),
-	MARKETPLACE(12, "Marketplace", "/marketplace", "MdLocalGroceryStore", 0.00);
+	USERS(9, "Users", "/users", "FaUsersCog", 0.00),
+	
+	ACTIVIDAD(10, "Actividad", "/actividad", "BiTask", 3.00),
+	PROGRAMA_DE_ACTIVIDADES(11, "Programa de Actividades", "/programadeactividades", "GoCalendar", 1.00),
+	PRODUCTO(12, "Producto", "/producto", "GiHandTruck", 0.00),
+	DONACION(13, "Donacion", "/donacion", "FaDonate", 0.00),
+	FACTURA(14, "Factura", "/factura", "FaFileInvoiceDollar", 2.00),
+	INSUMO(15, "Insumo", "/insumo", "FiShoppingCart", 2.00),
+	PRESTAMO(16, "Prestamo", "/prestamo", "FaHandHolding", 2.00),
+	PROYECTO(17, "Proyecto", "/proyecto", "AiOutlineFundProjectionScreen", 2.00),
+	CHAT(18, "Chat", "/chat", "HiChatBubbleLeftRight", 2.00),
+	MARKETPLACE(19, "Marketplace", "/marketplace", "MdLocalGroceryStore", 0.00);
 	
 	
 	private final int order;

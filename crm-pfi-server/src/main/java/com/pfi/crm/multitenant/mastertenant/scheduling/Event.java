@@ -1,7 +1,6 @@
 package com.pfi.crm.multitenant.mastertenant.scheduling;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,39 +11,32 @@ import org.springframework.stereotype.Component;
 
 import com.pfi.crm.mastertenant.config.DBContextHolder;
 import com.pfi.crm.multitenant.mastertenant.service.MasterTenantService;
-import com.pfi.crm.multitenant.tenant.model.ModuloMarket;
-import com.pfi.crm.multitenant.tenant.model.Role;
-import com.pfi.crm.multitenant.tenant.model.RoleName;
-import com.pfi.crm.multitenant.tenant.persistence.repository.ModuloMarketRepository;
-import com.pfi.crm.multitenant.tenant.persistence.repository.RoleRepository;
-import com.pfi.crm.multitenant.tenant.service.ModuloVisibilidadPorRolService;
+import com.pfi.crm.multitenant.tenant.service.ModuloMarketService;
 
 @Component
 @Lazy(false)
 public class Event {
 	
 	@Autowired
-	private RoleRepository roleRepository;
+	private ModuloMarketService moduloMarketService;
 	
-	@Autowired
-	private ModuloVisibilidadPorRolService moduloVisibilidadPorRolService;
-	
-	@Autowired
-	private ModuloMarketRepository moduloMarketRepository;
+	//@Autowired
+	//private ModuloMarketRepository moduloMarketRepository;
 	
 	@Autowired
 	private MasterTenantService masterTenantService;
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(Event.class);
 	
-	@Scheduled(cron = "*/5 * * * * MON-FRI")//"*/5 * * * * MON-FRI"
-	public void eventoCada5segundos() {
-		LOGGER.info("Test evento cada 5 segundos");
-	}
+	//@Scheduled(cron = "*/5 * * * * MON-FRI")//"*/5 * * * * MON-FRI"
+	//public void eventoCada5segundos() {
+	//	LOGGER.info("Test evento cada 5 segundos");
+	//}
 	
 	
 	//Setear check cada 1 día a las 00hs, horario utc
-	@Scheduled(cron = "*/50 * * * * MON-FRI")//"0 0 0 * * ?")//, zone="America/Argentina/Buenos_Aires")
+	//@Scheduled(cron = "*/50 * * * * MON-FRI")//Testing cada N segundos
+	@Scheduled(cron = "0 0 0 * * ?", zone="America/Argentina/Buenos_Aires")
 	public void eventoDiario() {
 		moduloCheckSuscripcion();
 	}
@@ -53,15 +45,17 @@ public class Event {
 	public void moduloCheckSuscripcion() {
 		LOGGER.info("Chequear suscripción de módulos");
 		List<String> tenants = masterTenantService.getDbNames();//Arrays.asList(new String[]{"tenant1", "tenant2", "tenant3"});
-		for(String tenantString: tenants) {
-			moduloCheckSuscripcionTenant(tenantString);
+		for(String tenantName: tenants) {
+			//moduloCheckSuscripcionTenant(tenantName);
+			DBContextHolder.setCurrentDb(tenantName);
+			moduloMarketService.comprobarSuscripciones();
 		}
 		LOGGER.info("Suscripción de módulos ha sido chequeado y actualizado");
 	}
 	
-	public void moduloCheckSuscripcionTenant(String tenantName) {
+	/*public void moduloCheckSuscripcionTenant(String tenantName) {
 		if(!cargoBienTenant(tenantName)) {
-			System.out.println("Chequear tenant '" + tenantName + "' mal cargado");
+			//System.out.println("Chequear tenant '" + tenantName + "' mal cargado");
 			return;
 		}
 		//Llamar a service y pedir chequear suscripción si esta vencido, entonces modificar.
@@ -80,18 +74,15 @@ public class Event {
 		}
 	}
 	
-	/**
-	 * 
-	 * @param tenantName
-	 * @return True si ha cargado bien el tenant, false si no lo ha hecho (Multitenancy)
-	 */
 	private boolean cargoBienTenant(String tenantName) {
 		//Chequear si existen datos en la BD
 		DBContextHolder.setCurrentDb(tenantName);
 		Optional<Role> rol = roleRepository.findByRoleName(RoleName.ROLE_USER);
 		if (rol.isPresent())
 			return true;
-		else
+		else {
+			LOGGER.info("Chequear tenant '" + tenantName + "' mal cargado");
 			return false;
-	}
+		}
+	}*/
 }

@@ -38,7 +38,10 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 	private MasterTenantService masterTenantService;
 	
 	@Autowired
-	private ModuloVisibilidadPorRolService ModuloVisibilidadPorRolService;
+	private ModuloVisibilidadPorRolService moduloVisibilidadPorRolService;
+	
+	@Autowired
+	private ModuloMarketService moduloMarketService;
 	
 	@Autowired
 	private ContactoService contactoService;
@@ -188,6 +191,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		Optional<Role> rol = roleRepository.findByRoleName(RoleName.ROLE_USER);
 		if (!rol.isPresent()) {
 			cargarRolesYModulos();
+			cargarSuscripcionModulosTenant1();
 
 			cargarBeneficiariosTenant1();
 			cargarVoluntariosTenant1();
@@ -209,6 +213,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		Optional<Role> rol = roleRepository.findByRoleName(RoleName.ROLE_USER);
 		if (!rol.isPresent()) {
 			cargarRolesYModulos();
+			cargarSuscripcionModulosTenant2();
 
 			cargarBeneficiariosTenant2();
 			cargarVoluntariosTenant2();
@@ -230,6 +235,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		Optional<Role> rol = roleRepository.findByRoleName(RoleName.ROLE_USER);
 		if (!rol.isPresent()) {
 			cargarRolesYModulos();
+			cargarSuscripcionModulosTenant3();
 			cargarUsuariosDefault();
 		}
 	}
@@ -240,99 +246,28 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 				.sorted(Comparator.comparingInt(RoleName::getPriority))
 				.collect(Collectors.toList());
 		
-		//rolesOrdenados.stream().map(r -> cargarModuloVisibilidadRolUser(roleRepository.save(new Role(r))) );
+		//rolesOrdenados.stream().map(r -> roleRepository.save(new Role(r)) );
 		for(RoleName roleName: rolesOrdenados) {
 			Role role = roleRepository.save(new Role(roleName));
-			cargarModuloVisibilidadRolUser(role);
+			//cargarModuloVisibilidadPorRol(role);
 		}
-		
-		//Role role = roleRepository.save(new Role(RoleName.ROLE_USER));
-		//cargarModuloVisibilidadRolUser(role);
-		//role = roleRepository.save(new Role(RoleName.ROLE_PROFESIONAL));
-		//cargarModuloVisibilidadRolProfesional(role);
-		//role = roleRepository.save(new Role(RoleName.ROLE_EMPLOYEE));
-		//cargarModuloVisibilidadRolEmployee(role);
-		//role = roleRepository.save(new Role(RoleName.ROLE_ADMIN));
-		//cargarModuloVisibilidadRolAdmin(role);
+		moduloVisibilidadPorRolService.agregarTodosLosModulos();
+		moduloMarketService.chequearYDarDeAltaModulosMarket();
 	}
 	
-	public void cargarModuloVisibilidadPorRol(Role role) {
-		switch(role.getRoleName()) {
-		case ROLE_ADMIN:
-			cargarModuloVisibilidadRolAdmin(role);
-			break;
-		case ROLE_EMPLOYEE:
-			cargarModuloVisibilidadRolEmployee(role);
-			break;
-		case ROLE_PROFESIONAL:
-			cargarModuloVisibilidadRolProfesional(role);
-			break;
-		case ROLE_USER:
-			cargarModuloVisibilidadRolUser(role);
-			break;
-		default:
-			break;
-		}
-		
-	}	
-	
-	public void cargarModuloVisibilidadRolAdmin(Role role) {
-		ModuloVisibilidadPorRol modulo = new ModuloVisibilidadPorRol();
-		modulo.setRole(role);
-		modulo.agregarModulo(ModuloEnum.CONTACTO, ModuloTipoVisibilidadEnum.EDITAR);
-		modulo.agregarModulo(ModuloEnum.PERSONA, ModuloTipoVisibilidadEnum.EDITAR);
-		modulo.agregarModulo(ModuloEnum.BENEFICIARIO, ModuloTipoVisibilidadEnum.EDITAR);
-		modulo.agregarModulo(ModuloEnum.EMPLEADO, ModuloTipoVisibilidadEnum.EDITAR);
-		modulo.agregarModulo(ModuloEnum.COLABORADOR, ModuloTipoVisibilidadEnum.EDITAR);
-		modulo.agregarModulo(ModuloEnum.CONSEJOADHONOREM, ModuloTipoVisibilidadEnum.EDITAR);
-		modulo.agregarModulo(ModuloEnum.PERSONAJURIDICA, ModuloTipoVisibilidadEnum.EDITAR);
-		modulo.agregarModulo(ModuloEnum.PROFESIONAL, ModuloTipoVisibilidadEnum.EDITAR);
-		modulo.agregarModulo(ModuloEnum.DONACION, ModuloTipoVisibilidadEnum.EDITAR);
-		modulo.agregarModulo(ModuloEnum.FACTURA, ModuloTipoVisibilidadEnum.EDITAR);
-		modulo.agregarModulo(ModuloEnum.USERS, ModuloTipoVisibilidadEnum.EDITAR);
-		modulo.agregarModulo(ModuloEnum.MARKETPLACE, ModuloTipoVisibilidadEnum.EDITAR);
-		ModuloVisibilidadPorRolService.altaModuloVisibilidadPorRol(modulo);
-	}	
-	
-	public void cargarModuloVisibilidadRolEmployee(Role role) {
-		ModuloVisibilidadPorRol modulo = new ModuloVisibilidadPorRol();
-		modulo.setRole(role);
-		modulo.agregarModulo(ModuloEnum.CONTACTO, ModuloTipoVisibilidadEnum.EDITAR);
-		modulo.agregarModulo(ModuloEnum.PERSONA, ModuloTipoVisibilidadEnum.EDITAR);
-		modulo.agregarModulo(ModuloEnum.BENEFICIARIO, ModuloTipoVisibilidadEnum.EDITAR);
-		modulo.agregarModulo(ModuloEnum.EMPLEADO, ModuloTipoVisibilidadEnum.EDITAR);
-		modulo.agregarModulo(ModuloEnum.COLABORADOR, ModuloTipoVisibilidadEnum.EDITAR);
-		modulo.agregarModulo(ModuloEnum.CONSEJOADHONOREM, ModuloTipoVisibilidadEnum.EDITAR);
-		modulo.agregarModulo(ModuloEnum.PERSONAJURIDICA, ModuloTipoVisibilidadEnum.EDITAR);
-		modulo.agregarModulo(ModuloEnum.PROFESIONAL, ModuloTipoVisibilidadEnum.EDITAR);
-		modulo.agregarModulo(ModuloEnum.DONACION, ModuloTipoVisibilidadEnum.EDITAR);
-		modulo.agregarModulo(ModuloEnum.FACTURA, ModuloTipoVisibilidadEnum.EDITAR);
-		ModuloVisibilidadPorRolService.altaModuloVisibilidadPorRol(modulo);
+	public void cargarSuscripcionModulosTenant1() {
+		moduloMarketService.suscripcionPremiumMes();
+		moduloVisibilidadPorRolService.cargarVisibilidadSuscripcionDefault();
 	}
 	
-	public void cargarModuloVisibilidadRolProfesional(Role role) {
-		ModuloVisibilidadPorRol modulo = new ModuloVisibilidadPorRol();
-		modulo.setRole(role);
-		modulo.agregarModulo(ModuloEnum.CONTACTO, ModuloTipoVisibilidadEnum.SOLO_VISTA);
-		modulo.agregarModulo(ModuloEnum.PERSONA, ModuloTipoVisibilidadEnum.SOLO_VISTA);
-		modulo.agregarModulo(ModuloEnum.BENEFICIARIO, ModuloTipoVisibilidadEnum.SOLO_VISTA);
-		modulo.agregarModulo(ModuloEnum.EMPLEADO, ModuloTipoVisibilidadEnum.SOLO_VISTA);
-		modulo.agregarModulo(ModuloEnum.COLABORADOR, ModuloTipoVisibilidadEnum.SOLO_VISTA);
-		modulo.agregarModulo(ModuloEnum.CONSEJOADHONOREM, ModuloTipoVisibilidadEnum.SOLO_VISTA);
-		modulo.agregarModulo(ModuloEnum.PERSONAJURIDICA, ModuloTipoVisibilidadEnum.SOLO_VISTA);
-		modulo.agregarModulo(ModuloEnum.PROFESIONAL, ModuloTipoVisibilidadEnum.SOLO_VISTA);
-		modulo.agregarModulo(ModuloEnum.DONACION, ModuloTipoVisibilidadEnum.EDITAR);
-		modulo.agregarModulo(ModuloEnum.FACTURA, ModuloTipoVisibilidadEnum.EDITAR);
-		ModuloVisibilidadPorRolService.altaModuloVisibilidadPorRol(modulo);
+	public void cargarSuscripcionModulosTenant2() {
+		moduloMarketService.activarPrueba7dias();
+		moduloVisibilidadPorRolService.cargarVisibilidadSuscripcionDefault();
 	}
 	
-	public void cargarModuloVisibilidadRolUser(Role role) {
-		ModuloVisibilidadPorRol modulo = new ModuloVisibilidadPorRol();
-		modulo.setRole(role);
-		modulo.agregarModulo(ModuloEnum.CONTACTO, ModuloTipoVisibilidadEnum.SOLO_VISTA);
-		modulo.agregarModulo(ModuloEnum.PERSONA, ModuloTipoVisibilidadEnum.SOLO_VISTA);
-		modulo.agregarModulo(ModuloEnum.BENEFICIARIO, ModuloTipoVisibilidadEnum.SOLO_VISTA);
-		ModuloVisibilidadPorRolService.altaModuloVisibilidadPorRol(modulo);
+	public void cargarSuscripcionModulosTenant3() {
+		moduloMarketService.activarPrueba7dias();
+		moduloVisibilidadPorRolService.cargarVisibilidadSuscripcionDefault();
 	}
 	
 	
@@ -1824,6 +1759,111 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 
 
 //Basura de código
+/*public void cargarModuloVisibilidadPorRol(Role role) {
+	switch(role.getRoleName()) {
+	case ROLE_ADMIN:
+		cargarModuloVisibilidadRolAdmin(role);
+		break;
+	case ROLE_EMPLOYEE:
+		cargarModuloVisibilidadRolEmployee(role);
+		break;
+	case ROLE_PROFESIONAL:
+		cargarModuloVisibilidadRolProfesional(role);
+		break;
+	case ROLE_USER:
+		cargarModuloVisibilidadRolUser(role);
+		break;
+	default:
+		break;
+	}
+	
+}	
+
+public void cargarModuloVisibilidadRolAdmin(Role role) {
+	moduloVisibilidadPorRolService.agregarTodosLosModulos();
+	
+	ModuloVisibilidadPorRol modulo = new ModuloVisibilidadPorRol();
+	modulo.setRole(role);
+	modulo.agregarModulo(ModuloEnum.CONTACTO, ModuloTipoVisibilidadEnum.EDITAR);
+	modulo.agregarModulo(ModuloEnum.PERSONA, ModuloTipoVisibilidadEnum.EDITAR);
+	modulo.agregarModulo(ModuloEnum.BENEFICIARIO, ModuloTipoVisibilidadEnum.EDITAR);
+	modulo.agregarModulo(ModuloEnum.EMPLEADO, ModuloTipoVisibilidadEnum.EDITAR);
+	modulo.agregarModulo(ModuloEnum.COLABORADOR, ModuloTipoVisibilidadEnum.EDITAR);
+	modulo.agregarModulo(ModuloEnum.CONSEJOADHONOREM, ModuloTipoVisibilidadEnum.EDITAR);
+	modulo.agregarModulo(ModuloEnum.PERSONAJURIDICA, ModuloTipoVisibilidadEnum.EDITAR);
+	modulo.agregarModulo(ModuloEnum.PROFESIONAL, ModuloTipoVisibilidadEnum.EDITAR);
+	modulo.agregarModulo(ModuloEnum.USERS, ModuloTipoVisibilidadEnum.EDITAR);
+	
+	modulo.agregarModulo(ModuloEnum.ACTIVIDAD, ModuloTipoVisibilidadEnum.EDITAR);
+	modulo.agregarModulo(ModuloEnum.PROGRAMA_DE_ACTIVIDADES, ModuloTipoVisibilidadEnum.EDITAR);
+	modulo.agregarModulo(ModuloEnum.PRODUCTO, ModuloTipoVisibilidadEnum.EDITAR);
+	modulo.agregarModulo(ModuloEnum.DONACION, ModuloTipoVisibilidadEnum.EDITAR);
+	modulo.agregarModulo(ModuloEnum.FACTURA, ModuloTipoVisibilidadEnum.EDITAR);
+	modulo.agregarModulo(ModuloEnum.INSUMO, ModuloTipoVisibilidadEnum.EDITAR);
+	modulo.agregarModulo(ModuloEnum.PRESTAMO, ModuloTipoVisibilidadEnum.EDITAR);
+	modulo.agregarModulo(ModuloEnum.PROYECTO, ModuloTipoVisibilidadEnum.EDITAR);
+	modulo.agregarModulo(ModuloEnum.CHAT, ModuloTipoVisibilidadEnum.EDITAR);
+	modulo.agregarModulo(ModuloEnum.MARKETPLACE, ModuloTipoVisibilidadEnum.EDITAR);
+	moduloVisibilidadPorRolService.altaModuloVisibilidadPorRol(modulo);
+}	
+
+public void cargarModuloVisibilidadRolEmployee(Role role) {
+	ModuloVisibilidadPorRol modulo = new ModuloVisibilidadPorRol();
+	modulo.setRole(role);
+	modulo.agregarModulo(ModuloEnum.CONTACTO, ModuloTipoVisibilidadEnum.EDITAR);
+	modulo.agregarModulo(ModuloEnum.PERSONA, ModuloTipoVisibilidadEnum.EDITAR);
+	modulo.agregarModulo(ModuloEnum.BENEFICIARIO, ModuloTipoVisibilidadEnum.EDITAR);
+	modulo.agregarModulo(ModuloEnum.EMPLEADO, ModuloTipoVisibilidadEnum.EDITAR);
+	modulo.agregarModulo(ModuloEnum.COLABORADOR, ModuloTipoVisibilidadEnum.EDITAR);
+	modulo.agregarModulo(ModuloEnum.CONSEJOADHONOREM, ModuloTipoVisibilidadEnum.EDITAR);
+	modulo.agregarModulo(ModuloEnum.PERSONAJURIDICA, ModuloTipoVisibilidadEnum.EDITAR);
+	modulo.agregarModulo(ModuloEnum.PROFESIONAL, ModuloTipoVisibilidadEnum.EDITAR);
+	
+	modulo.agregarModulo(ModuloEnum.ACTIVIDAD, ModuloTipoVisibilidadEnum.EDITAR);
+	modulo.agregarModulo(ModuloEnum.PROGRAMA_DE_ACTIVIDADES, ModuloTipoVisibilidadEnum.EDITAR);
+	modulo.agregarModulo(ModuloEnum.PRODUCTO, ModuloTipoVisibilidadEnum.EDITAR);
+	modulo.agregarModulo(ModuloEnum.DONACION, ModuloTipoVisibilidadEnum.EDITAR);
+	modulo.agregarModulo(ModuloEnum.FACTURA, ModuloTipoVisibilidadEnum.EDITAR);
+	modulo.agregarModulo(ModuloEnum.INSUMO, ModuloTipoVisibilidadEnum.EDITAR);
+	modulo.agregarModulo(ModuloEnum.PRESTAMO, ModuloTipoVisibilidadEnum.EDITAR);
+	modulo.agregarModulo(ModuloEnum.PROYECTO, ModuloTipoVisibilidadEnum.EDITAR);
+	modulo.agregarModulo(ModuloEnum.CHAT, ModuloTipoVisibilidadEnum.EDITAR);
+	moduloVisibilidadPorRolService.altaModuloVisibilidadPorRol(modulo);
+}
+
+public void cargarModuloVisibilidadRolProfesional(Role role) {
+	ModuloVisibilidadPorRol modulo = new ModuloVisibilidadPorRol();
+	modulo.setRole(role);
+	modulo.agregarModulo(ModuloEnum.CONTACTO, ModuloTipoVisibilidadEnum.SOLO_VISTA);
+	modulo.agregarModulo(ModuloEnum.PERSONA, ModuloTipoVisibilidadEnum.SOLO_VISTA);
+	modulo.agregarModulo(ModuloEnum.BENEFICIARIO, ModuloTipoVisibilidadEnum.SOLO_VISTA);
+	modulo.agregarModulo(ModuloEnum.EMPLEADO, ModuloTipoVisibilidadEnum.SOLO_VISTA);
+	modulo.agregarModulo(ModuloEnum.COLABORADOR, ModuloTipoVisibilidadEnum.SOLO_VISTA);
+	modulo.agregarModulo(ModuloEnum.CONSEJOADHONOREM, ModuloTipoVisibilidadEnum.SOLO_VISTA);
+	modulo.agregarModulo(ModuloEnum.PERSONAJURIDICA, ModuloTipoVisibilidadEnum.SOLO_VISTA);
+	modulo.agregarModulo(ModuloEnum.PROFESIONAL, ModuloTipoVisibilidadEnum.SOLO_VISTA);
+			
+	modulo.agregarModulo(ModuloEnum.ACTIVIDAD, ModuloTipoVisibilidadEnum.SOLO_VISTA);
+	modulo.agregarModulo(ModuloEnum.PROGRAMA_DE_ACTIVIDADES, ModuloTipoVisibilidadEnum.SOLO_VISTA);
+	modulo.agregarModulo(ModuloEnum.PRODUCTO, ModuloTipoVisibilidadEnum.SOLO_VISTA);
+	modulo.agregarModulo(ModuloEnum.DONACION, ModuloTipoVisibilidadEnum.EDITAR);
+	modulo.agregarModulo(ModuloEnum.FACTURA, ModuloTipoVisibilidadEnum.EDITAR);
+	modulo.agregarModulo(ModuloEnum.PRESTAMO, ModuloTipoVisibilidadEnum.SOLO_VISTA);
+	modulo.agregarModulo(ModuloEnum.PROYECTO, ModuloTipoVisibilidadEnum.SOLO_VISTA);
+	modulo.agregarModulo(ModuloEnum.CHAT, ModuloTipoVisibilidadEnum.EDITAR);
+	moduloVisibilidadPorRolService.altaModuloVisibilidadPorRol(modulo);
+}
+
+public void cargarModuloVisibilidadRolUser(Role role) {
+	ModuloVisibilidadPorRol modulo = new ModuloVisibilidadPorRol();
+	modulo.setRole(role);
+	modulo.agregarModulo(ModuloEnum.CONTACTO, ModuloTipoVisibilidadEnum.SOLO_VISTA);
+	modulo.agregarModulo(ModuloEnum.PERSONA, ModuloTipoVisibilidadEnum.SOLO_VISTA);
+	modulo.agregarModulo(ModuloEnum.BENEFICIARIO, ModuloTipoVisibilidadEnum.SOLO_VISTA);
+	moduloVisibilidadPorRolService.altaModuloVisibilidadPorRol(modulo);
+}*/
+
+
 /*@Override
 public void onApplicationEvent(final ApplicationReadyEvent event) {
 	
