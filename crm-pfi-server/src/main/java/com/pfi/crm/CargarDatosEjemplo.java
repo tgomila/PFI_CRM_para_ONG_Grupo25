@@ -127,7 +127,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 			}
 			
 			//Cargar datos tenant2
-			if(tenantDeAlta.equalsIgnoreCase("tenant2")) {
+			else if(tenantDeAlta.equalsIgnoreCase("tenant2")) {
 				cargarTenant2();
 				System.out.println("Datos cargados de tenant2.");
 				masterTenantService.altaTenant(new TenantPayload(100, "tenant1", "ONG Mi Arbolito"));
@@ -138,7 +138,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 			}
 			
 			//Cargar datos tenant1
-			if(tenantDeAlta.equalsIgnoreCase("tenant1")) {
+			else if(tenantDeAlta.equalsIgnoreCase("tenant1")) {
 				cargarTenant1();
 				System.out.println("Datos cargados de tenant1.");
 				
@@ -151,6 +151,10 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 						+ "  3) Guarde el archivo editado.\n"
 						+ "  4) Vuelva a encender, y ya esta.\n"
 				);
+				return;
+			}
+			else {
+				System.out.println("Chequea el nombre del tenant si es tenant1, 2 o 3.");
 				return;
 			}
 		}
@@ -265,6 +269,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 	public void cargarSuscripcionModulosTenant3() {
 		moduloMarketService.activarPrueba7dias();
 		moduloVisibilidadPorRolService.cargarVisibilidadSuscripcionDefault();
+		moduloMarketService.desuscribirEn5min();	//Para ver si ya no tiene acceso.
 	}
 	
 	

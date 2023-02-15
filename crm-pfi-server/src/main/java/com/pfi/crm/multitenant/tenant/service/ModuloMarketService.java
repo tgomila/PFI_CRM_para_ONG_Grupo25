@@ -62,20 +62,21 @@ public class ModuloMarketService {
 	 * @return ModuloMarketPayload guardado
 	 */
 	private ModuloMarketPayload modificarModuloMarket(ModuloMarket moduloMarket) {
-		ModuloMarket m = getModuloMarketModelByModuloEnum(moduloMarket.getModuloEnum());
-		moduloMarket.setId(m.getId());
+		ModuloMarket modelBD = getModuloMarketModelByModuloEnum(moduloMarket.getModuloEnum());
+		moduloMarket.setId(modelBD.getId());
 		//Si acabo de cambiar las fechas de no tener suscripción a tener suscripción, suscribo.
-		if(m.poseeSuscripcionVencida() && moduloMarket.poseeSuscripcionActiva()) {
+		//if(modelBD.poseeSuscripcionVencida() && moduloMarket.poseeSuscripcionActiva()) {
+		if(modelBD.isSuscripcionVencidaByFechas() && moduloMarket.isSuscripcionActivaByFechas()) {
 			moduloVisibilidadPorRolService.suscripcion(moduloMarket.getModuloEnum());
-			m.setSuscripcionActiva(true);
+			modelBD.setSuscripcionActiva(true);
 		}
-		else if(m.poseeSuscripcionActiva() && moduloMarket.poseeSuscripcionVencida()) {
+		else if(modelBD.isSuscripcionActivaByFechas() && moduloMarket.isSuscripcionVencidaByFechas()) {
 			moduloVisibilidadPorRolService.desuscripcion(moduloMarket.getModuloEnum());
-			m.setSuscripcionActiva(false);
+			modelBD.setSuscripcionActiva(false);
 		}
-		m.setPrueba7DiasUtilizada(moduloMarket.isPrueba7DiasUtilizada());
-		m.setFechaPrueba7DiasUtilizada(moduloMarket.getFechaPrueba7DiasUtilizada());
-		m.setFechaMaximaSuscripcion(moduloMarket.getFechaMaximaSuscripcion());
+		modelBD.setPrueba7DiasUtilizada(moduloMarket.isPrueba7DiasUtilizada());
+		modelBD.setFechaPrueba7DiasUtilizada(moduloMarket.getFechaPrueba7DiasUtilizada());
+		modelBD.setFechaMaximaSuscripcion(moduloMarket.getFechaMaximaSuscripcion());
 		return moduloMarketRepository.save(moduloMarket).toPayload();
 	}
 	
@@ -86,6 +87,17 @@ public class ModuloMarketService {
 	private  ModuloMarket getModuloMarketModelByModuloEnum(ModuloEnum moduloEnum) {
 		return moduloMarketRepository.findByModuloEnum(moduloEnum).orElseThrow(
                 () -> new ResourceNotFoundException("ModuloMarket", "moduloEnum name: ", moduloEnum.getName()));
+	}
+	
+	private List<ModuloMarket> getModulosPagos() {
+		List<ModuloMarket> modulos = moduloMarketRepository.findAll();
+		List<ModuloMarket> modulosPagos = new ArrayList<ModuloMarket>();
+		for(ModuloMarket m: modulos) {
+			if(m.isPaidModule()) {
+				modulosPagos.add(m);
+			}
+		}
+		return modulosPagos;
 	}
 	
 	//Suscripciones
@@ -166,17 +178,6 @@ public class ModuloMarketService {
 		
 	}
 	
-	private List<ModuloMarket> getModulosPagos() {
-		List<ModuloMarket> modulos = moduloMarketRepository.findAll();
-		List<ModuloMarket> modulosPagos = new ArrayList<ModuloMarket>();
-		for(ModuloMarket m: modulos) {
-			if(!m.isFreeModule()) {
-				modulosPagos.add(m);
-			}
-		}
-		return modulosPagos;
-	}
-	
 	public List<ModuloMarketPayload> suscripcionPremiumMes() {
 		List<ModuloMarket> modulos = getModulosPagos();
 		List<ModuloMarketPayload> modulosSuscriptos = new ArrayList<ModuloMarketPayload>();
@@ -197,6 +198,48 @@ public class ModuloMarketService {
 		return modulosSuscriptos;
 	}
 	
+	/**
+	 * Warning, esto es solo si el cliente desea desuscribirse al premium, no debería suceder.
+	 * Se utilizará este método en modo testing de sistema.
+	 * @return módulos suscriptos, ya desuscriptos a fecha de hoy.
+	 */
+	public List<ModuloMarketPayload> desuscribir() {
+		List<ModuloMarket> modulos = getModulosPagos();
+		List<ModuloMarket> modulosModificados = new ArrayList<ModuloMarket>();
+		List<ModuloMarketPayload> modulosDesuscriptos = new ArrayList<ModuloMarketPayload>();
+		for(ModuloMarket m: modulos) {
+			if(m.isSuscripcionActivaByBoolean() || m.isSuscripcionActivaByFechas()) {
+				moduloVisibilidadPorRolService.desuscripcion(m.getModuloEnum());
+				m.desuscripcionPorFechas();//Por fechas
+				m.setSuscripcionActiva(false);//Por boolean
+				modulosModificados.add(m);
+			}
+		}
+		if(!modulosModificados.isEmpty()) {
+			List<ModuloMarket> saved = moduloMarketRepository.saveAll(modulosModificados);
+			saved.forEach(s -> modulosDesuscriptos.add(s.toPayload()));
+		}
+		return modulosDesuscriptos;
+	}
+	
+	//Testing
+	public List<ModuloMarketPayload> desuscribirEn5min() {
+		List<ModuloMarket> modulos = getModulosPagos();
+		List<ModuloMarket> modulosModificados = new ArrayList<ModuloMarket>();
+		List<ModuloMarketPayload> modulosDesuscriptos = new ArrayList<ModuloMarketPayload>();
+		for(ModuloMarket m: modulos) {
+			if(m.isSuscripcionActivaByBoolean() || m.isSuscripcionActivaByFechas()) {
+				m.desuscripcionEn5min();//Por fechas
+				modulosModificados.add(m);
+			}
+		}
+		if(!modulosModificados.isEmpty()) {
+			List<ModuloMarket> saved = moduloMarketRepository.saveAll(modulosModificados);
+			saved.forEach(s -> modulosDesuscriptos.add(s.toPayload()));
+		}
+		return modulosDesuscriptos;
+	}
+	
 	//Se ejecutará este método en Event.java 1 vez por día a la medianoche
 	public void comprobarSuscripciones() {
 		if(!cargoBienTenant()) {
@@ -209,14 +252,16 @@ public class ModuloMarketService {
 		for(ModuloMarket modulo: modulos) {
 			
 			//Si acabo de cambiar las fechas de no tener suscripción a tener suscripción, suscribo.
-			if(!modulo.isSuscripcionActiva() && modulo.poseeSuscripcionActiva()) {
+			//if(!modulo.isSuscripcionActiva() && modulo.poseeSuscripcionActiva()) {
+			if(modulo.suscripcionHaEmpezadoYRequiereCambiarModulosVisibilidadSinSuscripcionAOtraVista()) {
 				moduloVisibilidadPorRolService.suscripcion(modulo.getModuloEnum());
 				modulo.setSuscripcionActiva(true);
 				modificar.add(modulo);
 				LOGGER.info("Se cambiará la suscripción de " + modulo.getModuloEnum().toString() + " y ModuloVisibilidadPorRolTipo a suscripción activa.");
 			}
 			//Si acabo de cambiar las fechas de tener suscripción a no tener suscripción, desuscribo.
-			else if(modulo.isSuscripcionActiva() && modulo.poseeSuscripcionVencida()) {
+			//else if(modulo.isSuscripcionActivaByBoolean() && modulo.isSuscripcionActivaByFechas()) {
+			else if(modulo.suscripcionHaVencidoYRequiereCambiarModulosVisibilidadASinSuscripcion()) {
 				moduloVisibilidadPorRolService.desuscripcion(modulo.getModuloEnum());
 				modulo.setSuscripcionActiva(false);
 				modificar.add(modulo);
@@ -247,6 +292,17 @@ public class ModuloMarketService {
 		}
 	}
 	
+	public boolean poseeAcceso(ModuloEnum moduloEnum) {
+		ModuloMarket moduloMarket = getModuloMarketModelByModuloEnum(moduloEnum);
+		boolean premium = moduloMarket.isPaidModule();
+		boolean suscripcionActiva = moduloMarket.isSuscripcionActivaByBoolean();
+		boolean free = moduloMarket.isFreeModule();
+		if(free || (premium && suscripcionActiva))
+			return true;
+		else
+			return false;//premium sin suscripción
+	}
+	
 	/**
 	 * 
 	 * @param moduloEnum
@@ -254,7 +310,7 @@ public class ModuloMarketService {
 	 */
 	public Boolean poseeSuscripcionActiva(ModuloEnum moduloEnum) {
 		ModuloMarket moduloMarket = getModuloMarketModelByModuloEnum(moduloEnum);
-		return moduloMarket.isSuscripcionActiva();//moduloMarket.poseeSuscripcionActiva();
+		return moduloMarket.isSuscripcionActivaByBoolean();
 	}
 	
 	/**
@@ -262,23 +318,30 @@ public class ModuloMarketService {
 	 * @param moduloEnum
 	 * @return solo suscripción activa o vencida por sistema, no corrobora por fechas
 	 */
-	public Boolean poseeSuscripcionVencida(ModuloEnum moduloEnum) {
+	public boolean poseeSuscripcionVencidaByBoolean(ModuloEnum moduloEnum) {
 		ModuloMarket moduloMarket = getModuloMarketModelByModuloEnum(moduloEnum);
-		return !moduloMarket.isSuscripcionActiva();//moduloMarket.poseeSuscripcionVencida();
+		return moduloMarket.isSuscripcionVencidaByBoolean();//moduloMarket.poseeSuscripcionVencida();
 	}
 	
 	/**
 	 * 
 	 * @return solo suscripción activa o vencida por sistema, no corrobora por fechas
 	 */
-	public List<ModuloMarketPayload> getModuloMarketVencidos() {
-		List<ModuloMarket> moduloMarkets = moduloMarketRepository.findAll();
+	public List<ModuloMarketPayload> getModuloMarketVencidosByBoolean() {
+		return moduloMarketRepository.findAll().stream()
+				.filter(modulo -> modulo.isSuscripcionVencidaByBoolean())
+				.map(ModuloMarket::toPayload)
+				.collect(Collectors.toList());
+		
+		/*List<ModuloMarket> moduloMarkets = moduloMarketRepository.findAll();
 		List<ModuloMarketPayload> moduloMarketsVencidos = new ArrayList<ModuloMarketPayload>();
+		
+		
 		for(ModuloMarket modulo: moduloMarkets) {
-			if(!modulo.isSuscripcionActiva())//modulo.poseeSuscripcionVencida())
+			if(modulo.isSuscripcionVencidaByBoolean())//modulo.poseeSuscripcionVencida())
 				moduloMarketsVencidos.add(modulo.toPayload());
 		}
-		return moduloMarketsVencidos;
+		return moduloMarketsVencidos;*/
 	}
 	
 	
@@ -295,7 +358,7 @@ public class ModuloMarketService {
 			
 			//Guardo todo junto, para que sea 1 consula y sea algo más rápido.
 			List<ModuloMarketPayload> dadosDeAlta = moduloMarketRepository.saveAll(auxDarDeAltaTodoJunto).stream()
-					.map(e -> e.toPayload()).collect(Collectors.toList());
+					.map(ModuloMarket::toPayload).collect(Collectors.toList());
 			
 			//List<ModuloMarketPayload> dadosDeAlta = modulosFaltantesADarDeAlta.stream()
 			//		.map(e -> moduloMarketRepository.save(new ModuloMarket(e)).toPayload())

@@ -100,16 +100,50 @@ public class ModuloMarket {
 		return prueba7DiasUtilizada;
 	}
 	
-	public boolean poseeSuscripcionActiva() {
-		return !poseeSuscripcionVencida();
+	//poseeSuscripcionActiva
+	public boolean isSuscripcionActivaByFechas() {
+		return !isSuscripcionVencidaByFechas();
 	}
 	
-	public boolean poseeSuscripcionVencida() {
+	
+	public boolean isSuscripcionVencidaByFechas() {
 		if(moduloEnum.isFreeModule())
 			return false;
 		if(fechaMaximaSuscripcion == null)
 			return true; //null significa nunca se ha suscripto
 		return !fechaMaximaSuscripcion.isAfter(LocalDateTime.now()); //Si fechaMaximaSuscripcion es antes o fecha/hora actual.
+	}
+	
+	public boolean suscripcionHaVencidoYRequiereCambiarModulosVisibilidadASinSuscripcion() {
+		if(isPaidModule() && isSuscripcionVencidaByFechas() && isSuscripcionActivaByBoolean())
+			return true;
+		else
+			return false;
+	}
+	
+	public boolean suscripcionHaEmpezadoYRequiereCambiarModulosVisibilidadSinSuscripcionAOtraVista() {
+		if(isPaidModule() && isSuscripcionActivaByFechas() && isSuscripcionVencidaByBoolean())
+			return true;
+		else
+			return false;
+	}
+	
+	public LocalDateTime desuscripcionPorFechas() {
+		if(moduloEnum.isFreeModule())
+			throw new BadRequestException("No se puede suscribir a un módulo gratuito");//return null;
+		if(fechaMaximaSuscripcion != null || !fechaMaximaSuscripcion.isBefore(LocalDateTime.now())) {
+			fechaMaximaSuscripcion = LocalDateTime.now();
+		}
+		return fechaMaximaSuscripcion;
+	}
+	
+	public LocalDateTime desuscripcionEn5min() {
+		if(moduloEnum.isFreeModule())
+			throw new BadRequestException("No se puede suscribir a un módulo gratuito");//return null;
+		if(fechaMaximaSuscripcion != null || !fechaMaximaSuscripcion.isBefore(LocalDateTime.now().plusMinutes(6))) {
+			fechaMaximaSuscripcion = LocalDateTime.now().plusMinutes(5);
+		}
+		return fechaMaximaSuscripcion;
 	}
 	
 	public boolean isPaidModule() {
@@ -160,9 +194,14 @@ public class ModuloMarket {
 	public void setFechaMaximaSuscripcion(LocalDateTime fechaMaximaSuscripcion) {
 		this.fechaMaximaSuscripcion = fechaMaximaSuscripcion;
 	}
-
-	public boolean isSuscripcionActiva() {
+	
+	//isSuscripcionActiva
+	public boolean isSuscripcionActivaByBoolean() {
 		return suscripcionActiva;
+	}
+	
+	public boolean isSuscripcionVencidaByBoolean() {
+		return !suscripcionActiva;
 	}
 
 	public void setSuscripcionActiva(boolean suscripcionActiva) {
@@ -176,7 +215,7 @@ public class ModuloMarket {
 		p.setPrueba7DiasUtilizada(this.isPrueba7DiasUtilizada());
 		p.setFechaPrueba7DiasUtilizada(this.getFechaPrueba7DiasUtilizada());
 		p.setFechaMaximaSuscripcion(this.getFechaMaximaSuscripcion());
-		p.setSuscripcionActiva(this.isSuscripcionActiva());
+		p.setSuscripcionActiva(this.isSuscripcionActivaByBoolean());
 		return p;
 	}
 	

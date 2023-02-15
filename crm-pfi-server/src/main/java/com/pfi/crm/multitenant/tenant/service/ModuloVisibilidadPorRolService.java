@@ -127,7 +127,7 @@ public class ModuloVisibilidadPorRolService {
 		if(moduloEnum.isFreeModule())
 			throw new BadRequestException("No se puede suscribir a un módulo gratuito");
 		List<ModuloVisibilidadPorRol> modulos = moduloVisibilidadPorRolRepository.findAll();
-		modulos.stream().forEach(m -> m.suscribir(moduloEnum));
+		modulos.forEach(m -> m.suscribir(moduloEnum));
 		moduloVisibilidadPorRolRepository.saveAll(modulos);
 	}
 	
@@ -137,7 +137,7 @@ public class ModuloVisibilidadPorRolService {
 		if(moduloEnum.isFreeModule())
 			throw new BadRequestException("No se puede desuscribir a un módulo gratuito");
 		List<ModuloVisibilidadPorRol> modulos = moduloVisibilidadPorRolRepository.findAll();
-		modulos.stream().forEach(m -> m.desuscribir(moduloEnum));
+		modulos.forEach(m -> m.desuscribir(moduloEnum));
 		moduloVisibilidadPorRolRepository.saveAll(modulos);
 	}
 	
@@ -184,7 +184,7 @@ public class ModuloVisibilidadPorRolService {
 		for(ModuloVisibilidadPorRolTipo mNew: moduloNuevo.getModulos()) {	//Recorro módulos a modificar
 			for(ModuloVisibilidadPorRolTipo mBD: moduloBD.getModulos()) {	//Recorro módulos existentes
 				if(mNew.getModuloEnum().equals(mBD.getModuloEnum())) {		//Encontré el modulo a modificar? Si/No
-					boolean poseeSuscripcion = moduloMarketService.poseeSuscripcionActiva(mNew.getModuloEnum());
+					boolean poseeSuscripcion = moduloMarketService.poseeSuscripcionActiva(mNew.getModuloEnum());//True implica que tambien sea premium
 					boolean esModuloPremium = mBD.getModuloEnum().isPaidModule();
 					ModuloTipoVisibilidadEnum newVisibilidad = mNew.getTipoVisibilidad();
 					if(poseeSuscripcion && newVisibilidad.equals(ModuloTipoVisibilidadEnum.SIN_SUSCRIPCION))

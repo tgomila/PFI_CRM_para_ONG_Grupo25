@@ -33,10 +33,19 @@ public class Event {
 	//	LOGGER.info("Test evento cada 5 segundos");
 	//}
 	
+	/**
+	 * @Scheduled
+	 * seconds minutes hours day-of-month month day-of-week
+	 *    0       0      8        *         *        ?
+	 * For example, 0 0 8 * * ? means that the task is executed at 08:00:00 every day.
+	 */
+	// 0 0 8 * * ? means that the task is executed at 08:00:00 every day.
+	// 0 */5 * ? * * runEvey5Minutes
+	// 0 0 0 * * ?" siempre a las 00hs
 	
 	//Setear check cada 1 día a las 00hs, horario utc
-	//@Scheduled(cron = "*/50 * * * * MON-FRI")//Testing cada N segundos
-	@Scheduled(cron = "0 0 0 * * ?", zone="America/Argentina/Buenos_Aires")
+	@Scheduled(cron = "0 */2 * * * MON-FRI")//Testing cada N segundos/minutos
+	//@Scheduled(cron = "0 0 0 * * ?", zone="America/Argentina/Buenos_Aires")
 	public void eventoDiario() {
 		moduloCheckSuscripcion();
 	}

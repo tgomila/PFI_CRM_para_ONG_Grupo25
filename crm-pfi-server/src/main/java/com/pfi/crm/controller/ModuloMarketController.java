@@ -92,8 +92,8 @@ public class ModuloMarketController {
 	
 	@GetMapping({"/modulo/vencido"})
 	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_EMPLOYEE')")
-	public List<ModuloMarketPayload> getModuloMarketVencidos() {
-		return moduloMarketService.getModuloMarketVencidos();
+	public List<ModuloMarketPayload> getModuloMarketVencidosByBoolean() {
+		return moduloMarketService.getModuloMarketVencidosByBoolean();
 	}
 	
 	
