@@ -13,6 +13,8 @@ public class ModuloMarketPayload {
 	private boolean prueba7DiasUtilizada;
 	
 	private LocalDateTime fechaPrueba7DiasUtilizada;
+
+	private LocalDateTime fechaInicioSuscripcion;
 	
 	private LocalDateTime fechaMaximaSuscripcion;
 	
@@ -69,6 +71,14 @@ public class ModuloMarketPayload {
 
 	public void setFechaPrueba7DiasUtilizada(LocalDateTime fechaPrueba7DiasUtilizada) {
 		this.fechaPrueba7DiasUtilizada = fechaPrueba7DiasUtilizada;
+	}
+
+	public LocalDateTime getFechaInicioSuscripcion() {
+		return fechaInicioSuscripcion;
+	}
+
+	public void setFechaInicioSuscripcion(LocalDateTime fechaInicioSuscripcion) {
+		this.fechaInicioSuscripcion = fechaInicioSuscripcion;
 	}
 
 	public LocalDateTime getFechaMaximaSuscripcion() {

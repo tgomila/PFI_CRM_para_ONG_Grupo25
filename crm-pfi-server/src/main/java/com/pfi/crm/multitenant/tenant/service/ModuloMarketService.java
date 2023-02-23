@@ -76,6 +76,7 @@ public class ModuloMarketService {
 		}
 		modelBD.setPrueba7DiasUtilizada(moduloMarket.isPrueba7DiasUtilizada());
 		modelBD.setFechaPrueba7DiasUtilizada(moduloMarket.getFechaPrueba7DiasUtilizada());
+		modelBD.setFechaInicioSuscripcion(moduloMarket.getFechaInicioSuscripcion());
 		modelBD.setFechaMaximaSuscripcion(moduloMarket.getFechaMaximaSuscripcion());
 		return moduloMarketRepository.save(moduloMarket).toPayload();
 	}

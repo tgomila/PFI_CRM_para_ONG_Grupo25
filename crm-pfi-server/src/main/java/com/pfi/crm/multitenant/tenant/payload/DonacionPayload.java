@@ -1,13 +1,13 @@
 package com.pfi.crm.multitenant.tenant.payload;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import com.pfi.crm.multitenant.tenant.model.DonacionTipo;
 
 public class DonacionPayload {
 	
 	private Long id;
-	private LocalDate fecha;
+	private LocalDateTime fecha;
 	private ContactoPayload donante;
 	private DonacionTipo tipoDonacion;
 	private String descripcion;
@@ -20,10 +20,10 @@ public class DonacionPayload {
 	public void setId(Long id) {
 		this.id = id;
 	}
-	public LocalDate getFecha() {
+	public LocalDateTime getFecha() {
 		return fecha;
 	}
-	public void setFecha(LocalDate fecha) {
+	public void setFecha(LocalDateTime fecha) {
 		this.fecha = fecha;
 	}
 	public ContactoPayload getDonante() {

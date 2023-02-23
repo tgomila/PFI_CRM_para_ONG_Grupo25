@@ -1,6 +1,6 @@
 package com.pfi.crm.multitenant.tenant.model;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -10,6 +10,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
 import com.pfi.crm.multitenant.tenant.model.audit.UserDateAudit;
@@ -28,10 +29,10 @@ public class Donacion extends UserDateAudit{
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	private LocalDate fecha;
+	private LocalDateTime fecha;
 	
-	@ManyToOne(cascade = CascadeType.ALL)
-	//@OrderBy("nombreDescripcion ASC")
+	@ManyToOne(cascade = CascadeType.MERGE)
+	@OrderBy("nombreDescripcion ASC")
 	private Contacto donante;
 	
 	@Enumerated(EnumType.STRING)
@@ -42,15 +43,18 @@ public class Donacion extends UserDateAudit{
 	
 	public Donacion() {
 		super();
-		fecha = LocalDate.now();
-		donante = new Contacto();
+		fecha = LocalDateTime.now();
+		donante = null;//new Contacto();
 	}
-
+	
+	/**
+	 * No incluye setear donante
+	 * @param p
+	 */
 	public Donacion(DonacionPayload p) {
 		super();
 		this.id = p.getId();
 		this.fecha = p.getFecha();
-		this.donante = new Contacto(p.getDonante());
 		this.tipoDonacion = p.getTipoDonacion();
 		this.descripcion = p.getDescripcion();
 	}
@@ -67,11 +71,11 @@ public class Donacion extends UserDateAudit{
 		this.id = id;
 	}
 
-	public LocalDate getFecha() {
+	public LocalDateTime getFecha() {
 		return fecha;
 	}
 
-	public void setFecha(LocalDate fecha) {
+	public void setFecha(LocalDateTime fecha) {
 		this.fecha = fecha;
 	}
 
@@ -109,7 +113,10 @@ public class Donacion extends UserDateAudit{
 		
 		p.setId(id);
 		p.setFecha(fecha);
-		p.setDonante(donante.toPayload());
+		if(this.donante != null)
+			p.setDonante(donante.toPayload());
+		else
+			p.setDonante(null);
 		p.setTipoDonacion(tipoDonacion);
 		p.setDescripcion(descripcion);
 		

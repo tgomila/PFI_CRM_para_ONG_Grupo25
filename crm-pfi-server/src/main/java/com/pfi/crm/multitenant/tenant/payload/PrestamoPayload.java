@@ -1,6 +1,6 @@
 package com.pfi.crm.multitenant.tenant.payload;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import javax.persistence.CascadeType;
 import javax.persistence.ManyToOne;
@@ -11,8 +11,9 @@ public class PrestamoPayload {
 	private Long id;
 	private String descripcion;
 	private int cantidad;
-	private LocalDate fechaPrestamoInicio;
-	private LocalDate fechaPrestamoFin;
+	private LocalDateTime fechaPrestamoInicio;
+	private LocalDateTime fechaPrestamoFin;
+	private boolean haSidoDevuelto;
 	
 	@ManyToOne(cascade = CascadeType.ALL)
 	@OrderBy("nombreDescripcion ASC")
@@ -26,7 +27,8 @@ public class PrestamoPayload {
 		super();
 		cantidad = 0;
 		prestamista = null;
-		fechaPrestamoInicio = LocalDate.now();
+		fechaPrestamoInicio = LocalDateTime.now();
+		haSidoDevuelto = false;
 		prestatario = new ContactoPayload();
 	}
 
@@ -54,20 +56,28 @@ public class PrestamoPayload {
 		this.cantidad = cantidad;
 	}
 
-	public LocalDate getFechaPrestamoInicio() {
+	public LocalDateTime getFechaPrestamoInicio() {
 		return fechaPrestamoInicio;
 	}
 
-	public void setFechaPrestamoInicio(LocalDate fechaPrestamoInicio) {
+	public void setFechaPrestamoInicio(LocalDateTime fechaPrestamoInicio) {
 		this.fechaPrestamoInicio = fechaPrestamoInicio;
 	}
 
-	public LocalDate getFechaPrestamoFin() {
+	public LocalDateTime getFechaPrestamoFin() {
 		return fechaPrestamoFin;
 	}
 
-	public void setFechaPrestamoFin(LocalDate fechaPrestamoFin) {
+	public void setFechaPrestamoFin(LocalDateTime fechaPrestamoFin) {
 		this.fechaPrestamoFin = fechaPrestamoFin;
+	}
+
+	public boolean isHaSidoDevuelto() {
+		return haSidoDevuelto;
+	}
+
+	public void setHaSidoDevuelto(boolean haSidoDevuelto) {
+		this.haSidoDevuelto = haSidoDevuelto;
 	}
 
 	public ContactoPayload getPrestamista() {

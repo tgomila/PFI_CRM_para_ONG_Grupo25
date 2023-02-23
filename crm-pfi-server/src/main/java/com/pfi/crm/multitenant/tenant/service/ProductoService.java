@@ -10,8 +10,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import com.pfi.crm.exception.ResourceNotFoundException;
+import com.pfi.crm.multitenant.tenant.model.Contacto;
 import com.pfi.crm.multitenant.tenant.model.Producto;
+import com.pfi.crm.multitenant.tenant.payload.ContactoPayload;
 import com.pfi.crm.multitenant.tenant.payload.ProductoPayload;
+import com.pfi.crm.multitenant.tenant.persistence.repository.ContactoRepository;
 import com.pfi.crm.multitenant.tenant.persistence.repository.ProductoRepository;
 
 @Service
@@ -19,6 +22,12 @@ public class ProductoService {
 	
 	@Autowired
 	private ProductoRepository productoRepository;
+	
+	@Autowired
+	private ContactoRepository contactoRepository;
+	
+	@Autowired
+	private ContactoService contactoService;
 	
 	@SuppressWarnings("unused")
 	private static final Logger logger = LoggerFactory.getLogger(ProductoService.class);
@@ -32,11 +41,9 @@ public class ProductoService {
 		return productoRepository.findAll().stream().map(e -> e.toPayload()).collect(Collectors.toList());
 	}
 	
-	public ProductoPayload altaProducto(ProductoPayload p) {
-		p.setId(null);
-		Producto m = new Producto(p);
-		m.setEstadoActivo(true);
-		return productoRepository.save(m).toPayload();
+	public ProductoPayload altaProducto(ProductoPayload payload) {
+		payload.setId(null);
+		return altaOModificarProducto(payload).toPayload();
 	}
 	
 	public void bajaProducto(Long id) {
@@ -47,14 +54,43 @@ public class ProductoService {
 	}
 	
 	public ProductoPayload modificarProducto(ProductoPayload payload) {
-		return this.modificarProductoReturnModel(payload).toPayload();
+		return this.altaOModificarProducto(payload).toPayload();
 	}
 	
-	public Producto modificarProductoReturnModel(ProductoPayload payload) {
-		Producto model = productoRepository.findById(payload.getId()).orElseThrow(
-				() -> new ResourceNotFoundException("Producto", "id", payload.getId()));
+	
+	
+	
+	private Producto altaOModificarProducto(ProductoPayload payload) {
+		Producto productoModel = null;
+		if(payload.getId() != null) {//Modificar
+			productoModel = productoRepository.findById(payload.getId()).orElseThrow(
+					() -> new ResourceNotFoundException("Producto", "id", payload.getId()));
+			productoModel.modificar(payload);
+		}
+		if(productoModel == null){//Alta
+			productoModel = new Producto(payload);
+			productoModel.setEstadoActivo(true);
+		}
 		
-		model.modificar(payload);
-		return productoRepository.save(model);
+		//Busco su proveedor
+		Contacto proveedor = null;
+		if(payload.getProveedor() != null) {
+			if(payload.getProveedor().getId() != null) {//Agrego su proveedor
+				proveedor = contactoRepository.findById(payload.getProveedor().getId()).orElseThrow(
+		                () -> new ResourceNotFoundException("Contacto", "id", payload.getProveedor().getId()));
+			}
+			else {//Doy de alta su proveedor (Contacto)
+				ContactoPayload altaProveedor = contactoService.altaContacto(payload.getProveedor());
+				proveedor = contactoRepository.findById(altaProveedor.getId()).orElseThrow(
+		                () -> new ResourceNotFoundException("Contacto", "id", altaProveedor.getId()));
+			}
+		}
+		else {
+			proveedor = null;
+		}
+		productoModel.setProveedor(proveedor);
+		
+		
+		return productoRepository.save(productoModel);
 	}
 }

@@ -29,7 +29,7 @@ public class Producto {
 	private boolean estadoActivo;
 	private boolean fragil;
 	
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne(cascade = CascadeType.MERGE)
 	@OrderBy("nombreDescripcion ASC")
 	private Contacto proveedor;
 	
@@ -63,6 +63,8 @@ public class Producto {
 		p.setStockActual(stockActual);
 		p.setFragil(fragil);
 		
+		if(proveedor != null)
+			p.setProveedor(proveedor.toPayload());
 		return p;
 	}
 

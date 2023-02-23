@@ -44,8 +44,8 @@ public class Event {
 	// 0 0 0 * * ?" siempre a las 00hs
 	
 	//Setear check cada 1 día a las 00hs, horario utc
-	@Scheduled(cron = "0 */2 * * * MON-FRI")//Testing cada N segundos/minutos
-	//@Scheduled(cron = "0 0 0 * * ?", zone="America/Argentina/Buenos_Aires")
+	//@Scheduled(cron = "0 */2 * * * MON-FRI")//Testing cada N segundos/minutos
+	@Scheduled(cron = "0 0 0 * * ?", zone="America/Argentina/Buenos_Aires")
 	public void eventoDiario() {
 		moduloCheckSuscripcion();
 	}

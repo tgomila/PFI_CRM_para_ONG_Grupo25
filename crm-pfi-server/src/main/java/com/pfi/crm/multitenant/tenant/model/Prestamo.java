@@ -1,11 +1,13 @@
 package com.pfi.crm.multitenant.tenant.model;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.pfi.crm.multitenant.tenant.model.audit.UserDateAudit;
@@ -21,15 +23,19 @@ public class Prestamo extends UserDateAudit {
 	private Long id;
 	private String descripcion;
 	private int cantidad;
-	private LocalDate fechaPrestamoInicio;
-	private LocalDate fechaPrestamoFin;
-	private Contacto prestamista; //quien tiene el producto
-	private Contacto prestatario; //quien tiene el producto
+	private LocalDateTime fechaPrestamoInicio;
+	private LocalDateTime fechaPrestamoFin;
+	private boolean haSidoDevuelto;
+	@ManyToOne(cascade = CascadeType.MERGE)
+	private Contacto prestamista; //Quien que se dedica a prestar algo.
+	@ManyToOne(cascade = CascadeType.MERGE)
+	private Contacto prestatario; //Quien toma algo a préstamo.
 	
 	public Prestamo() {
 		super();
 		cantidad = 0;
-		fechaPrestamoInicio = LocalDate.now();
+		fechaPrestamoInicio = LocalDateTime.now();
+		haSidoDevuelto = false;
 	}
 	
 	public Prestamo(PrestamoPayload p) {
@@ -39,8 +45,20 @@ public class Prestamo extends UserDateAudit {
 		this.cantidad = p.getCantidad();
 		this.fechaPrestamoInicio = p.getFechaPrestamoInicio();
 		this.fechaPrestamoFin = p.getFechaPrestamoFin();
-		this.prestamista = new Contacto(p.getPrestamista());
-		this.prestatario = new Contacto(p.getPrestatario());
+		this.haSidoDevuelto = p.isHaSidoDevuelto();
+	}
+	
+	/**
+	 * No incluye prestamista o prestatario
+	 * @param p
+	 */
+	public void modificar(PrestamoPayload p) {
+		this.id = p.getId();
+		this.descripcion = p.getDescripcion();
+		this.cantidad = p.getCantidad();
+		this.fechaPrestamoInicio = p.getFechaPrestamoInicio();
+		this.fechaPrestamoFin = p.getFechaPrestamoFin();
+		this.haSidoDevuelto = p.isHaSidoDevuelto();
 	}
 	
 	public void modificar(PrestamoPayload p, Contacto prestamista, Contacto prestatario) {
@@ -94,20 +112,28 @@ public class Prestamo extends UserDateAudit {
 		this.cantidad = cantidad;
 	}
 
-	public LocalDate getFechaPrestamoInicio() {
+	public LocalDateTime getFechaPrestamoInicio() {
 		return fechaPrestamoInicio;
 	}
 
-	public void setFechaPrestamoInicio(LocalDate fechaPrestamoInicio) {
+	public void setFechaPrestamoInicio(LocalDateTime fechaPrestamoInicio) {
 		this.fechaPrestamoInicio = fechaPrestamoInicio;
 	}
 
-	public LocalDate getFechaPrestamoFin() {
+	public LocalDateTime getFechaPrestamoFin() {
 		return fechaPrestamoFin;
 	}
 
-	public void setFechaPrestamoFin(LocalDate fechaPrestamoFin) {
+	public void setFechaPrestamoFin(LocalDateTime fechaPrestamoFin) {
 		this.fechaPrestamoFin = fechaPrestamoFin;
+	}
+
+	public boolean isHaSidoDevuelto() {
+		return haSidoDevuelto;
+	}
+
+	public void setHaSidoDevuelto(boolean haSidoDevuelto) {
+		this.haSidoDevuelto = haSidoDevuelto;
 	}
 
 	public Contacto getPrestamista() {

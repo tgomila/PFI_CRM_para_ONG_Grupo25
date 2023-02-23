@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 
 import com.pfi.crm.mastertenant.config.DBContextHolder;
 import com.pfi.crm.multitenant.mastertenant.service.MasterTenantService;
+import com.pfi.crm.multitenant.tenant.model.DonacionTipo;
 import com.pfi.crm.multitenant.tenant.model.Role;
 import com.pfi.crm.multitenant.tenant.model.RoleName;
 import com.pfi.crm.multitenant.tenant.model.TipoPersonaJuridica;
@@ -84,6 +85,9 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 	
 	@Autowired
 	private ProgramaDeActividadesService programaDeActividadesService;
+	
+	@Autowired
+	private DonacionService donacionService;
 	
   /**
    * This event is executed as late as conceivably possible to indicate that 
@@ -168,7 +172,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 			cargarTenant1();
 			cargarTenant2();
 			cargarTenant3();
-			System.out.println("Tenants bien cargados. Continue con el desarrollo");
+			System.out.println("Tenants bien cargados. Continue con el desarrollo.");
 			return;
 		}
 
@@ -203,6 +207,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 			cargarPersonaJuridicaTenant1();
 			cargarUsuariosTenant1();
 			cargarProductosInsumosFacturaPrestamoProgramaDeActividadesTenant1();
+			cargarDonacionesTenant1();
 		}
 	}
 	
@@ -225,6 +230,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 			cargarPersonaJuridicaTenant2();
 			cargarUsuariosTenant2();
 			cargarProductosInsumosFacturaPrestamoProgramaDeActividadesTenant2();
+			cargarDonacionesTenant2();
 		}
 	}
 	
@@ -963,8 +969,9 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		PrestamoPayload prestamo1 = new PrestamoPayload();
 		prestamo1.setDescripcion("Radio a pilas Panasonic");
 		prestamo1.setCantidad(1);
-		prestamo1.setFechaPrestamoInicio(LocalDate.now());
-		prestamo1.setFechaPrestamoFin(LocalDate.now().plusMonths(2));
+		prestamo1.setFechaPrestamoInicio(LocalDateTime.now());
+		prestamo1.setFechaPrestamoFin(LocalDateTime.now().plusMonths(2));
+		prestamo1.setHaSidoDevuelto(false);
 		prestamo1.setPrestamista(empleado1);
 		prestamo1.setPrestatario(beneficiario1);
 		prestamo1 = prestamoService.altaPrestamo(prestamo1);
@@ -982,6 +989,34 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		programa.agregarActividadesPorSemana(10, actividad);
 		programa.setDescripcion(actividad.getDescripcion());
 		programaDeActividadesService.altaProgramaDeActividades(programa);
+	}
+	
+	public void cargarDonacionesTenant1() {
+		//Donacion 1 con contacto
+		ContactoPayload donante = new ContactoPayload();
+		donante.setNombreDescripcion("Donante Don Roque");
+		donante.setCuit("20-12345678-9");
+		donante.setDomicilio("Av. Don Monte 1000");
+		donante.setEmail("eldonante@donacion.com");
+		donante.setTelefono("1234-5678");
+		donante = contactoService.altaContacto(donante);
+		
+		DonacionPayload donacion = new DonacionPayload();
+		donacion.setId(null);
+		donacion.setFecha(LocalDateTime.now().minusMonths(1));
+		donacion.setDonante(donante);
+		donacion.setTipoDonacion(DonacionTipo.DINERO);
+		donacion.setDescripcion("$100.000");
+		donacion = donacionService.altaDonacion(donacion);
+		
+		//Donacion anónima
+		DonacionPayload donacion2 = new DonacionPayload();
+		donacion2.setId(null);
+		donacion2.setFecha(LocalDateTime.now().minusDays(1));
+		donacion2.setDonante(null);
+		donacion2.setTipoDonacion(DonacionTipo.INSUMO);
+		donacion2.setDescripcion("Juguete ladrillitos");
+		donacion2 = donacionService.altaDonacion(donacion2);
 	}
 	
 	
@@ -1690,8 +1725,9 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		PrestamoPayload prestamo1 = new PrestamoPayload();
 		prestamo1.setDescripcion("Vaso plástico superhéroes");
 		prestamo1.setCantidad(2);
-		prestamo1.setFechaPrestamoInicio(LocalDate.now());
-		prestamo1.setFechaPrestamoFin(LocalDate.now().plusMonths(2));
+		prestamo1.setFechaPrestamoInicio(LocalDateTime.now());
+		prestamo1.setFechaPrestamoFin(LocalDateTime.now().plusMonths(2));
+		prestamo1.setHaSidoDevuelto(false);
 		prestamo1.setPrestamista(empleado1);
 		prestamo1.setPrestatario(beneficiario1);
 		prestamo1 = prestamoService.altaPrestamo(prestamo1);
@@ -1709,6 +1745,34 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		programa.agregarActividadesPorSemana(10, actividad);
 		programa.setDescripcion(actividad.getDescripcion());
 		programaDeActividadesService.altaProgramaDeActividades(programa);
+	}
+	
+	public void cargarDonacionesTenant2() {
+		//Donacion 1 con contacto
+		ContactoPayload donante = new ContactoPayload();
+		donante.setNombreDescripcion("Donante Don Roque");
+		donante.setCuit("20-12345678-9");
+		donante.setDomicilio("Av. Don Monte 1000");
+		donante.setEmail("eldonante@donacion.com");
+		donante.setTelefono("1234-5678");
+		donante = contactoService.altaContacto(donante);
+		
+		DonacionPayload donacion = new DonacionPayload();
+		donacion.setId(null);
+		donacion.setFecha(LocalDateTime.now().minusMonths(1));
+		donacion.setDonante(donante);
+		donacion.setTipoDonacion(DonacionTipo.DINERO);
+		donacion.setDescripcion("$100.000");
+		donacion = donacionService.altaDonacion(donacion);
+		
+		//Donacion anónima
+		DonacionPayload donacion2 = new DonacionPayload();
+		donacion2.setId(null);
+		donacion2.setFecha(LocalDateTime.now().minusDays(1));
+		donacion2.setDonante(null);
+		donacion2.setTipoDonacion(DonacionTipo.INSUMO);
+		donacion2.setDescripcion("Galletitas variadas");
+		donacion2 = donacionService.altaDonacion(donacion2);
 	}
 	
 	public void cargarUsuariosDefault() {

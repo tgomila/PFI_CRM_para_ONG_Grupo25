@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import com.pfi.crm.exception.ResourceNotFoundException;
 import com.pfi.crm.multitenant.tenant.model.Contacto;
 import com.pfi.crm.multitenant.tenant.model.Prestamo;
+import com.pfi.crm.multitenant.tenant.payload.ContactoPayload;
 import com.pfi.crm.multitenant.tenant.payload.PrestamoPayload;
 import com.pfi.crm.multitenant.tenant.persistence.repository.ContactoRepository;
 import com.pfi.crm.multitenant.tenant.persistence.repository.PrestamoRepository;
@@ -25,6 +26,9 @@ public class PrestamoService {
 	@Autowired
 	private ContactoRepository contactoRepository;
 	
+	@Autowired
+	private ContactoService contactoService;
+	
 	@SuppressWarnings("unused")
 	private static final Logger logger = LoggerFactory.getLogger(PrestamoService.class);
 	
@@ -37,10 +41,10 @@ public class PrestamoService {
 		return prestamoRepository.findAll().stream().map(e -> e.toPayload()).collect(Collectors.toList());
 	}
 	
-	public PrestamoPayload altaPrestamo(PrestamoPayload p) {
-		p.setId(null);
-		Prestamo m = new Prestamo();
-		return prestamoRepository.save(m).toPayload();
+	public PrestamoPayload altaPrestamo(PrestamoPayload payload) {
+		payload.setId(null);
+		
+		return altaOModificarPrestamo(payload).toPayload();
 	}
 	
 	public void bajaPrestamo(Long id) {
@@ -50,26 +54,57 @@ public class PrestamoService {
 	}
 	
 	public PrestamoPayload modificarPrestamo(PrestamoPayload payload) {
-		return this.modificarPrestamoReturnModel(payload).toPayload();
+		return this.altaOModificarPrestamo(payload).toPayload();
 	}
 	
-	public Prestamo modificarPrestamoReturnModel(PrestamoPayload payload) {
-		Prestamo model = prestamoRepository.findById(payload.getId()).orElseThrow(
-				() -> new ResourceNotFoundException("Prestamo", "id", payload.getId()));
-		
-		//Esto evita que puedan modificar models beneficiarios y profesional
-		Contacto prestamista = null, prestatario = null;
-		if(payload.getPrestamista() != null && payload.getPrestamista().getId() != null) {
-			prestamista = contactoRepository.findById(payload.getPrestamista().getId()).orElseThrow(
-					() -> new ResourceNotFoundException("Contacto Prestamista", "id", payload.getPrestamista().getId()));
+	private Prestamo altaOModificarPrestamo(PrestamoPayload payload) {
+		Prestamo prestamoModel = null;
+		if(payload.getId() != null) {//Modificar
+			prestamoModel = prestamoRepository.findById(payload.getId()).orElseThrow(
+					() -> new ResourceNotFoundException("Prestamo", "id", payload.getId()));
+			prestamoModel.modificar(payload);
+		}
+		if(prestamoModel == null){//Alta
+			prestamoModel = new Prestamo(payload);
 		}
 		
-		if(payload.getPrestatario() != null && payload.getPrestatario().getId() != null) {
-			prestatario = contactoRepository.findById(payload.getPrestatario().getId()).orElseThrow(
-					() -> new ResourceNotFoundException("Contacto Prestatario", "id", payload.getPrestatario().getId()));
+		//Busco su prestamista
+		Contacto prestamista = null;
+		if(payload.getPrestamista() != null) {
+			if(payload.getPrestamista().getId() != null) {//Agrego su prestamista
+				prestamista = contactoRepository.findById(payload.getPrestamista().getId()).orElseThrow(
+		                () -> new ResourceNotFoundException("Contacto", "id", payload.getPrestamista().getId()));
+			}
+			else {//Doy de alta su prestamista (Contacto)
+				ContactoPayload altaPrestamista = contactoService.altaContacto(payload.getPrestamista());
+				prestamista = contactoRepository.findById(altaPrestamista.getId()).orElseThrow(
+		                () -> new ResourceNotFoundException("Contacto", "id", altaPrestamista.getId()));
+			}
 		}
+		else {
+			prestamista = null;
+		}
+		prestamoModel.setPrestamista(prestamista);
 		
-		model.modificar(payload, prestamista, prestatario);
-		return prestamoRepository.save(model);
+		//Busco su prestatario
+		Contacto prestatario = null;
+		if(payload.getPrestatario() != null) {
+			if(payload.getPrestatario().getId() != null) {//Agrego su prestatario
+				prestatario = contactoRepository.findById(payload.getPrestatario().getId()).orElseThrow(
+		                () -> new ResourceNotFoundException("Contacto", "id", payload.getPrestatario().getId()));
+			}
+			else {//Doy de alta su prestatario (Contacto)
+				ContactoPayload altaPrestatario = contactoService.altaContacto(payload.getPrestatario());
+				prestatario = contactoRepository.findById(altaPrestatario.getId()).orElseThrow(
+		                () -> new ResourceNotFoundException("Contacto", "id", altaPrestatario.getId()));
+			}
+		}
+		else {
+			prestatario = null;
+		}
+		prestamoModel.setPrestatario(prestatario);
+		
+		
+		return prestamoRepository.save(prestamoModel);
 	}
 }

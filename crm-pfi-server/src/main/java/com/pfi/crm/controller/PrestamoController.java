@@ -1,6 +1,6 @@
 package com.pfi.crm.controller;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -76,8 +76,8 @@ public class PrestamoController {
 		p.setId(Long.valueOf(1234));
 		p.setDescripcion("Radio a pilas Panasonic");
 		p.setCantidad(1);
-		p.setFechaPrestamoInicio(LocalDate.now());
-		p.setFechaPrestamoFin(LocalDate.now().plusMonths(2));
+		p.setFechaPrestamoInicio(LocalDateTime.now());
+		p.setFechaPrestamoFin(LocalDateTime.now().plusMonths(2));
 		return p;
 	}
 

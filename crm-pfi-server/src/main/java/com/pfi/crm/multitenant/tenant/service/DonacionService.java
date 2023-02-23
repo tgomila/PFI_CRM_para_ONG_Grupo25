@@ -14,6 +14,7 @@ import com.pfi.crm.exception.BadRequestException;
 import com.pfi.crm.exception.ResourceNotFoundException;
 import com.pfi.crm.multitenant.tenant.model.Contacto;
 import com.pfi.crm.multitenant.tenant.model.Donacion;
+import com.pfi.crm.multitenant.tenant.payload.ContactoPayload;
 import com.pfi.crm.multitenant.tenant.payload.DonacionPayload;
 import com.pfi.crm.multitenant.tenant.persistence.repository.ContactoRepository;
 import com.pfi.crm.multitenant.tenant.persistence.repository.DonacionRepository;
@@ -26,6 +27,9 @@ public class DonacionService  {
 	
 	@Autowired
 	private ContactoRepository contactoRepository;
+	
+	@Autowired
+	private ContactoService contactoService;
 	
 	@SuppressWarnings("unused")
 	private static final Logger logger = LoggerFactory.getLogger(DonacionService.class);
@@ -44,19 +48,8 @@ public class DonacionService  {
 		if(payload == null)
 			throw new BadRequestException("Donación ingresada no debe ser Null");
 		payload.setId(null);
-		Donacion model = new Donacion();
-		// Busco el contacto en la BD y tomo los datos de ahi, porque sino me pueden modificar el
-		// "contacto" sin permiso
-		Contacto c;
-		if(payload.getDonante().getId() != null) {
-			c = contactoRepository.findById(payload.getDonante().getId()).orElseThrow(
-	                () -> new ResourceNotFoundException("Contacto", "id", payload.getDonante().getId()));
-		}
-		else {
-			c = contactoRepository.save(new Contacto(payload.getDonante()));
-		}
-		model.setDonante(c);
-		return donacionRepository.save(model).toPayload();
+		
+		return altaOModificarDonacion(payload).toPayload();
 	}
 	
 	public void bajaDonacion(Long id) {
@@ -71,14 +64,11 @@ public class DonacionService  {
 	}
 	
 	public DonacionPayload modificarDonacion(DonacionPayload payload) {
-		if (payload != null && payload.getId() != null) {
-			//Necesito el id de persona Fisica o se crearia uno nuevo
-			Donacion model = donacionRepository.findById(payload.getId()).orElseThrow(
-	                () -> new ResourceNotFoundException("Donacion", "id", payload.getId()));
-			model.modificar(payload);
-			return donacionRepository.save(model).toPayload();
-		}
-		throw new BadRequestException("No se puede modificar Donación sin ID");
+		if(payload == null)
+			throw new BadRequestException("Donación ingresada no debe ser Null");
+		if (payload.getId() == null)
+			throw new BadRequestException("No se puede modificar Donación sin ID");
+		return altaOModificarDonacion(payload).toPayload();
 	}
 	
 	public void bajaDonacionesPorContacto(Long id) {
@@ -99,6 +89,41 @@ public class DonacionService  {
 	
 	public boolean existeDonacionesPorIdContacto(Long id) {
 		return donacionRepository.existsByDonante_Id(id);
+	}
+	
+	
+	
+	
+	private Donacion altaOModificarDonacion(DonacionPayload payload) {
+		Donacion donacionModel = null;
+		if(payload.getId() != null) {//Modificar
+			donacionModel = donacionRepository.findById(payload.getId()).orElseThrow(
+					() -> new ResourceNotFoundException("Donacion", "id", payload.getId()));
+			donacionModel.modificar(payload);
+		}
+		if(donacionModel == null) {//Alta
+			donacionModel = new Donacion(payload);
+		}
+		
+		//Busco su donante
+		Contacto donante = null;
+		if(payload.getDonante() != null) {
+			if(payload.getDonante().getId() != null) {//Agrego su donante
+				donante = contactoRepository.findById(payload.getDonante().getId()).orElseThrow(
+		                () -> new ResourceNotFoundException("Contacto", "id", payload.getDonante().getId()));
+			}
+			else {//Doy de alta su donante (Contacto)
+				ContactoPayload altaProveedor = contactoService.altaContacto(payload.getDonante());
+				donante = contactoRepository.findById(altaProveedor.getId()).orElseThrow(
+		                () -> new ResourceNotFoundException("Contacto", "id", altaProveedor.getId()));
+			}
+		}
+		else {
+			donante = null;
+		}
+		donacionModel.setDonante(donante);
+		
+		return donacionRepository.save(donacionModel);
 	}
 	
 	

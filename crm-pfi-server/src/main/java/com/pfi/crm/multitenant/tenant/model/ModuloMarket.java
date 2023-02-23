@@ -29,6 +29,8 @@ public class ModuloMarket {
 	
 	private boolean prueba7DiasUtilizada;
 	private LocalDateTime fechaPrueba7DiasUtilizada;
+
+	private LocalDateTime fechaInicioSuscripcion;//Solo es info para mostrar
 	
 	//Null significa que nunca se ha suscripto.
 	private LocalDateTime fechaMaximaSuscripcion;
@@ -48,6 +50,7 @@ public class ModuloMarket {
 		this.moduloEnum = moduloEnum;
 		this.prueba7DiasUtilizada = false;
 		this.fechaPrueba7DiasUtilizada = null;
+		this.fechaInicioSuscripcion = null;
 		this.fechaMaximaSuscripcion = null;// LocalDate.of(2000, 1, 1); //Se inicia con Una fecha vencida.
 		this.suscripcionActiva = false;
 	}
@@ -57,6 +60,7 @@ public class ModuloMarket {
 		this.setId(p.getId());
 		this.setModuloEnum(p.getModuloEnum());
 		this.setPrueba7DiasUtilizada(p.isPrueba7DiasUtilizada());
+		this.setFechaInicioSuscripcion(p.getFechaInicioSuscripcion());
 		this.setFechaMaximaSuscripcion(this.getFechaMaximaSuscripcion());
 		this.setSuscripcionActiva(p.isSuscripcionActiva());
 	}
@@ -75,6 +79,7 @@ public class ModuloMarket {
 	private LocalDateTime sumarPeriodoASuscripcion(Period plusTime) {
 		if(moduloEnum.isFreeModule())
 			throw new BadRequestException("No se puede suscribir a un módulo gratuito");//return null;
+		this.fechaInicioSuscripcion = LocalDateTime.now();
 		if(fechaMaximaSuscripcion == null || fechaMaximaSuscripcion.isBefore(LocalDateTime.now())) {
 			fechaMaximaSuscripcion = LocalDateTime.now().plus(plusTime);
 		}
@@ -88,6 +93,7 @@ public class ModuloMarket {
 	public boolean activarSieteDiasGratis() {
 		if(moduloEnum.isFreeModule() || prueba7DiasUtilizada)
 			return false;
+		this.fechaInicioSuscripcion = LocalDateTime.now();
 		fechaPrueba7DiasUtilizada = LocalDateTime.now();
 		if(fechaMaximaSuscripcion == null || fechaMaximaSuscripcion.isBefore(LocalDateTime.now())) {
 			fechaMaximaSuscripcion = LocalDateTime.now().plusDays(7).plusHours(1);
@@ -187,6 +193,14 @@ public class ModuloMarket {
 		this.fechaPrueba7DiasUtilizada = fechaPrueba7DiasUtilizada;
 	}
 
+	public LocalDateTime getFechaInicioSuscripcion() {
+		return fechaInicioSuscripcion;
+	}
+
+	public void setFechaInicioSuscripcion(LocalDateTime fechaInicioSuscripcion) {
+		this.fechaInicioSuscripcion = fechaInicioSuscripcion;
+	}
+
 	public LocalDateTime getFechaMaximaSuscripcion() {
 		return fechaMaximaSuscripcion;
 	}
@@ -214,6 +228,7 @@ public class ModuloMarket {
 		p.setModuloEnum(this.getModuloEnum());
 		p.setPrueba7DiasUtilizada(this.isPrueba7DiasUtilizada());
 		p.setFechaPrueba7DiasUtilizada(this.getFechaPrueba7DiasUtilizada());
+		p.setFechaInicioSuscripcion(this.getFechaInicioSuscripcion());
 		p.setFechaMaximaSuscripcion(this.getFechaMaximaSuscripcion());
 		p.setSuscripcionActiva(this.isSuscripcionActivaByBoolean());
 		return p;

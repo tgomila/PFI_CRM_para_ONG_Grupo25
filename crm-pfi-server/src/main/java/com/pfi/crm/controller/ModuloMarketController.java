@@ -35,11 +35,17 @@ public class ModuloMarketController {
 		return moduloMarketService.getModuloMarkets();
 	}
 	
-	@GetMapping("/modulo/{moduloEnum}")
+	@GetMapping("/modulo/find/{moduloEnum}")
 	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_EMPLOYEE')")
 	public ModuloMarketPayload getModuloMarketByModuloEnum(@PathVariable("moduloEnum") ModuloEnum moduloEnum) {
 		return moduloMarketService.getModuloMarketByModuloEnum(moduloEnum);
 	}
+	
+	//@GetMapping("/modulo2str")
+	//@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_EMPLOYEE')")
+	//public ModuloMarketPayload getModuloMarketByModuloEnum(@RequestParam("moduloEnum") ModuloEnum moduloEnum) {
+	//	return moduloMarketService.getModuloMarketByModuloEnum(moduloEnum);
+	//}
 	
 	//Suscripciones
 	@GetMapping({"/suscripcion/precio/premium/mes"})
@@ -58,6 +64,12 @@ public class ModuloMarketController {
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ModuloMarketPayload activarPrueba7dias(@PathVariable("moduloEnum") ModuloEnum moduloEnum) {
 		return moduloMarketService.activarPrueba7dias(moduloEnum);
+	}
+	
+	@PostMapping({"/suscripcion/activarPrueba7dias"})
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	public List<ModuloMarketPayload> activarPrueba7dias() {
+		return moduloMarketService.activarPrueba7dias();
 	}
 	
 	@PostMapping({"/suscripcion/mes/{moduloEnum}"})
@@ -82,6 +94,24 @@ public class ModuloMarketController {
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public List<ModuloMarketPayload> suscripcionPremiumAnio() {
 		return moduloMarketService.suscripcionPremiumAnio();
+	}
+	
+	@PostMapping({"/suscripcion/premium/desuscribir"})
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	public List<ModuloMarketPayload> desuscribir() {
+		return moduloMarketService.desuscribir();
+	}
+	
+	@PostMapping({"/suscripcion/premium/desuscribirEn5min"})
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	public List<ModuloMarketPayload> desuscribirEn5min() {
+		return moduloMarketService.desuscribirEn5min();
+	}
+	
+	@GetMapping({"/modulo/acceso/{moduloEnum}"})
+	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_EMPLOYEE')")
+	public Boolean poseeAcceso(@PathVariable("moduloEnum") ModuloEnum moduloEnum) {
+		return moduloMarketService.poseeAcceso(moduloEnum);
 	}
 	
 	@GetMapping({"/modulo/suscripto/{moduloEnum}"})

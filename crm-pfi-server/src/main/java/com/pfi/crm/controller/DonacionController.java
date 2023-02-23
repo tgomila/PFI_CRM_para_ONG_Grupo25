@@ -1,6 +1,6 @@
 package com.pfi.crm.controller;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -83,7 +83,7 @@ public class DonacionController {
 		m.getDonante().setTelefono("1234-4567");
 
 		// Donacion
-		m.setFecha(LocalDate.now());
+		m.setFecha(LocalDateTime.now());
 		m.setTipoDonacion(DonacionTipo.INSUMO);
 		m.setDescripcion("Biromes para los chicos");
 		// Fin Donacion

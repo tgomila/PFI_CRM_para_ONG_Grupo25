@@ -47,7 +47,7 @@ public class User extends DateAudit{
     @Size(max = 100)
     private String password;
     
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.MERGE)
 	@OrderBy("nombreDescripcion ASC")
 	private Contacto contacto;
 
