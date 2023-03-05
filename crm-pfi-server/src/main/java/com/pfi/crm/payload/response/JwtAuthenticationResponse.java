@@ -8,11 +8,17 @@ public class JwtAuthenticationResponse {
 	private String token;
 	private String tokenType = "Bearer";
 	private List<String> roles;
+	private Integer tenantClientId;
+	private String dbName;
+	private String tenantName;
 
-	public JwtAuthenticationResponse(String userName, String token, List<String> roles) {
+	public JwtAuthenticationResponse(String userName, String token, List<String> roles, Integer tenantClientId, String dbName, String tenantName) {
 		this.userName = userName;
 		this.token = token;
 		this.roles = roles;
+		this.tenantClientId = tenantClientId;
+		this.dbName = dbName;
+		this.tenantName = tenantName;
 	}
 	
 	public String getUserName() {
@@ -45,6 +51,30 @@ public class JwtAuthenticationResponse {
 
 	public void setRoles(List<String> roles) {
 		this.roles = roles;
+	}
+
+	public Integer getTenantClientId() {
+		return tenantClientId;
+	}
+
+	public void setTenantClientId(Integer tenantClientId) {
+		this.tenantClientId = tenantClientId;
+	}
+
+	public String getDbName() {
+		return dbName;
+	}
+
+	public void setDbName(String dbName) {
+		this.dbName = dbName;
+	}
+
+	public String getTenantName() {
+		return tenantName;
+	}
+
+	public void setTenantName(String tenantName) {
+		this.tenantName = tenantName;
 	}
 	
 	

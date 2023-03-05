@@ -8,6 +8,7 @@ import com.pfi.crm.multitenant.mastertenant.service.MasterTenantService;
 import com.pfi.crm.multitenant.tenant.model.Role;
 import com.pfi.crm.multitenant.tenant.model.RoleName;
 import com.pfi.crm.multitenant.tenant.model.User;
+import com.pfi.crm.multitenant.tenant.payload.TenantPayload;
 import com.pfi.crm.multitenant.tenant.persistence.repository.RoleRepository;
 import com.pfi.crm.multitenant.tenant.persistence.repository.UserRepository;
 import com.pfi.crm.payload.request.LoginRequest;
@@ -123,7 +124,14 @@ public class AuthController implements Serializable {
 		final String token = tokenProvider.generateToken(userDetails.getUsername(),String.valueOf(loginRequest.getTenantOrClientId()));
 		//Map the value into applicationScope bean
 		setMetaDataAfterLogin();
-		return ResponseEntity.ok(new JwtAuthenticationResponse(userDetails.getUsername(),token,roles));
+		TenantPayload tenantPayload = masterTenant.toPayload();
+		return ResponseEntity.ok(new JwtAuthenticationResponse(
+				userDetails.getUsername(),
+				token,
+				roles,
+				tenantPayload.getTenantClientId(),
+				tenantPayload.getDbName(),
+				tenantPayload.getTenantName()));
 		
 		/*Authentication authentication = authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(

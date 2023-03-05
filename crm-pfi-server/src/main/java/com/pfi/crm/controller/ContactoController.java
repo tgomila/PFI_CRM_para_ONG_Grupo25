@@ -43,6 +43,7 @@ public class ContactoController {
 	
 	@PostMapping({"/", "/alta"})
     public ContactoPayload altaContacto(@Valid @RequestBody ContactoPayload payload) {
+		System.out.println("\n\nEntre acáaaaaaaaaaaaaaaaaa\n\n");
     	return contactoService.altaContacto(payload);
     }
 	
