@@ -62,6 +62,7 @@ function Login() {
 
   const handleLogin = (e) => {
 
+    //PreventDefault hace que el dato no viaje en el url link expuesto
     e.preventDefault();
 
     setMessage("");
@@ -133,10 +134,10 @@ function Login() {
           </div>
 
           <div class="user-box">
-
-          <label className="miLabel" htmlFor="tenantOrClientId">
-                Seleccione ONG:
-          </label>
+            
+            <label className="miLabel" htmlFor="tenantOrClientId">
+              Seleccione ONG:
+            </label>
             
             {
               tenants.map((tenantItem) => (

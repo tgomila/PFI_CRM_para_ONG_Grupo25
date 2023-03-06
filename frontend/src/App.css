@@ -120,13 +120,31 @@ main{
   align-items:center;
   padding:20px 15px;
 }
-.logo{
+.logoDivSideBar{
+  margin-right: 10px;
+  transition: all 0.5s;
+}
+.logoSideBar {
+  width: 27px;
+  height: 27px;
+  margin: 0 auto 3px;
+  display: block;
+  -moz-border-radius: 50%;
+  -webkit-border-radius: 50%;
+  border-radius: 50%;
+}
+.logoText{
   font-size: 30px;
+}
+.logoDoubleText{
+  font-size: 30px;
+  transition: all 0.5s;
 }
 .bars{
   display: flex;
   font-size: 25px;
   margin-left: 50px;
+  transition: all 0.75s;
 }
 .link{
   display: flex;
@@ -146,6 +164,7 @@ main{
 }
 .icon, .link_text{
   font-size: 20px;
+  transition: all .35s;
 }
 
 

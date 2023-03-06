@@ -27,8 +27,10 @@ import {
 } from "react-icons/md";
 
 import { NavLink } from 'react-router-dom';
-import modulosService from '../services/modulosService';
 
+import modulosService from '../services/modulosService';
+import * as constantsURL from "../components/constants/ConstantsURL";
+const BACKEND_STATIC_BASE_URL = constantsURL.STATIC_BASE_URL;
 //DOCUMENTACION ICONOS
 // https://react-icons.github.io/react-icons/icons?name=fa
 const Sidebar = ({ children }) => {
@@ -42,127 +44,99 @@ const Sidebar = ({ children }) => {
 
 
     let menuItem = [];
+    let tenantLogoName = "";
+    const [currentUser, setCurrentUser] = useState(undefined);
+    const [urlLogo, setUrlLogo] = useState(undefined);
+    const [menuItemService, setMenuitem] = useState([]);
     useEffect(() => {
         // Fetch data
         // Update the document title using the browser API
     
         //Lista de modulos a mostrar
-        modulosService.getAll().then((res) => {
-          menuItem = res.data;
-
-
-
+        let modulos = modulosService.getModulos();
+        console.log("Modulos: ");
+        console.log(modulos);
+        modulos.then((res) => {
+            setMenuitem(res.data);
         });
-    
-    
-      }, []);
+
+        setUrlLogo("http://ssl.gstatic.com/accounts/ui/avatar_2x.png");//Default
+        const user = AuthService.getCurrentUser();
+        if (user) {
+            setCurrentUser(user);
+            setUrlLogo("http://localhost:8080/logo/" + user.dbName + ".png");
+            console.log("El urlLogo es: " + urlLogo);
+            //setUrlLogo("http://localhost:8080/logo/tenant2.png");
+        }
+        else {//Default
+            setUrlLogo("http://ssl.gstatic.com/accounts/ui/avatar_2x.png");
+        }
+        
+    }, []);
+    console.log("Imprimo menuItemService");
+    console.log(menuItemService);
     if (user) {
+        
+        //menuItem = mockSERVICIODEMODULOS.map((item) => {
+        menuItem = menuItemService.map((item) => {
+            //debugger;
+            let commonItems = {
+                order: item.order,
+                path: item.path,
+                name: item.name,
+                tipoVisibilidad: item.tipoVisibilidad
+            };
+            switch (item.name) {
+                case 'Contacto':
+                    commonItems['icon'] = <AiFillContacts />;
+                    break;
+                    /*return {
+                        order: item.order,
+                        path: item.path,
+                        name: item.name,
+                        tipoVisibilidad: item.tipoVisibilidad,
+                        icon: <AiFillContacts />
+                    }
+                    break;*/
+                
+                case 'Persona':
+                    commonItems['icon'] = <GoPerson />;break;
 
+                case 'Beneficiario':
+                    commonItems['icon'] = <GoRocket />;break;
 
+                case 'Empleado':
+                    commonItems['icon'] = <GoBriefcase />;break;
 
-           
-     
+                case 'Colaborador':
+                    commonItems['icon'] = <GoOrganization />;break;
+                    
+                case 'Consejo Adhonorem':
+                    commonItems['icon'] = <GoNote />;break;
 
-            menuItem = mockSERVICIODEMODULOS.map((item) => {
-                //debugger;
-                switch (item) {
-                    case 'Persona':
-                        return {
-                            path: "/personafisica",
-                            name: "Persona",
-                            icon: <GoPerson />
-                        }
-                        break;
+                case 'Persona Juridica':
+                    commonItems['icon'] = <FaBuilding />;break;
 
-                    case 'Beneficiario':
-                        return {
-                            path: "/beneficiario",
-                            name: "Beneficiario",
-                            icon: <GoRocket />
-                        }
-                        break;
+                case 'Profesional':
+                    commonItems['icon'] = <FaUserCheck />;break;
 
-                    case 'Empleado':
-                        return {
-                            path: "/empleado",
-                            name: "Empleado",
-                            icon: <GoBriefcase />
-                        }
-                        break;
+                case 'Donacion':
+                    commonItems['icon'] = <FaDonate />;break;
 
-                    case 'Colaborador':
-                        return {
-                            path: "/colaborador",
-                            name: "Colaborador",
-                            icon: <GoOrganization />
-                        }
-                        break;
+                case 'Factura':
+                    commonItems['icon'] = <FaFileInvoiceDollar />;break;
 
-                    case 'Consejo Adhonorem':
-                        return {
-                            path: "/consejoadhonorem",
-                            name: "Consejo Adhonorem",
-                            icon: <GoNote />
-                        }
-                        break;
+                case 'Users':
+                    commonItems['icon'] = <FaUsersCog />;break;
 
-
-                    case 'Persona Juridica':
-                        return {
-                            path: "/personajuridica",
-                            name: "Persona Juridica",
-                            icon: <FaBuilding />
-                        }
-                        break;
-
-
-                    case 'Profesional':
-                        return {
-                            path: "/profesional",
-                            name: "Profesional",
-                            icon: <FaUserCheck />
-                        }
-                        break;
-
-
-                    case 'Donacion':
-                        return {
-                            path: "/donacion",
-                            name: "Donacion",
-                            icon: <FaDonate />
-                        }
-                        break;
-
-                    case 'Factura':
-                        return {
-                            path: "/factura",
-                            name: "Factura",
-                            icon: <FaFileInvoiceDollar />
-                        }
-                        break;
-
-
-                    case 'Users':
-                        return {
-                            path: "/users",
-                            name: "Users",
-                            icon: <FaUsersCog />
-                        }
-                        break;
-
-                        case 'Marketplace':
-                            return {
-                                path: "/marketplace",
-                                name: "Marketplace",
-                                icon: <MdLocalGroceryStore />
-                            }
-                            break;
-
+                case 'Marketplace':
+                    commonItems['icon'] = <MdLocalGroceryStore />;break;
                 }
+                return commonItems;
 
             }
 
-            );
+        );
         
 
     }
@@ -174,8 +148,22 @@ const Sidebar = ({ children }) => {
         <div className="miSideBar">
             <div style={{ width: isOpen ? "200px" : "50px" }} className="sidebar">
                 <div className="top_section">
-                    <h1 style={{ display: isOpen ? "block" : "none" }} className="logo">Logo</h1>
-                    <div style={{ marginLeft: isOpen ? "50px" : "0px" }} className="bars">
+                    {/* display: isOpen ? "block" : "none" */}
+                    <div style={{ marginLeft: isOpen ? "0px" : "-50px" }} className="logoDivSideBar">
+                        <img 
+                            src={urlLogo}
+                            alt="profile-img"
+                            className="logoSideBar"
+                        />
+                    </div>
+                    {/*<h1 style={{ display: isOpen ? "block" : "none" }} className="logoText">Logo</h1>*/}
+                    <div>
+                        {/* display: isOpen ? "block" : "none" */}
+                        <h1 style={{ marginLeft: isOpen ? "0px" : "-65px"}} className="logoDoubleText">Ship</h1>
+                    </div>
+                    
+                    {/*anteriormente era 40px*/}
+                    <div style={{ marginLeft: isOpen ? "40px" : "9px" } } className="bars">
                         <FaBars onClick={toggle} />
                     </div>
                 </div>
@@ -183,13 +171,16 @@ const Sidebar = ({ children }) => {
                     menuItem.map((item, index) => (
                         <NavLink to={item.path} key={index} className="link" activeclassName="active">
                             <div className="icon">{item.icon}</div>
-                            <div style={{ display: isOpen ? "block" : "none" }} className="link_text">{item.name}</div>
+                            {/* <div style={{ display: isOpen ? "block" : "none" }} className="link_text">{item.name}</div> */}
+                            {/**isOpen ? item.name: "" */}
+                            <div style={{ visibility: isOpen ? "visible" : "hidden", opacity: isOpen ? "1": "0" }} className="link_text">{item.name}</div>
                         </NavLink>
                     ))
                 }
             </div>
             <main>{children}</main>
         </div>
+        
     );
 };
 

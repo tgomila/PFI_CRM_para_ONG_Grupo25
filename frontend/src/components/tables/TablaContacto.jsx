@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import BaseService from "../services/BaseService";
-import CreateEmployeeComponent from "./CRUD/Create/CreateEmployeeComponent";
+import CreateContactoComponent from "./Add/CreateEmployeeComponent";
 
 import { useTable, usePagination } from "react-table";
 
@@ -15,6 +15,14 @@ import {
   BrowserRouter
 } from "react-router-dom";
 
+/*
+Para reciclar esta tabla:
+ - Tener en cuenta import BaseService.
+ - Cambiar import Create...Component
+ - 
+
+
+*/
 
 function Table({ columns, data }) {
   const {

@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import BaseService from '../services/BaseService';
+import BaseService from '../../../services/BaseService';
 import {useLocation} from 'react-router-dom';
 
 function CreateEmployeeComponent() {
@@ -14,7 +14,9 @@ function CreateEmployeeComponent() {
 
 
 
-    // step 3
+    // step 3 //Se ejecuta luego del primer render
+    //Esto ya no sirve en react hooks (react 16)
+    //Ahora se usa useEffects
     const componentDidMount = () => {
 
         // step 4

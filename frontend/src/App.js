@@ -5,9 +5,10 @@ import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import TablasDinamicas from "./components/TablasDinamicas";
 import ContactoTabla from "./components/ContactoTabla";
 import FooterComponent from "./components/FooterComponent";
-import CreateEmployeeComponent from "./components/CreateEmployeeComponent";
+import CreateEmployeeComponent from "./components/CRUD/Create/CreateEmployeeComponent";
 import UpdateEmployeeComponent from "./components/UpdateEmployeeComponent";
 import ViewEmployeeComponent from "./components/ViewEmployeeComponent";
+import CreateContactoComponent from "./components/CRUD/Create/CreateContactoComponent";
 import {
   BrowserRouter,
   Route,
@@ -26,6 +27,7 @@ import Comment from "./pages/Comment.jsx";
 import Product from "./pages/Product.jsx";
 import ProductList from "./pages/ProductList.jsx";
 import AuthService from "./services/auth.service";
+import modulosService from "./services/modulosService";
 import Login from "./components/Login";
 import Marketplace from "./components/Marketplace";
 import BoardAdmin from "./components/BoardAdmin";
@@ -56,6 +58,36 @@ const App = () => {
   const [showModeratorBoard, setShowModeratorBoard] = useState(false);
   const [showAdminBoard, setShowAdminBoard] = useState(false);
   const [currentUser, setCurrentUser] = useState(undefined);
+  //const [menuItemService, setMenuitem] = useState([]);
+  //useEffect(() => {
+      // Fetch data
+      // Update the document title using the browser API
+  
+      //Lista de modulos a mostrar
+      //modulosService.getModulos().then((res) => {
+      //    setMenuitem(res.data);
+      //});
+
+      //Este tiene error
+      //let modulos = modulosService.getModulos();
+      //if(isPromise(modulos)) {
+      //  console.log("Es un promise:");
+      //  console.log(modulos);
+      //  
+      //  modulos.then((res) => {
+      //      setMenuitem(res.data);
+      //  });
+      //}
+      //else {//Es un object
+      //  console.log("Es un object:");
+      //  console.log(modulos);
+      //  
+      //  modulos.map((res) => {
+      //    setMenuitem(res.data);
+      //  });
+      //}
+      
+  //}, []);
 
   useEffect(() => {
     const user = AuthService.getCurrentUser();
@@ -162,7 +194,6 @@ const App = () => {
       <div className="sidebarYRoutes">
         <Sidebar style={{ marginLeft: "0px" }}>
           <Routes>
-            <Route path="/" element={<Bienvenido redireccionamiento='beneficiario' />} />
             <Route path="/contacto" element={<TablasDinamicas redireccionamiento='contacto' />} />
             <Route path="/personafisica" element={<TablasDinamicas redireccionamiento='personafisica' />} />
             <Route path="/beneficiario" element={<TablasDinamicas redireccionamiento='beneficiario' />} />
@@ -171,15 +202,22 @@ const App = () => {
             <Route path="/consejoadhonorem" element={<TablasDinamicas redireccionamiento='consejoadhonorem' />} />
             <Route path="/personajuridica" element={<TablasDinamicas redireccionamiento='personajuridica' />} />
             <Route path="/profesional" element={<TablasDinamicas redireccionamiento='profesional' />} />
+            <Route path="/users" element={<TablasDinamicas redireccionamiento='users' />} />
+            <Route path="/actividad" element={<TablasDinamicas redireccionamiento='actividad' />} />
+            <Route path="/programadeactividades" element={<TablasDinamicas redireccionamiento='programadeactividades' />} />
+            <Route path="/producto" element={<TablasDinamicas redireccionamiento='producto' />} />
             <Route path="/donacion" element={<TablasDinamicas redireccionamiento='donacion' />} />
             <Route path="/factura" element={<TablasDinamicas redireccionamiento='factura' />} />
-            <Route path="/users" element={<TablasDinamicas redireccionamiento='users' />} />
+            <Route path="/insumo" element={<TablasDinamicas redireccionamiento='insumo' />} />
+            <Route path="/prestamo" element={<TablasDinamicas redireccionamiento='prestamo' />} />
+            <Route path="/proyecto" element={<TablasDinamicas redireccionamiento='proyecto' />} />
+            <Route path="/chat" element={<TablasDinamicas redireccionamiento='chat' />} />
             <Route path="/Marketplace" element={<Marketplace  />} />
-
+            
 
 
             {/* Agregar item*/}
-            <Route path="/contacto/add" element={<CreateEmployeeComponent />} />
+           <Route path="/contacto/add" element={<CreateContactoComponent />} />
             <Route path="/personafisica/add" element={<CreateEmployeeComponent />} />
             <Route path="/beneficiario/add" element={<CreateEmployeeComponent />} />
             <Route path="/empleado/add" element={<CreateEmployeeComponent />} />
@@ -187,15 +225,21 @@ const App = () => {
             <Route path="/consejoadhonorem/add" element={<CreateEmployeeComponent />} />
             <Route path="/personajuridica/add" element={<CreateEmployeeComponent />} />
             <Route path="/profesional/add" element={<CreateEmployeeComponent />} />
+            <Route path="/users/add" element={<CreateEmployeeComponent />} />
+            <Route path="/actividad/add" element={<CreateEmployeeComponent />} />
+            <Route path="/programadeactividades/add" element={<CreateEmployeeComponent />} />
+            <Route path="/producto/add" element={<CreateEmployeeComponent />} />
             <Route path="/donacion/add" element={<CreateEmployeeComponent />} />
             <Route path="/factura/add" element={<CreateEmployeeComponent />} />
-            <Route path="/users/add" element={<CreateEmployeeComponent />} />
+            <Route path="/insumo/add" element={<CreateEmployeeComponent />} />
+            <Route path="/prestamo/add" element={<CreateEmployeeComponent />} />
+            <Route path="/proyecto/add" element={<CreateEmployeeComponent />} />
+            <Route path="/chat/add" element={<CreateEmployeeComponent />} />
             
 
 
-
             {/* BARRA DE ARRIBA*/}
-
+            <Route path="/" element={<Bienvenido redireccionamiento='beneficiario' />} />
             <Route path="/login" element={<Login />} />
             <Route path="/admin" element={<BoardAdmin />} />
             <Route path="/register" element={<Register />} />
@@ -214,5 +258,13 @@ const App = () => {
         </div>
   );
 };
+
+function isPromise(p) {
+  if (typeof p === 'object' && typeof p.then === 'function') {
+    return true;
+  }
+
+  return false;
+}
 
 export default App;
