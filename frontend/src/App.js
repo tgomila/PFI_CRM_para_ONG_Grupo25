@@ -2,13 +2,23 @@ import React, { useState, useEffect } from "react";
 import logo from "./logo.svg";
 import "./App.css";
 import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
-import TablasDinamicas from "./components/TablasDinamicas";
-import ContactoTabla from "./components/ContactoTabla";
+import TablasDinamicas from "./components/tables/TablasDinamicas";
+import TablaContacto from "./components/tables/TablaContacto";
 import FooterComponent from "./components/FooterComponent";
-import CreateEmployeeComponent from "./components/CRUD/Create/CreateEmployeeComponent";
+
+//Creates
+import CreateEmployeeComponent from "./trash-can/CreateEmployeeComponent";
+import CreateContactoComponent from "./components/CRUD/Create/CreateContactoComponent";
+import CreatePersonaComponent from "./components/CRUD/Create/CreatePersonaComponent";
+import CreatePersonaJuridicaComponent from "./components/CRUD/Create/CreatePersonaJuridicaComponent";
+import CreateConsejoAdHonoremComponent from "./components/CRUD/Create/CreateConsejoAdHonoremComponent";
+import CreateBeneficiarioComponent from "./components/CRUD/Create/CreateBeneficiarioComponent";
+import CreateVoluntarioComponent from "./components/CRUD/Create/CreateVoluntarioComponent";
+
+//Updates
 import UpdateEmployeeComponent from "./components/UpdateEmployeeComponent";
 import ViewEmployeeComponent from "./components/ViewEmployeeComponent";
-import CreateContactoComponent from "./components/CRUD/Create/CreateContactoComponent";
+
 import {
   BrowserRouter,
   Route,
@@ -194,9 +204,10 @@ const App = () => {
       <div className="sidebarYRoutes">
         <Sidebar style={{ marginLeft: "0px" }}>
           <Routes>
-            <Route path="/contacto" element={<TablasDinamicas redireccionamiento='contacto' />} />
+            <Route path="/contacto" element={<TablaContacto redireccionamiento='contacto' />} />
             <Route path="/personafisica" element={<TablasDinamicas redireccionamiento='personafisica' />} />
             <Route path="/beneficiario" element={<TablasDinamicas redireccionamiento='beneficiario' />} />
+            <Route path="/voluntario" element={<TablasDinamicas redireccionamiento='voluntario' />} />
             <Route path="/empleado" element={<TablasDinamicas redireccionamiento='empleado' />} />
             <Route path="/colaborador" element={<TablasDinamicas redireccionamiento='colaborador' />} />
             <Route path="/consejoadhonorem" element={<TablasDinamicas redireccionamiento='consejoadhonorem' />} />
@@ -217,24 +228,25 @@ const App = () => {
 
 
             {/* Agregar item*/}
-           <Route path="/contacto/add" element={<CreateContactoComponent />} />
-            <Route path="/personafisica/add" element={<CreateEmployeeComponent />} />
-            <Route path="/beneficiario/add" element={<CreateEmployeeComponent />} />
-            <Route path="/empleado/add" element={<CreateEmployeeComponent />} />
-            <Route path="/colaborador/add" element={<CreateEmployeeComponent />} />
-            <Route path="/consejoadhonorem/add" element={<CreateEmployeeComponent />} />
-            <Route path="/personajuridica/add" element={<CreateEmployeeComponent />} />
-            <Route path="/profesional/add" element={<CreateEmployeeComponent />} />
-            <Route path="/users/add" element={<CreateEmployeeComponent />} />
-            <Route path="/actividad/add" element={<CreateEmployeeComponent />} />
-            <Route path="/programadeactividades/add" element={<CreateEmployeeComponent />} />
-            <Route path="/producto/add" element={<CreateEmployeeComponent />} />
-            <Route path="/donacion/add" element={<CreateEmployeeComponent />} />
-            <Route path="/factura/add" element={<CreateEmployeeComponent />} />
-            <Route path="/insumo/add" element={<CreateEmployeeComponent />} />
-            <Route path="/prestamo/add" element={<CreateEmployeeComponent />} />
-            <Route path="/proyecto/add" element={<CreateEmployeeComponent />} />
-            <Route path="/chat/add" element={<CreateEmployeeComponent />} />
+           <Route path="/contacto/create" element={<CreateContactoComponent />} />
+            <Route path="/personafisica/create" element={<CreatePersonaComponent />} />
+            <Route path="/beneficiario/create" element={<CreateBeneficiarioComponent />} />
+            <Route path="/voluntario/create" element={<CreateVoluntarioComponent />} />
+            <Route path="/empleado/create" element={<CreateEmployeeComponent />} />
+            <Route path="/colaborador/create" element={<CreateEmployeeComponent />} />
+            <Route path="/consejoadhonorem/create" element={<CreateConsejoAdHonoremComponent />} />
+            <Route path="/personajuridica/create" element={<CreatePersonaJuridicaComponent />} />
+            <Route path="/profesional/create" element={<CreateEmployeeComponent />} />
+            <Route path="/users/create" element={<CreateEmployeeComponent />} />
+            <Route path="/actividad/create" element={<CreateEmployeeComponent />} />
+            <Route path="/programadeactividades/create" element={<CreateEmployeeComponent />} />
+            <Route path="/producto/create" element={<CreateEmployeeComponent />} />
+            <Route path="/donacion/create" element={<CreateEmployeeComponent />} />
+            <Route path="/factura/create" element={<CreateEmployeeComponent />} />
+            <Route path="/insumo/create" element={<CreateEmployeeComponent />} />
+            <Route path="/prestamo/create" element={<CreateEmployeeComponent />} />
+            <Route path="/proyecto/create" element={<CreateEmployeeComponent />} />
+            <Route path="/chat/create" element={<CreateEmployeeComponent />} />
             
 
 

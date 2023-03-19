@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
-import BaseService from "../services/BaseService";
-import CreateContactoComponent from "./Add/CreateEmployeeComponent";
+import BaseService from "../../services/BaseService";
 
 import { useTable, usePagination } from "react-table";
 
-import "../Styles/TablasDinamicas.scss";
+import "../../Styles/TablasDinamicas.scss";
 
 import { useNavigate } from 'react-router-dom';    
 
@@ -51,6 +50,8 @@ function Table({ columns, data }) {
   );
 
   const { pageIndex, pageSize } = state;
+  
+  window.scrollTo({ top: 0, behavior: "smooth" });
 
   // Render the UI for your table
   return (
@@ -120,28 +121,43 @@ function Table({ columns, data }) {
         <div>
           <button
             className="buttonAnimadoAzul"
-            onClick={() => gotoPage(0)}
+            onClick={() => {
+                gotoPage(0);
+                window.scrollTo(0, document.body.scrollHeight);
+              }
+            }
             disabled={!canPreviousPage}
           >
             {"<<"}
           </button>{" "}
           <button
             className="buttonAnimadoAzul"
-            onClick={() => previousPage()}
+            onClick={() => {
+                previousPage();
+                window.scrollTo(0, document.body.scrollHeight);
+              }
+            }
             disabled={!canPreviousPage}
           >
             Anterior
           </button>{" "}
           <button
             className="buttonAnimadoAzul"
-            onClick={() => nextPage()}
+            onClick={() => {
+              nextPage();
+              window.scrollTo(0, document.body.scrollHeight);
+            }}
             disabled={!canNextPage}
           >
             Siguiente
           </button>{" "}
           <button
             className="buttonAnimadoAzul"
-            onClick={() => gotoPage(pageCount - 1)}
+            onClick={() => {
+                gotoPage(pageCount - 1);
+                window.scrollTo(0, document.body.scrollHeight);
+              }
+            }
             disabled={!canNextPage}
           >
             {">>"}
@@ -162,6 +178,7 @@ function Table({ columns, data }) {
                   ? Number(e.target.value) - 1
                   : 0;
                 gotoPage(pageNumber);
+                window.scrollTo(0, document.body.scrollHeight);
               }}
               style={{ width: "50px" }}
             />
@@ -171,7 +188,11 @@ function Table({ columns, data }) {
               <select
                 className="selectAnimado"
                 value={pageSize}
-                onChange={(e) => setPageSize(Number(e.target.value))}
+                onChange={(e) => {
+                    setPageSize(Number(e.target.value));
+                    window.scrollTo(0, document.body.scrollHeight);
+                  }
+                }
               >
                 {[10, 25, 50].map((pageSize) => (
                   <option
@@ -191,7 +212,7 @@ function Table({ columns, data }) {
   );
 }
 
-function TablasDinamicas(redireccionamiento) {
+function TablaContacto(redireccionamiento) {
   const [data, setData] = useState([]);
   const [columnNames, setColumnNames] = useState([]);
   const [direccion, setDireccion] = useState(redireccionamiento);
@@ -274,8 +295,8 @@ function TablasDinamicas(redireccionamiento) {
 
         <div className="row">
 
-        {/*<button className="btn btn-primary" onClick={() => navigate( window.location.pathname + "/add", {state:{seccionURL:redireccionamiento.redireccionamiento, firstName:"tomas",lastName:"gomila",emailId:"tomas@gomila.com"}})}> Add Employee</button>*/}
-        <button className="btn btn-primary" onClick={() => navigate( window.location.pathname + "/add", {state:{seccionURL:redireccionamiento.redireccionamiento, firstName:"tomas",lastName:"gomila",emailId:"tomas@gomila.com"}})}> Add Employee</button>
+        {/*<button className="btn btn-primary" onClick={() => navigate( window.location.pathname + "/create", {state:{seccionURL:redireccionamiento.redireccionamiento, firstName:"tomas",lastName:"gomila",emailId:"tomas@gomila.com"}})}> Add Employee</button>*/}
+        <button className="btn btn-primary" onClick={() => navigate( window.location.pathname + "/create", {state:{seccionURL:redireccionamiento.redireccionamiento, firstName:"tomas",lastName:"gomila",emailId:"tomas@gomila.com"}})}> Agregar nuevo contacto</button>
 
 
         </div>
@@ -288,4 +309,4 @@ function TablasDinamicas(redireccionamiento) {
   );
 }
 
-export default TablasDinamicas;
+export default TablaContacto;

@@ -3,10 +3,10 @@ import logo from "./logo.svg";
 import "./App.css";
 import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import TablasDinamicas from "./components/TablasDinamicas";
-import FooterComponent from "./components/FooterComponent";
+import FooterComponent from "../components/FooterComponent";
 import CreateEmployeeComponent from "./components/CreateEmployeeComponent";
-import UpdateEmployeeComponent from "./components/UpdateEmployeeComponent";
-import ViewEmployeeComponent from "./components/ViewEmployeeComponent";
+import UpdateEmployeeComponent from "../components/UpdateEmployeeComponent";
+import ViewEmployeeComponent from "../components/ViewEmployeeComponent";
 import {
   BrowserRouter,
   Route,
@@ -16,24 +16,24 @@ import {
   Link,
   Nav,
 } from "react-router-dom";
-import Error404 from "./components/Error404";
-import Sidebar from "./components/Sidebar.jsx";
-import Dashboard from "./pages/Dashboard.jsx";
-import About from "./pages/About.jsx";
-import Analytics from "./pages/Analytics.jsx";
-import Comment from "./pages/Comment.jsx";
-import Product from "./pages/Product.jsx";
-import ProductList from "./pages/ProductList.jsx";
-import AuthService from "./services/auth.service";
-import AuthVerify from "./common/auth-verify";
-import Login from "./components/Login";
-import BoardAdmin from "./components/BoardAdmin";
-import EventBus from "./common/EventBus";
-import Register from "./components/Register";
-import Profile from "./components/Profile";
+import Error404 from "../components/Error404";
+import Sidebar from "../components/Sidebar.jsx";
+import Dashboard from "../pages/Dashboard.jsx";
+import About from "../pages/About.jsx";
+import Analytics from "../pages/Analytics.jsx";
+import Comment from "../pages/Comment.jsx";
+import Product from "../pages/Product.jsx";
+import ProductList from "../pages/ProductList.jsx";
+import AuthService from "../services/auth.service";
+import AuthVerify from "../common/auth-verify";
+import Login from "../components/Login";
+import BoardAdmin from "../components/BoardAdmin";
+import EventBus from "../common/EventBus";
+import Register from "../components/Register";
+import Profile from "../components/Profile";
 
 import { useTable } from "react-table";
-import Bienvenido from "./components/Bienvenido";
+import Bienvenido from "../components/Bienvenido";
 
 /*
 

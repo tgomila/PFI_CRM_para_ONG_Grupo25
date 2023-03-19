@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from "react";
-import BaseService from "../services/BaseService";
-import CreateEmployeeComponent from "./CRUD/Create/CreateEmployeeComponent";
+import BaseService from "../../services/BaseService";
 
 import { useTable, usePagination } from "react-table";
 
-import "../Styles/TablasDinamicas.scss";
+import "../../Styles/TablasDinamicas.scss";
 
-import { useNavigate } from 'react-router-dom';    
-
+import { useNavigate } from 'react-router-dom';
 
 import {
   Route,
@@ -43,6 +41,7 @@ function Table({ columns, data }) {
   );
 
   const { pageIndex, pageSize } = state;
+  window.scrollTo({ top: 0, behavior: "smooth" });
 
   // Render the UI for your table
   return (
@@ -266,8 +265,8 @@ function TablasDinamicas(redireccionamiento) {
 
         <div className="row">
 
-        {/*<button className="btn btn-primary" onClick={() => navigate( window.location.pathname + "/add", {state:{seccionURL:redireccionamiento.redireccionamiento, firstName:"tomas",lastName:"gomila",emailId:"tomas@gomila.com"}})}> Add Employee</button>*/}
-        <button className="btn btn-primary" onClick={() => navigate( window.location.pathname + "/add", {state:{seccionURL:redireccionamiento.redireccionamiento, firstName:"tomas",lastName:"gomila",emailId:"tomas@gomila.com"}})}> Add Employee</button>
+        {/*<button className="btn btn-primary" onClick={() => navigate( window.location.pathname + "/create", {state:{seccionURL:redireccionamiento.redireccionamiento, firstName:"tomas",lastName:"gomila",emailId:"tomas@gomila.com"}})}> Add Employee</button>*/}
+        <button className="btn btn-primary" onClick={() => navigate( window.location.pathname + "/create", {state:{seccionURL:redireccionamiento.redireccionamiento, firstName:"tomas",lastName:"gomila",emailId:"tomas@gomila.com"}})}> Create {redireccionamiento.redireccionamiento}</button>
 
 
         </div>

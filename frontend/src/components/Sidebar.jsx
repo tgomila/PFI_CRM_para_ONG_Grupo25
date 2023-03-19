@@ -2,11 +2,19 @@ import React, { useState, useEffect } from "react";
 import AuthService from "../services/auth.service";
 import {
     FaBars,
+    FaHandHoldingMedical,
     FaBuilding,
     FaUserCheck,
-    FaDonate,
+    FaUsersCog,
+    FaRegCalendarAlt,
+    FaClipboardList,
+    FaOpencart,
     FaFileInvoiceDollar,
-    FaUsersCog
+    FaDonate,
+    FaTruckLoading,
+    FaShareAltSquare,
+    FaPalfed,
+    FaComments
 } from "react-icons/fa";
 
 import {
@@ -15,8 +23,8 @@ import {
 
 import {
     GoPerson,
-    GoBriefcase,
     GoRocket,
+    GoBriefcase,
     GoOrganization,
     GoNote
 } from "react-icons/go";
@@ -105,6 +113,9 @@ const Sidebar = ({ children }) => {
                 case 'Beneficiario':
                     commonItems['icon'] = <GoRocket />;break;
 
+                case 'Voluntario':
+                    commonItems['icon'] = <FaHandHoldingMedical />;break;
+
                 case 'Empleado':
                     commonItems['icon'] = <GoBriefcase />;break;
 
@@ -120,14 +131,35 @@ const Sidebar = ({ children }) => {
                 case 'Profesional':
                     commonItems['icon'] = <FaUserCheck />;break;
 
-                case 'Donacion':
-                    commonItems['icon'] = <FaDonate />;break;
+                case 'Users':
+                    commonItems['icon'] = <FaUsersCog />;break;
+
+                case 'Actividad':
+                    commonItems['icon'] = <FaRegCalendarAlt />;break;
+
+                case 'Programa de Actividades':
+                    commonItems['icon'] = <FaClipboardList />;break;
+
+                case 'Producto':
+                    commonItems['icon'] = <FaOpencart />;break;
 
                 case 'Factura':
                     commonItems['icon'] = <FaFileInvoiceDollar />;break;
 
-                case 'Users':
-                    commonItems['icon'] = <FaUsersCog />;break;
+                case 'Donacion':
+                    commonItems['icon'] = <FaDonate />;break;
+
+                case 'Insumo':
+                    commonItems['icon'] = <FaTruckLoading />;break;
+
+                case 'Prestamo':
+                    commonItems['icon'] = <FaShareAltSquare />;break;
+
+                case 'Proyecto':
+                    commonItems['icon'] = <FaPalfed />;break;
+
+                case 'Chat':
+                    commonItems['icon'] = <FaComments />;break;
 
                 case 'Marketplace':
                     commonItems['icon'] = <MdLocalGroceryStore />;break;
@@ -159,7 +191,7 @@ const Sidebar = ({ children }) => {
                     {/*<h1 style={{ display: isOpen ? "block" : "none" }} className="logoText">Logo</h1>*/}
                     <div>
                         {/* display: isOpen ? "block" : "none" */}
-                        <h1 style={{ marginLeft: isOpen ? "0px" : "-65px"}} className="logoDoubleText">Ship</h1>
+                        <h1 style={{ marginLeft: isOpen ? "0px" : "-95px"}} className="logoDoubleText">Menu</h1>
                     </div>
                     
                     {/*anteriormente era 40px*/}
@@ -169,7 +201,7 @@ const Sidebar = ({ children }) => {
                 </div>
                 {
                     menuItem.map((item, index) => (
-                        <NavLink to={item.path} key={index} className="link" activeclassName="active">
+                        <NavLink to={item.path} key={index} className="link" activeclassname="active">
                             <div className="icon">{item.icon}</div>
                             {/* <div style={{ display: isOpen ? "block" : "none" }} className="link_text">{item.name}</div> */}
                             {/**isOpen ? item.name: "" */}

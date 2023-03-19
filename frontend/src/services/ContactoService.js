@@ -3,20 +3,16 @@ import authHeader from "./auth-header";
 import * as constantsURL from "../components/constants/ConstantsURL";
 const BACKEND_API_BASE_URL = constantsURL.API_BASE_URL;
 
-
 class ContactoService {
+    
     getById(dtoId){
-        return axios.get(BACKEND_API_BASE_URL + 'contacto/' + dtoId);
+        return axios.get(BACKEND_API_BASE_URL + 'contacto/' + dtoId, { headers: authHeader() });
     }
     
     getAll(){
-        const direccionURL = BACKEND_API_BASE_URL + 'contacto/all';
-        console.log(direccionURL);
-
         return axios.get(BACKEND_API_BASE_URL + 'contacto/all', { headers: authHeader() });
     }
 
-    //create(redireccionamiento, id, nombreDescripcion, cuit, domicilio, email, telefono){
     create(dto){
         return axios.post(BACKEND_API_BASE_URL + 'contacto/alta', dto, { headers: authHeader() });
     }

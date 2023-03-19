@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import BaseService from "../services/BaseService";
-import CreateEmployeeComponent from "./CRUD/Create/CreateEmployeeComponent";
+import CreateEmployeeComponent from "../components/CRUD/Create/CreateEmployeeComponent";
 
 import { useTable, usePagination } from "react-table";
 

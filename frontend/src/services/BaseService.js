@@ -7,13 +7,10 @@ const BACKEND_API_BASE_URL = constantsURL.API_BASE_URL;
 class BaseService {
 
     getById(redireccionamiento, dtoId){
-        return axios.get(BACKEND_API_BASE_URL + redireccionamiento.redireccionamiento + '/' + dtoId);
+        return axios.get(BACKEND_API_BASE_URL + redireccionamiento.redireccionamiento + '/' + dtoId), { headers: authHeader() };
     }
     
     getAll(redireccionamiento){
-        const direccionURL = BACKEND_API_BASE_URL + redireccionamiento.redireccionamiento + '/all';
-        console.log(direccionURL);
-
         return axios.get(BACKEND_API_BASE_URL + redireccionamiento.redireccionamiento + '/all', { headers: authHeader() });
     }
 
@@ -31,7 +28,6 @@ class BaseService {
 
     //Esto se usa en caso de tabla dinámica, y asignar nombre real de 'headers' de cada columna de la tabla
     getColumnNames(redireccionamiento){
-        const direccionURL = BACKEND_API_BASE_URL + redireccionamiento.redireccionamiento + '/nombres_tabla';
         return axios.get(BACKEND_API_BASE_URL + redireccionamiento.redireccionamiento + '/nombres_tabla', { headers: authHeader() });
     }
 

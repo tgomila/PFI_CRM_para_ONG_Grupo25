@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import BaseService from '../../../services/BaseService';
+import BaseService from '../services/BaseService';
 import {useLocation} from 'react-router-dom';
 
 function CreateEmployeeComponent() {
