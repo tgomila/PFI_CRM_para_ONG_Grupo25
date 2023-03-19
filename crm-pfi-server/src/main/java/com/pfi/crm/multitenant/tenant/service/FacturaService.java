@@ -1,6 +1,5 @@
 package com.pfi.crm.multitenant.tenant.service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -14,20 +13,14 @@ import com.pfi.crm.exception.BadRequestException;
 import com.pfi.crm.exception.ResourceNotFoundException;
 import com.pfi.crm.multitenant.tenant.model.Contacto;
 import com.pfi.crm.multitenant.tenant.model.Factura;
-import com.pfi.crm.multitenant.tenant.model.FacturaItem;
-import com.pfi.crm.multitenant.tenant.payload.FacturaItemPayload;
 import com.pfi.crm.multitenant.tenant.payload.FacturaPayload;
 import com.pfi.crm.multitenant.tenant.persistence.repository.ContactoRepository;
-import com.pfi.crm.multitenant.tenant.persistence.repository.FacturaItemRepository;
 import com.pfi.crm.multitenant.tenant.persistence.repository.FacturaRepository;
 
 @Service
 public class FacturaService {
 	@Autowired
 	private FacturaRepository facturaRepository;
-	
-	@Autowired
-	private FacturaItemRepository facturaItemRepository;
 
 	@Autowired
 	private ContactoRepository contactoRepository;
@@ -46,19 +39,9 @@ public class FacturaService {
     }
 	
 	public FacturaPayload altaFactura (FacturaPayload payload) {
-		Contacto cliente = null;
-		if(payload.getCliente() != null) {
-			cliente = contactoRepository.findById(payload.getCliente().getId()).orElseThrow(
-                () -> new ResourceNotFoundException("Contacto", "id", payload.getCliente().getId()));
-		}
-		Contacto emisorFactura = null;
-		if(payload.getEmisorFactura() != null) {
-			emisorFactura = contactoRepository.findById(payload.getEmisorFactura().getId()).orElseThrow(
-                () -> new ResourceNotFoundException("Contacto", "id", payload.getCliente().getId()));
-		}
-		payload.setId(null);
-		Factura factura = new Factura(payload, cliente, emisorFactura);
-		return facturaRepository.save(factura).toPayload();
+		if(payload != null && payload.getId() != null)
+			throw new BadRequestException("Ha introducido ID de factura: " + payload.getId() + ". ¿No querrá decir modificar en vez de alta?");
+		return altaModificarFactura(payload);
 	}
 	
 	public void bajaFactura(Long id) {
@@ -74,18 +57,21 @@ public class FacturaService {
 	}
 	
 	public FacturaPayload modificarFactura(FacturaPayload payload) {
-		if (payload != null && payload.getId() != null) {
+		if (payload != null && payload.getId() == null)
+			throw new BadRequestException("No ha introducido el ID. ¿No querrá decir Alta en vez de Modificar?");
+		return altaModificarFactura(payload);
+		/*if (payload != null && payload.getId() != null) {
 			//Necesito el id de Contactos cliente y emisor o se crearia/modificaría un contacto
 			Factura model = facturaRepository.findById(payload.getId()).orElseThrow(
 					() -> new ResourceNotFoundException("Factura", "id", payload.getId()));
 			
 			Contacto cliente = null;
-			if(payload.getCliente() != null) {
+			if(payload.getCliente() != null && payload.getCliente().getId() != null) {
 				cliente = contactoRepository.findById(payload.getCliente().getId()).orElseThrow(
 	                () -> new ResourceNotFoundException("Contacto", "id", payload.getCliente().getId()));
 			}
 			Contacto emisorFactura = null;
-			if(payload.getEmisorFactura() != null) {
+			if(payload.getEmisorFactura() != null && payload.getEmisorFactura().getId() != null) {
 				cliente = contactoRepository.findById(payload.getEmisorFactura().getId()).orElseThrow(
 	                () -> new ResourceNotFoundException("Contacto", "id", payload.getCliente().getId()));
 			}
@@ -119,18 +105,47 @@ public class FacturaService {
 			model.modificar(payload, cliente, emisorFactura, itemsFacturaModificado);
 			return facturaRepository.save(model).toPayload();	
 		}
-		throw new BadRequestException("No se puede modificar Factura sin ID");
+		throw new BadRequestException("No se puede modificar Factura sin ID");*/
+	}
+	
+	private FacturaPayload altaModificarFactura(FacturaPayload payload) {
+		//Primero evito modificar el contacto, sino lo creo
+		Contacto cliente = null;
+		if(payload.getCliente() != null) {
+			if(payload.getCliente().getId() != null) {
+				cliente = contactoRepository.findById(payload.getCliente().getId()).orElseThrow(
+					() -> new ResourceNotFoundException("Contacto", "id", payload.getCliente().getId()));
+			}
+			else {
+				cliente = new Contacto(payload.getCliente());
+			}
+		}
+		Contacto emisorFactura = null;
+		if(payload.getEmisorFactura() != null) {
+			if(payload.getCliente().getId() != null) {
+				emisorFactura = contactoRepository.findById(payload.getEmisorFactura().getId()).orElseThrow(
+					() -> new ResourceNotFoundException("Contacto", "id", payload.getCliente().getId()));
+			}
+			else {
+				emisorFactura = new Contacto(payload.getEmisorFactura());
+			}
+		}
+		Factura factura = new Factura(payload, cliente, emisorFactura);
+		factura.setId(payload.getId());//Por si es "Modificar", si es alta solo seteo un null.
+		return facturaRepository.save(factura).toPayload();
+		
 	}
 	
 	public void quitarContactoDeSusFacturas(Long idContacto) {
-		List<Factura> facturasDelContacto = facturaRepository.findByCliente_Id(idContacto);
-		List<Factura> facturasAModificar = new ArrayList<Factura>();
-		if(facturasDelContacto != null && !facturasDelContacto.isEmpty()) {
-			for(Factura factura: facturasDelContacto) {
-				factura.setCliente(null);
-				facturasAModificar.add(factura);
-			}
-			facturaRepository.saveAll(facturasAModificar);
+		List<Factura> facturasCliente = facturaRepository.findByCliente_Id(idContacto);
+		if(!facturasCliente.isEmpty()) {
+			facturasCliente.forEach((factura) -> factura.setCliente(null));
+			facturaRepository.saveAll(facturasCliente);
+		}
+		List<Factura> facturasEmisor = facturaRepository.findByEmisorFactura_Id(idContacto);
+		if(!facturasEmisor.isEmpty()) {
+			facturasEmisor.forEach((factura) -> factura.setEmisorFactura(null));
+			facturaRepository.saveAll(facturasEmisor);
 		}
 	}
 	

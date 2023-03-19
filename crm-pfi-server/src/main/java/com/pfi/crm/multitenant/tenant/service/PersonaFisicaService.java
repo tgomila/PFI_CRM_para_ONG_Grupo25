@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 
@@ -11,6 +12,7 @@ import com.pfi.crm.exception.BadRequestException;
 import com.pfi.crm.exception.ResourceNotFoundException;
 import com.pfi.crm.multitenant.tenant.model.PersonaFisica;
 import com.pfi.crm.multitenant.tenant.payload.PersonaFisicaPayload;
+import com.pfi.crm.multitenant.tenant.persistence.repository.ContactoRepository;
 import com.pfi.crm.multitenant.tenant.persistence.repository.PersonaFisicaRepository;
 
 @Service
@@ -18,6 +20,12 @@ public class PersonaFisicaService {
 	
 	@Autowired
 	private PersonaFisicaRepository personaFisicaRepository;
+	
+	@Autowired
+	private ContactoRepository contactoRepository;
+	
+	@Autowired
+	private ContactoService contactoService;
 	
 	//Services utilizados solo para cuando se da de baja 1 persona, se le da de baja en todo lo relacionado (excepto Contacto)
 	//	Cualquier duda ver el diagrama de BD o de clases para comprender.
@@ -50,8 +58,33 @@ public class PersonaFisicaService {
     }
 	
 	public PersonaFisicaPayload altaPersonaFisica (PersonaFisicaPayload payload) {
-		payload.setId(null);
-		return personaFisicaRepository.save(new PersonaFisica(payload)).toPayload();
+		if(payload.getId() != null) {
+			/**
+			 * 3 pasos:
+			 * 1) Verificar si existe Persona. Si existe Persona, se vuelve sin dar de alta
+			 * 2) Verificar si existe Contacto a asociar. De "no" encontrar Contacto, se vuelve sin dar de alta.
+			 * 3) Buscar Contacto y devolver Contacto. 
+			 */
+			Long id = payload.getId();
+			boolean existePersona = personaFisicaRepository.existsByContacto_Id(id);
+			if(existePersona)
+				throw new BadRequestException("Ya existe Persona con ID '" + id.toString() + "' cargado. "
+						+ "Es posible que sea otro número o quiera ir a la pantalla de modificar.");
+			boolean existeContacto = contactoRepository.existsById(id);
+			if(!existeContacto)
+				throw new BadRequestException("Ha ingresado un ID '" + id.toString() + "' para asociar un contacto, y no existe. "
+						+ "Es posible que sea otro número o haya sido dado de baja.");
+			//Existe contacto
+			//Lo comentado de abajo, era para que el usuario no pueda editar contacto
+			//Contacto contacto = contactoRepository.findById(id).orElseThrow(
+	        //        () -> new ResourceNotFoundException("Contacto", "id", id));
+			PersonaFisica newModel = new PersonaFisica(payload);
+			//newModel.setContacto(contacto);//No permito que se edite el contacto
+			return personaFisicaRepository.save(newModel).toPayload();
+		}
+		else {
+			return personaFisicaRepository.save(new PersonaFisica(payload)).toPayload();
+		}
 	}
 	
 	public void bajaPersonaFisica(Long id) {
@@ -98,6 +131,21 @@ public class PersonaFisicaService {
 	
 	public boolean existePersonaFisicaPorIdContacto(Long id) {
 		return personaFisicaRepository.existsByContacto_Id(id);
+	}
+	
+	public ResponseEntity<?> buscarContactoSiExiste(Long id) {
+		boolean existePersona = personaFisicaRepository.existsByContacto_Id(id);
+		if(existePersona)
+			throw new BadRequestException("Ya existe Persona con ID '" + id.toString() + "' cargado. "
+					+ "Es posible que sea otro número o quiera ir a la pantalla de modificar.");
+		return ResponseEntity.ok(contactoService.getContactoById(id));//Devuelve no ok si no hay contacto cargado
+		
+		
+			//return ResponseEntity.ok(getPersonaFisicaByIdContacto(id));
+		//boolean existeContacto = contactoRepository.existsById(id);
+		//if(existeContacto)
+			//return ResponseEntity.ok(contactoService.getContactoById(id));
+		//return ResponseEntity.notFound().build();
 	}
 	
 	

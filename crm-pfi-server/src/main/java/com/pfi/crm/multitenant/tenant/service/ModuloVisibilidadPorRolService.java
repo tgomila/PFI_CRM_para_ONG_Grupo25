@@ -257,6 +257,7 @@ public class ModuloVisibilidadPorRolService {
 		moduloTipos.add(new ModuloVisibilidadPorRolTipo(ModuloEnum.CONTACTO, ModuloTipoVisibilidadEnum.SOLO_VISTA));
 		moduloTipos.add(new ModuloVisibilidadPorRolTipo(ModuloEnum.PERSONA, ModuloTipoVisibilidadEnum.SOLO_VISTA));
 		moduloTipos.add(new ModuloVisibilidadPorRolTipo(ModuloEnum.BENEFICIARIO, ModuloTipoVisibilidadEnum.SOLO_VISTA));
+		moduloTipos.add(new ModuloVisibilidadPorRolTipo(ModuloEnum.VOLUNTARIO, ModuloTipoVisibilidadEnum.SOLO_VISTA));
 		moduloTipos.forEach(m -> m.setTipoVisibilidad(ModuloTipoVisibilidadEnum.SOLO_VISTA));
 		return moduloTipos;
 	}

@@ -10,7 +10,7 @@ import javax.persistence.OrderBy;
 @MappedSuperclass
 public abstract class ContactoAbstract {
 	
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne(cascade = CascadeType.MERGE)
 	@OrderBy("nombreDescripcion ASC")
 	private Contacto contacto;
 

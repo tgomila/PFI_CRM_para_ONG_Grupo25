@@ -1,6 +1,5 @@
 package com.pfi.crm.multitenant.tenant.service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -10,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import com.pfi.crm.exception.AppException;
 import com.pfi.crm.exception.BadRequestException;
 import com.pfi.crm.exception.ResourceNotFoundException;
 import com.pfi.crm.multitenant.tenant.model.Contacto;
@@ -72,18 +72,15 @@ public class DonacionService  {
 	}
 	
 	public void bajaDonacionesPorContacto(Long id) {
-		Contacto contacto = contactoRepository.findById(id).orElseThrow(
-				() -> new ResourceNotFoundException("Contacto", "id", id));
-		List<Donacion> donaciones = donacionRepository.findAll();
-		List<Donacion> donacionesAModificar = new ArrayList<Donacion>();
-		for(Donacion donacion: donaciones) {
-			if(donacion.getDonante().equals(contacto)) {
-				donacion.setDonante(null);
-				donacionesAModificar.add(donacion);
-			}
+		List<Donacion> donacionesAModificar = donacionRepository.findByDonante_Id(id);
+		if(!donacionesAModificar.isEmpty()) {
+			donacionesAModificar.forEach((donacion) -> donacion.setDonante(null));
+			donacionesAModificar = donacionRepository.saveAll(donacionesAModificar);
+			donacionRepository.deleteAll(donacionesAModificar);
 		}
-		if(!donacionesAModificar.isEmpty())
-			donacionRepository.saveAll(donacionesAModificar);
+		else {
+			throw new AppException("No existen donantes con Contacto ID: " + id + " para dar de baja.");
+		}
 		
 	}
 	

@@ -10,7 +10,7 @@ import javax.persistence.MappedSuperclass;
 public abstract class PersonaFisicaAbstract /*extends ContactoAbstract*/{
 	
 	
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne(cascade = CascadeType.MERGE)
 	private PersonaFisica personaFisica;
 	
 	

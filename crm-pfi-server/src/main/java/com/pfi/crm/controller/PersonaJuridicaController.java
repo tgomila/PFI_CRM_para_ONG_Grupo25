@@ -1,5 +1,6 @@
 package com.pfi.crm.controller;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -59,6 +60,38 @@ public class PersonaJuridicaController {
 	@GetMapping({"/nombres_tabla"})
 	public LinkedHashMap<String, String> getNombresTabla() {
 		return new PersonaJuridicaNombreTablaPayload().getNombresPersonaJuridicaTabla();
+	}
+	
+	//Clase temporal
+	class TipoPayload {
+		String value;
+		String label;
+		public TipoPayload(String value, String label) {
+			this.value = value;
+			this.label = label;
+		}
+		public String getValue() {
+			return value;
+		}
+		public void setValue(String value) {
+			this.value = value;
+		}
+		public String getLabel() {
+			return label;
+		}
+		public void setLabel(String label) {
+			this.label = label;
+		}
+		
+	}
+	@GetMapping({"/enum/tipo_persona_puridica"})
+	public List<TipoPayload> getTipoPersonaJuridicaEnum() {
+		TipoPersonaJuridica allTipos[] = TipoPersonaJuridica.values();
+		List<TipoPayload> allTiposPayload = new ArrayList<TipoPayload>();
+		for(int i=0; i < allTipos.length; i++) {
+			allTiposPayload.add(new TipoPayload(allTipos[i].toString(), allTipos[i].getName()));
+		}
+		return allTiposPayload;
 	}
 	
 	

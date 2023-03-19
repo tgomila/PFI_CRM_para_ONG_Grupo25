@@ -1,7 +1,8 @@
 package com.pfi.crm.multitenant.tenant.service;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,53 +35,60 @@ public class UserService {
                 () -> new ResourceNotFoundException("User", "id", id));
     }
 	
+	public User getUserByUsername(@PathVariable String username) {
+		return userRepository.findByUsername(username).orElseThrow(
+                () -> new ResourceNotFoundException("User", "username", username));
+    }
+	
 	public List<User> getUsers() {
 		return userRepository.findAll();
 		//return userRepository.findAll().filter(a -> a.isActive()).collect(Collectors.toList());
     }
 	
 	public User altaUsuario (User user) {
-		user.setId(null);
+		user.setId(null);//Para no modificar nada
+		//Si hay contacto precargado, lo asocio sin modificar contacto. Si no hay id, lo creo
+		if(user.getContacto() != null && user.getContacto().getId() != null) {
+			Contacto contactoAsociar = contactoRepository.findById(user.getContacto().getId()).orElseThrow(
+	                () -> new ResourceNotFoundException("Contacto", "id", user.getContacto().getId()));
+			user.setContacto(contactoAsociar);
+		}
+		//Me aseguro su ID bien asociado. 
+		Set<Role> rolesDBAgregar = new HashSet<Role>();
+		user.getRoles().forEach((role) -> rolesDBAgregar.add(buscarRole(role.getRoleName())));
+		user.setRoles(rolesDBAgregar);
 		return userRepository.save(user);
 	}
 	
-	public User agregarRol(String username, RoleName rol) {
-		User user = userRepository.findByUsername(username).get();
-		Role newUserRole = roleRepository.findByRoleName(rol)
-                .orElseThrow(() -> new AppException("User Role not set."));
-		if(user == null)
-			return null;
-		if(newUserRole == null)
-			return user;//sin nuevo rol
+	public User agregarRol(String username, RoleName roleName) {
+		User user = getUserByUsername(username);
+		Role newUserRole = buscarRole(roleName);
 		user.agregarRol(newUserRole);
 		return userRepository.save(user);
 	}
 	
-	public User quitarRol(String username, RoleName rol) {
-		User user = userRepository.findByUsername(username).get();
-		Role newUserRole = roleRepository.findByRoleName(rol)
-                .orElseThrow(() -> new AppException("User Role not set."));
-		if(user == null)
-			return null;
-		if(newUserRole == null)
-			return user;//sin nuevo rol
+	private Role buscarRole(RoleName roleName) {
+		return roleRepository.findByRoleName(roleName).orElseThrow(
+                () -> new ResourceNotFoundException("Role", "roleName", roleName.toString()));
+	}
+	
+	public User quitarRol(String username, RoleName roleName) {
+		User user = getUserByUsername(username);
+		Role newUserRole = buscarRole(roleName);
 		user.quitarRol(newUserRole);
 		return userRepository.save(user);
 	}
 	
 	public void bajaUsuariosPorContacto(Long id) {
-		Contacto contacto = contactoRepository.findById(id).orElseThrow(
-				() -> new ResourceNotFoundException("Contacto", "id", id));
-		List<User> usuarios = userRepository.findAll();
-		List<User> usuariosAModificar = new ArrayList<User>();
-		for(User usuario: usuarios) {
-			if(usuario.getContacto().equals(contacto)) {
-				usuario.setContacto(null);
-				usuariosAModificar.add(usuario);
-			}
+		List<User> usuariosAModificar = userRepository.findByContacto_Id(id);
+		if(!usuariosAModificar.isEmpty()) {
+			usuariosAModificar.forEach((user) -> user.setContacto(null));
+			usuariosAModificar = userRepository.saveAll(usuariosAModificar);
+			userRepository.deleteAll(usuariosAModificar);
 		}
-		if(!usuariosAModificar.isEmpty())
-			userRepository.saveAll(usuariosAModificar);
+		else {
+			throw new AppException("No existen usuarios con Contacto ID: " + id + " para dar de baja.");
+		}
 		
 	}
 	

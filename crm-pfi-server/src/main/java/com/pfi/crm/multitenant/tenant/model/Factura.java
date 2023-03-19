@@ -19,7 +19,6 @@ import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
 import com.pfi.crm.multitenant.tenant.model.audit.UserDateAudit;
-import com.pfi.crm.multitenant.tenant.payload.FacturaItemPayload;
 import com.pfi.crm.multitenant.tenant.payload.FacturaPayload;
 
 @Entity
@@ -44,7 +43,7 @@ public class Factura extends UserDateAudit {
 	@ManyToOne(fetch=FetchType.EAGER, cascade = CascadeType.MERGE)
 	private Contacto emisorFactura;
 	
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval=true)
+	@OneToMany(cascade = { CascadeType.REMOVE, CascadeType.MERGE }, orphanRemoval=true)
 	@LazyCollection(LazyCollectionOption.FALSE)
 	private List<FacturaItem> itemsFactura;
 	
@@ -56,9 +55,7 @@ public class Factura extends UserDateAudit {
 		this.id = p.getId();
 		modificar(p, cliente, emisorFactura, null);
 		itemsFactura = new ArrayList<FacturaItem>();
-		for(FacturaItemPayload item:  p.getItemsFactura()) {
-			itemsFactura.add(new FacturaItem(item));
-		}
+		p.getItemsFactura().forEach((item) -> itemsFactura.add(new FacturaItem(item)));
 	}
 	
 	public void modificar(FacturaPayload p, Contacto cliente, Contacto emisorFactura, List<FacturaItem> itemsFactura) {
@@ -124,10 +121,7 @@ public class Factura extends UserDateAudit {
 			p.setCliente(cliente.toPayload());
 		if(p.getEmisorFactura() != null)
 			p.setEmisorFactura(emisorFactura.toPayload());
-		itemsFactura = new ArrayList<FacturaItem>();
-		for(FacturaItem item:  itemsFactura) {
-			p.agregarItemFactura(item.toPayload());
-		}
+		itemsFactura.forEach((item) -> p.agregarItemFactura(item.toPayload()));
 		
 		return p;
 	}

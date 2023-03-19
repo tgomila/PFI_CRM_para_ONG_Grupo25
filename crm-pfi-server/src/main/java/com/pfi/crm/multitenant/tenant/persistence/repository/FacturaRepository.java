@@ -14,6 +14,8 @@ public interface FacturaRepository extends JpaRepository<Factura, Long> {
 	List<Factura> findByCliente_Cuit(String cuit);
 	List<Factura> findByCliente_Email(String email);
 	
+	List<Factura> findByEmisorFactura_Id(Long id);
+	
 	Boolean existsByCliente_Id(Long id);
     Boolean existsByCliente_Cuit(String cuit);
     Boolean existsByCliente_Email(String email);
