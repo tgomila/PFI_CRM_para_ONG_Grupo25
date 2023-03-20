@@ -3,6 +3,9 @@ import logo from "./logo.svg";
 import "./App.css";
 import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import TablasDinamicas from "./components/tables/TablasDinamicas";
+import TablaActividad from "./components/tables/TablaActividad";
+import RealizarPago from "./components/RealizarPago";
+
 import TablaContacto from "./components/tables/TablaContacto";
 import FooterComponent from "./components/FooterComponent";
 
@@ -214,7 +217,7 @@ const App = () => {
             <Route path="/personajuridica" element={<TablasDinamicas redireccionamiento='personajuridica' />} />
             <Route path="/profesional" element={<TablasDinamicas redireccionamiento='profesional' />} />
             <Route path="/users" element={<TablasDinamicas redireccionamiento='users' />} />
-            <Route path="/actividad" element={<TablasDinamicas redireccionamiento='actividad' />} />
+            <Route path="/actividad" element={<TablaActividad redireccionamiento='actividad' />} />
             <Route path="/programadeactividades" element={<TablasDinamicas redireccionamiento='programadeactividades' />} />
             <Route path="/producto" element={<TablasDinamicas redireccionamiento='producto' />} />
             <Route path="/donacion" element={<TablasDinamicas redireccionamiento='donacion' />} />
@@ -247,6 +250,10 @@ const App = () => {
             <Route path="/prestamo/create" element={<CreateEmployeeComponent />} />
             <Route path="/proyecto/create" element={<CreateEmployeeComponent />} />
             <Route path="/chat/create" element={<CreateEmployeeComponent />} />
+            <Route path="/realizarpago/mes/actividad" element={<RealizarPago   moduloAPagar='mes/ACTIVIDAD' />} />
+            <Route path="/realizarpago/año/actividad" element={<RealizarPago  moduloAPagar='ACTIVIDAD' tiempoContratado='anio'/>} />
+            <Route path="/realizarpago/mes/factura" element={<RealizarPago moduloAPagar='FACTURA' tiempoContratado='mes'/>} />
+            <Route path="/realizarpago/año/factura" element={<RealizarPago moduloAPagar='FACTURA' tiempoContratado='anio'/>} />
             
 
 
