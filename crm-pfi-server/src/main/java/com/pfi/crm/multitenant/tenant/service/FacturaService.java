@@ -14,24 +14,29 @@ import com.pfi.crm.exception.ResourceNotFoundException;
 import com.pfi.crm.multitenant.tenant.model.Contacto;
 import com.pfi.crm.multitenant.tenant.model.Factura;
 import com.pfi.crm.multitenant.tenant.payload.FacturaPayload;
-import com.pfi.crm.multitenant.tenant.persistence.repository.ContactoRepository;
 import com.pfi.crm.multitenant.tenant.persistence.repository.FacturaRepository;
 
 @Service
 public class FacturaService {
 	@Autowired
 	private FacturaRepository facturaRepository;
-
+	
 	@Autowired
-	private ContactoRepository contactoRepository;
+	private ContactoService contactoService;
 	
 	@SuppressWarnings("unused")
 	private static final Logger logger = LoggerFactory.getLogger(FacturaService.class);
 	
 
 	public FacturaPayload getFacturaById(@PathVariable Long id) {
+        return this.getFacturaModelById(id).toPayload();
+    }
+	
+	public Factura getFacturaModelById(Long id) {
+		if(id == null)
+			throw new BadRequestException("Ha introducido un 'null' para buscar, por favor ingrese un número válido.");
         return facturaRepository.findById(id).orElseThrow(
-                () -> new ResourceNotFoundException("Factura", "id", id)).toPayload();
+                () -> new ResourceNotFoundException("Factura", "id", id));
     }
 	
 	public List<FacturaPayload> getFacturas() {
@@ -39,19 +44,24 @@ public class FacturaService {
     }
 	
 	public FacturaPayload altaFactura (FacturaPayload payload) {
+		if(payload == null)
+			throw new BadRequestException("Ha introducido un null para dar de alta. Verifique el dato introducido.");
 		if(payload != null && payload.getId() != null)
 			throw new BadRequestException("Ha introducido ID de factura: " + payload.getId() + ". ¿No querrá decir modificar en vez de alta?");
 		return altaModificarFactura(payload);
 	}
 	
 	public void bajaFactura(Long id) {
+		if(id == null)
+			throw new BadRequestException("Ha introducido un 'null' como id a dar de baja, por favor ingrese un número válido.");
 		
 		//Si Optional es null o no, lo conocemos con ".isPresent()".		
-		Factura m = facturaRepository.findById(id).orElseThrow(
-                () -> new ResourceNotFoundException("Factura", "id", id));
-		m.setCliente(null);
-		m.setEmisorFactura(null);
-		facturaRepository.save(m);
+		Factura m = this.getFacturaModelById(id);
+		if(m.getCliente() != null || m.getEmisorFactura() !=  null) {
+			m.setCliente(null);
+			m.setEmisorFactura(null);
+			m = facturaRepository.save(m);
+		}
 		facturaRepository.delete(m);	//Temporalmente se elimina de la BD
 		
 	}
@@ -110,26 +120,9 @@ public class FacturaService {
 	
 	private FacturaPayload altaModificarFactura(FacturaPayload payload) {
 		//Primero evito modificar el contacto, sino lo creo
-		Contacto cliente = null;
-		if(payload.getCliente() != null) {
-			if(payload.getCliente().getId() != null) {
-				cliente = contactoRepository.findById(payload.getCliente().getId()).orElseThrow(
-					() -> new ResourceNotFoundException("Contacto", "id", payload.getCliente().getId()));
-			}
-			else {
-				cliente = new Contacto(payload.getCliente());
-			}
-		}
-		Contacto emisorFactura = null;
-		if(payload.getEmisorFactura() != null) {
-			if(payload.getCliente().getId() != null) {
-				emisorFactura = contactoRepository.findById(payload.getEmisorFactura().getId()).orElseThrow(
-					() -> new ResourceNotFoundException("Contacto", "id", payload.getCliente().getId()));
-			}
-			else {
-				emisorFactura = new Contacto(payload.getEmisorFactura());
-			}
-		}
+		Contacto cliente = contactoService.buscarOAlta(payload.getCliente());
+		Contacto emisorFactura = contactoService.buscarOAlta(payload.getEmisorFactura());
+		
 		Factura factura = new Factura(payload, cliente, emisorFactura);
 		factura.setId(payload.getId());//Por si es "Modificar", si es alta solo seteo un null.
 		return facturaRepository.save(factura).toPayload();
@@ -137,6 +130,8 @@ public class FacturaService {
 	}
 	
 	public void quitarContactoDeSusFacturas(Long idContacto) {
+		if(idContacto == null)
+			throw new BadRequestException("Ha introducido un id='null' para buscar, por favor ingrese un número válido.");
 		List<Factura> facturasCliente = facturaRepository.findByCliente_Id(idContacto);
 		if(!facturasCliente.isEmpty()) {
 			facturasCliente.forEach((factura) -> factura.setCliente(null));
@@ -150,6 +145,8 @@ public class FacturaService {
 	}
 	
 	public boolean existeFacturaPorIdContacto(Long id) {
+		if(id == null)
+			throw new BadRequestException("Ha introducido un id='null' para buscar, por favor ingrese un número válido.");
 		return facturaRepository.existsByCliente_Id(id);
 	}
 }

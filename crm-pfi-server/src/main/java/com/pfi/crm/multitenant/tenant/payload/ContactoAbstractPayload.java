@@ -29,7 +29,7 @@ public abstract class ContactoAbstractPayload {
 	
 	public ContactoAbstractPayload modificarContacto(ContactoAbstractPayload ap) {
 		// Contacto
-		//this.setId(p.getId());
+		this.setId(ap.getId());
 		//this.setEstadoActivoContacto(true);
 		//this.setFechaAltaContacto(LocalDate.now());
 		//this.setFechaBajaContacto(null);
@@ -43,7 +43,14 @@ public abstract class ContactoAbstractPayload {
 		return this;
 	}
 	
+	public ContactoPayload toContactoPayload() {
+		ContactoPayload payload = new ContactoPayload();
+		payload.modificarContacto(this);
+		return payload;
+	}
 	
+	
+	//Getters and Setters
 	public Long getId() {
 		return id;
 	}

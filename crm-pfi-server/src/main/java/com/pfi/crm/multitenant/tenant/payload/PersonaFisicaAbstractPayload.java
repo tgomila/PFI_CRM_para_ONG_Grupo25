@@ -19,10 +19,25 @@ public class PersonaFisicaAbstractPayload extends ContactoAbstractPayload{
 	private String apellido;
 	
 	private LocalDate fechaNacimiento;
-
-
-
-
+	
+	
+	public PersonaFisicaAbstractPayload modificarPersonaFisica(PersonaFisicaAbstractPayload payload) {
+		this.modificarContacto(payload);
+		this.setDni(payload.getDni());
+		this.setNombre(payload.getNombre());
+		this.setApellido(payload.getApellido());
+		this.setFechaNacimiento(payload.getFechaNacimiento());
+		return this;
+	}
+	
+	public PersonaFisicaPayload toPersonaFisicaPayload() {
+		PersonaFisicaPayload payload = new PersonaFisicaPayload();
+		payload.modificarPersonaFisica(this);
+		return payload;
+	}
+	
+	
+	//Getters and Setters
 	public int getDni() {
 		return dni;
 	}

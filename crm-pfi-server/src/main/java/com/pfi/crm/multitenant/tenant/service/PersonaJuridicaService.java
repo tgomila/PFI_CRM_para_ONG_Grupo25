@@ -1,17 +1,17 @@
 package com.pfi.crm.multitenant.tenant.service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import com.pfi.crm.exception.BadRequestException;
 import com.pfi.crm.exception.ResourceNotFoundException;
+import com.pfi.crm.multitenant.tenant.model.Contacto;
 import com.pfi.crm.multitenant.tenant.model.PersonaJuridica;
 import com.pfi.crm.multitenant.tenant.payload.PersonaJuridicaPayload;
-import com.pfi.crm.multitenant.tenant.persistence.repository.PersonaFisicaRepository;
 import com.pfi.crm.multitenant.tenant.persistence.repository.PersonaJuridicaRepository;
 
 @Service
@@ -21,14 +21,18 @@ public class PersonaJuridicaService {
 	private PersonaJuridicaRepository personaJuridicaRepository;
 	
 	@Autowired
-	private PersonaFisicaRepository personaFisicaRepository;
+	private ContactoService contactoService;
 	
 	//@Autowired
 	//private PersonaJuridicaService personaJuridicaService;
 	
 	public PersonaJuridicaPayload getPersonaJuridicaByIdContacto(@PathVariable Long id) {
+        return this.getPersonaJuridicaModelByIdContacto(id).toPayload();
+    }
+	
+	public PersonaJuridica getPersonaJuridicaModelByIdContacto(Long id) {
         return personaJuridicaRepository.findByContacto_Id(id).orElseThrow(
-                () -> new ResourceNotFoundException("PersonaJuridica", "id", id)).toPayload();
+                () -> new ResourceNotFoundException("PersonaJuridica", "id", id));
     }
 	
 	public List<PersonaJuridicaPayload> getPersonasJuridicas() {
@@ -37,88 +41,87 @@ public class PersonaJuridicaService {
     }
 	
 	public PersonaJuridicaPayload altaPersonaJuridica (PersonaJuridicaPayload payload) {
-		payload.setId(null);
-		return personaJuridicaRepository.save(new PersonaJuridica(payload)).toPayload();
+		return this.altaPersonaJuridicaModel(payload).toPayload();
 	}
 	
-	public void bajaPersonaJuridica(Long id) {
+	public PersonaJuridica altaPersonaJuridicaModel (PersonaJuridicaPayload payload) {
+		if(payload == null)
+			throw new BadRequestException("Ha introducido un null como personaJuridica a dar de alta, por favor ingrese datos de una personaJuridica.");
 		
-		//Si Optional es null o no, lo conocemos con ".isPresent()".		
-		Optional<PersonaJuridica> optionalModel = personaJuridicaRepository.findByContacto_Id(id);
-		if(optionalModel.isPresent()) {
-			PersonaJuridica m = optionalModel.get();
-			m.setEstadoActivoPersonaJuridica(false);
-			if(!personaFisicaRepository.existsByContacto_Id(id))
-				m.setEstadoActivoContacto(false);
-			personaJuridicaRepository.save(m);
-			//personaJuridicaRepository.delete(m);											//Temporalmente se elimina de la BD			
+		if(payload.getId() != null) { //Si existe ID contacto asociado de alta:
+			// 1) No permito modificar, solo alta si no existe.
+			Long id = payload.getId();
+			boolean existePersonaJuridica = this.existePersonaJuridicaPorIdContacto(id);
+			if(existePersonaJuridica)
+				throw new BadRequestException("Ya existe PersonaJuridica con ID '" + id.toString() + "' cargado. "
+						+ "Es posible que sea otro número o quiera ir a la pantalla de modificar.");
 		}
-		else {
-			//No existe persona juridica
-		}
+		// 2) Buscar/Crear Contacto y asociarlo. Si hay ID Contacto y no existe en BD, se vuelve sin dar de alta.
+		Contacto contacto = contactoService.altaModificarContactoModel(payload);
+		// 3) Alta PersonaJuridica
+		PersonaJuridica personaJuridica = new PersonaJuridica(payload);
+		personaJuridica.setContacto(contacto);
+		// 4) Alta PersonaJuridica
+		return personaJuridicaRepository.save(personaJuridica);
+	}
+	
+	/**
+	 * Este método sirve para services superiores. No controllers.
+	 * @param payload a modificar/alta.
+	 * @return Model modificado/creado en BD.
+	 */
+	public PersonaJuridica altaModificarPersonaJuridicaModel(PersonaJuridicaPayload payload) {
+		if(payload == null)
+			throw new BadRequestException("Ha introducido un null como personaJuridica a dar de alta/modificar, por favor ingrese datos de una personaJuridica.");
 		
+		if(payload.getId() != null) { //Si existe ID contacto asociado de alta:
+			boolean existePersonaJuridica = personaJuridicaRepository.existsByContacto_Id(payload.getId());
+			if(existePersonaJuridica)
+				return this.modificarPersonaJuridicaModel(payload);
+		}
+		//Existe o no persona
+		return altaPersonaJuridicaModel(payload);
+	}
+	
+	public String bajaPersonaJuridica(Long id) {
+		if(id == null)
+			throw new BadRequestException("Ha introducido un id='null' a dar de baja, por favor ingrese un número válido.");
+		
+		String message = "Se ha dado de baja a Persona Jurídica";
+		PersonaJuridica model = this.getPersonaJuridicaModelByIdContacto(id);
+		model.setEstadoActivoPersonaJuridica(false);
+		model.setContacto(null);
+		model = personaJuridicaRepository.save(model);
+		personaJuridicaRepository.delete(model);	//Temporalmente se elimina de la BD
+		return message;
+	}
+	
+	/**
+	 * 
+	 * @param id
+	 * @return String con mensaje de si se dió de baja. O string vacío si no existe y no se dió de baja.
+	 */
+	public String bajaPersonaJuridicaSiExiste(Long id) {
+		if(existePersonaJuridicaPorIdContacto(id))
+			return bajaPersonaJuridica(id);
+		return "";
 	}
 	
 	public PersonaJuridicaPayload modificarPersonaJuridica(PersonaJuridicaPayload payload) {
+		return this.modificarPersonaJuridicaModel(payload).toPayload();
+	}
+	
+	public PersonaJuridica modificarPersonaJuridicaModel(PersonaJuridicaPayload payload) {
 		if (payload != null && payload.getId() != null) {
 			//Necesito el id de persona juridica o se crearia uno nuevo
-			Optional<PersonaJuridica> optional = personaJuridicaRepository.findByContacto_Id(payload.getId());
-			if(optional.isPresent()) {   //Si existe
-				PersonaJuridica model = optional.get();
-				model.modificar(payload);
-				return personaJuridicaRepository.save(model).toPayload();				
-			}
-			//si llegue aca devuelvo null
+			PersonaJuridica model = this.getPersonaJuridicaModelByIdContacto(payload.getId());
+			model.modificar(payload);
+			return personaJuridicaRepository.save(model);	
 		}
-		return null;
+		throw new BadRequestException("No se puede modificar Persona Jurídica sin ID");
 	}
 	
-	
-	
-	//Conversiones Payload Model
-	/*public PersonaJuridica toModel (PersonaJuridicaPayload p) {
-		
-		PersonaJuridica m = new PersonaJuridica();
-		
-		//Contacto		
-		m.setId(p.getId());
-		m.setEstadoActivoContacto(true);
-		m.setFechaAltaContacto(LocalDate.now());
-		m.setFechaBajaContacto(null);
-		m.setNombreDescripcion(p.getNombreDescripcion());
-		m.setCuit(p.getCuit());
-		m.setDomicilio(p.getDomicilio());
-		m.setEmail(p.getEmail());
-		m.setTelefono(p.getTelefono());
-		//Fin Contacto
-		
-		//PersonaJuridica
-		m.setIdPersonaJuridica(null);
-		m.setInternoTelefono(p.getInternoTelefono());
-		m.setTipoPersonaJuridica(p.getTipoPersonaJuridica());
-		//Fin PersonaJuridica
-		
-		return m;
+	public boolean existePersonaJuridicaPorIdContacto(Long id) {
+		return personaJuridicaRepository.existsByContacto_Id(id);
 	}
-	
-	public PersonaJuridicaPayload toPayload(PersonaJuridica m) {
-		
-		PersonaJuridicaPayload p = new PersonaJuridicaPayload();
-		
-		//Contacto		
-		p.setId(m.getId());
-		p.setNombreDescripcion(m.getNombreDescripcion());
-		p.setCuit(m.getCuit());
-		p.setDomicilio(m.getDomicilio());
-		p.setEmail(m.getEmail());
-		p.setTelefono(m.getTelefono());
-		//Fin Contacto
-		
-		//PersonaJuridica
-		p.setInternoTelefono(p.getInternoTelefono());
-		p.setTipoPersonaJuridica(p.getTipoPersonaJuridica());
-		//Fin PersonaJuridica
-		
-		return p;
-	}*/
 }

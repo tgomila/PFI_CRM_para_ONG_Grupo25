@@ -1,7 +1,5 @@
 package com.pfi.crm.multitenant.tenant.model;
 
-import java.time.LocalDate;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -17,50 +15,30 @@ public class Voluntario extends PersonaFisicaAbstract {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long idVoluntario;
-	private boolean estadoActivoVoluntario;
+	private boolean estadoActivoVoluntario = true;
 	
 	//Constructores
 	public Voluntario() {
 		super();
-		this.setFechaAltaContacto(LocalDate.now());
-		this.setEstadoActivoPersonaFisica(true);
+		this.setIdVoluntario(null);
 		this.setEstadoActivoVoluntario(true);
-	}
-
-	public Voluntario(Long idVoluntario) {
-		super();
-		this.setFechaAltaContacto(LocalDate.now());
-		this.setEstadoActivoPersonaFisica(true);
-		this.setEstadoActivoVoluntario(true);
-		this.idVoluntario = idVoluntario;
 	}
 	
-	public Voluntario(VoluntarioPayload p) {
+	public Voluntario(VoluntarioPayload payload) {
 		super();
-		// Contacto
-		this.setId(p.getId());
-		this.setEstadoActivoContacto(true);
-		this.setFechaAltaContacto(LocalDate.now());
-		this.setFechaBajaContacto(null);
-		this.setNombreDescripcion(p.getNombreDescripcion());
-		this.setCuit(p.getCuit());
-		this.setDomicilio(p.getDomicilio());
-		this.setEmail(p.getEmail());
-		this.setTelefono(p.getTelefono());
-		// Fin Contacto
-
-		// Persona Fisica
-		this.setIdPersonaFisica(null);
-		this.setDni(p.getDni());
-		this.setNombre(p.getNombre());
-		this.setApellido(p.getApellido());
-		this.setFechaNacimiento(p.getFechaNacimiento());
-		this.setEstadoActivoPersonaFisica(true);
-		// Fin Persona Fisica
-		
-		// Voluntario
+		this.modificar(payload);
+		this.setIdVoluntario(null);
 		this.setEstadoActivoVoluntario(true);
-		// Fin Voluntario
+	}
+	
+	public void modificar(VoluntarioPayload payload) {
+		this.modificarPersonaFisica(payload);
+	}
+	
+	public VoluntarioPayload toPayload() {
+		VoluntarioPayload payload = new VoluntarioPayload();
+		payload.modificarPersonaFisica(this.toPersonaFisicaPayload());
+		return payload;
 	}
 	
 	
@@ -80,63 +58,4 @@ public class Voluntario extends PersonaFisicaAbstract {
 	public void setEstadoActivoVoluntario(boolean estadoActivoVoluntario) {
 		this.estadoActivoVoluntario = estadoActivoVoluntario;
 	}
-	
-	
-	
-	
-
-	public VoluntarioPayload toPayload() {
-		VoluntarioPayload p = new VoluntarioPayload();
-		
-		// Contacto
-		p.setId(this.getId());
-		p.setNombreDescripcion(this.getNombreDescripcion());
-		p.setCuit(this.getCuit());
-		p.setDomicilio(this.getDomicilio());
-		p.setEmail(this.getEmail());
-		p.setTelefono(this.getTelefono());
-		// Fin Contacto
-		
-		// Persona Fisica
-			// p.setIdPersonaFisica(null);
-		p.setDni(this.getDni());
-		p.setNombre(this.getNombre());
-		p.setApellido(this.getApellido());
-		p.setFechaNacimiento(this.getFechaNacimiento());
-		//p.setEstadoActivoPersonaFisica(this.getEstadoActivoPersonaFisica());
-		// Fin Persona Fisica
-		
-		// Voluntario
-		//p.setEstadoActivoVoluntario(this.getEstadoActivoVoluntario());
-		// Fin Voluntario
-		
-		return p;
-	}
-	
-	public void modificar(VoluntarioPayload p) {
-		
-		// Contacto
-		//this.setId(p.getId());
-		//this.setEstadoActivoContacto(true);
-		//this.setFechaAltaContacto(LocalDate.now());
-		//this.setFechaBajaContacto(null);
-		this.setNombreDescripcion(p.getNombreDescripcion());
-		this.setCuit(p.getCuit());
-		this.setDomicilio(p.getDomicilio());
-		this.setEmail(p.getEmail());
-		this.setTelefono(p.getTelefono());
-		// Fin Contacto
-		
-		// Persona Fisica
-		this.setDni(p.getDni());
-		this.setNombre(p.getNombre());
-		this.setApellido(p.getApellido());
-		this.setFechaNacimiento(p.getFechaNacimiento());
-		//this.setEstadoActivoVoluntario(true);
-		// Fin Persona Fisica
-		
-		// Voluntario
-		// Fin Voluntario
-	}
-	
 }

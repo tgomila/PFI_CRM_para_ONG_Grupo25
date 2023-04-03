@@ -7,10 +7,13 @@ import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.OrderBy;
 
+import com.pfi.crm.multitenant.tenant.payload.ContactoAbstractPayload;
+import com.pfi.crm.multitenant.tenant.payload.ContactoPayload;
+
 @MappedSuperclass
 public abstract class ContactoAbstract {
 	
-	@ManyToOne(cascade = CascadeType.MERGE)
+	@ManyToOne(cascade = {CascadeType.MERGE} )
 	@OrderBy("nombreDescripcion ASC")
 	private Contacto contacto;
 
@@ -25,6 +28,14 @@ public abstract class ContactoAbstract {
 
 	public void setContacto(Contacto contacto) {
 		this.contacto = contacto;
+	}
+	
+	public ContactoPayload toContactoPayload() {
+		return this.contacto.toPayload();
+	}
+	
+	public void modificarContacto(ContactoAbstractPayload p) {
+		this.contacto.modificar(p);
 	}
 	
 	

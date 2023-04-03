@@ -2,6 +2,8 @@ package com.pfi.crm.multitenant.tenant.model;
 
 import javax.persistence.MappedSuperclass;
 
+import com.pfi.crm.multitenant.tenant.payload.TrabajadorAbstractPayload;
+
 @MappedSuperclass
 public abstract class TrabajadorAbstract extends PersonaFisicaAbstract{
 	
@@ -19,6 +21,18 @@ public abstract class TrabajadorAbstract extends PersonaFisicaAbstract{
 	public TrabajadorAbstract(String datosBancarios) {
 		super();
 		this.datosBancarios = datosBancarios;
+	}
+	
+	public TrabajadorAbstractPayload toTrabajadorAbstractPayload() {
+		TrabajadorAbstractPayload payload = new TrabajadorAbstractPayload();
+		payload.modificarPersonaFisica(toPersonaFisicaPayload());
+		payload.setDatosBancarios(this.getDatosBancarios());
+		return payload;
+	}
+	
+	public void modificarTrabajador(TrabajadorAbstractPayload payload) {
+		this.modificarPersonaFisica(payload);
+		this.setDatosBancarios(payload.getDatosBancarios());
 	}
 		
 	

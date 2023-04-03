@@ -26,9 +26,9 @@ public class Prestamo extends UserDateAudit {
 	private LocalDateTime fechaPrestamoInicio;
 	private LocalDateTime fechaPrestamoFin;
 	private boolean haSidoDevuelto;
-	@ManyToOne(cascade = CascadeType.MERGE)
+	@ManyToOne(cascade = CascadeType.MERGE )
 	private Contacto prestamista; //Quien que se dedica a prestar algo.
-	@ManyToOne(cascade = CascadeType.MERGE)
+	@ManyToOne(cascade = CascadeType.MERGE )
 	private Contacto prestatario; //Quien toma algo a préstamo.
 	
 	public Prestamo() {
@@ -41,11 +41,13 @@ public class Prestamo extends UserDateAudit {
 	public Prestamo(PrestamoPayload p) {
 		super();
 		this.id = p.getId();
-		this.descripcion = p.getDescripcion();
-		this.cantidad = p.getCantidad();
-		this.fechaPrestamoInicio = p.getFechaPrestamoInicio();
-		this.fechaPrestamoFin = p.getFechaPrestamoFin();
-		this.haSidoDevuelto = p.isHaSidoDevuelto();
+		this.modificar(p);
+	}
+	
+	public Prestamo(PrestamoPayload p, Contacto prestamista, Contacto prestatario) {
+		super();
+		this.id = p.getId();
+		this.modificar(p);
 	}
 	
 	/**
@@ -59,14 +61,12 @@ public class Prestamo extends UserDateAudit {
 		this.fechaPrestamoInicio = p.getFechaPrestamoInicio();
 		this.fechaPrestamoFin = p.getFechaPrestamoFin();
 		this.haSidoDevuelto = p.isHaSidoDevuelto();
+		this.prestamista = ((p.getPrestamista() != null) ? new Contacto(p.getPrestamista()) : null);
+		this.prestatario = ((p.getPrestatario() != null) ? new Contacto(p.getPrestatario()) : null);
 	}
 	
 	public void modificar(PrestamoPayload p, Contacto prestamista, Contacto prestatario) {
-		this.id = p.getId();
-		this.descripcion = p.getDescripcion();
-		this.cantidad = p.getCantidad();
-		this.fechaPrestamoInicio = p.getFechaPrestamoInicio();
-		this.fechaPrestamoFin = p.getFechaPrestamoFin();
+		this.modificar(p);
 		this.prestamista = prestamista;
 		this.prestatario = prestatario;
 	}
@@ -79,10 +79,8 @@ public class Prestamo extends UserDateAudit {
 		p.setCantidad(cantidad);
 		p.setFechaPrestamoInicio(fechaPrestamoInicio);
 		p.setFechaPrestamoFin(fechaPrestamoFin);
-		if(prestamista != null)
-			p.setPrestamista(prestamista.toPayload());
-		if(prestatario != null)
-			p.setPrestatario(prestatario.toPayload());
+		p.setPrestamista((this.prestamista != null) ? this.prestamista.toPayload() : null);
+		p.setPrestatario((this.prestatario != null) ? this.prestatario.toPayload() : null);
 		return p;
 	}
 	

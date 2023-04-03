@@ -29,18 +29,22 @@ public class Producto {
 	private boolean estadoActivo;
 	private boolean fragil;
 	
-	@ManyToOne(cascade = CascadeType.MERGE)
+	@ManyToOne(cascade = {CascadeType.MERGE} )
 	@OrderBy("nombreDescripcion ASC")
 	private Contacto proveedor;
 	
 	//Constructores
+	public Producto() {
+		super();
+	}
+	
 	public Producto(ProductoPayload p) {
 		super();
 		this.id = p.getId();
 		this.estadoActivo = true;
 		this.modificar(p);
 	}
-	
+
 	public void modificar(ProductoPayload p) {
 		this.tipo = p.getTipo();
 		this.descripcion = p.getDescripcion();
@@ -49,6 +53,7 @@ public class Producto {
 		this.cantMinimaStock = p.getCantMinimaStock();
 		this.stockActual = p.getStockActual();
 		this.fragil = p.isFragil();
+		this.proveedor = ((p.getProveedor() != null) ? new Contacto(p.getProveedor()) : null);
 	}
 	
 	public ProductoPayload toPayload() {
@@ -62,9 +67,8 @@ public class Producto {
 		p.setCantMinimaStock(cantMinimaStock);
 		p.setStockActual(stockActual);
 		p.setFragil(fragil);
+		p.setProveedor((this.proveedor != null) ? proveedor.toPayload() : null);
 		
-		if(proveedor != null)
-			p.setProveedor(proveedor.toPayload());
 		return p;
 	}
 

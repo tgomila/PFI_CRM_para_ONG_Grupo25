@@ -26,8 +26,12 @@ public class FacturaItemService {
 	
 
 	public FacturaItemPayload getFacturaItemById(@PathVariable Long id) {
+        return this.getFacturaItemModelById(id).toPayload();
+    }
+	
+	public FacturaItem getFacturaItemModelById(@PathVariable Long id) {
         return facturaItemRepository.findById(id).orElseThrow(
-                () -> new ResourceNotFoundException("FacturaItem", "id", id)).toPayload();
+                () -> new ResourceNotFoundException("FacturaItem", "id", id));
     }
 	
 	public List<FacturaItemPayload> getFacturaItems() {
@@ -40,8 +44,7 @@ public class FacturaItemService {
 	}
 	
 	public void bajaFacturaItem(Long id) {
-		FacturaItem m = facturaItemRepository.findById(id).orElseThrow(
-                () -> new ResourceNotFoundException("FacturaItem", "id", id));
+		FacturaItem m = this.getFacturaItemModelById(id);
 		facturaItemRepository.delete(m);	//Temporalmente se elimina de la BD
 		
 	}
@@ -49,8 +52,7 @@ public class FacturaItemService {
 	public FacturaItemPayload modificarFacturaItem(FacturaItemPayload payload) {
 		if (payload != null && payload.getId() != null) {
 			//Necesito el id de Contactos cliente y emisor o se crearia/modificaría un contacto
-			FacturaItem model = facturaItemRepository.findById(payload.getId()).orElseThrow(
-					() -> new ResourceNotFoundException("FacturaItem", "id", payload.getId()));
+			FacturaItem model = this.getFacturaItemModelById(payload.getId());;
 			model.modificar(payload);
 			return facturaItemRepository.save(model).toPayload();	
 		}

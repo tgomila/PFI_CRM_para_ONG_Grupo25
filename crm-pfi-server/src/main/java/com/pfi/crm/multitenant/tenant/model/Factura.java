@@ -36,20 +36,24 @@ public class Factura extends UserDateAudit {
 	
 	private LocalDateTime fecha;
 	
-	@ManyToOne(fetch=FetchType.EAGER, cascade = CascadeType.MERGE)
+	@ManyToOne(fetch=FetchType.EAGER, cascade = {CascadeType.MERGE})
 	@OrderBy("nombreDescripcion ASC")
 	private Contacto cliente;
 	
-	@ManyToOne(fetch=FetchType.EAGER, cascade = CascadeType.MERGE)
+	@ManyToOne(fetch=FetchType.EAGER, cascade = {CascadeType.MERGE})
 	private Contacto emisorFactura;
 	
-	@OneToMany(cascade = { CascadeType.REMOVE, CascadeType.MERGE }, orphanRemoval=true)
+	@OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE}, orphanRemoval=true)
 	@LazyCollection(LazyCollectionOption.FALSE)
-	private List<FacturaItem> itemsFactura;
+	private List<FacturaItem> itemsFactura = new ArrayList<FacturaItem>();
 	
 	
 	
-	
+	public Factura() {
+		super();
+		this.itemsFactura = new ArrayList<FacturaItem>();
+	}
+
 	public Factura(FacturaPayload p, Contacto cliente, Contacto emisorFactura) {
 		super();
 		this.id = p.getId();
@@ -59,10 +63,30 @@ public class Factura extends UserDateAudit {
 	}
 	
 	public void modificar(FacturaPayload p, Contacto cliente, Contacto emisorFactura, List<FacturaItem> itemsFactura) {
+		//this.modificar(p);
 		this.fecha = p.getFecha();
 		this.cliente = cliente;
 		this.emisorFactura = emisorFactura;
-		this.itemsFactura = itemsFactura;
+		this.itemsFactura = (itemsFactura==null ? new ArrayList<FacturaItem>() : itemsFactura);
+	}
+	
+	/**
+	 * Tener cuidado, si es posible que no se use porque seteas models a través de un payload.
+	 * @param p
+	 */
+	public void modificar(FacturaPayload p) {
+		this.fecha = p.getFecha();
+		this.cliente = ((p.getCliente() != null) ? new Contacto(p.getCliente()) : null);
+		this.emisorFactura = ((p.getEmisorFactura() != null) ? new Contacto(p.getEmisorFactura()) : null);
+		
+		this.itemsFactura = new ArrayList<FacturaItem>();
+		if(p.getItemsFactura() != null) {
+			p.getItemsFactura().forEach((item) -> itemsFactura.add(new FacturaItem(item)));
+		}
+	}
+	
+	public void agregarItemFactura(FacturaItem item) {
+		itemsFactura.add(item);
 	}
 
 

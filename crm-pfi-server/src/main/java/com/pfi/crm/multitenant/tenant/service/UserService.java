@@ -1,5 +1,6 @@
 package com.pfi.crm.multitenant.tenant.service;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -9,12 +10,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import com.pfi.crm.exception.AppException;
+import com.pfi.crm.exception.BadRequestException;
 import com.pfi.crm.exception.ResourceNotFoundException;
 import com.pfi.crm.multitenant.tenant.model.Contacto;
 import com.pfi.crm.multitenant.tenant.model.Role;
 import com.pfi.crm.multitenant.tenant.model.RoleName;
 import com.pfi.crm.multitenant.tenant.model.User;
-import com.pfi.crm.multitenant.tenant.persistence.repository.ContactoRepository;
 import com.pfi.crm.multitenant.tenant.persistence.repository.RoleRepository;
 import com.pfi.crm.multitenant.tenant.persistence.repository.UserRepository;
 
@@ -28,7 +29,7 @@ public class UserService {
 	private RoleRepository roleRepository;
 	
 	@Autowired
-	private ContactoRepository contactoRepository;
+	private ContactoService contactoService;
 	
 	public User getUserById(@PathVariable Long id) {
 		return userRepository.findById(id).orElseThrow(
@@ -49,8 +50,7 @@ public class UserService {
 		user.setId(null);//Para no modificar nada
 		//Si hay contacto precargado, lo asocio sin modificar contacto. Si no hay id, lo creo
 		if(user.getContacto() != null && user.getContacto().getId() != null) {
-			Contacto contactoAsociar = contactoRepository.findById(user.getContacto().getId()).orElseThrow(
-	                () -> new ResourceNotFoundException("Contacto", "id", user.getContacto().getId()));
+			Contacto contactoAsociar = contactoService.getContactoModelById(user.getContacto().getId());
 			user.setContacto(contactoAsociar);
 		}
 		//Me aseguro su ID bien asociado. 
@@ -79,17 +79,94 @@ public class UserService {
 		return userRepository.save(user);
 	}
 	
-	public void bajaUsuariosPorContacto(Long id) {
+	public String bajaUsuariosPorContacto(Long id) {
+		if(id == null)
+			throw new BadRequestException("Ha introducido un id='null' a dar de baja, por favor ingrese un número válido.");
 		List<User> usuariosAModificar = userRepository.findByContacto_Id(id);
 		if(!usuariosAModificar.isEmpty()) {
-			usuariosAModificar.forEach((user) -> user.setContacto(null));
+			
+			List<String> usernames = new ArrayList<String>();
+			usuariosAModificar.forEach((user) -> {
+				if(user.getUsername() != null)
+					usernames.add(user.getUsername());
+				user.setContacto(null);
+			});
 			usuariosAModificar = userRepository.saveAll(usuariosAModificar);
 			userRepository.deleteAll(usuariosAModificar);
+			
+			String message = "Se ha dado de baja ";
+			if(usernames.size() > 1) {//Solo para que "usuarioS suene prural.
+				message += "a usuarios con UserName: ";
+				message += usernames.get(0);
+				usernames.remove(0);
+				for(String u: usernames)
+					message += ", "+u;
+			}
+			else if(usernames.size() == 1) {
+				message += "al usuario con UserName: " + usernames.get(0);
+			}
+			else {//size == 0
+				message = "";//No deberia pasar de no encontrar usernames
+			}
+			if(!message.isEmpty())
+				message += " cuyo Contacto ID es: " + id.toString();
+			return message;
 		}
 		else {
 			throw new AppException("No existen usuarios con Contacto ID: " + id + " para dar de baja.");
 		}
 		
+	}
+	
+	/**
+	 * 
+	 * @param id
+	 * @return True si existe y se dió de baja, false si no existe y no se dió de baja.
+	 */
+	public String bajaUsuariosPorContactoSiExiste(Long id) {
+		if(existeUserPorIdContacto(id))
+			return bajaUsuariosPorContacto(id);
+		return "";
+	}
+	
+	public String desasociarContactoDeUsers(Long id) {
+		if(id == null)
+			throw new BadRequestException("Ha introducido un id='null' a desasociar, por favor ingrese un número válido.");
+		List<User> usuariosAModificar = userRepository.findByContacto_Id(id);
+		if(!usuariosAModificar.isEmpty()) {
+			
+			List<String> usernames = new ArrayList<String>();
+			usuariosAModificar.forEach((user) -> {
+				if(user.getUsername() != null)
+					usernames.add(user.getUsername());
+				user.setContacto(null);
+			});
+			usuariosAModificar = userRepository.saveAll(usuariosAModificar);
+			
+			String message = "Se ha desasociado ";
+			if(usernames.size() > 1) {//Solo para que "usuarioS suene prural.
+				message += "a usuarios con UserName: ";
+				message += usernames.get(0);
+				usernames.remove(0);
+				for(String u: usernames)
+					message += ", "+u;
+			}
+			else if(usernames.size() == 1) {
+				message += "al usuario con UserName: " + usernames.get(0);
+			}
+			else {//size == 0
+				message = "";//No deberia pasar de no encontrar usernames
+			}
+			if(!message.isEmpty())
+				message += " del Contacto ID: " + id.toString();
+			return message;
+		}
+		return "";
+		
+	}
+	
+	public boolean existeUserPorIdContacto(Long id) {
+		return userRepository.existsByContacto_Id(id);
 	}
 	
 	

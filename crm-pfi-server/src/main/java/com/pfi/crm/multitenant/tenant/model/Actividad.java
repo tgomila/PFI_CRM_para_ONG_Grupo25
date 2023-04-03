@@ -1,8 +1,9 @@
 package com.pfi.crm.multitenant.tenant.model;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -22,7 +23,7 @@ import com.pfi.crm.multitenant.tenant.payload.ActividadPayload;
 
 @Entity
 @Table(name ="actividad")
-public class Actividad extends UserDateAudit {
+public class Actividad extends UserDateAudit implements Comparable < Actividad > {
 
 	private static final long serialVersionUID = 1L;
 
@@ -40,38 +41,25 @@ public class Actividad extends UserDateAudit {
 	@ManyToMany(cascade = CascadeType.MERGE)//fetch = FetchType.EAGER) //Fue reemplazado el fetch por lazyCollection
 	@LazyCollection(LazyCollectionOption.FALSE)
 	@OrderBy("idBeneficiario ASC")
-	private List<Beneficiario> beneficiarios;
+	private Set<Beneficiario> beneficiarios;
 	
 	@ManyToMany(cascade = CascadeType.MERGE)//fetch = FetchType.EAGER)
 	@LazyCollection(LazyCollectionOption.FALSE)
 	@OrderBy("idProfesional ASC")
-	private List<Profesional> profesionales;
+	private Set<Profesional> profesionales;
 	
-	/*public Actividad() {
+	public Actividad() {
 		super();
 		this.setEstadoActivoActividad(true);
-		beneficiarios = new ArrayList<Beneficiario>();
-		profesionales = new ArrayList<Profesional>();
-	}*/
+		beneficiarios = new HashSet<Beneficiario>();
+		profesionales = new HashSet<Profesional>();
+	}
 	
-	public Actividad(ActividadPayload p, List<Beneficiario> beneficiarios, List<Profesional> profesionales) {
+	public Actividad(ActividadPayload p, Set<Beneficiario> beneficiarios, Set<Profesional> profesionales) {
 		super();
-		if(p.getFechaHoraDesde() == null)
-			new ResourceNotFoundException("Actividad", "fechaDesde", p.getFechaHoraDesde());
-		if(p.getFechaHoraHasta() == null)
-			new ResourceNotFoundException("Actividad", "fechaHasta", p.getFechaHoraHasta());
 		this.id = p.getId();
 		this.estadoActivoActividad = true;
-		this.fechaHoraDesde = p.getFechaHoraDesde();
-		this.fechaHoraHasta = p.getFechaHoraHasta();
-		this.descripcion = p.getDescripcion();
-		this.beneficiarios = new ArrayList<Beneficiario>(beneficiarios);
-		this.profesionales = new ArrayList<Profesional>(profesionales);
-		
-		//beneficiarios = new ArrayList<Beneficiario>();
-		//profesionales = new ArrayList<Profesional>();
-		//p.getBeneficiarios().forEach((b) -> beneficiarios.add(new Beneficiario(b)));
-		//p.getProfesionales().forEach((pr) -> profesionales.add(new Profesional(pr)));
+		this.modificar(p, profesionales, beneficiarios);
 	}
 	
 	/**
@@ -80,7 +68,7 @@ public class Actividad extends UserDateAudit {
 	 * @param profesionales, sacados de la BD.
 	 * @param beneficiarios, sacados de la BD.
 	 */
-	public void modificar(ActividadPayload payload, List<Profesional> profesionales, List<Beneficiario> beneficiarios) {
+	public void modificar(ActividadPayload payload, Set<Profesional> profesionales, Set<Beneficiario> beneficiarios) {
 		if(payload.getFechaHoraDesde() == null)
 			new ResourceNotFoundException("Actividad", "fechaDesde", payload.getFechaHoraDesde());
 		if(payload.getFechaHoraHasta() == null)
@@ -91,7 +79,9 @@ public class Actividad extends UserDateAudit {
 		this.fechaHoraDesde = payload.getFechaHoraDesde();
 		this.fechaHoraHasta = payload.getFechaHoraHasta();
 		this.descripcion = payload.getDescripcion();
-		
+
+		this.beneficiarios = beneficiarios != null ? beneficiarios : new HashSet<Beneficiario>();
+		this.profesionales = profesionales != null ? profesionales : new HashSet<Profesional>();
 	}
 	
 	
@@ -105,6 +95,24 @@ public class Actividad extends UserDateAudit {
 		return p;
 	}
 	
+	
+	//Comparator
+	//@Override
+	//public int compare(Actividad o1, Actividad o2) {
+	//	return o1.getFechaHoraDesde().compareTo(o2.getFechaHoraDesde());
+	//}
+	
+	@Override
+	public int compareTo(Actividad o) {
+		return this.fechaHoraDesde.compareTo(o.getFechaHoraDesde());
+	}
+	
+	public static class LocalDateTimeComparator implements Comparator<Actividad> {
+		@Override
+		public int compare(Actividad o1, Actividad o2) {
+			return o1.getFechaHoraDesde().compareTo(o2.getFechaHoraDesde());
+		}
+	}
 	
 	
 	//Getters and Setters
@@ -148,19 +156,19 @@ public class Actividad extends UserDateAudit {
 		this.descripcion = descripcion;
 	}
 
-	public List<Beneficiario> getBeneficiarios() {
+	public Set<Beneficiario> getBeneficiarios() {
 		return beneficiarios;
 	}
 
-	public void setBeneficiarios(List<Beneficiario> beneficiarios) {
+	public void setBeneficiarios(Set<Beneficiario> beneficiarios) {
 		this.beneficiarios = beneficiarios;
 	}
 
-	public List<Profesional> getProfesionales() {
+	public Set<Profesional> getProfesionales() {
 		return profesionales;
 	}
 
-	public void setProfesionales(List<Profesional> profesionales) {
+	public void setProfesionales(Set<Profesional> profesionales) {
 		this.profesionales = profesionales;
 	}
 }

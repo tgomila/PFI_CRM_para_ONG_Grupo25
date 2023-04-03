@@ -220,7 +220,8 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		if (!rol.isPresent()) {
 			cargarRolesYModulos();
 			cargarSuscripcionModulosTenant2();
-
+			
+			cargarContactosTenant2();
 			cargarBeneficiariosTenant2();
 			cargarVoluntariosTenant2();
 			cargarProfesionalesTenant2();
@@ -359,7 +360,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		m.setIdONG(Long.parseLong("008741"));
 		m.setLegajo(Long.parseLong("1036782"));
 		m.setLugarDeNacimiento("La Matanza");
-		m.setSeRetiraSolo(false);
+		m.setSeRetiraSolo(true);
 		m.setCuidadosEspeciales("Ninguno");
 		m.setEscuela("Colegio Nº3");
 		m.setGrado("7º grado");
@@ -482,6 +483,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		m.setFechaNacimiento(LocalDate.of(1990, 1, 20));
 
 		// Profesional
+		m.setDatosBancarios("CBU: 001234");
 		m.setProfesion("Psicologo");
 		// Fin Profesional
 		profesionalService.altaProfesional(m);
@@ -504,6 +506,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		m.setFechaNacimiento(LocalDate.of(1990, 1, 20));
 
 		// Profesional
+		m.setDatosBancarios("CBU: 001234");
 		m.setProfesion("Tecnico electricista");
 		// Fin Profesional
 		profesionalService.altaProfesional(m);
@@ -528,6 +531,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		m.setFechaNacimiento(LocalDate.of(1990, 1, 20));
 
 		// Profesional
+		m.setDatosBancarios("CBU: 001234");
 		m.setProfesion("Contadora");
 		// Fin Profesional
 		profesionalService.altaProfesional(m);
@@ -550,6 +554,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		m.setFechaNacimiento(LocalDate.of(1990, 1, 20));
 
 		// Profesional
+		m.setDatosBancarios("CBU: 001234");
 		m.setProfesion("Medica");
 		// Fin Profesional
 		profesionalService.altaProfesional(m);	
@@ -572,6 +577,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		m.setFechaNacimiento(LocalDate.of(1990, 1, 20));
 
 		// Empleado
+		m.setDatosBancarios("CBU: 001234");
 		m.setFuncion("Desktop Helper");
 		m.setDescripcion("Da las altas y bajas de beneficiarios");
 		// Fin Empleado
@@ -597,6 +603,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		m.setFechaNacimiento(LocalDate.of(1985, 3, 17));
 
 		// Empleado
+		m.setDatosBancarios("CBU: 001234");
 		m.setFuncion("Jefe");
 		m.setDescripcion("Da las altas y bajas de empleados");
 		// Fin Empleado
@@ -622,6 +629,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		m.setFechaNacimiento(LocalDate.of(1985, 3, 17));
 
 		// Empleado
+		m.setDatosBancarios("CBU: 001234");
 		m.setFuncion("Asistente del jefe");
 		m.setDescripcion("Da las altas y bajas de beneficiarios");
 		// Fin Empleado
@@ -649,6 +657,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		m.setFechaNacimiento(LocalDate.of(1987, 6, 24));
 
 		// Colaborador
+		m.setDatosBancarios("CBU: 001234");
 		m.setArea("Area administrativa");
 		// Fin Colaborador
 
@@ -673,6 +682,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		m.setFechaNacimiento(LocalDate.of(1987, 6, 24));
 
 		// Colaborador
+		m.setDatosBancarios("CBU: 001234");
 		m.setArea("Area gerencial");
 		// Fin Colaborador
 
@@ -695,6 +705,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		m.setFechaNacimiento(LocalDate.of(1987, 6, 24));
 
 		// Colaborador
+		m.setDatosBancarios("CBU: 001234");
 		m.setArea("Area de docencia");
 		// Fin Colaborador
 
@@ -1022,7 +1033,22 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 	
 	
 	//Tenant 2
+	public void cargarContactosTenant2() {
+		ContactoPayload m = new ContactoPayload();
+
+		// Contacto
+		m.setNombreDescripcion("Súper Contacto como Voluntario y Empleado");
+		m.setCuit("20-1235678-9");
+		m.setDomicilio("Avenida siempre falsa 123, piso 8, depto B");
+		m.setEmail("megacontacto@gmail.com");
+		m.setTelefono("1234-4567");
+		
+		contactoService.altaContacto(m);
+
+	}
+	
 	public void cargarBeneficiariosTenant2() {
+		
 		BeneficiarioPayload m = new BeneficiarioPayload();
 
 		// Contacto
@@ -1143,9 +1169,31 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 	}
 	
 	public void cargarVoluntariosTenant2() {
-		VoluntarioPayload m = new VoluntarioPayload();
+		VoluntarioPayload m;
+		
+		//Test asociar a contacto id=1.
+		ContactoPayload c = contactoService.getContactoById((long) 1);
 
 		// Contacto
+		m = new VoluntarioPayload();
+		m.modificarContacto(c);
+
+		// PersonaFisica
+		m.setDni(1235678);
+		m.setNombre("Super Persona");
+		m.setApellido("Voluntario y Empleado");
+		m.setFechaNacimiento(LocalDate.of(2000, 1, 15));
+
+		//Voluntario
+		//No tiene otros atributos
+		voluntarioService.altaVoluntario(m);
+		
+		//Fin test
+		
+		///////////////////////////////////
+
+		// Contacto
+		m = new VoluntarioPayload();
 		m.setNombreDescripcion("Voluntario muy duro tenant 2");
 		m.setCuit("20-25745349-9");
 		m.setDomicilio("Dominguez 457, piso 3, depto B");
@@ -1224,6 +1272,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		m.setFechaNacimiento(LocalDate.of(1984, 2, 15));
 
 		// Profesional
+		m.setDatosBancarios("CBU: 001234");
 		m.setProfesion("Profesora");
 		// Fin Profesional
 		profesionalService.altaProfesional(m);
@@ -1246,6 +1295,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		m.setFechaNacimiento(LocalDate.of(1980, 1, 20));
 
 		// Profesional
+		m.setDatosBancarios("CBU: 001234");
 		m.setProfesion("Pintor");
 		// Fin Profesional
 		profesionalService.altaProfesional(m);
@@ -1270,6 +1320,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		m.setFechaNacimiento(LocalDate.of(1990, 1, 20));
 
 		// Profesional
+		m.setDatosBancarios("CBU: 001234");
 		m.setProfesion("Administrador de eventos");
 		// Fin Profesional
 		profesionalService.altaProfesional(m);
@@ -1292,6 +1343,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		m.setFechaNacimiento(LocalDate.of(1990, 1, 20));
 
 		// Profesional
+		m.setDatosBancarios("CBU: 001234");
 		m.setProfesion("Medica");
 		// Fin Profesional
 		profesionalService.altaProfesional(m);	
@@ -1299,8 +1351,32 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 	
 	public void cargarEmpleadosTenant2() {
 		EmpleadoPayload m = new EmpleadoPayload();
+		
+		//Test asociar a contacto id=1.
+		ContactoPayload c = contactoService.getContactoById((long) 1);
 
 		// Contacto
+		m = new EmpleadoPayload();
+		m.modificarContacto(c);
+
+		// PersonaFisica
+		m.setDni(1235678);
+		m.setNombre("Super Persona");
+		m.setApellido("Voluntario y Empleado");
+		m.setFechaNacimiento(LocalDate.of(2000, 1, 15));
+
+		// Empleado
+		m.setDatosBancarios("CBU: 001234");
+		m.setFuncion("Jefe Empleado y Voluntario");
+		m.setDescripcion("Super Jefe y voluntario");
+		// Fin Empleado
+		
+		empleadoService.altaEmpleado(m);
+		
+		/////////////////////////////////////////////
+		
+		// Contacto
+		m = new EmpleadoPayload();
 		m.setNombreDescripcion("Empleada");
 		m.setCuit("20-1235678-9");
 		m.setDomicilio("Gallo 7923, piso 4, depto A");
@@ -1314,6 +1390,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		m.setFechaNacimiento(LocalDate.of(1990, 1, 20));
 
 		// Empleado
+		m.setDatosBancarios("CBU: 001234");
 		m.setFuncion("Asistente");
 		m.setDescripcion("Da las altas y bajas de profesionales");
 		// Fin Empleado
@@ -1339,6 +1416,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		m.setFechaNacimiento(LocalDate.of(1985, 3, 17));
 
 		// Empleado
+		m.setDatosBancarios("CBU: 001234");
 		m.setFuncion("Soporte");
 		m.setDescripcion("Atiene llamadas de beneficiarios");
 		// Fin Empleado
@@ -1364,6 +1442,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		m.setFechaNacimiento(LocalDate.of(1985, 3, 17));
 
 		// Empleado
+		m.setDatosBancarios("CBU: 001234");
 		m.setFuncion("Jefa Gral");
 		m.setDescripcion("Da todas las órdenes del establecimiento");
 		// Fin Empleado
@@ -1391,6 +1470,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		m.setFechaNacimiento(LocalDate.of(1982, 6, 24));
 
 		// Colaborador
+		m.setDatosBancarios("CBU: 001234");
 		m.setArea("Area de diversiomes");
 		// Fin Colaborador
 
@@ -1415,6 +1495,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		m.setFechaNacimiento(LocalDate.of(1987, 6, 24));
 
 		// Colaborador
+		m.setDatosBancarios("CBU: 001234");
 		m.setArea("Area social");
 		// Fin Colaborador
 
@@ -1437,6 +1518,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		m.setFechaNacimiento(LocalDate.of(1987, 6, 24));
 
 		// Colaborador
+		m.setDatosBancarios("CBU: 001234");
 		m.setArea("Area de deportes");
 		// Fin Colaborador
 

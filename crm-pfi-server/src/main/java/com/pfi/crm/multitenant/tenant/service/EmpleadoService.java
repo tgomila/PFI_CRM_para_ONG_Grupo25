@@ -9,8 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import com.pfi.crm.exception.BadRequestException;
 import com.pfi.crm.exception.ResourceNotFoundException;
 import com.pfi.crm.multitenant.tenant.model.Empleado;
+import com.pfi.crm.multitenant.tenant.model.PersonaFisica;
 import com.pfi.crm.multitenant.tenant.payload.EmpleadoPayload;
 import com.pfi.crm.multitenant.tenant.persistence.repository.EmpleadoRepository;
 
@@ -20,134 +22,108 @@ public class EmpleadoService {
 	@Autowired
 	private EmpleadoRepository empleadoRepository;
 	
+	@Autowired
+	private PersonaFisicaService personaFisicaService;
+	
 	@SuppressWarnings("unused")
 	private static final Logger logger = LoggerFactory.getLogger(EmpleadoService.class);
 	
 	public EmpleadoPayload getEmpleadoByIdContacto(@PathVariable Long id) {
+		return this.getEmpleadoModelByIdContacto(id).toPayload();
+    }
+	
+	public Empleado getEmpleadoModelByIdContacto(@PathVariable Long id) {
 		return empleadoRepository.findByPersonaFisica_Contacto_Id(id).orElseThrow(
-        		() -> new ResourceNotFoundException("Empleado contacto", "id", id)).toPayload();
+        		() -> new ResourceNotFoundException("Empleado contacto", "id", id));
     }
 	
 	public List<EmpleadoPayload> getEmpleados() {
-		//return empleadoRepository.findAll();
 		return empleadoRepository.findAll().stream().map(e -> e.toPayload()).collect(Collectors.toList());
     }
 	
 	public EmpleadoPayload altaEmpleado (EmpleadoPayload payload) {
-		payload.setId(null);
-		return empleadoRepository.save(new Empleado(payload)).toPayload();
+		return this.altaEmpleadoModel(payload).toPayload();
+	}
+	
+	public Empleado altaEmpleadoModel (EmpleadoPayload payload) {
+		if(payload == null)
+			throw new BadRequestException("Ha introducido un null como empleado a dar de alta, por favor ingrese datos de un empleado.");
+
+		if(payload.getId() != null) { //Si existe ID contacto asociado de alta:
+			// 1) No permito modificar, solo alta si no existe.
+			Long id = payload.getId();
+			boolean existeEmpleado = this.existeEmpleadoPorIdContacto(id);
+			if(existeEmpleado)
+				throw new BadRequestException("Ya existe Empleado con ID '" + id.toString() + "' cargado. "
+						+ "Es posible que sea otro número o quiera ir a la pantalla de modificar.");
+		}
+		// 2) Alta/Modificar Persona
+		PersonaFisica persona = personaFisicaService.altaModificarPersonaFisicaModel(payload);
+		//3) Alta Empleado
+		Empleado empleado = new Empleado(payload);
+		empleado.setPersonaFisica(persona);
+		return empleadoRepository.save(empleado);
+	}
+	
+	/**
+	 * Este método sirve para services superiores. No controllers.
+	 * @param payload a modificar/alta.
+	 * @return Model modificado/creado en BD.
+	 */
+	public Empleado altaModificarEmpleadoModel(EmpleadoPayload payload) {
+		if(payload == null)
+			throw new BadRequestException("Ha introducido un null como empleado a dar de alta/modificar, por favor ingrese datos de un empleado.");
+		
+		if(payload.getId() != null) { //Si existe ID contacto asociado de alta:
+			boolean existeEmpleado = empleadoRepository.existsByPersonaFisica_Contacto_Id(payload.getId());
+			if(existeEmpleado)
+				return this.modificarEmpleadoModel(payload);
+		}
+		//Existe o no persona
+		return altaEmpleadoModel(payload);
 	}
 	
 	public void bajaEmpleado(Long id) {
+		if(id == null)
+			throw new BadRequestException("Ha introducido un id='null' a dar de baja, por favor ingrese un número válido.");
 		
-		//Si Optional es null o no, lo conocemos con ".isPresent()".		
-		Empleado m = empleadoRepository.findByPersonaFisica_Contacto_Id(id).orElseThrow(
-				() -> new ResourceNotFoundException("Empleado", "id", id));
-		//Empleado m = optionalModel.get();
+		Empleado m = this.getEmpleadoModelByIdContacto(id);
 		m.setEstadoActivoEmpleado(false);
-		m.setContacto(null);
 		m.setPersonaFisica(null);
 		empleadoRepository.save(m);
 		empleadoRepository.delete(m);
 	}
 	
-	public EmpleadoPayload modificarEmpleado(EmpleadoPayload payload) {
-		Empleado model = empleadoRepository.findByPersonaFisica_Contacto_Id(payload.getId()).orElseThrow(
-				() -> new ResourceNotFoundException("Empleado", "id", payload.getId()));
-		model.modificar(payload);
-		return empleadoRepository.save(model).toPayload();	
-		
-		/*if (payload != null && payload.getId() != null) {
-			//Necesito el id de persona Fisica o se crearia uno nuevo
-			Optional<Empleado> optional = empleadoRepository.findByPersonaFisica_Contacto_Id(payload.getId());
-			if(optional.isPresent()) {   //Si existe
-				Empleado model = optional.get();
-				model.modificar(payload);
-				return empleadoRepository.save(model).toPayload();				
-			}
-			//si llegue aca devuelvo null
-			new ResourceNotFoundException("Empleado", "id", "null");
+	/**
+	 * 
+	 * @param id
+	 * @return True si existe y se dió de baja, false si no existe y no se dió de baja.
+	 */
+	public boolean bajaEmpleadoSiExiste(Long id) {
+		if(existeEmpleadoPorIdContacto(id)) {
+			bajaEmpleado(id);
+			return true;
 		}
-		return null;*/
+		else {
+			return false;
+		}
+	}
+	
+	public EmpleadoPayload modificarEmpleado(EmpleadoPayload payload) {
+		return this.modificarEmpleadoModel(payload).toPayload();
+	}
+	
+	public Empleado modificarEmpleadoModel(EmpleadoPayload payload) {
+		if (payload != null && payload.getId() != null) {
+			//Necesito el id de persona Fisica o se crearia uno nuevo
+			Empleado model = this.getEmpleadoModelByIdContacto(payload.getId());
+			model.modificar(payload);
+			return empleadoRepository.save(model);
+		}
+		throw new BadRequestException("No se puede modificar Empleado sin ID");
 	}
 	
 	public boolean existeEmpleadoPorIdContacto(Long id) {
 		return empleadoRepository.existsByPersonaFisica_Contacto_Id(id);
 	}
-	
-	
-	
-	// Conversiones Payload Model
-	/*public Empleado toModel(EmpleadoPayload p) {
-
-		Empleado m = new Empleado();
-
-		// Contacto
-		m.setId(p.getId());
-		m.setEstadoActivoContacto(true);
-		m.setFechaAltaContacto(LocalDate.now());
-		m.setFechaBajaContacto(null);
-		m.setNombreDescripcion(p.getNombreDescripcion());
-		m.setCuit(p.getCuit());
-		m.setDomicilio(p.getDomicilio());
-		m.setEmail(p.getEmail());
-		m.setTelefono(p.getTelefono());
-		// Fin Contacto
-
-		// Persona Fisica
-		m.setIdPersonaFisica(null);
-		m.setDni(p.getDni());
-		m.setNombre(p.getNombre());
-		m.setApellido(p.getApellido());
-		m.setFechaNacimiento(p.getFechaNacimiento());
-		// Fin Persona Fisica
-		
-		// TrabajadorAbstract
-		m.setDatosBancarios(p.getDatosBancarios());
-		// Fin TrabajadorAbstract
-		
-		// Empleado
-		// this.setIdEmpleado(null);
-		m.setFuncion(p.getFuncion());
-		m.setDescripcion(p.getDescripcion());
-		// this.setEstadoActivoEmpleado(true);
-		// Fin Empleado
-
-		return m;
-	}
-
-	public EmpleadoPayload toPayload(Empleado m) {
-
-		EmpleadoPayload p = new EmpleadoPayload();
-
-		// Contacto
-		p.setId(m.getId());
-		p.setNombreDescripcion(m.getNombreDescripcion());
-		p.setCuit(m.getCuit());
-		p.setDomicilio(m.getDomicilio());
-		p.setEmail(m.getEmail());
-		p.setTelefono(m.getTelefono());
-		// Fin Contacto
-
-		// Persona Fisica
-		// p.setIdPersonaFisica(null);
-		p.setDni(m.getDni());
-		p.setNombre(m.getNombre());
-		p.setApellido(m.getApellido());
-		p.setFechaNacimiento(m.getFechaNacimiento());
-		// Fin Persona Fisica
-		
-		// TrabajadorAbstract
-		p.setDatosBancarios(m.getDatosBancarios());
-		// Fin TrabajadorAbstract
-
-		// Empleado
-		// this.setIdEmpleado(null);
-		p.setFuncion(m.getFuncion());
-		p.setDescripcion(m.getDescripcion());
-		// this.setEstadoActivoEmpleado(true);
-		// Fin Empleado
-
-		return p;
-	}*/
 }

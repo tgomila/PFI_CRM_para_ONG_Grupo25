@@ -14,8 +14,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
@@ -44,7 +44,8 @@ public class ModuloVisibilidadPorRol {
 	@OrderBy("name ASC")
 	private Role role;
 	
-	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	//Antes era ManyToMany
+	@OneToMany(fetch = FetchType.EAGER, cascade={CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE}, orphanRemoval=true)
 	@JoinTable(name = "modulo_visibilidad_por_rol_join_tipo",
 			joinColumns = @JoinColumn(name = "modulo_visibilidad_por_rol_id"),
 			inverseJoinColumns = @JoinColumn(name = "modulo_tipo_visibilidad_por_rol_id"))

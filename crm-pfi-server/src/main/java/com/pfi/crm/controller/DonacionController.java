@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.pfi.crm.multitenant.tenant.model.Contacto;
 import com.pfi.crm.multitenant.tenant.model.Donacion;
 import com.pfi.crm.multitenant.tenant.model.DonacionTipo;
 import com.pfi.crm.multitenant.tenant.payload.DonacionPayload;
@@ -75,12 +76,14 @@ public class DonacionController {
 		Donacion m = new Donacion();
 
 		// Contacto
-		m.getDonante().setEstadoActivoContacto(true);
-		m.getDonante().setNombreDescripcion("Donante señor feliz");
-		m.getDonante().setCuit("20-1235678-9");
-		m.getDonante().setDomicilio("Avenida siempre falsa 123, piso 4, depto A");
-		m.getDonante().setEmail("señorfeliz@gmail.com");
-		m.getDonante().setTelefono("1234-4567");
+		Contacto donante = new Contacto();
+		donante.setEstadoActivoContacto(true);
+		donante.setNombreDescripcion("Donante señor feliz");
+		donante.setCuit("20-1235678-9");
+		donante.setDomicilio("Avenida siempre falsa 123, piso 4, depto A");
+		donante.setEmail("señorfeliz@gmail.com");
+		donante.setTelefono("1234-4567");
+		m.setDonante(donante);
 
 		// Donacion
 		m.setFecha(LocalDateTime.now());

@@ -9,6 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import com.pfi.crm.multitenant.tenant.model.audit.UserDateAudit;
+import com.pfi.crm.multitenant.tenant.payload.ContactoAbstractPayload;
 import com.pfi.crm.multitenant.tenant.payload.ContactoPayload;
 
 @Entity
@@ -38,31 +39,18 @@ public class Contacto extends UserDateAudit{
 	//Constructor
 	public Contacto() {
 		super();
+		this.id = null;
 		this.estadoActivoContacto = true;
 		this.fechaAltaContacto = LocalDate.now(); //Fecha de hoy en server
+		this.fechaBajaContacto = null;
 	}
 	
-	public Contacto(ContactoPayload p) {
+	public Contacto(ContactoAbstractPayload p) {
 		super();
-		this.setId(p.getId());
+		this.modificar(p);
 		this.setEstadoActivoContacto(true);
 		this.setFechaAltaContacto(LocalDate.now());
 		this.setFechaBajaContacto(null);
-		this.setNombreDescripcion(p.getNombreDescripcion());
-		this.setCuit(p.getCuit());
-		this.setDomicilio(p.getDomicilio());
-		this.setEmail(p.getEmail());
-		this.setTelefono(p.getTelefono());
-		
-		/*this.id = p.getId();
-		this.estadoActivoContacto = true;
-		this.fechaAltaContacto = LocalDate.now();
-		this.fechaBajaContacto = null;
-		this.nombreDescripcion = p.getNombreDescripcion();
-		this.cuit = p.getCuit();
-		this.domicilio = p.getDomicilio();
-		this.email = p.getEmail();
-		this.telefono = p.getTelefono();*/
 	}
 
 	//Getters y Setters
@@ -145,9 +133,9 @@ public class Contacto extends UserDateAudit{
 		return p;
 	}
 	
-	public void modificar(ContactoPayload p) {
+	public void modificar(ContactoAbstractPayload p) {
 		// Contacto
-		//this.setId(p.getId());
+		this.setId(p.getId());
 		//this.setEstadoActivoContacto(true);
 		//this.setFechaAltaContacto(LocalDate.now());
 		//this.setFechaBajaContacto(null);
@@ -158,24 +146,6 @@ public class Contacto extends UserDateAudit{
 		this.setTelefono(p.getTelefono());
 		// Fin Contacto
 	}
-	
-	
-	/*public Contacto toModel(ContactoPayload p) {
-
-	// Contacto
-	Contacto m = new Contacto();
-	m.setId(p.getId());
-	m.setEstadoActivoContacto(true);
-	m.setFechaAltaContacto(LocalDate.now());
-	m.setFechaBajaContacto(null);
-	m.setNombreDescripcion(p.getNombreDescripcion());
-	m.setCuit(p.getCuit());
-	m.setDomicilio(p.getDomicilio());
-	m.setEmail(p.getEmail());
-	m.setTelefono(p.getTelefono());
-
-	return m;
-}*/
 	
 	
 }

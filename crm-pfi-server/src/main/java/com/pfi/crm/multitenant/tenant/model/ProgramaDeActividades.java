@@ -2,6 +2,7 @@ package com.pfi.crm.multitenant.tenant.model;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -42,11 +43,13 @@ public class ProgramaDeActividades extends UserDateAudit {
 	
 	@OneToMany(
 			fetch = FetchType.EAGER, 
-			cascade = CascadeType.MERGE, 
-			orphanRemoval = true)
+			cascade = {CascadeType.MERGE}, 
+			orphanRemoval = true
+			)
 	@OrderBy("fechaHoraDesde ASC")
 	private List<Actividad> actividades;
 	
+	//Constructores
 	public ProgramaDeActividades() {
 		super();
 		estadoActivoPrograma = true;
@@ -115,7 +118,7 @@ public class ProgramaDeActividades extends UserDateAudit {
 	}
 	
 	public void ordenarActividades() {
-		actividades = ordenarActividades(actividades);
+		this.actividades = ordenarActividades(this.actividades);
 	}
 	
 	public List<Actividad> ordenarActividades(List<Actividad> actividadesSinOrdenar) {
@@ -129,6 +132,10 @@ public class ProgramaDeActividades extends UserDateAudit {
                 .sorted(Comparator.comparing(Actividad::getFechaHoraDesde))
                 .collect(Collectors.toList());
 		return actividadesOrdenadas;
+	}
+	
+	public void ordenarActividades2() {
+		Collections.sort(actividades, new Actividad.LocalDateTimeComparator());
 	}
 	
 	//Getters and Setters

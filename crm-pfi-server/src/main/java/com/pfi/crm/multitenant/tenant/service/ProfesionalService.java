@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import com.pfi.crm.exception.BadRequestException;
 import com.pfi.crm.exception.ResourceNotFoundException;
+import com.pfi.crm.multitenant.tenant.model.PersonaFisica;
 import com.pfi.crm.multitenant.tenant.model.Profesional;
 import com.pfi.crm.multitenant.tenant.payload.ProfesionalPayload;
 import com.pfi.crm.multitenant.tenant.persistence.repository.ProfesionalRepository;
@@ -24,12 +25,19 @@ public class ProfesionalService {
 	@Autowired
 	private ActividadService actividadService;
 	
+	@Autowired
+	private PersonaFisicaService personaFisicaService;
+	
 	@SuppressWarnings("unused")
 	private static final Logger logger = LoggerFactory.getLogger(ProfesionalService.class);
 	
 	public ProfesionalPayload getProfesionalByIdContacto(@PathVariable Long id) {
+        return this.getProfesionalModelByIdContacto(id).toPayload();
+    }
+	
+	public Profesional getProfesionalModelByIdContacto(Long id) {
         return profesionalRepository.findByPersonaFisica_Contacto_Id(id).orElseThrow(
-                () -> new ResourceNotFoundException("Profesional", "id", id)).toPayload();
+                () -> new ResourceNotFoundException("Profesional", "id", id));
     }
 	
 	public List<ProfesionalPayload> getProfesionales() {
@@ -38,17 +46,53 @@ public class ProfesionalService {
     }
 	
 	public ProfesionalPayload altaProfesional (ProfesionalPayload payload) {
-		payload.setId(null);
-		return profesionalRepository.save(new Profesional(payload)).toPayload();
+		return this.altaProfesionalModel(payload).toPayload();
+	}
+	
+	public Profesional altaProfesionalModel (ProfesionalPayload payload) {
+		if(payload == null)
+			throw new BadRequestException("Ha introducido un null como profesional a dar de alta, por favor ingrese datos de un profesional.");
+
+		if(payload.getId() != null) { //Si existe ID contacto asociado de alta:
+			// 1) Verificar si existe profesional. Si existe, se retorna sin dar de alta.
+			Long id = payload.getId();
+			boolean existeProfesional = this.existeProfesionalPorIdContacto(id);
+			if(existeProfesional)
+				throw new BadRequestException("Ya existe Profesional con ID '" + id.toString() + "' cargado. "
+						+ "Es posible que sea otro número o quiera ir a la pantalla de modificar.");
+		}
+		// 2) Alta/Modificar Persona
+		PersonaFisica persona = personaFisicaService.altaModificarPersonaFisicaModel(payload);
+		//3) Alta Profesional
+		Profesional profesional = new Profesional(payload);
+		profesional.setPersonaFisica(persona);
+		return profesionalRepository.save(profesional);
+	}
+	
+	/**
+	 * Este método sirve para services superiores. No controllers.
+	 * @param payload a modificar/alta.
+	 * @return Model modificado/creado en BD.
+	 */
+	public Profesional altaModificarProfesionalModel(ProfesionalPayload payload) {
+		if(payload == null)
+			throw new BadRequestException("Ha introducido un null como profesional a dar de alta/modificar, por favor ingrese datos de un profesional.");
+		
+		if(payload.getId() != null) { //Si existe ID contacto asociado de alta:
+			boolean existeProfesional = profesionalRepository.existsByPersonaFisica_Contacto_Id(payload.getId());
+			if(existeProfesional)
+				return this.modificarProfesionalModel(payload);
+		}
+		//Existe o no persona
+		return altaProfesionalModel(payload);
 	}
 	
 	public void bajaProfesional(Long id) {
+		if(id == null)
+			throw new BadRequestException("Ha introducido un id='null' a dar de baja, por favor ingrese un número válido.");
 		
-		//Si Optional es null o no, lo conocemos con ".isPresent()".		
-		Profesional m = profesionalRepository.findByPersonaFisica_Contacto_Id(id).orElseThrow(
-                () -> new ResourceNotFoundException("Profesional", "id", id));
+		Profesional m = this.getProfesionalModelByIdContacto(id);
 		m.setEstadoActivoProfesional(false);
-		m.setContacto(null);
 		m.setPersonaFisica(null);
 		profesionalRepository.save(m);
 		
@@ -60,13 +104,31 @@ public class ProfesionalService {
 		
 	}
 	
+	/**
+	 * 
+	 * @param id
+	 * @return True si existe y se dió de baja, false si no existe y no se dió de baja.
+	 */
+	public boolean bajaProfesionalSiExiste(Long id) {
+		if(existeProfesionalPorIdContacto(id)) {
+			bajaProfesional(id);
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	
 	public ProfesionalPayload modificarProfesional(ProfesionalPayload payload) {
+		return this.modificarProfesionalModel(payload).toPayload();
+	}
+	
+	public Profesional modificarProfesionalModel(ProfesionalPayload payload) {
 		if (payload != null && payload.getId() != null) {
 			//Necesito el id de persona Fisica o se crearia uno nuevo
-			Profesional model = profesionalRepository.findByPersonaFisica_Contacto_Id(payload.getId()).orElseThrow(
-	                () -> new ResourceNotFoundException("Profesional", "id", payload.getId()));
+			Profesional model = this.getProfesionalModelByIdContacto(payload.getId());
 			model.modificar(payload);
-			return profesionalRepository.save(model).toPayload();
+			return profesionalRepository.save(model);
 		}
 		throw new BadRequestException("No se puede modificar Profesional sin ID");
 	}
@@ -74,78 +136,4 @@ public class ProfesionalService {
 	public boolean existeProfesionalPorIdContacto(Long id) {
 		return profesionalRepository.existsByPersonaFisica_Contacto_Id(id);
 	}
-	
-	
-	
-	// Conversiones Payload Model
-	/*public Profesional toModel(ProfesionalPayload p) {
-
-		Profesional m = new Profesional();
-
-		// Contacto
-		m.setId(p.getId());
-		m.setEstadoActivoContacto(true);
-		m.setFechaAltaContacto(LocalDate.now());
-		m.setFechaBajaContacto(null);
-		m.setNombreDescripcion(p.getNombreDescripcion());
-		m.setCuit(p.getCuit());
-		m.setDomicilio(p.getDomicilio());
-		m.setEmail(p.getEmail());
-		m.setTelefono(p.getTelefono());
-		// Fin Contacto
-
-		// Persona Fisica
-		m.setIdPersonaFisica(null);
-		m.setDni(p.getDni());
-		m.setNombre(p.getNombre());
-		m.setApellido(p.getApellido());
-		m.setFechaNacimiento(p.getFechaNacimiento());
-		// Fin Persona Fisica
-		
-		// TrabajadorAbstract
-		m.setDatosBancarios(p.getDatosBancarios());
-		// Fin TrabajadorAbstract
-		
-		// Profesional
-		//this.setIdProfesional(null);
-		m.setProfesion(p.getProfesion());
-		//this.setEstadoActivoProfesional(p.getEstadoActivoProfesional());
-		// Fin Profesional
-
-		return m;
-	}
-
-	public ProfesionalPayload toPayload(Profesional m) {
-
-		ProfesionalPayload p = new ProfesionalPayload();
-
-		// Contacto
-		p.setId(m.getId());
-		p.setNombreDescripcion(m.getNombreDescripcion());
-		p.setCuit(m.getCuit());
-		p.setDomicilio(m.getDomicilio());
-		p.setEmail(m.getEmail());
-		p.setTelefono(m.getTelefono());
-		// Fin Contacto
-
-		// Persona Fisica
-		// p.setIdPersonaFisica(null);
-		p.setDni(m.getDni());
-		p.setNombre(m.getNombre());
-		p.setApellido(m.getApellido());
-		p.setFechaNacimiento(m.getFechaNacimiento());
-		// Fin Persona Fisica
-		
-		// TrabajadorAbstract
-		p.setDatosBancarios(m.getDatosBancarios());
-		// Fin TrabajadorAbstract
-
-		// Profesional
-		//this.setIdProfesional(null);
-		p.setProfesion(m.getProfesion());
-		//this.setEstadoActivoProfesional(p.getEstadoActivoProfesional());
-		// Fin Profesional
-
-		return p;
-	}*/
 }

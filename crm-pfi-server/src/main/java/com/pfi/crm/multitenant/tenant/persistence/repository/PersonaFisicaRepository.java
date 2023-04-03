@@ -26,5 +26,10 @@ public interface PersonaFisicaRepository extends JpaRepository<PersonaFisica, Lo
 	
 	Boolean existsByContacto_Cuit(String cuit);
     
-    
+	/**
+	 * La idea es que si es contacto es null en personaFisica, se borre personaFisica. 
+	 * Pero también hay que borrar en otros objetos, lo asociado a personas (beneficiario).
+	 * Asique no deberia tener que usarse este método, pero queda aquí.
+	 */
+	void deleteByContactoIsNull();
 }

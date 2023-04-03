@@ -26,6 +26,10 @@ public class FacturaItem {
 	//private Factura factura;
 	
 	//Constructor
+	public FacturaItem() {
+		super();
+	}
+	
 	public FacturaItem(FacturaItemPayload p) {
 		super();
 		this.id = p.getId();

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import com.pfi.crm.exception.BadRequestException;
 import com.pfi.crm.exception.ResourceNotFoundException;
 import com.pfi.crm.multitenant.tenant.model.Beneficiario;
+import com.pfi.crm.multitenant.tenant.model.PersonaFisica;
 import com.pfi.crm.multitenant.tenant.payload.BeneficiarioPayload;
 import com.pfi.crm.multitenant.tenant.persistence.repository.BeneficiarioRepository;
 
@@ -24,12 +25,19 @@ public class BeneficiarioService {
 	@Autowired
 	private ActividadService actividadService;
 	
+	@Autowired
+	private PersonaFisicaService personaFisicaService;
+	
 	@SuppressWarnings("unused")
 	private static final Logger logger = LoggerFactory.getLogger(BeneficiarioService.class);
 	
 	public BeneficiarioPayload getBeneficiarioByIdContacto(@PathVariable Long id) {
+		return getBeneficiarioModelByIdContacto(id).toPayload();
+    }
+	
+	public Beneficiario getBeneficiarioModelByIdContacto(@PathVariable Long id) {
 		return beneficiarioRepository.findByPersonaFisica_Contacto_Id(id).orElseThrow(
-				() -> new ResourceNotFoundException("Beneficiario contacto", "id", id)).toPayload();
+				() -> new ResourceNotFoundException("Beneficiario contacto", "id", id));
     }
 	
 	public List<BeneficiarioPayload> getBeneficiarios() {
@@ -38,19 +46,62 @@ public class BeneficiarioService {
     }
 	
 	public BeneficiarioPayload altaBeneficiario (BeneficiarioPayload payload) {
-		payload.setId(null);
-		return beneficiarioRepository.save(new Beneficiario(payload)).toPayload();
+		return this.altaBeneficiarioModel(payload).toPayload();
+	}
+	
+	/**
+	 * Si ingresa un ID y "Contacto" no existe en la BD, no se dará de alta.
+	 * @param payload
+	 * @return model
+	 */
+	public Beneficiario altaBeneficiarioModel(BeneficiarioPayload payload) {
+		if(payload == null)
+			throw new BadRequestException("Ha introducido un null como beneficiario a dar de alta, por favor ingrese datos de un beneficiario.");
+
+		if(payload.getId() != null) { //Si existe ID contacto asociado de alta:
+			// 1) No permito modificar, solo alta si no existe.
+			Long id = payload.getId();
+			boolean existeBeneficiario = this.existeBeneficiarioPorIdContacto(id);
+			if(existeBeneficiario)
+				throw new BadRequestException("Ya existe Beneficiario con ID '" + id.toString() + "' cargado. "
+						+ "Es posible que sea otro número o quiera ir a la pantalla de modificar.");
+		}
+		
+		// 2) Alta/Modificar Persona
+		PersonaFisica persona = personaFisicaService.altaModificarPersonaFisicaModel(payload);
+		// 3) Alta Beneficiario
+		Beneficiario beneficiario = new Beneficiario(payload);
+		beneficiario.setPersonaFisica(persona);
+		return beneficiarioRepository.save(beneficiario);
+	}
+	
+	//Es reciclado de alta y modificar
+	/**
+	 * Este método sirve para services superiores. No controllers.
+	 * @param payload a modificar/alta.
+	 * @return Model modificado/creado en BD.
+	 */
+	public Beneficiario altaModificarBeneficiarioModel(BeneficiarioPayload payload) {
+		if(payload == null)
+			throw new BadRequestException("Ha introducido un null como beneficiario a dar de alta/modificar, por favor ingrese datos de un beneficiario.");
+		
+		if(payload.getId() != null) { //Si existe ID contacto asociado de alta:
+			boolean existeBeneficiario = beneficiarioRepository.existsByPersonaFisica_Contacto_Id(payload.getId());
+			if(existeBeneficiario)
+				return this.modificarBeneficiarioModel(payload);
+		}
+		//Existe o no persona
+		return altaBeneficiarioModel(payload);
 	}
 	
 	public void bajaBeneficiario(Long id) {
+		if(id == null)
+			throw new BadRequestException("Ha introducido un id='null' a dar de baja, por favor ingrese un número válido.");
 		
-		//Si Optional es null o no, lo conocemos con ".isPresent()".		
-		Beneficiario m = beneficiarioRepository.findByPersonaFisica_Contacto_Id(id).orElseThrow(
-				() -> new ResourceNotFoundException("Beneficiario", "id", id));
+		Beneficiario m = getBeneficiarioModelByIdContacto(id);
 		m.setEstadoActivoBeneficiario(false);
-		m.setContacto(null);
 		m.setPersonaFisica(null);
-		beneficiarioRepository.save(m);
+		m = beneficiarioRepository.save(m);
 		
 		//Eliminar objeto en todo lo que esta asociado Beneficiario
 		actividadService.bajaBeneficiarioEnActividades(m.getId());
@@ -59,13 +110,31 @@ public class BeneficiarioService {
 		
 	}
 	
+	/**
+	 * 
+	 * @param id
+	 * @return True si existe y se dió de baja, false si no existe y no se dió de baja.
+	 */
+	public boolean bajaBeneficiarioSiExiste(Long id) {
+		if(existeBeneficiarioPorIdContacto(id)) {
+			bajaBeneficiario(id);
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	
 	public BeneficiarioPayload modificarBeneficiario(BeneficiarioPayload payload) {
+		return modificarBeneficiarioModel(payload).toPayload();
+	}
+	
+	public Beneficiario modificarBeneficiarioModel(BeneficiarioPayload payload) {
 		if (payload != null && payload.getId() != null) {
 			//Necesito el id de persona Fisica o se crearia uno nuevo
-			Beneficiario model = beneficiarioRepository.findByPersonaFisica_Contacto_Id(payload.getId()).orElseThrow(
-					() -> new ResourceNotFoundException("Beneficiario", "id", payload.getId()));
+			Beneficiario model = getBeneficiarioModelByIdContacto(payload.getId());
 			model.modificar(payload);
-			return beneficiarioRepository.save(model).toPayload();
+			return beneficiarioRepository.save(model);
 		}
 		throw new BadRequestException("No se puede modificar Beneficiario sin ID");
 	}
@@ -73,82 +142,4 @@ public class BeneficiarioService {
 	public boolean existeBeneficiarioPorIdContacto(Long id) {
 		return beneficiarioRepository.existsByPersonaFisica_Contacto_Id(id);
 	}
-	
-	
-	
-	// Conversiones Payload Model
-	/*public Beneficiario toModel(BeneficiarioPayload p) {
-
-		Beneficiario m = new Beneficiario();
-
-		// Contacto
-		m.setId(p.getId());
-		m.setEstadoActivoContacto(true);
-		m.setFechaAltaContacto(LocalDate.now());
-		m.setFechaBajaContacto(null);
-		m.setNombreDescripcion(p.getNombreDescripcion());
-		m.setCuit(p.getCuit());
-		m.setDomicilio(p.getDomicilio());
-		m.setEmail(p.getEmail());
-		m.setTelefono(p.getTelefono());
-		// Fin Contacto
-
-		// Persona Fisica
-		m.setIdPersonaFisica(null);
-		m.setDni(p.getDni());
-		m.setNombre(p.getNombre());
-		m.setApellido(p.getApellido());
-		m.setFechaNacimiento(p.getFechaNacimiento());
-		// Fin Persona Fisica
-		
-		// Beneficiario
-		m.setIdONG(p.getIdONG());
-		m.setLegajo(p.getLegajo());
-		m.setLugarDeNacimiento(p.getLugarDeNacimiento());
-		m.setSeRetiraSolo(p.getSeRetiraSolo());
-		m.setCuidadosEspeciales(p.getCuidadosEspeciales());
-		m.setEscuela(p.getEscuela());
-		m.setGrado(p.getGrado());
-		m.setTurno(p.getTurno());
-		//m.setEstadoActivoBeneficiario(true);
-		// Fin Beneficiario
-
-		return m;
-	}
-
-	public BeneficiarioPayload toPayload(Beneficiario m) {
-
-		BeneficiarioPayload p = new BeneficiarioPayload();
-
-		// Contacto
-		p.setId(m.getId());
-		p.setNombreDescripcion(m.getNombreDescripcion());
-		p.setCuit(m.getCuit());
-		p.setDomicilio(m.getDomicilio());
-		p.setEmail(m.getEmail());
-		p.setTelefono(m.getTelefono());
-		// Fin Contacto
-
-		// Persona Fisica
-		// p.setIdPersonaFisica(null);
-		p.setDni(m.getDni());
-		p.setNombre(m.getNombre());
-		p.setApellido(m.getApellido());
-		p.setFechaNacimiento(m.getFechaNacimiento());
-		// Fin Persona Fisica
-		
-		// Beneficiario
-		p.setIdONG(m.getIdONG());
-		p.setLegajo(m.getLegajo());
-		p.setLugarDeNacimiento(m.getLugarDeNacimiento());
-		p.setSeRetiraSolo(m.getSeRetiraSolo());
-		p.setCuidadosEspeciales(m.getCuidadosEspeciales());
-		p.setEscuela(m.getEscuela());
-		p.setGrado(m.getGrado());
-		p.setTurno(m.getTurno());
-		//p.setEstadoActivoBeneficiario(true);
-		// Fin Beneficiario
-
-		return p;
-	}*/
 }

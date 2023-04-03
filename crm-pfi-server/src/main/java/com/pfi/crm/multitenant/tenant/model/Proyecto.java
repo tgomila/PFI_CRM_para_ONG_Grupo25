@@ -33,7 +33,7 @@ public class Proyecto extends UserDateAudit {
 	private LocalDate fechaInicio;
 	private LocalDate fechaFin;
 	
-	@OneToMany(cascade = CascadeType.MERGE, orphanRemoval=false)
+	@OneToMany(cascade = {CascadeType.MERGE}, orphanRemoval=false)
 	@LazyCollection(LazyCollectionOption.FALSE)
 	@OrderBy("idPersonaFisica ASC")
 	private List<PersonaFisica> involucrados;

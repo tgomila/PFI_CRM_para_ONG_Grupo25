@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import com.pfi.crm.exception.BadRequestException;
 import com.pfi.crm.exception.ResourceNotFoundException;
 import com.pfi.crm.multitenant.tenant.model.Colaborador;
+import com.pfi.crm.multitenant.tenant.model.PersonaFisica;
 import com.pfi.crm.multitenant.tenant.payload.ColaboradorPayload;
 import com.pfi.crm.multitenant.tenant.persistence.repository.ColaboradorRepository;
 
@@ -21,12 +22,19 @@ public class ColaboradorService {
 	@Autowired
 	private ColaboradorRepository colaboradorRepository;
 	
+	@Autowired
+	private PersonaFisicaService personaFisicaService;
+	
 	@SuppressWarnings("unused")
 	private static final Logger logger = LoggerFactory.getLogger(ColaboradorService.class);
 	
 	public ColaboradorPayload getColaboradorByIdContacto(@PathVariable Long id) {
+        return this.getColaboradorModelByIdContacto(id).toPayload();
+    }
+	
+	public Colaborador getColaboradorModelByIdContacto(@PathVariable Long id) {
         return colaboradorRepository.findByPersonaFisica_Contacto_Id(id).orElseThrow(
-                () -> new ResourceNotFoundException("Colaborador", "id", id)).toPayload();
+                () -> new ResourceNotFoundException("Colaborador", "id", id));
     }
 	
 	public List<ColaboradorPayload> getColaboradores() {
@@ -35,29 +43,88 @@ public class ColaboradorService {
     }
 	
 	public ColaboradorPayload altaColaborador (ColaboradorPayload payload) {
-		payload.setId(null);
-		return colaboradorRepository.save(new Colaborador(payload)).toPayload();
+		return this.altaColaboradorModel(payload).toPayload();
+	}
+	
+	/**
+	 * Si ingresa un ID y "Contacto" no existe en la BD, no se dará de alta.
+	 * @param payload
+	 * @return model
+	 */
+	public Colaborador altaColaboradorModel (ColaboradorPayload payload) {
+		if(payload == null)
+			throw new BadRequestException("Ha introducido un null como colaborador a dar de alta, por favor ingrese datos de un colaborador.");
+
+		if(payload.getId() != null) { //Si existe ID contacto asociado de alta:
+			// 1) Verificar si existe colaborador. Si existe, se retorna sin dar de alta.
+			Long id = payload.getId();
+			boolean existeColaborador = this.existeColaboradorPorIdContacto(id);
+			if(existeColaborador)
+				throw new BadRequestException("Ya existe Colaborador con ID '" + id.toString() + "' cargado. "
+						+ "Es posible que sea otro número o quiera ir a la pantalla de modificar.");
+		}
+		// 2) Alta/Modificar Persona
+		PersonaFisica persona = personaFisicaService.altaModificarPersonaFisicaModel(payload);
+		//3) Alta Colaborador
+		Colaborador colaborador = new Colaborador(payload);
+		colaborador.setPersonaFisica(persona);
+		return colaboradorRepository.save(colaborador);
+	}
+	
+	/**
+	 * Este método sirve para services superiores. No controllers.
+	 * @param payload a modificar/alta.
+	 * @return Model modificado/creado en BD.
+	 */
+	public Colaborador altaModificarColaboradorModel(ColaboradorPayload payload) {
+		if(payload == null)
+			throw new BadRequestException("Ha introducido un null como colaborador a dar de alta/modificar, por favor ingrese datos de un colaborador.");
+		
+		if(payload.getId() != null) { //Si existe ID contacto asociado de alta:
+			boolean existeColaborador = colaboradorRepository.existsByPersonaFisica_Contacto_Id(payload.getId());
+			if(existeColaborador)
+				return this.modificarColaboradorModel(payload);
+		}
+		//Existe o no persona
+		return altaColaboradorModel(payload);
 	}
 	
 	public void bajaColaborador(Long id) {
+		if(id == null)
+			throw new BadRequestException("Ha introducido un id='null' a dar de baja, por favor ingrese un número válido.");
 		
-		//Si Optional es null o no, lo conocemos con ".isPresent()".		
-		Colaborador m = colaboradorRepository.findByPersonaFisica_Contacto_Id(id).orElseThrow(
-                () -> new ResourceNotFoundException("Colaborador", "id", id));
+		Colaborador m = this.getColaboradorModelByIdContacto(id);
 		m.setEstadoActivoColaborador(false);
-		m.setContacto(null);
 		m.setPersonaFisica(null);
 		colaboradorRepository.save(m);
 		colaboradorRepository.delete(m);	//Temporalmente se elimina de la BD
 	}
 	
+	/**
+	 * 
+	 * @param id
+	 * @return True si existe y se dió de baja, false si no existe y no se dió de baja.
+	 */
+	public boolean bajaColaboradorSiExiste(Long id) {
+		if(existeColaboradorPorIdContacto(id)) {
+			bajaColaborador(id);
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	
 	public ColaboradorPayload modificarColaborador(ColaboradorPayload payload) {
+		return this.modificarColaboradorModel(payload).toPayload();
+	}
+	
+	public Colaborador modificarColaboradorModel(ColaboradorPayload payload) {
 		if (payload != null && payload.getId() != null) {
 			//Necesito el id de persona Fisica o se crearia uno nuevo
-			Colaborador model = colaboradorRepository.findByPersonaFisica_Contacto_Id(payload.getId()).orElseThrow(
-	                () -> new ResourceNotFoundException("Colaborador", "id", payload.getId()));
+			Colaborador model = this.getColaboradorModelByIdContacto(payload.getId());
 			model.modificar(payload);
-			return colaboradorRepository.save(model).toPayload();
+			return colaboradorRepository.save(model);
 		}
 		throw new BadRequestException("No se puede modificar Colaborador sin ID");
 	}
@@ -65,78 +132,4 @@ public class ColaboradorService {
 	public boolean existeColaboradorPorIdContacto(Long id) {
 		return colaboradorRepository.existsByPersonaFisica_Contacto_Id(id);
 	}
-	
-	
-	
-	// Conversiones Payload Model
-	/*public Colaborador toModel(ColaboradorPayload p) {
-
-		Colaborador m = new Colaborador();
-
-		// Contacto
-		m.setId(p.getId());
-		m.setEstadoActivoContacto(true);
-		m.setFechaAltaContacto(LocalDate.now());
-		m.setFechaBajaContacto(null);
-		m.setNombreDescripcion(p.getNombreDescripcion());
-		m.setCuit(p.getCuit());
-		m.setDomicilio(p.getDomicilio());
-		m.setEmail(p.getEmail());
-		m.setTelefono(p.getTelefono());
-		// Fin Contacto
-
-		// Persona Fisica
-		m.setIdPersonaFisica(null);
-		m.setDni(p.getDni());
-		m.setNombre(p.getNombre());
-		m.setApellido(p.getApellido());
-		m.setFechaNacimiento(p.getFechaNacimiento());
-		// Fin Persona Fisica
-		
-		// TrabajadorAbstract
-		m.setDatosBancarios(p.getDatosBancarios());
-		// Fin TrabajadorAbstract
-		
-		// Colaborador
-		// this.setIdColaborador(null);
-		m.setArea(p.getArea());
-		// this.setEstadoActivoColaborador(true);
-		// Fin Colaborador
-
-		return m;
-	}
-
-	public ColaboradorPayload toPayload(Colaborador m) {
-
-		ColaboradorPayload p = new ColaboradorPayload();
-
-		// Contacto
-		p.setId(m.getId());
-		p.setNombreDescripcion(m.getNombreDescripcion());
-		p.setCuit(m.getCuit());
-		p.setDomicilio(m.getDomicilio());
-		p.setEmail(m.getEmail());
-		p.setTelefono(m.getTelefono());
-		// Fin Contacto
-
-		// Persona Fisica
-		// p.setIdPersonaFisica(null);
-		p.setDni(m.getDni());
-		p.setNombre(m.getNombre());
-		p.setApellido(m.getApellido());
-		p.setFechaNacimiento(m.getFechaNacimiento());
-		// Fin Persona Fisica
-		
-		// TrabajadorAbstract
-		p.setDatosBancarios(m.getDatosBancarios());
-		// Fin TrabajadorAbstract
-
-		// Colaborador
-		// this.setIdColaborador(null);
-		p.setArea(m.getArea());
-		// this.setEstadoActivoColaborador(true);
-		// Fin Colaborador
-
-		return p;
-	}*/
 }

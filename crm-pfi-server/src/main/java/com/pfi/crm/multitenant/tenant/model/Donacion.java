@@ -31,7 +31,7 @@ public class Donacion extends UserDateAudit{
 	
 	private LocalDateTime fecha;
 	
-	@ManyToOne(cascade = CascadeType.MERGE)
+	@ManyToOne(cascade = {CascadeType.MERGE})
 	@OrderBy("nombreDescripcion ASC")
 	private Contacto donante;
 	
@@ -54,7 +54,12 @@ public class Donacion extends UserDateAudit{
 	public Donacion(DonacionPayload p) {
 		super();
 		this.id = p.getId();
+		modificar(p);
+	}
+	
+	public void modificar(DonacionPayload p) {
 		this.fecha = p.getFecha();
+		this.donante = ((p.getDonante() != null) ? new Contacto(p.getDonante()) : null); 
 		this.tipoDonacion = p.getTipoDonacion();
 		this.descripcion = p.getDescripcion();
 	}
@@ -113,21 +118,10 @@ public class Donacion extends UserDateAudit{
 		
 		p.setId(id);
 		p.setFecha(fecha);
-		if(this.donante != null)
-			p.setDonante(donante.toPayload());
-		else
-			p.setDonante(null);
+		p.setDonante((this.donante != null) ? this.donante.toPayload() : null);
 		p.setTipoDonacion(tipoDonacion);
 		p.setDescripcion(descripcion);
 		
 		return p;
-	}
-	
-	public void modificar (DonacionPayload p) {
-		//this.id = p.getId();
-		this.fecha = p.getFecha();
-		this.donante = new Contacto(p.getDonante());
-		this.tipoDonacion = p.getTipoDonacion();
-		this.descripcion = p.getDescripcion();
 	}
 }

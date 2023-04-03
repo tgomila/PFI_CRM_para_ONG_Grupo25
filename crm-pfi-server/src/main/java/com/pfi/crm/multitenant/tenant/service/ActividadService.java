@@ -1,7 +1,9 @@
 package com.pfi.crm.multitenant.tenant.service;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -10,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import com.pfi.crm.exception.BadRequestException;
 import com.pfi.crm.exception.ResourceNotFoundException;
 import com.pfi.crm.multitenant.tenant.model.Actividad;
 import com.pfi.crm.multitenant.tenant.model.Beneficiario;
@@ -18,8 +21,6 @@ import com.pfi.crm.multitenant.tenant.payload.ActividadPayload;
 import com.pfi.crm.multitenant.tenant.payload.BeneficiarioPayload;
 import com.pfi.crm.multitenant.tenant.payload.ProfesionalPayload;
 import com.pfi.crm.multitenant.tenant.persistence.repository.ActividadRepository;
-import com.pfi.crm.multitenant.tenant.persistence.repository.BeneficiarioRepository;
-import com.pfi.crm.multitenant.tenant.persistence.repository.ProfesionalRepository;
 
 @Service
 public class ActividadService {
@@ -28,10 +29,10 @@ public class ActividadService {
 	private ActividadRepository actividadRepository;
 	
 	@Autowired
-	private BeneficiarioRepository beneficiarioRepository;
+	private BeneficiarioService beneficiarioService;
 	
 	@Autowired
-	private ProfesionalRepository profesionalRepository;
+	private ProfesionalService profesionalService;
 	
 	@SuppressWarnings("unused")
 	private static final Logger logger = LoggerFactory.getLogger(ActividadService.class);
@@ -57,25 +58,25 @@ public class ActividadService {
 	public Actividad altaActividadModel(ActividadPayload payload) {
 		
 		//Esto evita que puedan modificar models beneficiarios y profesional
-		List<Beneficiario> beneficiarios = new ArrayList<Beneficiario>();
+		Set<Beneficiario> beneficiarios = new HashSet<Beneficiario>();
 		if(payload.getBeneficiarios() != null) {
 			for(BeneficiarioPayload b: payload.getBeneficiarios()) {
 				if(b.getId() != null) {
-					Beneficiario item = beneficiarioRepository.findById(b.getId()).orElseThrow(
-							() -> new ResourceNotFoundException("Beneficiario", "id", b.getId()));
+					Beneficiario item = beneficiarioService.getBeneficiarioModelByIdContacto(b.getId());
 					beneficiarios.add(item);
 				}
-				
+				else {
+					throw new BadRequestException("Ha introducido un ID='null' en un beneficiario para asociar en actividad, por favor ingrese un ID válido.");
+				}
 			}
 		}
 		
 
-		List<Profesional> profesionales = new ArrayList<Profesional>();
+		Set<Profesional> profesionales = new HashSet<Profesional>();
 		if(payload.getProfesionales() != null) {
 			for(ProfesionalPayload p: payload.getProfesionales()) {
 				if(p.getId() != null) {
-					Profesional item = profesionalRepository.findByPersonaFisica_Contacto_Id(p.getId()).orElseThrow(
-							() -> new ResourceNotFoundException("Profesional", "id", p.getId()));
+					Profesional item = profesionalService.getProfesionalModelByIdContacto(p.getId());
 					profesionales.add(item);
 				}
 				
@@ -104,16 +105,14 @@ public class ActividadService {
 	}
 	
 	public Actividad modificarActividadReturnModel(ActividadPayload payload) {
-		Actividad model = actividadRepository.findById(payload.getId()).orElseThrow(
-				() -> new ResourceNotFoundException("Actividad", "id", payload.getId()));
+		Actividad model = getActividadModelById(payload.getId());
 		
 		//Esto evita que puedan modificar models beneficiarios y profesional
-		List<Beneficiario> beneficiarios = new ArrayList<Beneficiario>();
+		Set<Beneficiario> beneficiarios = new HashSet<Beneficiario>();
 		if(payload.getBeneficiarios() != null) {
 			for(BeneficiarioPayload b: payload.getBeneficiarios()) {
 				if(b.getId() != null) {
-					Beneficiario item = beneficiarioRepository.findByPersonaFisica_Contacto_Id(b.getId()).orElseThrow(
-							() -> new ResourceNotFoundException("Beneficiario", "id", b.getId()));
+					Beneficiario item = beneficiarioService.getBeneficiarioModelByIdContacto(b.getId());
 					beneficiarios.add(item);
 				}
 				
@@ -121,12 +120,11 @@ public class ActividadService {
 		}
 		
 
-		List<Profesional> profesionales = new ArrayList<Profesional>();
+		Set<Profesional> profesionales = new HashSet<Profesional>();
 		if(payload.getProfesionales() != null) {
 			for(ProfesionalPayload p: payload.getProfesionales()) {
 				if(p.getId() != null) {
-					Profesional item = profesionalRepository.findByPersonaFisica_Contacto_Id(p.getId()).orElseThrow(
-							() -> new ResourceNotFoundException("Profesional", "id", p.getId()));
+					Profesional item = profesionalService.getProfesionalModelByIdContacto(p.getId());
 					profesionales.add(item);
 				}
 				
@@ -138,8 +136,7 @@ public class ActividadService {
 	}
 	
 	public void bajaBeneficiarioEnActividades(Long idContacto) {
-		Beneficiario beneficiario = beneficiarioRepository.findByPersonaFisica_Contacto_Id(idContacto).orElseThrow(
-				() -> new ResourceNotFoundException("Beneficiario", "id", idContacto));
+		Beneficiario beneficiario = beneficiarioService.getBeneficiarioModelByIdContacto(idContacto);
 		List<Actividad> actividades = actividadRepository.findAll();
 		List<Actividad> actividadesAModificar = new ArrayList<Actividad>();
 		for(Actividad actividad: actividades) {
@@ -155,8 +152,7 @@ public class ActividadService {
 
 	
 	public void bajaProfesionalEnActividades(Long idContacto) {
-		Profesional profesional = profesionalRepository.findByPersonaFisica_Contacto_Id(idContacto).orElseThrow(
-				() -> new ResourceNotFoundException("Profesional", "id", idContacto));
+		Profesional profesional = profesionalService.getProfesionalModelByIdContacto(idContacto);
 		List<Actividad> actividades = actividadRepository.findAll();
 		List<Actividad> actividadesAModificar = new ArrayList<Actividad>();
 		for(Actividad actividad: actividades) {

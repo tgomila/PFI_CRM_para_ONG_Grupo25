@@ -1,7 +1,5 @@
 package com.pfi.crm.multitenant.tenant.model;
 
-import java.time.LocalDate;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -26,53 +24,28 @@ public class Colaborador extends TrabajadorAbstract{
 	//Constructor
 	public Colaborador() {
 		super();
-		this.setFechaAltaContacto(LocalDate.now());
-		this.setEstadoActivoPersonaFisica(true);
-		this.setEstadoActivoColaborador(true);
-	}
-
-	public Colaborador(Long idColaborador, String area) {
-		super();
-		this.setFechaAltaContacto(LocalDate.now());
-		this.setEstadoActivoPersonaFisica(true);
-		this.setEstadoActivoColaborador(true);
-		this.idColaborador = idColaborador;
-		this.area = area;
-	}
-	
-	
-	public Colaborador(ColaboradorPayload p) {
-		super();
-		// Contacto
-		this.setId(p.getId());
-		this.setEstadoActivoContacto(true);
-		this.setFechaAltaContacto(LocalDate.now());
-		this.setFechaBajaContacto(null);
-		this.setNombreDescripcion(p.getNombreDescripcion());
-		this.setCuit(p.getCuit());
-		this.setDomicilio(p.getDomicilio());
-		this.setEmail(p.getEmail());
-		this.setTelefono(p.getTelefono());
-		// Fin Contacto
-		
-		// Persona Fisica
-		this.setIdPersonaFisica(null);
-		this.setDni(p.getDni());
-		this.setNombre(p.getNombre());
-		this.setApellido(p.getApellido());
-		this.setFechaNacimiento(p.getFechaNacimiento());
-		this.setEstadoActivoPersonaFisica(true);
-		// Fin Persona Fisica
-		
-		// TrabajadorAbstract
-		this.setDatosBancarios(p.getDatosBancarios());
-		// Fin TrabajadorAbstract
-		
-		// Colaborador
 		this.setIdColaborador(null);
-		this.setArea(p.getArea());
 		this.setEstadoActivoColaborador(true);
-		// Fin Colaborador
+	}
+	
+	
+	public Colaborador(ColaboradorPayload payload) {
+		super();
+		this.modificar(payload);
+		this.setIdColaborador(null);
+		this.setEstadoActivoColaborador(true);
+	}
+	
+	public void modificar(ColaboradorPayload payload) {
+		this.modificarTrabajador(payload);
+		this.setArea(payload.getArea());
+	}
+	
+	public ColaboradorPayload toPayload() {
+		ColaboradorPayload payload = new ColaboradorPayload();
+		payload.modificarTrabajadorPayload(this.toTrabajadorAbstractPayload());
+		payload.setArea(this.getArea());
+		return payload;
 	}
 	
 	
@@ -102,78 +75,4 @@ public class Colaborador extends TrabajadorAbstract{
 	public void setEstadoActivoColaborador(boolean estadoActivoColaborador) {
 		this.estadoActivoColaborador = estadoActivoColaborador;
 	}
-	
-	
-	
-	
-	
-	
-	public ColaboradorPayload toPayload() {
-		ColaboradorPayload p = new ColaboradorPayload();
-		
-		// Contacto
-		p.setId(this.getId());
-		p.setNombreDescripcion(this.getNombreDescripcion());
-		p.setCuit(this.getCuit());
-		p.setDomicilio(this.getDomicilio());
-		p.setEmail(this.getEmail());
-		p.setTelefono(this.getTelefono());
-		// Fin Contacto
-		
-		// Persona Juridica
-			// p.setIdPersonaFisica(null);
-		p.setDni(this.getDni());
-		p.setNombre(this.getNombre());
-		p.setApellido(this.getApellido());
-		p.setFechaNacimiento(this.getFechaNacimiento());
-		//p.setEstadoActivoPersonaFisica(this.getEstadoActivoPersonaFisica());
-		// Fin Persona Juridica
-		
-		// TrabajadorAbstract
-		p.setDatosBancarios(this.getDatosBancarios());
-		// Fin TrabajadorAbstract
-		
-		// Colaborador
-		//p.setIdColaborador(this.getIdColaborador());
-		p.setArea(this.getArea());
-		//p.setEstadoActivoColaborador(this.getEstadoActivoColaborador());
-		// Fin Colaborador
-		
-		return p;
-	}
-	
-	
-	public void modificar(ColaboradorPayload p) {
-		
-		// Contacto
-		//this.setId(p.getId());
-		//this.setEstadoActivoContacto(true);
-		//this.setFechaAltaContacto(LocalDate.now());
-		//this.setFechaBajaContacto(null);
-		this.setNombreDescripcion(p.getNombreDescripcion());
-		this.setCuit(p.getCuit());
-		this.setDomicilio(p.getDomicilio());
-		this.setEmail(p.getEmail());
-		this.setTelefono(p.getTelefono());
-		// Fin Contacto
-		
-		// Persona Fisica
-		this.setDni(p.getDni());
-		this.setNombre(p.getNombre());
-		this.setApellido(p.getApellido());
-		this.setFechaNacimiento(p.getFechaNacimiento());
-		//this.setEstadoActivoVoluntario(true);
-		// Fin Persona Fisica
-		
-		// TrabajadorAbstract
-		this.setDatosBancarios(p.getDatosBancarios());
-		// Fin TrabajadorAbstract
-		
-		// Colaborador
-		//this.setIdColaborador(null);
-		this.setArea(p.getArea());
-		//this.setEstadoActivoColaborador(true);
-		// Fin Colaborador
-	}
-	
 }

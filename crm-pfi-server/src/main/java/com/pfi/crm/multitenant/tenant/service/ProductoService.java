@@ -12,9 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import com.pfi.crm.exception.ResourceNotFoundException;
 import com.pfi.crm.multitenant.tenant.model.Contacto;
 import com.pfi.crm.multitenant.tenant.model.Producto;
-import com.pfi.crm.multitenant.tenant.payload.ContactoPayload;
 import com.pfi.crm.multitenant.tenant.payload.ProductoPayload;
-import com.pfi.crm.multitenant.tenant.persistence.repository.ContactoRepository;
 import com.pfi.crm.multitenant.tenant.persistence.repository.ProductoRepository;
 
 @Service
@@ -22,9 +20,6 @@ public class ProductoService {
 	
 	@Autowired
 	private ProductoRepository productoRepository;
-	
-	@Autowired
-	private ContactoRepository contactoRepository;
 	
 	@Autowired
 	private ContactoService contactoService;
@@ -44,6 +39,7 @@ public class ProductoService {
 	public ProductoPayload altaProducto(ProductoPayload payload) {
 		payload.setId(null);
 		return altaOModificarProducto(payload).toPayload();
+		//return productoRepository.save(new Producto(payload)).toPayload();
 	}
 	
 	public void bajaProducto(Long id) {
@@ -55,6 +51,7 @@ public class ProductoService {
 	
 	public ProductoPayload modificarProducto(ProductoPayload payload) {
 		return this.altaOModificarProducto(payload).toPayload();
+		//return productoRepository.save(new Producto(payload)).toPayload();
 	}
 	
 	
@@ -76,13 +73,10 @@ public class ProductoService {
 		Contacto proveedor = null;
 		if(payload.getProveedor() != null) {
 			if(payload.getProveedor().getId() != null) {//Agrego su proveedor
-				proveedor = contactoRepository.findById(payload.getProveedor().getId()).orElseThrow(
-		                () -> new ResourceNotFoundException("Contacto", "id", payload.getProveedor().getId()));
+				proveedor = contactoService.getContactoModelById(payload.getProveedor().getId());
 			}
 			else {//Doy de alta su proveedor (Contacto)
-				ContactoPayload altaProveedor = contactoService.altaContacto(payload.getProveedor());
-				proveedor = contactoRepository.findById(altaProveedor.getId()).orElseThrow(
-		                () -> new ResourceNotFoundException("Contacto", "id", altaProveedor.getId()));
+				proveedor = contactoService.altaContactoModel(payload.getProveedor());
 			}
 		}
 		else {

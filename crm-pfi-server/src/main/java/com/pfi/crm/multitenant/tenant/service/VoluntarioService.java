@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import com.pfi.crm.exception.BadRequestException;
 import com.pfi.crm.exception.ResourceNotFoundException;
+import com.pfi.crm.multitenant.tenant.model.PersonaFisica;
 import com.pfi.crm.multitenant.tenant.model.Voluntario;
 import com.pfi.crm.multitenant.tenant.payload.VoluntarioPayload;
 import com.pfi.crm.multitenant.tenant.persistence.repository.VoluntarioRepository;
@@ -21,22 +22,67 @@ public class VoluntarioService {
 	@Autowired
 	private VoluntarioRepository voluntarioRepository;
 	
+	@Autowired
+	private PersonaFisicaService personaFisicaService;
+	
 	@SuppressWarnings("unused")
 	private static final Logger logger = LoggerFactory.getLogger(VoluntarioService.class);
 	
 	public VoluntarioPayload getVoluntarioByIdContacto(@PathVariable Long id) {
+        return this.getVoluntarioModelByIdContacto(id).toPayload();
+    }
+	
+	public Voluntario getVoluntarioModelByIdContacto(@PathVariable Long id) {
         return voluntarioRepository.findByPersonaFisica_Contacto_Id(id).orElseThrow(
-                () -> new ResourceNotFoundException("Voluntario", "id", id)).toPayload();
+                () -> new ResourceNotFoundException("Voluntario", "id", id));
     }
 	
 	public List<VoluntarioPayload> getVoluntarios() {
 		//return voluntarioRepository.findAll();
 		return voluntarioRepository.findAll().stream().map(e -> e.toPayload()).collect(Collectors.toList());
-    }
+	}
 	
 	public VoluntarioPayload altaVoluntario (VoluntarioPayload payload) {
-		payload.setId(null);
-		return voluntarioRepository.save(new Voluntario(payload)).toPayload();
+		return this.altaVoluntarioModel(payload).toPayload();
+	}
+	
+	public Voluntario altaVoluntarioModel (VoluntarioPayload payload) {
+		if(payload == null)
+			throw new BadRequestException("Ha introducido un null como voluntario a dar de alta, por favor ingrese datos de un voluntario.");
+
+		if(payload.getId() != null) { //Si existe ID contacto asociado de alta:
+			// 1) No permito modificar, solo alta si no existe.
+			Long id = payload.getId();
+			boolean existeVoluntario = this.existeVoluntarioPorIdContacto(id);
+			if(existeVoluntario)
+				throw new BadRequestException("Ya existe Voluntario con ID '" + id.toString() + "' cargado. "
+						+ "Es posible que sea otro número o quiera ir a la pantalla de modificar.");
+		}
+		// 2) Alta/Modificar Persona
+		PersonaFisica persona = personaFisicaService.altaModificarPersonaFisicaModel(payload);
+		// 3) Alta Voluntario
+		Voluntario voluntario = new Voluntario(payload);
+		voluntario.setPersonaFisica(persona);
+		return voluntarioRepository.save(voluntario);
+		
+	}
+	
+	/**
+	 * Este método sirve para services superiores. No controllers.
+	 * @param payload a modificar/alta.
+	 * @return Model modificado/creado en BD.
+	 */
+	public Voluntario altaModificarVoluntarioModel(VoluntarioPayload payload) {
+		if(payload == null)
+			throw new BadRequestException("Ha introducido un null como voluntario a dar de alta/modificar, por favor ingrese datos de un voluntario.");
+		
+		if(payload.getId() != null) { //Si existe ID contacto asociado de alta:
+			boolean existeVoluntario = voluntarioRepository.existsByPersonaFisica_Contacto_Id(payload.getId());
+			if(existeVoluntario)
+				return this.modificarVoluntarioModel(payload);
+		}
+		//Existe o no persona
+		return altaVoluntarioModel(payload);
 	}
 	
 	public void bajaVoluntario(Long id) {
@@ -44,20 +90,37 @@ public class VoluntarioService {
 		Voluntario m = voluntarioRepository.findByPersonaFisica_Contacto_Id(id).orElseThrow(
                 () -> new ResourceNotFoundException("Voluntario", "id", id));
 		m.setEstadoActivoVoluntario(false);
-		m.setContacto(null);
 		m.setPersonaFisica(null);
 		voluntarioRepository.save(m);
 		voluntarioRepository.delete(m);	//Temporalmente se elimina de la BD
 		
 	}
 	
+	/**
+	 * 
+	 * @param id
+	 * @return True si existe y se dió de baja, false si no existe y no se dió de baja.
+	 */
+	public boolean bajaVoluntarioSiExiste(Long id) {
+		if(existeVoluntarioPorIdContacto(id)) {
+			bajaVoluntario(id);
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	
 	public VoluntarioPayload modificarVoluntario(VoluntarioPayload payload) {
+		return this.modificarVoluntarioModel(payload).toPayload();
+	}
+	
+	public Voluntario modificarVoluntarioModel(VoluntarioPayload payload) {
 		if (payload != null && payload.getId() != null) {
 			//Necesito el id de persona Fisica o se crearia uno nuevo
-			Voluntario model = voluntarioRepository.findByPersonaFisica_Contacto_Id(payload.getId()).orElseThrow(
-	                () -> new ResourceNotFoundException("Voluntario", "id", payload.getId()));
+			Voluntario model = this.getVoluntarioModelByIdContacto(payload.getId());
 			model.modificar(payload);
-			return voluntarioRepository.save(model).toPayload();
+			return voluntarioRepository.save(model);
 		}
 		throw new BadRequestException("No se puede modificar Voluntario sin ID");
 	}
@@ -65,66 +128,4 @@ public class VoluntarioService {
 	public boolean existeVoluntarioPorIdContacto(Long id) {
 		return voluntarioRepository.existsByPersonaFisica_Contacto_Id(id);
 	}
-	
-	
-	
-	// Conversiones Payload Model
-	/*public Voluntario toModel(VoluntarioPayload p) {
-
-		Voluntario m = new Voluntario();
-
-		// Contacto
-		m.setId(p.getId());
-		m.setEstadoActivoContacto(true);
-		m.setFechaAltaContacto(LocalDate.now());
-		m.setFechaBajaContacto(null);
-		m.setNombreDescripcion(p.getNombreDescripcion());
-		m.setCuit(p.getCuit());
-		m.setDomicilio(p.getDomicilio());
-		m.setEmail(p.getEmail());
-		m.setTelefono(p.getTelefono());
-		// Fin Contacto
-
-		// Persona Fisica
-		m.setIdPersonaFisica(null);
-		m.setDni(p.getDni());
-		m.setNombre(p.getNombre());
-		m.setApellido(p.getApellido());
-		m.setFechaNacimiento(p.getFechaNacimiento());
-		// Fin Persona Fisica
-		
-		// Voluntario
-		//p.setEstadoActivoVoluntario(this.getEstadoActivoVoluntario());
-		// Fin Voluntario
-
-		return m;
-	}
-
-	public VoluntarioPayload toPayload(Voluntario m) {
-
-		VoluntarioPayload p = new VoluntarioPayload();
-
-		// Contacto
-		p.setId(m.getId());
-		p.setNombreDescripcion(m.getNombreDescripcion());
-		p.setCuit(m.getCuit());
-		p.setDomicilio(m.getDomicilio());
-		p.setEmail(m.getEmail());
-		p.setTelefono(m.getTelefono());
-		// Fin Contacto
-
-		// Persona Fisica
-		// p.setIdPersonaFisica(null);
-		p.setDni(m.getDni());
-		p.setNombre(m.getNombre());
-		p.setApellido(m.getApellido());
-		p.setFechaNacimiento(m.getFechaNacimiento());
-		// Fin Persona Fisica
-		
-		// Voluntario
-		//p.setEstadoActivoVoluntario(this.getEstadoActivoVoluntario());
-		// Fin Voluntario
-
-		return p;
-	}*/
 }

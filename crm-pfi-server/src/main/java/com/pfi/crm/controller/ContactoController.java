@@ -6,6 +6,7 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,9 +16,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.pfi.crm.exception.BadRequestException;
 import com.pfi.crm.multitenant.tenant.payload.ContactoPayload;
 import com.pfi.crm.multitenant.tenant.payload.nombres_tabla.ContactoNombreTablaPayload;
 import com.pfi.crm.multitenant.tenant.service.ContactoService;
+import com.pfi.crm.payload.response.ApiResponse;
 
 @RestController
 @RequestMapping("/api/contacto")
@@ -48,8 +51,12 @@ public class ContactoController {
     }
 	
 	@DeleteMapping({"/{id}", "/baja/{id}"})
-    public void bajaContacto(@PathVariable Long id) {
-    	contactoService.bajaContacto(id);
+    public ResponseEntity<?> bajaContacto(@PathVariable Long id) {
+    	String message = contactoService.bajaContacto(id);
+    	if(!message.isEmpty())
+    		return ResponseEntity.ok().body(new ApiResponse(true, message));
+    	else
+    		throw new BadRequestException("Algo salió mal en la baja. Verifique message que retorna en backend.");
     }	
 	
 	@PutMapping({"/", "/modificar"})

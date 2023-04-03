@@ -6,21 +6,28 @@ import javax.persistence.CascadeType;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
 
+import com.pfi.crm.multitenant.tenant.payload.PersonaFisicaAbstractPayload;
+import com.pfi.crm.multitenant.tenant.payload.PersonaFisicaPayload;
+
 @MappedSuperclass
 public abstract class PersonaFisicaAbstract /*extends ContactoAbstract*/{
 	
 	
-	@ManyToOne(cascade = CascadeType.MERGE)
+	@ManyToOne(cascade = {CascadeType.MERGE})
 	private PersonaFisica personaFisica;
 	
-	
-	
-	public PersonaFisica getPersonaFisica() {
-		return personaFisica;
+	public PersonaFisicaAbstract() {
+		super();
+		personaFisica = new PersonaFisica();
 	}
 
-	public void setPersonaFisica(PersonaFisica personaFisica) {
-		this.personaFisica = personaFisica;
+	
+	public PersonaFisicaPayload toPersonaFisicaPayload() {
+		return this.personaFisica.toPayload();
+	}
+	
+	public void modificarPersonaFisica(PersonaFisicaAbstractPayload payload) {
+		this.personaFisica.modificar(payload);
 	}
 
 	//metodo agregado
@@ -36,12 +43,6 @@ public abstract class PersonaFisicaAbstract /*extends ContactoAbstract*/{
 	public int getEdad() {
 		return personaFisica.getEdad();
 	}
-	
-	
-	public PersonaFisicaAbstract() {
-		super();
-		personaFisica = new PersonaFisica();
-	}
 
 
 	public PersonaFisicaAbstract(PersonaFisica personaFisica) {
@@ -50,6 +51,15 @@ public abstract class PersonaFisicaAbstract /*extends ContactoAbstract*/{
 	}
 
 
+	//Getters and Setters
+	public PersonaFisica getPersonaFisica() {
+		return personaFisica;
+	}
+
+	public void setPersonaFisica(PersonaFisica personaFisica) {
+		this.personaFisica = personaFisica;
+	}
+	
 	public Long getIdPersonaFisica() {
 		return personaFisica.getIdPersonaFisica();
 	}

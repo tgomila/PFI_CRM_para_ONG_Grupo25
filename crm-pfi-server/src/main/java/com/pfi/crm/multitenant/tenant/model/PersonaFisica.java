@@ -9,6 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import com.pfi.crm.multitenant.tenant.payload.PersonaFisicaAbstractPayload;
 import com.pfi.crm.multitenant.tenant.payload.PersonaFisicaPayload;
 
 @Entity
@@ -31,45 +32,21 @@ public class PersonaFisica extends ContactoAbstract{
         if (fechaNacimiento != null) {
             return Period.between(fechaNacimiento, LocalDate.now()).getYears();
         } else {
-            return 0;
+            return -1;
         }
     }
 	
 	//Constructores
 	public PersonaFisica() {
 		super();
-	}
-
-	public PersonaFisica(Long idPersonaFisica, int dni, String nombre, String apellido, LocalDate fechaNacimiento) {
-		super();
-		this.idPersonaFisica = idPersonaFisica;
-		this.dni = dni;
-		this.nombre = nombre;
-		this.apellido = apellido;
-		this.fechaNacimiento = fechaNacimiento;
-		this.estadoActivoPersonaFisica = true;
+		this.setIdPersonaFisica(null);
+		this.setEstadoActivoPersonaFisica(true);
 	}
 	
-	public PersonaFisica(PersonaFisicaPayload p) {
+	public PersonaFisica(PersonaFisicaAbstractPayload ap) {
 		super();
-		// Contacto
-		this.setId(p.getId());
-		this.setEstadoActivoContacto(true);
-		this.setFechaAltaContacto(LocalDate.now());
-		this.setFechaBajaContacto(null);
-		this.setNombreDescripcion(p.getNombreDescripcion());
-		this.setCuit(p.getCuit());
-		this.setDomicilio(p.getDomicilio());
-		this.setEmail(p.getEmail());
-		this.setTelefono(p.getTelefono());
-		// Fin Contacto
-		
-		// Persona Fisica
+		this.modificar(ap); //Setear contacto y persona
 		this.setIdPersonaFisica(null);
-		this.setDni(p.getDni());
-		this.setNombre(p.getNombre());
-		this.setApellido(p.getApellido());
-		this.setFechaNacimiento(p.getFechaNacimiento());
 		this.setEstadoActivoPersonaFisica(true);
 		// Fin Persona Fisica
 	}
@@ -134,47 +111,28 @@ public class PersonaFisica extends ContactoAbstract{
 		PersonaFisicaPayload p = new PersonaFisicaPayload();
 		
 		// Contacto
-		p.setId(this.getId());
-		p.setNombreDescripcion(this.getNombreDescripcion());
-		p.setCuit(this.getCuit());
-		p.setDomicilio(this.getDomicilio());
-		p.setEmail(this.getEmail());
-		p.setTelefono(this.getTelefono());
-		// Fin Contacto
+		p.modificarContacto(this.toContactoPayload());
 		
-		// Persona Juridica
-			//p.setIdPersonaFisica(null);
+		// Persona Fisica
 		p.setDni(this.getDni());
 		p.setNombre(this.getNombre());
 		p.setApellido(this.getApellido());
 		p.setFechaNacimiento(this.getFechaNacimiento());
-		//p.setEstadoActivoPersonaFisica(this.getEstadoActivoPersonaFisica());
-		// Fin Persona Juridica
-		
+		// Fin Persona Fisica
 		
 		return p;
 	}
 	
-	public void modificar(PersonaFisicaPayload p) {
+	public void modificar(PersonaFisicaAbstractPayload p) {
 		
 		// Contacto
-		//this.setId(p.getId());
-		//this.setEstadoActivoContacto(true);
-		//this.setFechaAltaContacto(LocalDate.now());
-		//this.setFechaBajaContacto(null);
-		this.setNombreDescripcion(p.getNombreDescripcion());
-		this.setCuit(p.getCuit());
-		this.setDomicilio(p.getDomicilio());
-		this.setEmail(p.getEmail());
-		this.setTelefono(p.getTelefono());
-		// Fin Contacto
+		this.modificarContacto(p);
 		
 		// Persona Fisica
 		this.setDni(p.getDni());
 		this.setNombre(p.getNombre());
 		this.setApellido(p.getApellido());
 		this.setFechaNacimiento(p.getFechaNacimiento());
-		//this.setEstadoActivoPersonaFisica(true);
 		// Fin Persona Fisica
 	}
 }

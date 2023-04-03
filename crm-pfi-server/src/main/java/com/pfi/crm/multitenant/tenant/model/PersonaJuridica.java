@@ -1,7 +1,5 @@
 package com.pfi.crm.multitenant.tenant.model;
 
-import java.time.LocalDate;
-
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -25,47 +23,37 @@ public class PersonaJuridica extends ContactoAbstract{
 	@Enumerated(EnumType.STRING)
 	private TipoPersonaJuridica tipoPersonaJuridica;
 	
-	private boolean estadoActivoPersonaJuridica;
+	private boolean estadoActivoPersonaJuridica = true;
 	
 	
 	
 	//Constructores
 	public PersonaJuridica() {
 		super();
-		this.estadoActivoPersonaJuridica = true;
-	}
-
-	public PersonaJuridica(Long idPersonaJuridica, String internoTelefono, TipoPersonaJuridica tipoPersonaJuridica) {
-		super();
-		this.idPersonaJuridica = idPersonaJuridica;
-		this.internoTelefono = internoTelefono;
-		this.tipoPersonaJuridica = tipoPersonaJuridica;
-		this.estadoActivoPersonaJuridica = true;
-	}
-	
-	public PersonaJuridica(PersonaJuridicaPayload p) {
-		super();
-		// Contacto
-		this.setId(p.getId());
-		this.setEstadoActivoContacto(true);
-		this.setFechaAltaContacto(LocalDate.now());
-		this.setFechaBajaContacto(null);
-		this.setNombreDescripcion(p.getNombreDescripcion());
-		this.setCuit(p.getCuit());
-		this.setDomicilio(p.getDomicilio());
-		this.setEmail(p.getEmail());
-		this.setTelefono(p.getTelefono());
-		// Fin Contacto
-		
-		// Persona Juridica
 		this.setIdPersonaJuridica(null);
-		this.setInternoTelefono(p.getInternoTelefono());
-		this.setTipoPersonaJuridica(p.getTipoPersonaJuridica());
-		this.estadoActivoPersonaJuridica = true;
-		// Fin Persona Juridica
+		this.setEstadoActivoPersonaJuridica(true);
 	}
 	
+	public PersonaJuridica(PersonaJuridicaPayload payload) {
+		super();
+		this.modificar(payload);
+		this.setIdPersonaJuridica(null);
+		this.setEstadoActivoPersonaJuridica(true);
+	}
 	
+	public void modificar(PersonaJuridicaPayload payload) {
+		this.modificarContacto(payload);
+		this.setInternoTelefono(payload.getInternoTelefono());
+		this.setTipoPersonaJuridica(payload.getTipoPersonaJuridica());
+	}
+	
+	public PersonaJuridicaPayload toPayload() {
+		PersonaJuridicaPayload payload = new PersonaJuridicaPayload();
+		payload.modificarContacto(this.toContactoPayload());
+		payload.setTipoPersonaJuridica(this.getTipoPersonaJuridica());		
+		payload.setInternoTelefono(this.getInternoTelefono());
+		return payload;
+	}
 	
 	//Getters and Setters
 	public Long getIdPersonaJuridica() {
@@ -98,53 +86,5 @@ public class PersonaJuridica extends ContactoAbstract{
 
 	public void setEstadoActivoPersonaJuridica(boolean estadoActivoPersonaJuridica) {
 		this.estadoActivoPersonaJuridica = estadoActivoPersonaJuridica;
-	}
-	
-	
-	
-
-	public PersonaJuridicaPayload toPayload() {
-
-		PersonaJuridicaPayload p = new PersonaJuridicaPayload();
-
-		// Contacto
-		p.setId(this.getId());
-		p.setNombreDescripcion(this.getNombreDescripcion());
-		p.setCuit(this.getCuit());
-		p.setDomicilio(this.getDomicilio());
-		p.setEmail(this.getEmail());
-		p.setTelefono(this.getTelefono());
-		// Fin Contacto
-		
-		// Persona Juridica
-			//idPersonaJuridica
-		p.setTipoPersonaJuridica(this.getTipoPersonaJuridica());		
-		p.setInternoTelefono(this.getInternoTelefono());
-		// Fin Persona Juridica
-		
-
-		return p;
-	}
-	
-	public void modificar(PersonaJuridicaPayload p) {
-
-		// Contacto
-		//this.setId(p.getId());
-		//this.setEstadoActivoContacto(true);
-		//this.setFechaAltaContacto(LocalDate.now());
-		//this.setFechaBajaContacto(null);
-		this.setNombreDescripcion(p.getNombreDescripcion());
-		this.setCuit(p.getCuit());
-		this.setDomicilio(p.getDomicilio());
-		this.setEmail(p.getEmail());
-		this.setTelefono(p.getTelefono());
-		// Fin Contacto
-		
-		// Persona Juridica
-		this.setIdPersonaJuridica(null);
-		this.setInternoTelefono(p.getInternoTelefono());
-		this.setTipoPersonaJuridica(p.getTipoPersonaJuridica());
-		//this.estadoActivoPersonaJuridica = true;
-		// Fin Persona Juridica
 	}
 }

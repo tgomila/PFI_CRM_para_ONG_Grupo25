@@ -1,7 +1,5 @@
 package com.pfi.crm.multitenant.tenant.model;
 
-import java.time.LocalDate;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -25,78 +23,53 @@ public class Beneficiario extends PersonaFisicaAbstract {
 	private Long idONG;
 	private Long legajo;
 	private String lugarDeNacimiento;
-	private boolean seRetiraSolo;
+	private boolean seRetiraSolo = false;
 	private String cuidadosEspeciales;
 	private String escuela;
 	private String grado;
 	private String turno;
-	private boolean estadoActivoBeneficiario;
+	private boolean estadoActivoBeneficiario = true;
 	
 	//Constructor
 	public Beneficiario() {
 		super();
-		this.setFechaAltaContacto(LocalDate.now());
-		this.setEstadoActivoPersonaFisica(true);
-		this.setEstadoActivoBeneficiario(true);
-		this.setSeRetiraSolo(false);	//Inicializo por las dudas
-	}
-	
-	public Beneficiario(Long idBeneficiario, Long idONG, Long legajo, String lugarDeNacimiento, boolean seRetiraSolo,
-			String cuidadosEspeciales, String escuela, String grado, String turno) {
-		super();
-		this.setFechaAltaContacto(LocalDate.now());
-		this.setEstadoActivoPersonaFisica(true);
-		this.setEstadoActivoBeneficiario(true);
-		this.setSeRetiraSolo(false);	//Inicializo por las dudas
-		this.idBeneficiario = idBeneficiario;
-		this.idONG = idONG;
-		this.legajo = legajo;
-		this.lugarDeNacimiento = lugarDeNacimiento;
-		this.seRetiraSolo = seRetiraSolo;
-		this.cuidadosEspeciales = cuidadosEspeciales;
-		this.escuela = escuela;
-		this.grado = grado;
-		this.turno = turno;
-	}
-	
-	public Beneficiario(BeneficiarioPayload p) {
-		super();
-		// Contacto
-		this.setId(p.getId());
-		this.setEstadoActivoContacto(true);
-		this.setFechaAltaContacto(LocalDate.now());
-		this.setFechaBajaContacto(null);
-		this.setNombreDescripcion(p.getNombreDescripcion());
-		this.setCuit(p.getCuit());
-		this.setDomicilio(p.getDomicilio());
-		this.setEmail(p.getEmail());
-		this.setTelefono(p.getTelefono());
-		// Fin Contacto
-		
-		// Persona Fisica
-		this.setIdPersonaFisica(null);
-		this.setDni(p.getDni());
-		this.setNombre(p.getNombre());
-		this.setApellido(p.getApellido());
-		this.setFechaNacimiento(p.getFechaNacimiento());
-		this.setEstadoActivoPersonaFisica(true);
-		// Fin Persona Fisica
-		
-		// Beneficiario
 		this.setIdBeneficiario(null);
-		this.setIdONG(p.getIdONG());
-		this.setLegajo(p.getLegajo());
-		this.setLugarDeNacimiento(p.getLugarDeNacimiento());
-		this.setSeRetiraSolo(p.getSeRetiraSolo());
-		this.setCuidadosEspeciales(p.getCuidadosEspeciales());
-		this.setEscuela(p.getEscuela());
-		this.setGrado(p.getGrado());
-		this.setTurno(p.getTurno());
 		this.setEstadoActivoBeneficiario(true);
-		// Fin Beneficiario
+		this.setSeRetiraSolo(false);	//Inicializado
 	}
 	
+	public Beneficiario(BeneficiarioPayload payload) {
+		super();
+		this.modificar(payload);
+		this.setIdBeneficiario(null);
+		this.setEstadoActivoBeneficiario(true);
+	}
 	
+	public void modificar(BeneficiarioPayload payload) {
+		this.modificarPersonaFisica(payload);
+		this.setIdONG(payload.getIdONG());
+		this.setLegajo(payload.getLegajo());
+		this.setLugarDeNacimiento(payload.getLugarDeNacimiento());
+		this.setSeRetiraSolo(payload.getSeRetiraSolo());
+		this.setCuidadosEspeciales(payload.getCuidadosEspeciales());
+		this.setEscuela(payload.getEscuela());
+		this.setGrado(payload.getGrado());
+		this.setTurno(payload.getTurno());
+	}
+	
+	public BeneficiarioPayload toPayload() {
+		BeneficiarioPayload payload = new BeneficiarioPayload();
+		payload.modificarPersonaFisica(this.toPersonaFisicaPayload());
+		payload.setIdONG(this.getIdONG());
+		payload.setLegajo(this.getLegajo());
+		payload.setLugarDeNacimiento(this.getLugarDeNacimiento());
+		payload.setSeRetiraSolo(this.getSeRetiraSolo());
+		payload.setCuidadosEspeciales(this.getCuidadosEspeciales());
+		payload.setEscuela(this.getEscuela());
+		payload.setGrado(this.getGrado());
+		payload.setTurno(this.getTurno());
+		return payload;
+	}
 	
 	
 	
@@ -180,83 +153,4 @@ public class Beneficiario extends PersonaFisicaAbstract {
 	public void setEstadoActivoBeneficiario(boolean estadoActivoBeneficiario) {
 		this.estadoActivoBeneficiario = estadoActivoBeneficiario;
 	}
-	
-	
-	
-	
-	
-	
-	
-	public BeneficiarioPayload toPayload() {
-		BeneficiarioPayload p = new BeneficiarioPayload();
-		
-		// Contacto
-		p.setId(this.getId());
-		p.setNombreDescripcion(this.getNombreDescripcion());
-		p.setCuit(this.getCuit());
-		p.setDomicilio(this.getDomicilio());
-		p.setEmail(this.getEmail());
-		p.setTelefono(this.getTelefono());
-		// Fin Contacto
-		
-		// Persona Juridica
-			// p.setIdPersonaFisica(null);
-		p.setDni(this.getDni());
-		p.setNombre(this.getNombre());
-		p.setApellido(this.getApellido());
-		p.setFechaNacimiento(this.getFechaNacimiento());
-		//p.setEstadoActivoPersonaFisica(this.getEstadoActivoPersonaFisica());
-		// Fin Persona Juridica
-		
-		// Beneficiario
-		p.setIdONG(this.getIdONG());
-		p.setLegajo(this.getLegajo());
-		p.setLugarDeNacimiento(this.getLugarDeNacimiento());
-		p.setSeRetiraSolo(this.getSeRetiraSolo());
-		p.setCuidadosEspeciales(this.getCuidadosEspeciales());
-		p.setEscuela(this.getEscuela());
-		p.setGrado(this.getGrado());
-		p.setTurno(this.getTurno());
-		//p.setEstadoActivoBeneficiario(true);
-		// Fin Beneficiario
-		
-		return p;
-	}
-	
-	
-	public void modificar(BeneficiarioPayload p) {
-		
-		// Contacto
-		//this.setId(p.getId());
-		//this.setEstadoActivoContacto(true);
-		//this.setFechaAltaContacto(LocalDate.now());
-		//this.setFechaBajaContacto(null);
-		this.setNombreDescripcion(p.getNombreDescripcion());
-		this.setCuit(p.getCuit());
-		this.setDomicilio(p.getDomicilio());
-		this.setEmail(p.getEmail());
-		this.setTelefono(p.getTelefono());
-		// Fin Contacto
-		
-		// Persona Fisica
-		this.setDni(p.getDni());
-		this.setNombre(p.getNombre());
-		this.setApellido(p.getApellido());
-		this.setFechaNacimiento(p.getFechaNacimiento());
-		//this.setEstadoActivoVoluntario(true);
-		// Fin Persona Fisica
-		
-		// Beneficiario
-		this.setIdONG(p.getIdONG());
-		this.setLegajo(p.getLegajo());
-		this.setLugarDeNacimiento(p.getLugarDeNacimiento());
-		this.setSeRetiraSolo(p.getSeRetiraSolo());
-		this.setCuidadosEspeciales(p.getCuidadosEspeciales());
-		this.setEscuela(p.getEscuela());
-		this.setGrado(p.getGrado());
-		this.setTurno(p.getTurno());
-		//this.setEstadoActivoBeneficiario(true);
-		// Fin Beneficiario
-	}
-	
 }
