@@ -10,7 +10,8 @@ class RealizarPagoService {
 
     postPago( moduloAPagar){
         console.log(BACKEND_API_BASE_URL + redireccionamiento  + moduloAPagar.moduloAPagar)
-        return axios.post(BACKEND_API_BASE_URL + redireccionamiento  + moduloAPagar.moduloAPagar), {}, { headers: authHeader() };
+        console.log(authHeader())
+        return axios.post(BACKEND_API_BASE_URL + redireccionamiento  + moduloAPagar.moduloAPagar, { headers: authHeader() });
     }
 
     
