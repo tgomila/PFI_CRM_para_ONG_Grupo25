@@ -169,13 +169,29 @@ public class PersonaFisicaService {
 		if(existePersona)
 			throw new BadRequestException("Ya existe Persona con ID '" + id.toString() + "' cargado. "
 					+ "Es posible que sea otro número o quiera ir a la pantalla de modificar.");
+		boolean existeContacto = contactoService.existeContacto(id);
+		if(!existeContacto)
+			throw new BadRequestException("No existe Contacto ID '" + id.toString() + "' cargado. "
+					+ "Es posible que sea otro número o no exista.");
+			//return ResponseEntity.notFound().build();
+		//Existe contacto
 		return ResponseEntity.ok(contactoService.getContactoById(id));//Devuelve no ok si no hay contacto cargado
-		
-		
-			//return ResponseEntity.ok(getPersonaFisicaByIdContacto(id));
-		//boolean existeContacto = contactoRepository.existsById(id);
-		//if(existeContacto)
-			//return ResponseEntity.ok(contactoService.getContactoById(id));
-		//return ResponseEntity.notFound().build();
+	}
+	
+	/**
+	 * Este método sirve para services superiores. No controllers.
+	 * @param id a buscar.
+	 * @return Dto encontrado, o nada.
+	 */
+	public ResponseEntity<?> buscarPersonaFisicaSiExiste(Long id){
+		boolean existePersona = personaFisicaRepository.existsByContacto_Id(id);
+		if(existePersona)
+			return ResponseEntity.ok(this.getPersonaFisicaByIdContacto(id));//Devuelve no ok si no hay contacto cargado
+		boolean existeContacto = contactoService.existeContacto(id);
+		if(existeContacto)
+			return ResponseEntity.ok(contactoService.getContactoById(id));//Devuelve no ok si no hay contacto cargado
+		//No existen
+		throw new BadRequestException("No existe Contacto ID '" + id.toString() + "' cargado. "
+				+ "Es posible que sea otro número o no exista.");
 	}
 }

@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 
@@ -125,5 +126,13 @@ public class EmpleadoService {
 	
 	public boolean existeEmpleadoPorIdContacto(Long id) {
 		return empleadoRepository.existsByPersonaFisica_Contacto_Id(id);
+	}
+	
+	public ResponseEntity<?> buscarPersonaFisicaSiExiste(Long id) {
+		boolean existeEmpleado = empleadoRepository.existsByPersonaFisica_Contacto_Id(id);
+		if(existeEmpleado)
+			throw new BadRequestException("Ya existe Empleado con ID '" + id.toString() + "' cargado. "
+					+ "Es posible que sea otro número o quiera ir a la pantalla de modificar.");
+		return personaFisicaService.buscarPersonaFisicaSiExiste(id);
 	}
 }

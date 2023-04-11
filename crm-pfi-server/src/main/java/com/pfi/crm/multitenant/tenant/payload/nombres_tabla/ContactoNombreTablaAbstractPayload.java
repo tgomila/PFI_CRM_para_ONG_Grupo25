@@ -6,6 +6,7 @@ public abstract class ContactoNombreTablaAbstractPayload {
 	
 	public LinkedHashMap<String, String> getNombresContactoTabla(){
 		LinkedHashMap<String, String> nombres = new LinkedHashMap<String, String>();
+		nombres.put("id", "ID");
 		nombres.put("nombreDescripcion", "Nombre/Descripción");
 		nombres.put("cuit", "Cuit");
 		nombres.put("domicilio", "Domicilio");

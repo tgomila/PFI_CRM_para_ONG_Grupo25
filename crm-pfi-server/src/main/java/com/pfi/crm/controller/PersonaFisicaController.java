@@ -84,7 +84,10 @@ public class PersonaFisicaController {
 		PersonaFisica m = new PersonaFisica();
 
 		// Contacto
+		m.setId((long) 1234);
 		m.setEstadoActivoContacto(true);
+		m.setFechaAltaContacto(LocalDate.of(1990, 1, 20));
+		m.setFechaBajaContacto(LocalDate.of(2000, 1, 20));
 		m.setNombreDescripcion("Persona Fisica Don Roque");
 		m.setCuit("20-1235678-9");
 		m.setDomicilio("Avenida siempre falsa 123, piso 4, depto A");
@@ -92,9 +95,12 @@ public class PersonaFisicaController {
 		m.setTelefono("1234-4567");
 
 		// PersonaFisica
+		m.setId((long) 1234);
+		m.setDni(12345678);
 		m.setNombre("Felipe");
 		m.setApellido("del 8");
 		m.setFechaNacimiento(LocalDate.of(1990, 1, 20));
+		m.setEstadoActivoPersonaFisica(true);
 		
 		return m.toPayload();
 	}

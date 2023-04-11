@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 
@@ -123,5 +124,17 @@ public class PersonaJuridicaService {
 	
 	public boolean existePersonaJuridicaPorIdContacto(Long id) {
 		return personaJuridicaRepository.existsByContacto_Id(id);
+	}
+	
+	public ResponseEntity<?> buscarContactoSiExiste(Long id) {
+		boolean existePersonaJuridica = personaJuridicaRepository.existsByContacto_Id(id);
+		if(existePersonaJuridica)
+			throw new BadRequestException("Ya existe Persona Jurídica con ID '" + id.toString() + "' cargado. "
+					+ "Es posible que sea otro número o quiera ir a la pantalla de modificar.");
+		boolean existeContacto = contactoService.existeContacto(id);
+		if(!existeContacto)
+			throw new BadRequestException("No existe Contacto ID '" + id.toString() + "' cargado. "
+					+ "Es posible que sea otro número o no exista.");
+		return ResponseEntity.ok(contactoService.getContactoById(id));//Devuelve no ok si no hay contacto cargado
 	}
 }

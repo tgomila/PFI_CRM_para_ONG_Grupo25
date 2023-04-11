@@ -1471,7 +1471,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 
 		// Colaborador
 		m.setDatosBancarios("CBU: 001234");
-		m.setArea("Area de diversiomes");
+		m.setArea("Area de diversiones");
 		// Fin Colaborador
 
 		colaboradorService.altaColaborador(m);

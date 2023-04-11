@@ -7,6 +7,7 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -93,6 +94,12 @@ public class PersonaJuridicaController {
 		}
 		return allTiposPayload;
 	}
+	
+	//Devuelve dto (si existe) de Persona, o de contacto, o not found. 
+	@GetMapping("/search/{id}")
+    public ResponseEntity<?> searchPersonaJuridicaById(@PathVariable Long id) {
+        return personaJuridicaService.buscarContactoSiExiste(id);
+    }
 	
 	
 	
