@@ -25,6 +25,10 @@ class ConsejoAdHonoremService {
         return axios.delete(BACKEND_API_BASE_URL + 'consejoadhonorem/' + dtoId, {headers: authHeader()});
     }
 
+    search(dtoId){
+        return axios.get(BACKEND_API_BASE_URL + 'consejoadhonorem/search/' + dtoId, {headers: authHeader()} );
+    }
+
     //Esto se usa en caso de tabla dinámica, y asignar nombre real de 'headers' de cada columna de la tabla
     getColumnNames(){
         return axios.get(BACKEND_API_BASE_URL + 'consejoadhonorem/nombres_tabla', { headers: authHeader() });

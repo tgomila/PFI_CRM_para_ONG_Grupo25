@@ -29,6 +29,10 @@ class PersonaJuridicaService {
         return axios.get(BACKEND_API_BASE_URL + 'personajuridica/enum/tipo_persona_puridica', { headers: authHeader() });
     }
 
+    search(dtoId){
+        return axios.get(BACKEND_API_BASE_URL + 'personajuridica/search/' + dtoId, {headers: authHeader()} );
+    }
+
     //Esto se usa en caso de tabla dinámica, y asignar nombre real de 'headers' de cada columna de la tabla
     getColumnNames(){
         return axios.get(BACKEND_API_BASE_URL + 'personajuridica/nombres_tabla', { headers: authHeader() });

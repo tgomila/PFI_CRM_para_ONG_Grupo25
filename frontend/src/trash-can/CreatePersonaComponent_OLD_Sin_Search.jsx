@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react'
 import Form from "react-validation/build/form";
 import Input from "react-validation/build/input";
 import CheckButton from "react-validation/build/button";
-import PersonaService from '../../../services/PersonaService';
+import PersonaService from '../services/PersonaService';
 import {useNavigate} from 'react-router-dom';
 import { format, subYears } from 'date-fns';
 

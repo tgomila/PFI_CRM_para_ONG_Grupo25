@@ -10,13 +10,19 @@ import TablaContacto from "./components/tables/TablaContacto";
 import FooterComponent from "./components/FooterComponent";
 
 //Creates
-import CreateEmployeeComponent from "./trash-can/CreateEmployeeComponent";
+import CreateBeneficiarioComponent from "./components/CRUD/Create/CreateBeneficiarioComponent";
+import CreateColaboradorComponent from "./components/CRUD/Create/CreateColaboradorComponent";
+import CreateConsejoAdHonoremComponent from "./components/CRUD/Create/CreateConsejoAdHonoremComponent";
 import CreateContactoComponent from "./components/CRUD/Create/CreateContactoComponent";
+import CreateEmpleadoComponent from "./components/CRUD/Create/CreateEmpleadoComponent";
 import CreatePersonaComponent from "./components/CRUD/Create/CreatePersonaComponent";
 import CreatePersonaJuridicaComponent from "./components/CRUD/Create/CreatePersonaJuridicaComponent";
-import CreateConsejoAdHonoremComponent from "./components/CRUD/Create/CreateConsejoAdHonoremComponent";
-import CreateBeneficiarioComponent from "./components/CRUD/Create/CreateBeneficiarioComponent";
+import CreateProfesionalComponent from "./components/CRUD/Create/CreateProfesionalComponent";
 import CreateVoluntarioComponent from "./components/CRUD/Create/CreateVoluntarioComponent";
+import CreateEmployeeComponent from "./trash-can/CreateEmployeeComponent";//Testing
+
+//Updates
+import UpdatePersonaComponent from "./components/CRUD/Update/UpdatePersonaComponent";
 
 //Updates
 import UpdateEmployeeComponent from "./components/UpdateEmployeeComponent";
@@ -231,15 +237,16 @@ const App = () => {
 
 
             {/* Agregar item*/}
-           <Route path="/contacto/create" element={<CreateContactoComponent />} />
+            <Route path="/contacto/create" element={<CreateContactoComponent />} />
             <Route path="/personafisica/create" element={<CreatePersonaComponent />} />
             <Route path="/beneficiario/create" element={<CreateBeneficiarioComponent />} />
             <Route path="/voluntario/create" element={<CreateVoluntarioComponent />} />
-            <Route path="/empleado/create" element={<CreateEmployeeComponent />} />
-            <Route path="/colaborador/create" element={<CreateEmployeeComponent />} />
+            <Route path="/empleado/create" element={<CreateEmpleadoComponent />} />
+            <Route path="/colaborador/create" element={<CreateColaboradorComponent />} />
             <Route path="/consejoadhonorem/create" element={<CreateConsejoAdHonoremComponent />} />
             <Route path="/personajuridica/create" element={<CreatePersonaJuridicaComponent />} />
-            <Route path="/profesional/create" element={<CreateEmployeeComponent />} />
+            <Route path="/profesional/create" element={<CreateProfesionalComponent />} />
+
             <Route path="/users/create" element={<CreateEmployeeComponent />} />
             <Route path="/actividad/create" element={<CreateEmployeeComponent />} />
             <Route path="/programadeactividades/create" element={<CreateEmployeeComponent />} />
@@ -255,6 +262,11 @@ const App = () => {
             <Route path="/realizarpago/mes/factura" element={<RealizarPago moduloAPagar='FACTURA' tiempoContratado='mes'/>} />
             <Route path="/realizarpago/año/factura" element={<RealizarPago moduloAPagar='FACTURA' tiempoContratado='anio'/>} />
             
+
+
+            {/* Agregar item*/}
+            <Route path="/personafisica/update" element={<UpdatePersonaComponent />} />
+
 
 
             {/* BARRA DE ARRIBA*/}

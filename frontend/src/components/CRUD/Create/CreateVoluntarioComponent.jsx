@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import Form from "react-validation/build/form";
 import Input from "react-validation/build/input";
 import CheckButton from "react-validation/build/button";
@@ -25,7 +25,7 @@ function CreateVoluntarioComponent() {
     const [message, setMessage] = useState("");
 
     const cargarVoluntarioDefault = {
-        id: null,
+        id: "",
         nombreDescripcion: "",
         cuit: "",
         domicilio: "",
@@ -35,11 +35,71 @@ function CreateVoluntarioComponent() {
         nombre: "",
         apellido: "",
         fechaNacimiento: format(subYears(new Date(), 18), 'yyyy-MM-dd')
-    }
+    };
     const [voluntario, setVoluntario] = useState(cargarVoluntarioDefault);
     const [submitted, setSubmitted] = useState(false);
 
+    //Search de ID
+    const formSearch = useRef();
+    const checkBtnSearch = useRef();
+    const [idToSearch, setIdToSearch] = useState("");
+    const [loadingSearch, setLoadingSearch] = useState(false);
+    const [messageSearch, setMessageSearch] = useState("");
+    const [mostrarSearchID, setMostrarSearchID] = useState(false);
+    const [contactoSearchEncontrado, setContactoSearchEncontrado] = useState(false);//Solo con ID es suficiente
+    const [personaSearchEncontrada, setPersonaSearchEncontrada] = useState(false);//Este sirve para Empleado, etc para reciclado
+    const [forzarRenderizado, setForzarRenderizado ] = useState(false);
+    const onChangeIdToSearch = (e) => {
+        const idToSearch = e.target.value;
+        setIdToSearch(idToSearch);
+      };
+    const handleSearch = (e) => {
+        e.preventDefault();
+        setVoluntario(cargarVoluntarioDefault);
+        setMessageSearch("");
+        setLoadingSearch(true);
+        setContactoSearchEncontrado(false);
+        setPersonaSearchEncontrada(false);
+        formSearch.current.validateAll();
+        //console.log("Llegue aquí, id: " + idToSearch);
+        if (checkBtnSearch.current.context._errors.length === 0) {
+            VoluntarioService.search(idToSearch).then
+                (response => {
+                    if(response.data.id)
+                        setContactoSearchEncontrado(true);
+                    if(response.data.dni)
+                        setPersonaSearchEncontrada(true);
+                    //setP({
+                    //    id: response.data.id,
+                    //    nombreDescripcion: response.data.nombreDescripcion,
+                    //    //...sigue
+                    //});
+                    setVoluntario(prevPerson => ({ ...prevPerson, ...response.data }));
+                    setLoadingSearch(false);
+                    changeShowNoSearch();
+                    window.scrollTo({ top: 0, behavior: "smooth" });
+                },
+                (error) => {
+                    const resMessage =
+                      (error.response &&
+                        error.response.data &&
+                        error.response.data.message) ||
+                      error.message ||
+                      error.toString();
+          
+                    setLoadingSearch(false);
+                    setMessageSearch(resMessage);
+                }
+            );
+
+        }
+        else{
+            setLoadingSearch(false);
+        }
+    }
+
     const handleInputChange = event => {
+        //Trae literalmente copia de "<Input", pero con value reemplazado con el value que escribió el usuario.
         const { name, value } = event.target;
         setVoluntario({ ...voluntario, [name]: value });
     };
@@ -53,33 +113,11 @@ function CreateVoluntarioComponent() {
 
         form.current.validateAll();
         
-        var data = {
-            id: voluntario.id,
-            nombreDescripcion: voluntario.nombreDescripcion,
-            cuit: voluntario.cuit,
-            domicilio: voluntario.domicilio,
-            email: voluntario.email,
-            telefono: voluntario.telefono,
-            dni: voluntario.dni,
-            nombre: voluntario.nombre,
-            apellido: voluntario.apellido,
-            fechaNacimiento: voluntario.fechaNacimiento
-        }
+       let data = {...voluntario}; //Copio datos a "data" para el json de alta
         if (checkBtn.current.context._errors.length === 0) {
             VoluntarioService.create(data).then
                 (response => {
-                    setVoluntario({
-                        id: response.data.id,
-                        nombreDescripcion: response.data.nombreDescripcion,
-                        cuit: response.data.cuit,
-                        domicilio: response.data.domicilio,
-                        email: response.data.email,
-                        telefono: response.data.telefono,
-                        dni: response.data.dni,
-                        nombre: response.data.nombre,
-                        apellido: response.data.apellido,
-                        fechaNacimiento: response.data.fechaNacimiento
-                    });
+                    setVoluntario(prevPerson => ({ ...prevPerson, ...response.data }));
                 setSubmitted(true);
                 window.scrollTo({ top: 0, behavior: "smooth" }); //Para mostrar cartel "Has cargado X componente!"
                 },
@@ -104,6 +142,30 @@ function CreateVoluntarioComponent() {
         setVoluntario(cargarVoluntarioDefault);
         setLoading(false);
         setSubmitted(false);
+        setMostrarSearchID(false);
+        setLoadingSearch(false);
+        console.log("Antes: " + contactoSearchEncontrado);
+        setContactoSearchEncontrado(false);
+        setPersonaSearchEncontrada(false);
+        forzarRender();
+        console.log("Cambie a false");
+        console.log("Despues: " + contactoSearchEncontrado);
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    const forzarRender = () => {
+        setForzarRenderizado(true);
+        setTimeout(() => {
+            setForzarRenderizado(false);
+        }, 100);
+    }
+
+    const changeShowSearch = () => {
+        setMostrarSearchID(true);
+    }
+
+    const changeShowNoSearch = () => {
+        setMostrarSearchID(false);
     }
 
     const cancel = () => {
@@ -118,9 +180,6 @@ function CreateVoluntarioComponent() {
                 <div className = "container">
                     <div className = "row">
                         <div className = "card col-md-6 offset-md-3 offset-md-3">
-                            {
-                                
-                            }
                           {submitted ? (
                             <div>
                                 <h4>¡Has cargado el voluntario!</h4>
@@ -133,60 +192,131 @@ function CreateVoluntarioComponent() {
                             </div>
                           ) : (
                             <div className = "card-body">
+                                {(!contactoSearchEncontrado && !mostrarSearchID) && (
+                                    <div>
+                                        <button className="btn btn-light" onClick={changeShowSearch} style={{marginLeft: "00px"}}>
+                                            ¿Fue cargado anteriormente y desea asociarlo? Presione aquí
+                                        </button>
+                                    </div>
+                                )}
+                                {(contactoSearchEncontrado && !mostrarSearchID) && (
+                                    <div className = "form-group">
+                                        <div>
+                                        <button className="btn btn-light" onClick={changeShowSearch} style={{marginLeft: "00px"}}>
+                                            Realizar otra Búsqueda
+                                        </button>
+                                        <button className="btn btn-light" onClick={newVoluntario} style={{marginLeft: "00px"}}>
+                                            Cancelar Búsqueda
+                                        </button>
+                                        </div>
+                                        <div>
+                                            {(contactoSearchEncontrado && !personaSearchEncontrada) && (
+                                            <label style={{color: '#86af49'}}> ¡Contacto a asociar encontrado! </label>
+                                            )}
+                                            {(contactoSearchEncontrado && personaSearchEncontrada) && (
+                                                <label style={{color: '#86af49'}}> ¡Persona a asociar encontrada! </label>
+                                            )}
+                                        </div>
+                                    </div>
+                                )}
+                                {(mostrarSearchID) && (
+                                    <div className = "form-group">
+                                        <Form onSubmit={handleSearch} ref={formSearch}>
+                                            <div className = "form-group">
+                                                <label> Ingrese ID del contacto a asociar (anteriormente ya cargado): </label>
+                                                <Input placeholder="Ingrese ID" id="idToSearch" name="idSearch" type="number" className="form-control" 
+                                                    value={idToSearch} onChange={onChangeIdToSearch} validations={[required]}/>
+                                            </div>
+
+                                            <div className="form-group">
+                                                <button className="btn btn-success" href="#" disabled={loadingSearch}>
+                                                    <span></span>
+                                                    <span></span>
+                                                    <span></span>
+                                                    <span></span>
+                                                    {loadingSearch && (
+                                                        <span className="spinner-border spinner-border-sm"></span>
+                                                    )}
+                                                    Buscar ID
+                                                </button>
+                                            </div>
+                                            {messageSearch && (
+                                                <div className="form-group">
+                                                    <div className="alert alert-danger" role="alert">
+                                                        {messageSearch}
+                                                    </div>
+                                                </div>
+                                            )}
+                                            <CheckButton style={{ display: "none" }} ref={checkBtnSearch} />
+                                        </Form>
+                                        
+                                        <button className="btn btn-danger" onClick={changeShowNoSearch} style={{marginLeft: "00px"}}>
+                                            Cancelar
+                                        </button>
+                                    </div>
+                                )}
+                                {(forzarRenderizado) && (<div></div>)}
                                 <Form onSubmit={handleSubmit} ref={form}>
-        
+                                    {contactoSearchEncontrado && (
+                                        <div className = "form-group">
+                                            <label htmlFor="id"> ID: </label>
+                                            <Input disabled="disabled" placeholder="ID" id="id" name="id" type="number" className="form-control" 
+                                            value={voluntario.id} onChange={handleInputChange}/>
+                                        </div>
+                                    )}
+
                                     <div className = "form-group">
                                         <label> Nombre: </label>
-                                        <Input placeholder="Nombre" id="nombre" name="nombre" type="text" className="form-control" 
+                                        <Input disabled={personaSearchEncontrada} placeholder="Nombre" id="nombre" name="nombre" type="text" className="form-control" 
                                             value={voluntario.nombre} onChange={handleInputChange} validations={[required]}/>
                                     </div>
-        
+
                                     <div className = "form-group">
                                         <label> Apellido: </label>
-                                        <Input placeholder="Apellido" id="apellido" name="apellido" type="text" className="form-control" 
+                                        <Input disabled={personaSearchEncontrada} placeholder="Apellido" id="apellido" name="apellido" type="text" className="form-control" 
                                             value={voluntario.apellido} onChange={handleInputChange} validations={[required]}/>
                                     </div>
         
                                     <div className = "form-group">
                                         <label> DNI: </label>
-                                        <Input placeholder="Dni" id="dni" name="dni" type="number" className="form-control" 
+                                        <Input disabled={personaSearchEncontrada} placeholder="Dni" id="dni" name="dni" type="number" className="form-control" 
                                             value={voluntario.dni} onChange={handleInputChange} validations={[required]}/>
                                     </div>
         
                                     <div className = "form-group">
                                         <label> Fecha de nacimiento: </label>
-                                        <Input placeholder="dd-mm-yyyy" id="fechaNacimiento" name="fechaNacimiento" type="date" className="form-control" 
+                                        <Input disabled={personaSearchEncontrada} placeholder="dd-mm-yyyy" id="fechaNacimiento" name="fechaNacimiento" type="date" className="form-control" 
                                             value={voluntario.fechaNacimiento} onChange={handleInputChange} validations={[required]}
                                             min={format(subYears(new Date(), 120), 'yyyy-MM-dd')} max={format(subYears(new Date(), 1), 'yyyy-MM-dd')}/>
                                     </div>
-        
+                                    
                                     <div className = "form-group">
                                         <label> Cuit: </label>
-                                        <Input placeholder="Cuit" id="cuit" name="cuit" type="text" className="form-control" 
+                                        <Input disabled={contactoSearchEncontrado} placeholder="Cuit" id="cuit" name="cuit" type="text" className="form-control" 
                                             value={voluntario.cuit} onChange={handleInputChange} validations={[required]}/>
                                     </div>
         
                                     <div className = "form-group">
                                         <label> Domicilio: </label>
-                                        <Input placeholder="Domicilio" id="domicilio" name="domicilio" type="text" className="form-control" 
+                                        <Input disabled={contactoSearchEncontrado} placeholder="Domicilio" id="domicilio" name="domicilio" type="text" className="form-control" 
                                             value={voluntario.domicilio} onChange={handleInputChange} validations={[required]}/>
                                     </div>
         
                                     <div className = "form-group">
                                         <label> Email: </label>
-                                        <Input placeholder="Email" id="email" name="email" type="text" className="form-control" 
+                                        <Input disabled={contactoSearchEncontrado} placeholder="Email" id="email" name="email" type="text" className="form-control" 
                                             value={voluntario.email} onChange={handleInputChange} validations={[required]}/>
                                     </div>
         
                                     <div className = "form-group">
                                         <label> Telefono: </label>
-                                        <Input placeholder="Telefono" id="telefono" name="telefono" type="text" className="form-control" 
+                                        <Input disabled={contactoSearchEncontrado} placeholder="Telefono" id="telefono" name="telefono" type="text" className="form-control" 
                                             value={voluntario.telefono} onChange={handleInputChange} validations={[required]}/>
                                     </div>
 
                                     <div className = "form-group">
                                         <label> Descripción: </label>
-                                        <Input placeholder="Descripción" name="nombreDescripcion" type="text" className="form-control" 
+                                        <Input disabled={contactoSearchEncontrado} placeholder="Descripción" name="nombreDescripcion" type="text" className="form-control" 
                                             value={voluntario.nombreDescripcion} onChange={handleInputChange} validations={[required]}/>
                                     </div>
 
@@ -218,9 +348,9 @@ function CreateVoluntarioComponent() {
                           )}
                         </div>
                     </div>
-        
                 </div>
             </div>
+            <br></br><br></br>
         </div>
     );
 };

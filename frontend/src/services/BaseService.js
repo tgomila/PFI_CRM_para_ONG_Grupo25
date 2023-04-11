@@ -26,6 +26,10 @@ class BaseService {
         return axios.delete(BACKEND_API_BASE_URL + redireccionamiento.redireccionamiento + '/' + dtoId, {headers: authHeader()});
     }
 
+    search(redireccionamiento, dtoId){
+        return axios.get(BACKEND_API_BASE_URL + redireccionamiento.redireccionamiento + '/search' + dtoId, {headers: authHeader()} );
+    }
+
     //Esto se usa en caso de tabla dinámica, y asignar nombre real de 'headers' de cada columna de la tabla
     getColumnNames(redireccionamiento){
         return axios.get(BACKEND_API_BASE_URL + redireccionamiento.redireccionamiento + '/nombres_tabla', { headers: authHeader() });

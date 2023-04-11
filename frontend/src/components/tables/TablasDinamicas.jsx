@@ -75,8 +75,10 @@ function Table({ columns, data }) {
               return (
                 <tr {...row.getRowProps()}>
                   {row.cells.map((cell) => {
+                    console.log("Aqui test:");
+                    console.log(cell);
                     return (
-                      <td {...cell.getCellProps()}>{(cell.value== true) ? "✅" : (cell.value== false) ? "❌" : cell.render("Cell")}</td>
+                      <td {...cell.getCellProps()}>{(cell.column.id!="id" && cell.value== true) ? "✅" : (cell.value== false) ? "❌" : cell.render("Cell")}</td>
                     );
                   })}
 
@@ -266,7 +268,9 @@ function TablasDinamicas(redireccionamiento) {
         <div className="row">
 
         {/*<button className="btn btn-primary" onClick={() => navigate( window.location.pathname + "/create", {state:{seccionURL:redireccionamiento.redireccionamiento, firstName:"tomas",lastName:"gomila",emailId:"tomas@gomila.com"}})}> Add Employee</button>*/}
-        <button className="btn btn-primary" onClick={() => navigate( window.location.pathname + "/create", {state:{seccionURL:redireccionamiento.redireccionamiento, firstName:"tomas",lastName:"gomila",emailId:"tomas@gomila.com"}})}> Create {redireccionamiento.redireccionamiento}</button>
+        <button className="btn btn-primary" onClick={() => navigate( window.location.pathname + "/create", {state:{seccionURL:redireccionamiento.redireccionamiento, firstName:"tomas",lastName:"gomila",emailId:"tomas@gomila.com"}})}> Agregar {redireccionamiento.redireccionamiento}</button>
+        &nbsp;&nbsp;&nbsp;
+        <button className="btn btn-primary" onClick={() => navigate( window.location.pathname + "/update", {state:{seccionURL:redireccionamiento.redireccionamiento, firstName:"tomas",lastName:"gomila",emailId:"tomas@gomila.com"}})}> Modificar {redireccionamiento.redireccionamiento}</button>
 
 
         </div>

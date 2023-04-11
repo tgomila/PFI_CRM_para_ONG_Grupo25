@@ -25,6 +25,10 @@ class EmpleadoService {
         return axios.delete(BACKEND_API_BASE_URL + 'empleado/' + dtoId, {headers: authHeader()});
     }
 
+    search(dtoId){
+        return axios.get(BACKEND_API_BASE_URL + 'empleado/search/' + dtoId, {headers: authHeader()} );
+    }
+
     //Esto se usa en caso de tabla dinámica, y asignar nombre real de 'headers' de cada columna de la tabla
     getColumnNames(){
         return axios.get(BACKEND_API_BASE_URL + 'empleado/nombres_tabla', { headers: authHeader() });

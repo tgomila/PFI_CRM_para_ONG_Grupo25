@@ -1,10 +1,12 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import Form from "react-validation/build/form";
 import Input from "react-validation/build/input";
 import CheckButton from "react-validation/build/button";
 import PersonaService from '../../../services/PersonaService';
-import {useNavigate} from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { format, subYears } from 'date-fns';
+import { cargarPersonaDefault } from '../Constants/ConstantsCargarDefault';
+import { PersonaInput, IdInput } from '../Constants/ConstantsInput';
 
 const required = (value) => {
   if (!value) {
@@ -24,18 +26,6 @@ function CreatePersonaComponent() {
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState("");
 
-    const cargarPersonaDefault = {
-        id: "",
-        nombreDescripcion: "",
-        cuit: "",
-        domicilio: "",
-        email: "",
-        telefono: "",
-        dni: "",
-        nombre: "",
-        apellido: "",
-        fechaNacimiento: format(subYears(new Date(), 18), 'yyyy-MM-dd')
-    }
     const [persona, setPersona] = useState(cargarPersonaDefault);
     const [submitted, setSubmitted] = useState(false);
 
@@ -46,7 +36,10 @@ function CreatePersonaComponent() {
     const [loadingSearch, setLoadingSearch] = useState(false);
     const [messageSearch, setMessageSearch] = useState("");
     const [mostrarSearchID, setMostrarSearchID] = useState(false);
-    const [mostrarLabelSearchEncontrado, setMostrarLabelSearchEncontrado ] = useState(false);
+    const [contactoSearchEncontrado, setContactoSearchEncontrado] = useState(false);//Solo con ID es suficiente
+    const [personaSearchEncontrada, setPersonaSearchEncontrada] = useState(false);//Este sirve para Empleado, etc para reciclado
+    //const [mostrarLabelSearchEncontrado, setMostrarLabelSearchEncontrado ] = useState(false);
+    const [forzarRenderizado, setForzarRenderizado ] = useState(false);
     const onChangeIdToSearch = (e) => {
         const idToSearch = e.target.value;
         setIdToSearch(idToSearch);
@@ -56,29 +49,29 @@ function CreatePersonaComponent() {
         setPersona(cargarPersonaDefault);
         setMessageSearch("");
         setLoadingSearch(true);
+        setContactoSearchEncontrado(false);
+        setPersonaSearchEncontrada(false);
         formSearch.current.validateAll();
         //console.log("Llegue aquí, id: " + idToSearch);
         if (checkBtnSearch.current.context._errors.length === 0) {
             PersonaService.search(idToSearch).then
                 (response => {
-                    setPersona({
-                        id: response.data.id,
-                        nombreDescripcion: response.data.nombreDescripcion,
-                        cuit: response.data.cuit,
-                        domicilio: response.data.domicilio,
-                        email: response.data.email,
-                        telefono: response.data.telefono,
-                        dni: response.data.dni,
-                        nombre: response.data.nombre,
-                        apellido: response.data.apellido,
-                        fechaNacimiento: response.data.fechaNacimiento
-                    });
+                    if(response.data.id)
+                        setContactoSearchEncontrado(true);
+                    if(response.data.dni)
+                        setPersonaSearchEncontrada(true);
+                    //setP({
+                    //    id: response.data.id,
+                    //    nombreDescripcion: response.data.nombreDescripcion,
+                    //    //...sigue
+                    //});
+                    setPersona(prevPerson => ({ ...prevPerson, ...response.data }));
                     setLoadingSearch(false);
                     changeShowNoSearch();
-                    setMostrarLabelSearchEncontrado(true);
-                    setTimeout(() => {
-                        setMostrarLabelSearchEncontrado(false);
-                    }, 5000);
+                    //setMostrarLabelSearchEncontrado(true);
+                    //setTimeout(() => {
+                    //    setMostrarLabelSearchEncontrado(false);
+                    //}, 5000);
                     window.scrollTo({ top: 0, behavior: "smooth" });
                 },
                 (error) => {
@@ -95,17 +88,14 @@ function CreatePersonaComponent() {
             );
 
         }
+        else{
+            setLoadingSearch(false);
+        }
     }
 
     const handleInputChange = event => {
+        //Trae literalmente copia de "<Input", pero con value reemplazado con el value que escribió el usuario.
         const { name, value } = event.target;
-        //console.log("inicio event:");
-        //console.log(event);
-        //console.log("Fin event");
-        //console.log("inicio event.target:");
-        //console.log(event.target);
-        //console.log("Fin event.target");
-        //console.log("name: " + name + ", value: " + value);
         setPersona({ ...persona, [name]: value });
     };
 
@@ -118,33 +108,11 @@ function CreatePersonaComponent() {
 
         form.current.validateAll();
         
-        var data = {
-            id: persona.id,
-            nombreDescripcion: persona.nombreDescripcion,
-            cuit: persona.cuit,
-            domicilio: persona.domicilio,
-            email: persona.email,
-            telefono: persona.telefono,
-            dni: persona.dni,
-            nombre: persona.nombre,
-            apellido: persona.apellido,
-            fechaNacimiento: persona.fechaNacimiento
-        }
+       let data = {...persona}; //Copio datos a "data" para el json de alta
         if (checkBtn.current.context._errors.length === 0) {
             PersonaService.create(data).then
                 (response => {
-                    setPersona({
-                        id: response.data.id,
-                        nombreDescripcion: response.data.nombreDescripcion,
-                        cuit: response.data.cuit,
-                        domicilio: response.data.domicilio,
-                        email: response.data.email,
-                        telefono: response.data.telefono,
-                        dni: response.data.dni,
-                        nombre: response.data.nombre,
-                        apellido: response.data.apellido,
-                        fechaNacimiento: response.data.fechaNacimiento
-                    });
+                    setPersona(prevPerson => ({ ...prevPerson, ...response.data }));
                 setSubmitted(true);
                 window.scrollTo({ top: 0, behavior: "smooth" }); //Para mostrar cartel "Has cargado X componente!"
                 },
@@ -171,6 +139,13 @@ function CreatePersonaComponent() {
         setSubmitted(false);
         setMostrarSearchID(false);
         setLoadingSearch(false);
+        console.log("Antes: " + contactoSearchEncontrado);
+        setContactoSearchEncontrado(false);
+        setPersonaSearchEncontrada(false);
+        forzarRender();
+        console.log("Cambie a false");
+        console.log("Despues: " + contactoSearchEncontrado);
+        window.scrollTo({ top: 0, behavior: "smooth" });
     }
 
     /*const changeShowSearch = () => {
@@ -180,6 +155,13 @@ function CreatePersonaComponent() {
             setMostrarSearchID(true);
 
     }*/
+
+    const forzarRender = () => {
+        setForzarRenderizado(true);
+        setTimeout(() => {
+            setForzarRenderizado(false);
+        }, 100);
+    }
 
     const changeShowSearch = () => {
         setMostrarSearchID(true);
@@ -213,14 +195,14 @@ function CreatePersonaComponent() {
                             </div>
                           ) : (
                             <div className = "card-body">
-                                {(!persona.id && !mostrarSearchID) && (
+                                {(!contactoSearchEncontrado && !mostrarSearchID) && (
                                     <div>
                                         <button className="btn btn-light" onClick={changeShowSearch} style={{marginLeft: "00px"}}>
                                             ¿Fue cargado anteriormente y desea asociarlo? Presione aquí
                                         </button>
                                     </div>
                                 )}
-                                {(persona.id && !mostrarSearchID) && (
+                                {(contactoSearchEncontrado && !mostrarSearchID) && (
                                     <div className = "form-group">
                                         <div>
                                         <button className="btn btn-light" onClick={changeShowSearch} style={{marginLeft: "00px"}}>
@@ -231,7 +213,12 @@ function CreatePersonaComponent() {
                                         </button>
                                         </div>
                                         <div>
-                                            <label style={{color: '#86af49'}}> ¡Contacto a asociar encontrado! </label>
+                                            {(contactoSearchEncontrado && !personaSearchEncontrada) && (
+                                                <label style={{color: '#86af49'}}> ¡Contacto a asociar encontrado! </label>
+                                            )}
+                                            {(contactoSearchEncontrado && personaSearchEncontrada) && (
+                                                <label style={{color: '#86af49'}}> ¡Persona a asociar encontrada! </label>
+                                            )}
                                         </div>
                                     </div>
                                 )}
@@ -271,69 +258,74 @@ function CreatePersonaComponent() {
                                         </button>
                                     </div>
                                 )}
+                                {(forzarRenderizado) && (<div></div>)}
                                 <Form onSubmit={handleSubmit} ref={form}>
-                                    {persona.id && (
+                                    {/*
+                                    {contactoSearchEncontrado && (
                                         <div className = "form-group">
                                             <label htmlFor="id"> ID: </label>
-                                            <Input disabled={persona.id} placeholder="ID" id="id" name="id" type="number" className="form-control" 
+                                            <Input disabled="disabled" placeholder="ID" id="id" name="id" type="number" className="form-control" 
                                             value={persona.id} onChange={handleInputChange}/>
                                         </div>
                                     )}
 
                                     <div className = "form-group">
                                         <label> Nombre: </label>
-                                        <Input placeholder="Nombre" id="nombre" name="nombre" type="text" className="form-control" 
+                                        <Input disabled={personaSearchEncontrada} placeholder="Nombre" id="nombre" name="nombre" type="text" className="form-control" 
                                             value={persona.nombre} onChange={handleInputChange} validations={[required]}/>
                                     </div>
 
                                     <div className = "form-group">
                                         <label> Apellido: </label>
-                                        <Input placeholder="Apellido" id="apellido" name="apellido" type="text" className="form-control" 
+                                        <Input disabled={personaSearchEncontrada} placeholder="Apellido" id="apellido" name="apellido" type="text" className="form-control" 
                                             value={persona.apellido} onChange={handleInputChange} validations={[required]}/>
                                     </div>
         
                                     <div className = "form-group">
                                         <label> DNI: </label>
-                                        <Input placeholder="Dni" id="dni" name="dni" type="number" className="form-control" 
+                                        <Input disabled={personaSearchEncontrada} placeholder="Dni" id="dni" name="dni" type="number" className="form-control" 
                                             value={persona.dni} onChange={handleInputChange} validations={[required]}/>
                                     </div>
         
                                     <div className = "form-group">
                                         <label> Fecha de nacimiento: </label>
-                                        <Input placeholder="dd-mm-yyyy" id="fechaNacimiento" name="fechaNacimiento" type="date" className="form-control" 
+                                        <Input disabled={personaSearchEncontrada} placeholder="dd-mm-yyyy" id="fechaNacimiento" name="fechaNacimiento" type="date" className="form-control" 
                                             value={persona.fechaNacimiento} onChange={handleInputChange} validations={[required]}
                                             min={format(subYears(new Date(), 120), 'yyyy-MM-dd')} max={format(subYears(new Date(), 1), 'yyyy-MM-dd')}/>
                                     </div>
                                     
                                     <div className = "form-group">
                                         <label> Cuit: </label>
-                                        <Input disabled={persona.id} placeholder="Cuit" id="cuit" name="cuit" type="text" className="form-control" 
+                                        <Input disabled={contactoSearchEncontrado} placeholder="Cuit" id="cuit" name="cuit" type="text" className="form-control" 
                                             value={persona.cuit} onChange={handleInputChange} validations={[required]}/>
                                     </div>
         
                                     <div className = "form-group">
                                         <label> Domicilio: </label>
-                                        <Input disabled={persona.id} placeholder="Domicilio" id="domicilio" name="domicilio" type="text" className="form-control" 
+                                        <Input disabled={contactoSearchEncontrado} placeholder="Domicilio" id="domicilio" name="domicilio" type="text" className="form-control" 
                                             value={persona.domicilio} onChange={handleInputChange} validations={[required]}/>
                                     </div>
         
                                     <div className = "form-group">
                                         <label> Email: </label>
-                                        <Input disabled={persona.id} placeholder="Email" id="email" name="email" type="text" className="form-control" 
+                                        <Input disabled={contactoSearchEncontrado} placeholder="Email" id="email" name="email" type="text" className="form-control" 
                                             value={persona.email} onChange={handleInputChange} validations={[required]}/>
                                     </div>
         
                                     <div className = "form-group">
                                         <label> Telefono: </label>
-                                        <Input disabled={persona.id} placeholder="Telefono" id="telefono" name="telefono" type="text" className="form-control" 
+                                        <Input disabled={contactoSearchEncontrado} placeholder="Telefono" id="telefono" name="telefono" type="text" className="form-control" 
                                             value={persona.telefono} onChange={handleInputChange} validations={[required]}/>
                                     </div>
 
                                     <div className = "form-group">
                                         <label> Descripción: </label>
-                                        <Input disabled={persona.id} placeholder="Descripción" name="nombreDescripcion" type="text" className="form-control" 
+                                        <Input disabled={contactoSearchEncontrado} placeholder="Descripción" name="nombreDescripcion" type="text" className="form-control" 
                                             value={persona.nombreDescripcion} onChange={handleInputChange} validations={[required]}/>
                                     </div>
+                                    */}
+
+                                    <PersonaInput contactoSearchEncontrado={contactoSearchEncontrado} personaSearchEncontrada={personaSearchEncontrada} data={persona} handleInputChange={handleInputChange} />
 
                                     <div className="form-group">
                                         <button className="btn btn-success" href="#" disabled={loading}>
@@ -363,9 +355,9 @@ function CreatePersonaComponent() {
                           )}
                         </div>
                     </div>
-        
                 </div>
             </div>
+            <br></br><br></br>
         </div>
     );
 };

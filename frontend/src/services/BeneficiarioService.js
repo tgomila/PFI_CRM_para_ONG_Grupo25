@@ -25,6 +25,10 @@ class BeneficiarioService {
         return axios.delete(BACKEND_API_BASE_URL + 'beneficiario/' + dtoId, {headers: authHeader()});
     }
 
+    search(dtoId){
+        return axios.get(BACKEND_API_BASE_URL + 'beneficiario/search/' + dtoId, {headers: authHeader()} );
+    }
+
     //Esto se usa en caso de tabla dinámica, y asignar nombre real de 'headers' de cada columna de la tabla
     getColumnNames(){
         return axios.get(BACKEND_API_BASE_URL + 'beneficiario/nombres_tabla', { headers: authHeader() });
