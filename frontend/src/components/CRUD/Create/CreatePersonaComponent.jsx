@@ -1,12 +1,11 @@
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef } from 'react'
 import Form from "react-validation/build/form";
 import Input from "react-validation/build/input";
 import CheckButton from "react-validation/build/button";
 import PersonaService from '../../../services/PersonaService';
 import { useNavigate } from 'react-router-dom';
-import { format, subYears } from 'date-fns';
 import { cargarPersonaDefault } from '../Constants/ConstantsCargarDefault';
-import { PersonaInput, IdInput } from '../Constants/ConstantsInput';
+import { PersonaCreateInput } from '../Constants/ConstantsInputModel';
 
 const required = (value) => {
   if (!value) {
@@ -260,72 +259,9 @@ function CreatePersonaComponent() {
                                 )}
                                 {(forzarRenderizado) && (<div></div>)}
                                 <Form onSubmit={handleSubmit} ref={form}>
-                                    {/*
-                                    {contactoSearchEncontrado && (
-                                        <div className = "form-group">
-                                            <label htmlFor="id"> ID: </label>
-                                            <Input disabled="disabled" placeholder="ID" id="id" name="id" type="number" className="form-control" 
-                                            value={persona.id} onChange={handleInputChange}/>
-                                        </div>
-                                    )}
-
-                                    <div className = "form-group">
-                                        <label> Nombre: </label>
-                                        <Input disabled={personaSearchEncontrada} placeholder="Nombre" id="nombre" name="nombre" type="text" className="form-control" 
-                                            value={persona.nombre} onChange={handleInputChange} validations={[required]}/>
-                                    </div>
-
-                                    <div className = "form-group">
-                                        <label> Apellido: </label>
-                                        <Input disabled={personaSearchEncontrada} placeholder="Apellido" id="apellido" name="apellido" type="text" className="form-control" 
-                                            value={persona.apellido} onChange={handleInputChange} validations={[required]}/>
-                                    </div>
-        
-                                    <div className = "form-group">
-                                        <label> DNI: </label>
-                                        <Input disabled={personaSearchEncontrada} placeholder="Dni" id="dni" name="dni" type="number" className="form-control" 
-                                            value={persona.dni} onChange={handleInputChange} validations={[required]}/>
-                                    </div>
-        
-                                    <div className = "form-group">
-                                        <label> Fecha de nacimiento: </label>
-                                        <Input disabled={personaSearchEncontrada} placeholder="dd-mm-yyyy" id="fechaNacimiento" name="fechaNacimiento" type="date" className="form-control" 
-                                            value={persona.fechaNacimiento} onChange={handleInputChange} validations={[required]}
-                                            min={format(subYears(new Date(), 120), 'yyyy-MM-dd')} max={format(subYears(new Date(), 1), 'yyyy-MM-dd')}/>
-                                    </div>
-                                    
-                                    <div className = "form-group">
-                                        <label> Cuit: </label>
-                                        <Input disabled={contactoSearchEncontrado} placeholder="Cuit" id="cuit" name="cuit" type="text" className="form-control" 
-                                            value={persona.cuit} onChange={handleInputChange} validations={[required]}/>
-                                    </div>
-        
-                                    <div className = "form-group">
-                                        <label> Domicilio: </label>
-                                        <Input disabled={contactoSearchEncontrado} placeholder="Domicilio" id="domicilio" name="domicilio" type="text" className="form-control" 
-                                            value={persona.domicilio} onChange={handleInputChange} validations={[required]}/>
-                                    </div>
-        
-                                    <div className = "form-group">
-                                        <label> Email: </label>
-                                        <Input disabled={contactoSearchEncontrado} placeholder="Email" id="email" name="email" type="text" className="form-control" 
-                                            value={persona.email} onChange={handleInputChange} validations={[required]}/>
-                                    </div>
-        
-                                    <div className = "form-group">
-                                        <label> Telefono: </label>
-                                        <Input disabled={contactoSearchEncontrado} placeholder="Telefono" id="telefono" name="telefono" type="text" className="form-control" 
-                                            value={persona.telefono} onChange={handleInputChange} validations={[required]}/>
-                                    </div>
-
-                                    <div className = "form-group">
-                                        <label> Descripción: </label>
-                                        <Input disabled={contactoSearchEncontrado} placeholder="Descripción" name="nombreDescripcion" type="text" className="form-control" 
-                                            value={persona.nombreDescripcion} onChange={handleInputChange} validations={[required]}/>
-                                    </div>
-                                    */}
-
-                                    <PersonaInput contactoSearchEncontrado={contactoSearchEncontrado} personaSearchEncontrada={personaSearchEncontrada} data={persona} handleInputChange={handleInputChange} />
+                                    {//Antes solían estar los inputs aquí
+                                    }
+                                    <PersonaCreateInput contactoSearchEncontrado={contactoSearchEncontrado} personaSearchEncontrada={personaSearchEncontrada} data={persona} handleInputChange={handleInputChange} />
 
                                     <div className="form-group">
                                         <button className="btn btn-success" href="#" disabled={loading}>

@@ -1,5 +1,6 @@
-import React, { useState, useRef } from 'react';
+import React from 'react';
 import Input from "react-validation/build/input";
+import Select from "react-validation/build/select";
 import { format, subYears } from 'date-fns';
 
 const required = (value) => {
@@ -18,6 +19,16 @@ const IdInput = ({ data, handleInputChange }) => {
             <label htmlFor="id"> ID: </label>
             <Input disabled="disabled" placeholder="ID" id="id" name="id" type="number" className="form-control" 
             value={data.id} onChange={handleInputChange}/>
+        </div>
+    );
+};
+
+const IdShowInput = ({ show, data, handleInputChange }) => {
+    return(
+        <div>
+            {show && (
+                <IdInput data={data} handleInputChange={handleInputChange} />
+            )}
         </div>
     );
 };
@@ -84,21 +95,6 @@ const TelefonoInput = ({ disabled, data, handleInputChange }) => {
     );
 };
 
-const ContactoInput = ({ contactoSearchEncontrado, personaSearchEncontrada, data, handleInputChange }) => {
-    return(
-        <div>
-            {contactoSearchEncontrado && (
-                <IdInput data={data} handleInputChange={handleInputChange} />
-            )}
-            <NombreDescripcionForContactoInput disabled="false" data={data} handleInputChange={handleInputChange} />
-            <CuitInput disabled="false" data={data} handleInputChange={handleInputChange} />
-            <DomicilioInput disabled="false" data={data} handleInputChange={handleInputChange} />
-            <EmailInput disabled="false" data={data} handleInputChange={handleInputChange} />
-            <TelefonoInput disabled="false" data={data} handleInputChange={handleInputChange} />
-        </div>
-    );
-}
-
 //Persona
 const NombreInput = ({ disabled, data, handleInputChange }) => {
     return(
@@ -141,37 +137,103 @@ const FechaDeNacimientoInput = ({ disabled, data, handleInputChange }) => {
     );
 };
 
-
-const PersonaInput = ({ contactoSearchEncontrado, personaSearchEncontrada, data, handleInputChange }) => {
+//Beneficiario
+const IdOngInput = ({ disabled, data, handleInputChange }) => {
     return(
-        <div>
-            {contactoSearchEncontrado && (
-                <IdInput data={data} handleInputChange={handleInputChange} />
-            )}
-            <NombreInput disabled={personaSearchEncontrada} data={data} handleInputChange={handleInputChange} />
-            <ApellidoInput disabled={personaSearchEncontrada} data={data} handleInputChange={handleInputChange} />
-            <DniInput disabled={personaSearchEncontrada} data={data} handleInputChange={handleInputChange} />
-            <FechaDeNacimientoInput disabled={personaSearchEncontrada} data={data} handleInputChange={handleInputChange} />
-            <CuitInput disabled={contactoSearchEncontrado} data={data} handleInputChange={handleInputChange} />
-            <DomicilioInput disabled={contactoSearchEncontrado} data={data} handleInputChange={handleInputChange} />
-            <EmailInput disabled={contactoSearchEncontrado} data={data} handleInputChange={handleInputChange} />
-            <TelefonoInput disabled={contactoSearchEncontrado} data={data} handleInputChange={handleInputChange} />
-            <NombreDescripcionForPersonaInput disabled={contactoSearchEncontrado} data={data} handleInputChange={handleInputChange} />
+        <div className = "form-group">
+            <label> Nro de ID original de ONG: </label>
+            <Input disabled={disabled} placeholder="Nro de ID original de ONG" id="idONG" name="idONG" type="number" className="form-control" 
+                value={data.idONG} onChange={handleInputChange}/>
         </div>
     );
-}
+};
+
+const LegajoInput = ({ disabled, data, handleInputChange }) => {
+    return(
+        <div className = "form-group">
+            <label> Nro de legajo: </label>
+            <Input disabled={disabled} placeholder="Legajo" id="legajo" name="legajo" type="number" className="form-control" 
+                value={data.legajo} onChange={handleInputChange}/>
+        </div>
+    );
+};
+
+const LugarDeNacimientoInput = ({ disabled, data, handleInputChange }) => {
+    return(
+        <div className = "form-group">
+            <label> Se retira solo: </label>
+            <Select disabled={disabled} name="seRetiraSolo" value={data.seRetiraSolo} className="form-control" onChange={handleInputChange} validations={[required]}>
+                <option value=''>Seleccione</option>
+                <option value="true">Si</option>
+                <option value="false">No</option>
+            </Select>
+        </div>
+    );
+};
+
+const CuidadosEspecialesInput = ({ disabled, data, handleInputChange }) => {
+    return(
+        <div className = "form-group">
+            <label> Cuidados especiales: </label>
+            <Input disabled={disabled} placeholder="Cuidados especiales" name="cuidadosEspeciales" type="text" className="form-control" 
+                value={data.cuidadosEspeciales} onChange={handleInputChange}/>
+        </div>
+    );
+};
+
+const EscuelaInput = ({ disabled, data, handleInputChange }) => {
+    return(
+        <div className = "form-group">
+            <label> Escuela: </label>
+            <Input disabled={disabled} placeholder="Escuela" name="escuela" type="text" className="form-control" 
+                value={data.escuela} onChange={handleInputChange}/>
+        </div>
+    );
+};
+
+const GradoInput = ({ disabled, data, handleInputChange }) => {
+    return(
+        <div className = "form-group">
+            <label> Grado: </label>
+            <Input disabled={disabled} placeholder="Grado" name="grado" type="text" className="form-control" 
+                value={data.grado} onChange={handleInputChange}/>
+        </div>
+    );
+};
+
+const TurnoInput = ({ disabled, data, handleInputChange }) => {
+    return(
+        <div className = "form-group">
+            <label> Turno: </label>
+            <Input disabled={disabled} placeholder="Turno" name="turno" type="text" className="form-control" 
+                value={data.turno} onChange={handleInputChange}/>
+        </div>
+    );
+};
 
 
 
 export {
-    ContactoInput,
-    PersonaInput,
-
+    //Contacto
     IdInput,
+    IdShowInput,
     NombreDescripcionForContactoInput,
     NombreDescripcionForPersonaInput,
     CuitInput,
     DomicilioInput,
     EmailInput,
     TelefonoInput,
+    //Persona
+    NombreInput,
+    ApellidoInput,
+    DniInput,
+    FechaDeNacimientoInput,
+    //Beneficiario
+    IdOngInput,
+    LegajoInput,
+    LugarDeNacimientoInput,
+    CuidadosEspecialesInput,
+    EscuelaInput,
+    GradoInput,
+    TurnoInput
 }
