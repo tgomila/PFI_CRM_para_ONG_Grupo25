@@ -4,6 +4,8 @@ import "./App.css";
 import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import TablasDinamicas from "./components/tables/TablasDinamicas";
 import TablaActividad from "./components/tables/TablaActividad";
+import TablaActividadBeneficiario from "./components/tables/TablaActividadBeneficiario";
+
 import RealizarPago from "./components/RealizarPago";
 
 import TablaContacto from "./components/tables/TablaContacto";
@@ -27,6 +29,11 @@ import UpdatePersonaComponent from "./components/CRUD/Update/UpdatePersonaCompon
 //Updates
 import UpdateEmployeeComponent from "./components/UpdateEmployeeComponent";
 import ViewEmployeeComponent from "./components/ViewEmployeeComponent";
+
+
+//test
+import Testing from "./components/Testing";
+
 
 import {
   BrowserRouter,
@@ -215,7 +222,7 @@ const App = () => {
           <Routes>
             <Route path="/contacto" element={<TablaContacto redireccionamiento='contacto' />} />
             <Route path="/personafisica" element={<TablasDinamicas redireccionamiento='personafisica' />} />
-            <Route path="/beneficiario" element={<TablasDinamicas redireccionamiento='beneficiario' />} />
+            <Route path="/beneficiario" element={<TablasDinamicas redireccionamiento='beneficiario'/>} />
             <Route path="/voluntario" element={<TablasDinamicas redireccionamiento='voluntario' />} />
             <Route path="/empleado" element={<TablasDinamicas redireccionamiento='empleado' />} />
             <Route path="/colaborador" element={<TablasDinamicas redireccionamiento='colaborador' />} />
@@ -224,6 +231,7 @@ const App = () => {
             <Route path="/profesional" element={<TablasDinamicas redireccionamiento='profesional' />} />
             <Route path="/users" element={<TablasDinamicas redireccionamiento='users' />} />
             <Route path="/actividad" element={<TablaActividad redireccionamiento='actividad' />} />
+            <Route path="/tablaActividadBeneficiario" element={<TablaActividadBeneficiario redireccionamiento='tablaActividadBeneficiario' />} />
             <Route path="/programadeactividades" element={<TablasDinamicas redireccionamiento='programadeactividades' />} />
             <Route path="/producto" element={<TablasDinamicas redireccionamiento='producto' />} />
             <Route path="/donacion" element={<TablasDinamicas redireccionamiento='donacion' />} />
@@ -233,6 +241,7 @@ const App = () => {
             <Route path="/proyecto" element={<TablasDinamicas redireccionamiento='proyecto' />} />
             <Route path="/chat" element={<TablasDinamicas redireccionamiento='chat' />} />
             <Route path="/Marketplace" element={<Marketplace  />} />
+            <Route path="/Testing" element={<Testing  />} />
             
 
 

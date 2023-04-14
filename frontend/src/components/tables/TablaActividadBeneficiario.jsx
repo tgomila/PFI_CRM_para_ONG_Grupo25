@@ -7,12 +7,16 @@ import "../../Styles/TablasDinamicas.scss";
 
 import { useNavigate } from 'react-router-dom';
 
+import { Modal, Button } from "react-bootstrap";
 
-import TablasDinamicas from "./TablasDinamicas";
+import {
+  Route,
+  Routes,
+  BrowserRouter
+} from "react-router-dom";
 
 
-function Table({ columns, data }) {
-  let navigate = useNavigate();
+function Table({redireccionamiento, columns, data }) {
   const {
     getTableProps,
     getTableBodyProps,
@@ -41,37 +45,48 @@ function Table({ columns, data }) {
   const { pageIndex, pageSize } = state;
   window.scrollTo({ top: 0, behavior: "smooth" });
 
-
-  const mostrarBeneficiarioFiltrado = () => {
-    
-    navigate("/beneficiario");
-    window.location.reload();
-  }
-
-  function irTablaActividadBeneficiario(e) {
-
-    console.log("HOLAAAAAAAAAAA")
-    
-    localStorage.setItem("ActividadBeneficiario", e[3]);
-    localStorage.setItem("ActividadId", e[0]);
-
-    
-    //navigate("/tablaActividadBeneficiario");
-    //window.location.reload();
-  }
-
-  const irTablaActividadProfesional = (e) => {
-
-    localStorage.setItem("ActividadProfesional", e[4]);
-    localStorage.setItem("ActividadId", e[0]);
-
-
-    //navigate("/");
-    //window.location.reload();
-
-  }
-
   
+  const [modalOpen, setModalOpen] = useState(false);
+  const [rowAux, setRowAux] = useState();
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
+
+  const changeTrueModalOpen = (row) => {
+    setModalOpen(!modalOpen);
+    setRowAux(row);
+    console.log(row.values.id);
+  };
+
+  const changeFalseModalOpen = () => {
+    setModalOpen(false);
+    setRowAux();
+  };
+
+  const eliminarRegistro = (id) => {
+    if(id != null){
+
+      setMessage("");
+      setLoading(true);
+      BaseService.delete(redireccionamiento, id).then(
+        () => {
+          setLoading(false);
+          window.location.reload();
+        },
+        (error) => {
+          const resMessage =
+            (error.response &&
+              error.response.data &&
+              error.response.data.message) ||
+            error.message ||
+            error.toString();
+
+          setLoading(false);
+          setMessage(resMessage);
+        });
+    } else {
+      setLoading(false);
+    }
+  }
 
 
   // Render the UI for your table
@@ -82,32 +97,16 @@ function Table({ columns, data }) {
           <thead>
             {headerGroups.map((headerGroup) => (
               <tr {...headerGroup.getHeaderGroupProps()}>
-                {/*headerGroup.headers.map((column) => (
+                {headerGroup.headers.map((column) => (
                   <th {...column.getHeaderProps()}>
                     {column.render("Header").toUpperCase()}
                   </th>
-                ))*/}
-                  <th>
-                  ID
-                  </th>
-                  <th>
-                  FECHA Y HORA DESDE
-                  </th>
-                  <th>
-                  FECHA Y HORA HASTA
-                  </th>
-                  <th>
-                  BENEFICIARIOS
-                  </th>
-                  <th>
-                  PROFESIONALES
-                  </th>
-                  <th>
-                  DESCRIPCIÓN
-                  </th>
+                ))}
+
                   <th>
                     EDITAR
                   </th>
+
                   <th>
                     BORRAR
                   </th>
@@ -122,26 +121,12 @@ function Table({ columns, data }) {
               return (
                 <tr {...row.getRowProps()}>
                   {row.cells.map((cell) => {
-                    console.log(cell)
+                    // console.log("Aqui test:");
+                    // console.log(cell);
                     return (
-
-
-                      <td {...cell.getCellProps()}>{(cell.column.id=="beneficiarios") ? 
-                      
-                      <button class="buttonAnimadoVerde" onClick={irTablaActividadBeneficiario(row.cells)}>Beneficiarios</button>
-                      :
-                      (cell.column.id=="profesionales") ?
-
-                      <button class="buttonAnimadoVerde" onClick={irTablaActividadProfesional(row.cells)}>Profesionales</button>
-
-                      
-                      : cell.render("Cell")}</td>
-                      
-                      
-                    
-                      );
+                      <td {...cell.getCellProps()}>{(cell.column.id!="id" && cell.value== true) ? "✅" : (cell.value== false) ? "❌" : cell.render("Cell")}</td>
+                    );
                   })}
-
 
                   <td>
                     <button
@@ -156,8 +141,9 @@ function Table({ columns, data }) {
                   <td>
                     <button
                       className="buttonAnimadoRojo"
+                      type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter"
+                      onClick={() => changeTrueModalOpen(row)}
                     >
-                      {" "}
                       Borrar
                     </button>
                   </td>
@@ -242,24 +228,46 @@ function Table({ columns, data }) {
         </div>
       </div>
 
+      <div>
+    <Modal
+      show={modalOpen}
+      onHide={() => changeTrueModalOpen()}
+    >
+      <Modal.Header closeButton>
+        <Modal.Title>Deseas borrar al ID {rowAux ? rowAux.values.id : ""}?</Modal.Title>
+      </Modal.Header>
 
-                  {/* <Link to={{ 
-                    pathname: '/beneficiario',
-                     state: { redireccionamiento: 'beneficiario'}
-                      }}>Ir al componente Beneficiario
-                  </Link> */}
+      <Modal.Body>
+        <p>Deseas borrar al ID {rowAux ? rowAux.values.id : ""}?</p>
+      </Modal.Body>
+
+      <Modal.Footer>
+        <Button variant="secondary"
+          onClick={() => changeFalseModalOpen()}
+        >CERRAR</Button>
+        <Button variant="primary"
+          onClick={() => eliminarRegistro(rowAux ? rowAux.values.id : null)}
+        >ELIMINAR</Button>
+        {loading && (
+          <span className="spinner-border spinner-border-sm"></span>
+        )}
+      </Modal.Footer>
+    </Modal>
+  </div>
+
 
 
     </div>
   );
 }
 
-function TablaActividad(redireccionamiento) {
+function TablaActividadBeneficiario(redireccionamiento) {
   const [data, setData] = useState([]);
   const [columnNames, setColumnNames] = useState([]);
   const [direccion, setDireccion] = useState(redireccionamiento);
 
   console.log(redireccionamiento);
+
 
   
   const navigate = useNavigate();
@@ -272,56 +280,21 @@ function TablaActividad(redireccionamiento) {
   const componentDidMount = () => {};
 
 
+  const actividadId = localStorage.getItem("ActividadId")
 
   useEffect(() => {
     // Fetch data
     // Update the document title using the browser API
 
+    const actividadBeneficiario = localStorage.getItem("ActividadBeneficiario")
+    
+
     BaseService.getAll(redireccionamiento).then((res) => {
-      
-      let listaActividadData = [];
-      for (let i=0; i < res.data.length ; i++){
-        let     actividadData = {
-          id: res.data[i].id,
-          fechaHoraDesde: res.data[i].fechaHoraDesde,
-          fechaHoraHasta: res.data[i].fechaHoraDesde,
-        }
-
-        listaActividadData.push(actividadData)
-
-      }
-
-      let copiaListaActividadData = [];
-
-      let itemActividad = {};
-
-      res.data.forEach(element => {
-        itemActividad = {
-          id: element.id,
-          fechaHoraDesde: element.fechaHoraDesde,
-          fechaHoraHasta: element.fechaHoraDesde,
-          beneficiarios: JSON.stringify(element.beneficiarios),
-          profesionales: JSON.stringify(element.profesionales),
-          descripcion: element.descripcion
-        }
-
-        copiaListaActividadData.push(itemActividad);
-
-      });
-      
-      console.log("SE IMPRIMIO:")
-      console.log(copiaListaActividadData)
-      setData(copiaListaActividadData);
+      setData(actividadBeneficiario);
     });
 
     BaseService.getColumnNames(redireccionamiento).then((res) => {
-      let     actividadData = [{
-        id: "",
-        fechaHoraDesde: "",
-        fechaHoraHasta: "",
-      }];
-
-      setColumnNames(res.data);
+      setColumnNames(actividadBeneficiario);
     });
 
     setDireccion(redireccionamiento);
@@ -377,17 +350,23 @@ function TablaActividad(redireccionamiento) {
         <div className="row">
 
         {/*<button className="btn btn-primary" onClick={() => navigate( window.location.pathname + "/create", {state:{seccionURL:redireccionamiento.redireccionamiento, firstName:"tomas",lastName:"gomila",emailId:"tomas@gomila.com"}})}> Add Employee</button>*/}
-        <button className="btn btn-primary" onClick={() => navigate( window.location.pathname + "/create", {state:{seccionURL:redireccionamiento.redireccionamiento, firstName:"tomas",lastName:"gomila",emailId:"tomas@gomila.com"}})}> Create {redireccionamiento.redireccionamiento}</button>
+        <button className="btn btn-primary" onClick={() => navigate( window.location.pathname + "/create", {state:{seccionURL:redireccionamiento.redireccionamiento, firstName:"tomas",lastName:"gomila",emailId:"tomas@gomila.com"}})}> Agregar {redireccionamiento.redireccionamiento}</button>
+        &nbsp;&nbsp;&nbsp;
+        <button className="btn btn-primary" onClick={() => navigate( window.location.pathname + "/update", {state:{seccionURL:redireccionamiento.redireccionamiento, firstName:"tomas",lastName:"gomila",emailId:"tomas@gomila.com"}})}> Modificar {redireccionamiento.redireccionamiento}</button>
 
 
         </div>
         <br></br>
         <div className="row">
-          <Table columns={columns} data={data} />
+          <Table redireccionamiento={redireccionamiento} columns={columns} data={data} />
         </div>
       </div>
+
+
+
+
     </div>
   );
 }
 
-export default TablaActividad;
+export default TablaActividadBeneficiario;
