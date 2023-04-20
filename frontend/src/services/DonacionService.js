@@ -18,7 +18,7 @@ class DonacionService {
     }
 
     update(dto, dtoId){
-        return axios.put(BACKEND_API_BASE_URL + 'donacion/' + dtoId, dto, {headers: authHeader()});
+        return axios.put(BACKEND_API_BASE_URL + 'donacion/', dto, {headers: authHeader()});
     }
 
     delete(dtoId){

@@ -18,7 +18,7 @@ class InsumoService {
     }
 
     update(dto, dtoId){
-        return axios.put(BACKEND_API_BASE_URL + 'insumo/' + dtoId, dto, {headers: authHeader()});
+        return axios.put(BACKEND_API_BASE_URL + 'insumo/', dto, {headers: authHeader()});
     }
 
     delete(dtoId){

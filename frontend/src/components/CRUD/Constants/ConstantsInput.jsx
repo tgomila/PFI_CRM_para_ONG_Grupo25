@@ -3,6 +3,8 @@ import Input from "react-validation/build/input";
 import Select from "react-validation/build/select";
 import { format, subYears } from 'date-fns';
 
+//Este js es para "Create" y "Update" en gran parte.
+
 const required = (value) => {
   if (!value) {
     return (
@@ -11,6 +13,28 @@ const required = (value) => {
       </div>
     );
   }
+};
+
+//Exclusivo de "create"
+const IngreseIdAsociar = ({idToSearch, onChangeIdToSearch }) => {
+    return(
+        <div className = "form-group">
+            <label> Ingrese ID del contacto a asociar (anteriormente ya cargado): </label>
+            <Input placeholder="Ingrese ID" id="idToSearch" name="idSearch" type="number" className="form-control" 
+                value={idToSearch} onChange={onChangeIdToSearch} validations={[required]}/>
+        </div>
+    );
+};
+
+//Exclusivo de "update"
+const IngreseIdBuscar = ({idToSearch, onChangeIdToSearch }) => {
+    return(
+        <div className = "form-group">
+            <label> Ingrese ID del contacto a buscar (anteriormente ya cargado): </label>
+            <Input placeholder="Ingrese ID" id="idToSearch" name="idSearch" type="number" className="form-control" 
+                value={idToSearch} onChange={onChangeIdToSearch} validations={[required]}/>
+        </div>
+    );
 };
 
 const IdInput = ({ data, handleInputChange }) => {
@@ -161,9 +185,23 @@ const LegajoInput = ({ disabled, data, handleInputChange }) => {
 const LugarDeNacimientoInput = ({ disabled, data, handleInputChange }) => {
     return(
         <div className = "form-group">
+            <label> Lugar de nacimiento: </label>
+            <Input disabled={disabled} placeholder="Lugar de nacimiento" name="lugarDeNacimiento" type="text" className="form-control" 
+                value={data.lugarDeNacimiento} onChange={handleInputChange}/>
+        </div>
+    );
+};
+
+const SeRetiraSoloInput = ({ disabled, data, handleInputChange }) => {
+    return(
+        <div className = "form-group">
             <label> Se retira solo: </label>
-            <Select disabled={disabled} name="seRetiraSolo" value={data.seRetiraSolo} className="form-control" onChange={handleInputChange} validations={[required]}>
-                <option value=''>Seleccione</option>
+            {/*{console.log("ID: " + data.id)}
+            {console.log("Se retira solo: " + data.seRetiraSolo)}
+            {console.log(data)}
+        */}
+            <Select disabled={disabled} name="seRetiraSolo" value={data.seRetiraSolo ? "true" : "false"} className="form-control" onChange={handleInputChange} validations={[required]}>
+                <option value="">Seleccione</option>
                 <option value="true">Si</option>
                 <option value="false">No</option>
             </Select>
@@ -214,7 +252,11 @@ const TurnoInput = ({ disabled, data, handleInputChange }) => {
 
 
 export {
+    //Otros
+    required,
     //Contacto
+    IngreseIdAsociar,
+    IngreseIdBuscar,
     IdInput,
     IdShowInput,
     NombreDescripcionForContactoInput,
@@ -232,6 +274,7 @@ export {
     IdOngInput,
     LegajoInput,
     LugarDeNacimientoInput,
+    SeRetiraSoloInput,
     CuidadosEspecialesInput,
     EscuelaInput,
     GradoInput,

@@ -18,7 +18,7 @@ class ColaboradorService {
     }
 
     update(dto, dtoId){
-        return axios.put(BACKEND_API_BASE_URL + 'colaborador/' + dtoId, dto, {headers: authHeader()});
+        return axios.put(BACKEND_API_BASE_URL + 'colaborador/', dto, {headers: authHeader()});
     }
 
     delete(dtoId){

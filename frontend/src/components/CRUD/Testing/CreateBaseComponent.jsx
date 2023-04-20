@@ -2,13 +2,18 @@ import React, { useState, useRef } from 'react'
 import Form from "react-validation/build/form";
 import Input from "react-validation/build/input";
 import CheckButton from "react-validation/build/button";
-import PersonaService from '../../../services/PersonaService';
+//import BaseService from '../../../services/BaseService';
 import { useNavigate } from 'react-router-dom';
-import { cargarPersonaDefault } from '../Constants/ConstantsCargarDefault';
+//import { cargarPersonaDefault } from '../Constants/ConstantsCargarDefault';
+//import { PersonaCreateInput } from '../Constants/ConstantsInputModel';
+import {IngreseIdAsociar} from '../Constants/ConstantsInput';
 import { PersonaCreateInput } from '../Constants/ConstantsInputModel';
-import { required } from '../Constants/ConstantsInput';
 
-function CreatePersonaComponent() {
+/**
+ * ejemplo: (cargarPersonaDefault, PersonaCreateInput, PersonaService, "la", "persona", "/personafisica")
+ */
+//function CreateBaseComponent(cargarBaseDefault, BaseCreateInput, Service, el_la, nombreBase, direccionTable) {
+const CreateBaseComponent = (cargarBaseDefault, BaseCreateInput, Service, el_la, nombreBase, direccionTable) => {
     let navigate = useNavigate();
 
     const form = useRef();
@@ -16,7 +21,7 @@ function CreatePersonaComponent() {
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState("");
 
-    const [persona, setPersona] = useState(cargarPersonaDefault);
+    const [baseModel, setBaseModel] = useState(cargarBaseDefault);
     const [submitted, setSubmitted] = useState(false);
 
     //Search de ID
@@ -36,7 +41,7 @@ function CreatePersonaComponent() {
       };
     const handleSearch = (e) => {
         e.preventDefault();
-        setPersona(cargarPersonaDefault);
+        setBaseModel(cargarBaseDefault);
         setMessageSearch("");
         setLoadingSearch(true);
         setContactoSearchEncontrado(false);
@@ -44,7 +49,7 @@ function CreatePersonaComponent() {
         formSearch.current.validateAll();
         //console.log("Llegue aquí, id: " + idToSearch);
         if (checkBtnSearch.current.context._errors.length === 0) {
-            PersonaService.search(idToSearch).then
+            Service.search(idToSearch).then
                 (response => {
                     if(response.data.id)
                         setContactoSearchEncontrado(true);
@@ -55,7 +60,7 @@ function CreatePersonaComponent() {
                     //    nombreDescripcion: response.data.nombreDescripcion,
                     //    //...sigue
                     //});
-                    setPersona(prevPerson => ({ ...prevPerson, ...response.data }));
+                    setBaseModel(prevBase => ({ ...prevBase, ...response.data }));
                     setLoadingSearch(false);
                     changeShowNoSearch();
                     //setMostrarLabelSearchEncontrado(true);
@@ -86,7 +91,7 @@ function CreatePersonaComponent() {
     const handleInputChange = event => {
         //Trae literalmente copia de "<Input", pero con value reemplazado con el value que escribió el usuario.
         const { name, value } = event.target;
-        setPersona({ ...persona, [name]: value });
+        setBaseModel({ ...baseModel, [name]: value });
     };
 
     const handleSubmit = (e) => {
@@ -98,11 +103,11 @@ function CreatePersonaComponent() {
 
         form.current.validateAll();
         
-       let data = {...persona}; //Copio datos a "data" para el json de alta
+       let data = {...baseModel}; //Copio datos a "data" para el json de alta
         if (checkBtn.current.context._errors.length === 0) {
-            PersonaService.create(data).then
+            Service.create(data).then
                 (response => {
-                    setPersona(prevPerson => ({ ...prevPerson, ...response.data }));
+                    setBaseModel(prevPerson => ({ ...prevPerson, ...response.data }));
                 setSubmitted(true);
                 window.scrollTo({ top: 0, behavior: "smooth" }); //Para mostrar cartel "Has cargado X componente!"
                 },
@@ -123,8 +128,8 @@ function CreatePersonaComponent() {
         }
     };
 
-    const newPersona = () => {
-        setPersona(cargarPersonaDefault);
+    const newBaseModel = () => {
+        setBaseModel(cargarBaseDefault);
         setLoading(false);
         setSubmitted(false);
         setMostrarSearchID(false);
@@ -162,7 +167,7 @@ function CreatePersonaComponent() {
     }
 
     const cancel = () => {
-        navigate("/personafisica");
+        navigate(direccionTable);//"/personafisica"
         window.location.reload();
     }
     
@@ -175,9 +180,9 @@ function CreatePersonaComponent() {
                         <div className = "card col-md-6 offset-md-3 offset-md-3">
                           {submitted ? (
                             <div>
-                                <h4>¡Has cargado la persona!</h4>
-                                <button className="btn btn-success" onClick={newPersona}>
-                                  Agregar nueva persona
+                                <h4>¡Has cargado {el_la} {nombreBase}!</h4>
+                                <button className="btn btn-success" onClick={newBaseModel}>
+                                  Agregar {el_la==="la" ? "nueva" : "nuevo"} {nombreBase}
                                 </button>
                                 <button className="btn btn-back" onClick={cancel}>
                                   Regresar a la lista
@@ -198,7 +203,7 @@ function CreatePersonaComponent() {
                                         <button className="btn btn-light" onClick={changeShowSearch} style={{marginLeft: "00px"}}>
                                             Realizar otra Búsqueda
                                         </button>
-                                        <button className="btn btn-light" onClick={newPersona} style={{marginLeft: "00px"}}>
+                                        <button className="btn btn-light" onClick={newBaseModel} style={{marginLeft: "00px"}}>
                                             Cancelar Búsqueda
                                         </button>
                                         </div>
@@ -215,11 +220,14 @@ function CreatePersonaComponent() {
                                 {(mostrarSearchID) && (
                                     <div className = "form-group">
                                         <Form onSubmit={handleSearch} ref={formSearch}>
+                                            {/*
                                             <div className = "form-group">
                                                 <label> Ingrese ID del contacto a asociar (anteriormente ya cargado): </label>
                                                 <Input placeholder="Ingrese ID" id="idToSearch" name="idSearch" type="number" className="form-control" 
                                                     value={idToSearch} onChange={onChangeIdToSearch} validations={[required]}/>
                                             </div>
+                                            */}
+                                            <IngreseIdAsociar idToSearch={idToSearch} onChangeIdToSearch={onChangeIdToSearch} />
 
                                             <div className="form-group">
                                                 <button className="btn btn-success" href="#" disabled={loadingSearch}>
@@ -250,9 +258,11 @@ function CreatePersonaComponent() {
                                 )}
                                 {(forzarRenderizado) && (<div></div>)}
                                 <Form onSubmit={handleSubmit} ref={form}>
-                                    {//Antes solían estar los inputs aquí
-                                    }
-                                    <PersonaCreateInput contactoSearchEncontrado={contactoSearchEncontrado} personaSearchEncontrada={personaSearchEncontrada} data={persona} handleInputChange={handleInputChange} />
+                                    
+                                    {console.log("Llegue aqui 1")}
+                                    {/*<BaseCreateInput contactoSearchEncontrado={contactoSearchEncontrado} personaSearchEncontrada={personaSearchEncontrada} data={baseModel} handleInputChange={handleInputChange} />*/}
+                                    <PersonaCreateInput contactoSearchEncontrado={contactoSearchEncontrado} personaSearchEncontrada={personaSearchEncontrada} data={baseModel} handleInputChange={handleInputChange} />
+                                    {console.log("Llegue aqui 2")}
 
                                     <div className="form-group">
                                         <button className="btn btn-success" href="#" disabled={loading}>
@@ -263,7 +273,7 @@ function CreatePersonaComponent() {
                                             {loading && (
                                                 <span className="spinner-border spinner-border-sm"></span>
                                             )}
-                                            Cargar persona
+                                            Cargar {nombreBase}
                                         </button>
                                     </div>
                                     {message && (
@@ -289,4 +299,4 @@ function CreatePersonaComponent() {
     );
 };
 
-export default CreatePersonaComponent;
+export default CreateBaseComponent;

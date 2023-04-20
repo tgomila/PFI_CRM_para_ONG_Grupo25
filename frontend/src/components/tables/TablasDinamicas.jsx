@@ -50,6 +50,7 @@ function Table({redireccionamiento, columns, data }) {
   const [rowAux, setRowAux] = useState();
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
+  const navigate = useNavigate();
 
   const changeTrueModalOpen = (row) => {
     setModalOpen(!modalOpen);
@@ -88,8 +89,14 @@ function Table({redireccionamiento, columns, data }) {
     }
   }
 
+  const navigateUpdate = (cell) => {
+
+    navigate( window.location.pathname + "/update", {state:{id:1}});
+  }
+
 
   // Render the UI for your table
+  const [auxIdCell, setAuxIdCell] = useState("");
   return (
     <div className="TablasDinamicas">
       <div className="tablaDinamica">
@@ -129,8 +136,11 @@ function Table({redireccionamiento, columns, data }) {
                   })}
 
                   <td>
+                    {/*console.log("Boton:")*/}
+                    {/*console.log(row.values.id)*/}
                     <button
                       className="buttonAnimadoVerde"
+                      onClick={() => navigate( window.location.pathname + "/update", {state:{id:row.values.id}})}
                     >
                       {" "}
                       Editar

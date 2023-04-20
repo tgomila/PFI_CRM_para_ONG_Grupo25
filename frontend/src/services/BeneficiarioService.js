@@ -18,7 +18,7 @@ class BeneficiarioService {
     }
 
     update(dto, dtoId){
-        return axios.put(BACKEND_API_BASE_URL + 'beneficiario/' + dtoId, dto, {headers: authHeader()});
+        return axios.put(BACKEND_API_BASE_URL + 'beneficiario/', dto, {headers: authHeader()});
     }
 
     delete(dtoId){

@@ -18,7 +18,7 @@ class EmpleadoService {
     }
 
     update(dto, dtoId){
-        return axios.put(BACKEND_API_BASE_URL + 'empleado/' + dtoId, dto, {headers: authHeader()});
+        return axios.put(BACKEND_API_BASE_URL + 'empleado/', dto, {headers: authHeader()});
     }
 
     delete(dtoId){

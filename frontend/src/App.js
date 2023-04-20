@@ -25,6 +25,7 @@ import CreateEmployeeComponent from "./trash-can/CreateEmployeeComponent";//Test
 
 //Updates
 import UpdatePersonaComponent from "./components/CRUD/Update/UpdatePersonaComponent";
+import UpdateBeneficiarioComponent from "./components/CRUD/Update/UpdateBeneficiarioComponent";
 
 //Updates
 import UpdateEmployeeComponent from "./components/UpdateEmployeeComponent";
@@ -144,6 +145,9 @@ const App = () => {
 
     
     <div className="principal">
+      <head>
+        <title>Current Title</title>
+      </head>
       
 
 
@@ -220,6 +224,8 @@ const App = () => {
       <div className="sidebarYRoutes">
         <Sidebar style={{ marginLeft: "0px" }}>
           <Routes>
+
+            {/* Lista */}
             <Route path="/contacto" element={<TablaContacto redireccionamiento='contacto' />} />
             <Route path="/personafisica" element={<TablasDinamicas redireccionamiento='personafisica' />} />
             <Route path="/beneficiario" element={<TablasDinamicas redireccionamiento='beneficiario'/>} />
@@ -245,7 +251,7 @@ const App = () => {
             
 
 
-            {/* Agregar item*/}
+            {/* Create item */}
             <Route path="/contacto/create" element={<CreateContactoComponent />} />
             <Route path="/personafisica/create" element={<CreatePersonaComponent />} />
             <Route path="/beneficiario/create" element={<CreateBeneficiarioComponent />} />
@@ -273,12 +279,13 @@ const App = () => {
             
 
 
-            {/* Agregar item*/}
+            {/* Update item */}
             <Route path="/personafisica/update" element={<UpdatePersonaComponent />} />
+            <Route path="/beneficiario/update" element={<UpdateBeneficiarioComponent />} />
 
 
 
-            {/* BARRA DE ARRIBA*/}
+            {/* BARRA DE ARRIBA */}
             <Route path="/" element={<Bienvenido redireccionamiento='beneficiario' />} />
             <Route path="/login" element={<Login />} />
             <Route path="/admin" element={<BoardAdmin />} />

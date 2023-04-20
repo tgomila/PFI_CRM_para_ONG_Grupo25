@@ -18,7 +18,7 @@ class PersonaService {
     }
 
     update(dto, dtoId){
-        return axios.put(BACKEND_API_BASE_URL + 'personafisica/' + dtoId, dto, {headers: authHeader()} );
+        return axios.put(BACKEND_API_BASE_URL + 'personafisica/', dto, {headers: authHeader()} );
     }
 
     delete(dtoId){

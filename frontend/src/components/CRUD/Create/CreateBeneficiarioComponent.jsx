@@ -349,7 +349,7 @@ function CreateBeneficiarioComponent() {
 
                                     <div className = "form-group">
                                         <label> Se retira solo: </label>
-                                        <Select name="seRetiraSolo" value={beneficiario.seRetiraSolo} className="form-control" onChange={handleInputChange} validations={[required]}>
+                                        <Select name="seRetiraSolo" value={beneficiario.seRetiraSolo ? "true" : "false"} className="form-control" onChange={handleInputChange} validations={[required]}>
                                             <option value=''>Seleccione</option>
                                             <option value="true">Si</option>
                                             <option value="false">No</option>

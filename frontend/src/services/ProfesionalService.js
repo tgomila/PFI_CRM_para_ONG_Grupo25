@@ -18,7 +18,7 @@ class ProfesionalService {
     }
 
     update(dto, dtoId){
-        return axios.put(BACKEND_API_BASE_URL + 'profesional/' + dtoId, dto, {headers: authHeader()});
+        return axios.put(BACKEND_API_BASE_URL + 'profesional/', dto, {headers: authHeader()});
     }
 
     delete(dtoId){

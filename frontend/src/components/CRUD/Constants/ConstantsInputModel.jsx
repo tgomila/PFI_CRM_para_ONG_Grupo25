@@ -18,6 +18,7 @@ import {
     IdOngInput,
     LegajoInput,
     LugarDeNacimientoInput,
+    SeRetiraSoloInput,
     CuidadosEspecialesInput,
     EscuelaInput,
     GradoInput,
@@ -78,17 +79,16 @@ const PersonaUpdateInput = ({ data, handleInputChange }) => {
         <div>
             {data.id && (
                 <div>
-                    <IdShowInput show={"false"} data={data} handleInputChange={handleInputChange} />
-                    <NombreInput disabled={"false"} data={data} handleInputChange={handleInputChange} />
-                    <ApellidoInput disabled={"false"} data={data} handleInputChange={handleInputChange} />
-                    <DniInput disabled={"false"} data={data} handleInputChange={handleInputChange} />
-                    <FechaDeNacimientoInput disabled={"false"} data={data} handleInputChange={handleInputChange} />
-                    <CuitInput disabled={"false"} data={data} handleInputChange={handleInputChange} />
-                    <DomicilioInput disabled={"false"} data={data} handleInputChange={handleInputChange} />
-                    <EmailInput disabled={"false"} data={data} handleInputChange={handleInputChange} />
-                    <TelefonoInput disabled={"false"} data={data} handleInputChange={handleInputChange} />
-                    <NombreDescripcionForPersonaInput disabled={"false"} data={data} handleInputChange={handleInputChange} />
-                    <TelefonoInput disabled={"false"} data={data} handleInputChange={handleInputChange} />
+                    <IdShowInput show={"true"} data={data} handleInputChange={handleInputChange} />
+                    <NombreInput disabled={""} data={data} handleInputChange={handleInputChange} />
+                    <ApellidoInput disabled={""} data={data} handleInputChange={handleInputChange} />
+                    <DniInput disabled={""} data={data} handleInputChange={handleInputChange} />
+                    <FechaDeNacimientoInput disabled={""} data={data} handleInputChange={handleInputChange} />
+                    <CuitInput disabled={""} data={data} handleInputChange={handleInputChange} />
+                    <DomicilioInput disabled={""} data={data} handleInputChange={handleInputChange} />
+                    <EmailInput disabled={""} data={data} handleInputChange={handleInputChange} />
+                    <TelefonoInput disabled={""} data={data} handleInputChange={handleInputChange} />
+                    <NombreDescripcionForPersonaInput disabled={""} data={data} handleInputChange={handleInputChange} />
                 </div>
             )}
         </div>
@@ -103,6 +103,7 @@ const BeneficiarioCreateInput = ({ contactoSearchEncontrado, personaSearchEncont
             <IdOngInput disabled={contactoSearchEncontrado} data={data} handleInputChange={handleInputChange} />
             <LegajoInput disabled={contactoSearchEncontrado} data={data} handleInputChange={handleInputChange} />
             <LugarDeNacimientoInput disabled={contactoSearchEncontrado} data={data} handleInputChange={handleInputChange} />
+            <SeRetiraSoloInput disabled={contactoSearchEncontrado} data={data} handleInputChange={handleInputChange} />
             <CuidadosEspecialesInput disabled={contactoSearchEncontrado} data={data} handleInputChange={handleInputChange} />
             <EscuelaInput disabled={contactoSearchEncontrado} data={data} handleInputChange={handleInputChange} />
             <GradoInput disabled={contactoSearchEncontrado} data={data} handleInputChange={handleInputChange} />
@@ -117,13 +118,14 @@ const BeneficiarioUpdateInput = ({ data, handleInputChange }) => {
             <PersonaUpdateInput data={data} handleInputChange={handleInputChange}/>
             {data.id && (
                 <div>
-                    <IdOngInput disabled={"false"} data={data} handleInputChange={handleInputChange} />
-                    <LegajoInput disabled={"false"} data={data} handleInputChange={handleInputChange} />
-                    <LugarDeNacimientoInput disabled={"false"} data={data} handleInputChange={handleInputChange} />
-                    <CuidadosEspecialesInput disabled={"false"} data={data} handleInputChange={handleInputChange} />
-                    <EscuelaInput disabled={"false"} data={data} handleInputChange={handleInputChange} />
-                    <GradoInput disabled={"false"} data={data} handleInputChange={handleInputChange} />
-                    <TurnoInput disabled={"false"} data={data} handleInputChange={handleInputChange} />
+                    <IdOngInput disabled={""} data={data} handleInputChange={handleInputChange} />
+                    <LegajoInput disabled={""} data={data} handleInputChange={handleInputChange} />
+                    <LugarDeNacimientoInput disabled={""} data={data} handleInputChange={handleInputChange} />
+                    <SeRetiraSoloInput disabled={""} data={data} handleInputChange={handleInputChange} />
+                    <CuidadosEspecialesInput disabled={""} data={data} handleInputChange={handleInputChange} />
+                    <EscuelaInput disabled={""} data={data} handleInputChange={handleInputChange} />
+                    <GradoInput disabled={""} data={data} handleInputChange={handleInputChange} />
+                    <TurnoInput disabled={""} data={data} handleInputChange={handleInputChange} />
                 </div>
             )}
         </div>

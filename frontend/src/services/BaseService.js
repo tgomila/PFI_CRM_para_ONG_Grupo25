@@ -19,7 +19,7 @@ class BaseService {
     }
 
     update(redireccionamiento, dto, dtoId){
-        return axios.put(BACKEND_API_BASE_URL + redireccionamiento.redireccionamiento + '/' + dtoId, dto, {headers: authHeader()});
+        return axios.put(BACKEND_API_BASE_URL + redireccionamiento.redireccionamiento + '/', dto, {headers: authHeader()});
     }
 
     delete(redireccionamiento, dtoId){

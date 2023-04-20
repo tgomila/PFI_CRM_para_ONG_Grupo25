@@ -18,7 +18,7 @@ class ProductoService {
     }
 
     update(dto, dtoId){
-        return axios.put(BACKEND_API_BASE_URL + 'producto/' + dtoId, dto, {headers: authHeader()});
+        return axios.put(BACKEND_API_BASE_URL + 'producto/', dto, {headers: authHeader()});
     }
 
     delete(dtoId){

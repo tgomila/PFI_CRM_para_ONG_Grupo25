@@ -18,7 +18,7 @@ class ContactoService {
     }
 
     update(dto, dtoId){
-        return axios.put(BACKEND_API_BASE_URL + 'contacto/' + dtoId, dto, {headers: authHeader()});
+        return axios.put(BACKEND_API_BASE_URL + 'contacto/', dto, {headers: authHeader()});
     }
 
     delete(dtoId){

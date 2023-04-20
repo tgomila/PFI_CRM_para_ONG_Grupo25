@@ -18,7 +18,7 @@ class ConsejoAdHonoremService {
     }
 
     update(dto, dtoId){
-        return axios.put(BACKEND_API_BASE_URL + 'consejoadhonorem/' + dtoId, dto, {headers: authHeader()});
+        return axios.put(BACKEND_API_BASE_URL + 'consejoadhonorem/', dto, {headers: authHeader()});
     }
 
     delete(dtoId){

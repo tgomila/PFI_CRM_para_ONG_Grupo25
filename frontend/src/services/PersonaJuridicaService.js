@@ -18,7 +18,7 @@ class PersonaJuridicaService {
     }
 
     update(dto, dtoId){
-        return axios.put(BACKEND_API_BASE_URL + 'personajuridica/' + dtoId, dto, {headers: authHeader()});
+        return axios.put(BACKEND_API_BASE_URL + 'personajuridica/', dto, {headers: authHeader()});
     }
 
     delete(dtoId){

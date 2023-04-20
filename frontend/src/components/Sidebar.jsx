@@ -81,8 +81,8 @@ const Sidebar = ({ children }) => {
         }
         
     }, []);
-    console.log("Imprimo menuItemService");
-    console.log(menuItemService);
+    //console.log("Imprimo menuItemService");
+    //console.log(menuItemService);
     if (user) {
         
         //menuItem = mockSERVICIODEMODULOS.map((item) => {
@@ -178,7 +178,7 @@ const Sidebar = ({ children }) => {
 
     return (
         <div className="miSideBar">
-            <div style={{ width: isOpen ? "200px" : "50px" }} className="sidebar">
+            <div style={{ width: isOpen ? "200px" : "50px" }} className="sidebar" onMouseEnter={() => setIsOpen(true)} onMouseLeave={() => setIsOpen(false)}>
                 <div className="top_section">
                     {/* display: isOpen ? "block" : "none" */}
                     <div style={{ marginLeft: isOpen ? "0px" : "-50px" }} className="logoDivSideBar">

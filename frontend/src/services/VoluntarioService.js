@@ -18,7 +18,7 @@ class VoluntarioService {
     }
 
     update(dto, dtoId){
-        return axios.put(BACKEND_API_BASE_URL + 'voluntario/' + dtoId, dto, {headers: authHeader()});
+        return axios.put(BACKEND_API_BASE_URL + 'voluntario/', dto, {headers: authHeader()});
     }
 
     delete(dtoId){
