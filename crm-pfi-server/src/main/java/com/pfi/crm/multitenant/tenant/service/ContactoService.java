@@ -1,7 +1,11 @@
 package com.pfi.crm.multitenant.tenant.service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -176,5 +180,91 @@ public class ContactoService {
 	
 	public boolean existeContacto(Long id) {
 		return contactoRepository.existsById(id);
+	}
+	
+	
+	//Dashboard
+	public List<ContactoPayload> getContactosCreadosEnLosUltimos30Dias() {
+		return contactoRepository.findContactosCreatedThisMonth(LocalDate.now()).stream().map(e -> e.toPayload()).collect(Collectors.toList());
+	}
+	
+	public List<Map<String, Object>> countContactosCreadosEsteAnioPorMes() {
+		List<Map<String, Object>> countContactosCreatedThisYearByMonth = contactoRepository.countContactosCreatedThisYearByMonth(LocalDate.now());
+		return countContactosCreatedThisYearByMonth;
+	}
+	
+	public List<Map<String, Object>> countContactosCreadosUltimos12meses() {
+		LocalDateTime start = LocalDateTime.now().minusMonths(11).withDayOfMonth(1).withHour(0).withMinute(0).withSecond(0).withNano(0);
+		LocalDateTime end = LocalDateTime.now().withHour(23).withMinute(59).withSecond(59).withNano(999);
+		List<Map<String, Object>> countContactosCreatedLast12MonthsByMonth = contactoRepository.countContactosCreatedLast12MonthsByMonth(start, end);
+		return countContactosCreatedLast12MonthsByMonth;
+	}
+	
+	
+	
+	//Trash
+	public LocalDate contactosCreadosEnLosUltimos30Dias() {
+		LocalDate initial = LocalDate.now();
+		LocalDate start = initial.withDayOfMonth(1);
+		//LocalDate end = initial.withDayOfMonth(initial.getMonth().length(initial.isLeapYear()));
+		
+		return start;
+		//LocalDate start = LocalDate.ofEpochDay(System.currentTimeMillis() / (24 * 60 * 60 * 1000) ).withDayOfMonth(1);
+		//LocalDate end = LocalDate.ofEpochDay(System.currentTimeMillis() / (24 * 60 * 60 * 1000) ).plusMonths(1).withDayOfMonth(1).minusDays(1);
+	}
+	
+	
+	
+	
+	/**
+	 * Solo para uso de testing
+	 * @return contacto testing con datos randoms.
+	 */
+	public ContactoPayload contactoGenerator() {
+		ContactoPayload contactoGenerado = new ContactoPayload();
+		
+		//NombreDescripcion
+		contactoGenerado.setNombreDescripcion("Testing nombre/descripción");
+		
+		//Cuit
+		Random random = new Random();
+        int numAleatorio = random.nextInt(10);
+        int dniAleatorio;
+        if (numAleatorio < 1) { // 10% de probabilidad
+        	dniAleatorio = random.nextInt(10000000, 20000000);
+        } else if (numAleatorio < 3) { // 20% de probabilidad
+        	dniAleatorio =  random.nextInt(20000000, 30000000);
+        } else { // 70% de probabilidad
+        	dniAleatorio =  random.nextInt(30000000, 40000000);
+        }
+        int nroUnoAlNueveAleatorio = random.nextInt(9) + 1;
+        contactoGenerado.setCuit("23-"+dniAleatorio+"-"+nroUnoAlNueveAleatorio);
+		
+		//Domicilio
+		final List<String> CALLES = Arrays.asList(
+				"Av. Florida", "Av. Corrientes", "Av. Rivadavia", "Av. Cabildo", "Av. Santa Fe", "Av. Callao", "San Martín", "Av. 9 de Julio", "Avenida de Mayo",
+				"Av. Pueyrredón", "Av. Córdoba", "Lavalle", "Paraguay", "Av. Alem", "Av. Hipólito Yrigoyen", "Av. Sarmiento", "Moreno",
+				"Bulnes", "Bolivar", "Azcuénaga", "Libertad", "Bartolomé Mitre", "Riobamba", "Arenales", "Lavalle",
+				"Tucumán", "Uruguay", "Honduras", "Thames"
+		);
+		int nro_1_999_aleatorio = random.nextInt(999) + 1;
+		String direccionAleatoria = CALLES.get(random.nextInt(CALLES.size())) + " " + nro_1_999_aleatorio;
+		numAleatorio = random.nextInt(10);
+		if(numAleatorio > 5) {
+			//Piso 1 a 15
+			int piso = random.nextInt(15) + 1;
+			//Letra departamento A a G
+			char depto = (char) (random.nextInt(7) + 'A');
+			direccionAleatoria += ", piso "+piso+depto;
+		}
+		contactoGenerado.setDomicilio(direccionAleatoria);
+		
+		//email
+		contactoGenerado.setEmail("testing@testing.com");
+		
+		//Telefono
+		contactoGenerado.setTelefono("15-"+random.nextInt(9999)+"-"+random.nextInt(9999));
+		
+		return contactoGenerado;
 	}
 }

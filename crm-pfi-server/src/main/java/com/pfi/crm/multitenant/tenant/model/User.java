@@ -3,7 +3,7 @@ package com.pfi.crm.multitenant.tenant.model;
 import org.hibernate.annotations.NaturalId;
 
 import com.pfi.crm.exception.ResourceNotFoundException;
-import com.pfi.crm.multitenant.tenant.model.audit.DateAudit;
+import com.pfi.crm.multitenant.tenant.model.audit.UserDateAudit;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -22,8 +22,9 @@ import java.util.Set;
             "email"
         })
 })
-public class User extends DateAudit{
-    private static final long serialVersionUID = -8068298449078497651L;
+public class User extends UserDateAudit{
+
+	private static final long serialVersionUID = 8495957082037464071L;
 
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

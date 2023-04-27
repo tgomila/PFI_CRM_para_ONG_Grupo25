@@ -8,11 +8,17 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import com.pfi.crm.multitenant.tenant.model.audit.UserDateAudit;
 import com.pfi.crm.multitenant.tenant.payload.FacturaItemPayload;
 
 @Entity
 @Table(name ="factura_item")
-public class FacturaItem {
+public class FacturaItem extends UserDateAudit {
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 330786093890005795L;
 	
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

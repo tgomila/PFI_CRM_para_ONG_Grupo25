@@ -78,7 +78,7 @@ public class PersonaFisicaController {
 	//Devuelve un ejemplo de PersonaFisica
 	
 	@GetMapping("/test")
-	public PersonaFisicaPayload altaVoluntarioTest(/* @Valid @RequestBody PersonaFisicaPayload payload */) {
+	public PersonaFisicaPayload altaPersonaFisicaTest(/* @Valid @RequestBody PersonaFisicaPayload payload */) {
 		System.out.println("Entre aca");
 
 		PersonaFisica m = new PersonaFisica();
@@ -103,5 +103,10 @@ public class PersonaFisicaController {
 		m.setEstadoActivoPersonaFisica(true);
 		
 		return m.toPayload();
+	}
+	
+	@GetMapping("/test/aleatorio")
+	public PersonaFisicaPayload personaFisicaAleatoriaTest(/* @Valid @RequestBody PersonaFisicaPayload payload */) {
+		return personaFisicaService.personaFisicaGenerator();
 	}
 }

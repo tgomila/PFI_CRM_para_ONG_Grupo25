@@ -221,7 +221,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 			cargarRolesYModulos();
 			cargarSuscripcionModulosTenant2();
 			
-			cargarContactosTenant2();
+			cargarContactoComoVoluntarioYEmpleadoTenant2();
 			cargarBeneficiariosTenant2();
 			cargarVoluntariosTenant2();
 			cargarProfesionalesTenant2();
@@ -346,7 +346,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		// Contacto
 		m.setNombreDescripcion("Piba");
 		m.setCuit("20-1235678-9");
-		m.setDomicilio("Uruguar 782, piso 1, depto B");
+		m.setDomicilio("Uruguay 782, piso 1, depto B");
 		m.setEmail("carlagomez@gmail.com");
 		m.setTelefono("1234-4567");
 
@@ -1033,18 +1033,69 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 	
 	
 	//Tenant 2
-	public void cargarContactosTenant2() {
-		ContactoPayload m = new ContactoPayload();
+	public void cargarContactoComoVoluntarioYEmpleadoTenant2() {
+		ContactoPayload contactoPayload = new ContactoPayload();
 
 		// Contacto
-		m.setNombreDescripcion("Súper Contacto como Voluntario y Empleado");
-		m.setCuit("20-1235678-9");
-		m.setDomicilio("Avenida siempre falsa 123, piso 8, depto B");
-		m.setEmail("megacontacto@gmail.com");
-		m.setTelefono("1234-4567");
+		contactoPayload.setNombreDescripcion("Súper Contacto como Voluntario y Empleado");
+		contactoPayload.setCuit("20-1235678-9");
+		contactoPayload.setDomicilio("Avenida siempre falsa 123, piso 8, depto B");
+		contactoPayload.setEmail("megacontacto@gmail.com");
+		contactoPayload.setTelefono("1234-4567");
 		
-		contactoService.altaContacto(m);
+		contactoPayload = contactoService.altaContacto(contactoPayload);
+		
+		
+		
+		/////////////////////////////////////////////////////////////////////
+		VoluntarioPayload voluntarioPayload;
+		
+		//Asociar a contacto id=1.
+		ContactoPayload getContactoPayloadDB = contactoService.getContactoById(contactoPayload.getId());
 
+		// Contacto
+		voluntarioPayload = new VoluntarioPayload();
+		voluntarioPayload.modificarContacto(getContactoPayloadDB);
+
+		// PersonaFisica
+		voluntarioPayload.setDni(1235678);
+		voluntarioPayload.setNombre("Super Persona");
+		voluntarioPayload.setApellido("Voluntario y Empleado");
+		voluntarioPayload.setFechaNacimiento(LocalDate.of(2000, 1, 15));
+
+		//Voluntario
+		//No tiene otros atributos
+		voluntarioService.altaVoluntario(voluntarioPayload);
+		
+		//Fin asociar voluntario
+		
+		
+		
+		/////////////////////////////////////////////////////////////////////
+		
+		EmpleadoPayload empleadoPayload = new EmpleadoPayload();
+		
+		//Test asociar a contacto id=1.
+		ContactoPayload getContactoPayloadDB_2 = contactoService.getContactoById(contactoPayload.getId());
+
+		// Contacto
+		empleadoPayload = new EmpleadoPayload();
+		empleadoPayload.modificarContacto(getContactoPayloadDB_2);
+
+		// PersonaFisica
+		empleadoPayload.setDni(1235678);
+		empleadoPayload.setNombre("Super Persona modificado");
+		empleadoPayload.setApellido("Voluntario y Empleado modificado");
+		empleadoPayload.setFechaNacimiento(LocalDate.of(2000, 1, 15));
+
+		// Empleado
+		empleadoPayload.setDatosBancarios("CBU: 001234");
+		empleadoPayload.setFuncion("Jefe Empleado y Voluntario");
+		empleadoPayload.setDescripcion("Super Jefe y voluntario");
+		// Fin Empleado
+		
+		empleadoService.altaEmpleado(empleadoPayload);
+		//Fin asociar empleado
 	}
 	
 	public void cargarBeneficiariosTenant2() {
@@ -1113,7 +1164,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		// Contacto
 		m.setNombreDescripcion("Piba tenant 2");
 		m.setCuit("20-1235678-9");
-		m.setDomicilio("Uruguar 782, piso 1, depto B");
+		m.setDomicilio("Uruguay 782, piso 1, depto B");
 		m.setEmail("carlagomez@gmail.com");
 		m.setTelefono("1234-4567");
 
@@ -1170,25 +1221,6 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 	
 	public void cargarVoluntariosTenant2() {
 		VoluntarioPayload m;
-		
-		//Test asociar a contacto id=1.
-		ContactoPayload c = contactoService.getContactoById((long) 1);
-
-		// Contacto
-		m = new VoluntarioPayload();
-		m.modificarContacto(c);
-
-		// PersonaFisica
-		m.setDni(1235678);
-		m.setNombre("Super Persona");
-		m.setApellido("Voluntario y Empleado");
-		m.setFechaNacimiento(LocalDate.of(2000, 1, 15));
-
-		//Voluntario
-		//No tiene otros atributos
-		voluntarioService.altaVoluntario(m);
-		
-		//Fin test
 		
 		///////////////////////////////////
 
@@ -1351,27 +1383,6 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 	
 	public void cargarEmpleadosTenant2() {
 		EmpleadoPayload m = new EmpleadoPayload();
-		
-		//Test asociar a contacto id=1.
-		ContactoPayload c = contactoService.getContactoById((long) 1);
-
-		// Contacto
-		m = new EmpleadoPayload();
-		m.modificarContacto(c);
-
-		// PersonaFisica
-		m.setDni(1235678);
-		m.setNombre("Super Persona");
-		m.setApellido("Voluntario y Empleado");
-		m.setFechaNacimiento(LocalDate.of(2000, 1, 15));
-
-		// Empleado
-		m.setDatosBancarios("CBU: 001234");
-		m.setFuncion("Jefe Empleado y Voluntario");
-		m.setDescripcion("Super Jefe y voluntario");
-		// Fin Empleado
-		
-		empleadoService.altaEmpleado(m);
 		
 		/////////////////////////////////////////////
 		

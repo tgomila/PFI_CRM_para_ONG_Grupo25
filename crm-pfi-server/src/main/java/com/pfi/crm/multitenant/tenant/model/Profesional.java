@@ -13,6 +13,11 @@ import com.pfi.crm.multitenant.tenant.payload.ProfesionalPayload;
 @Table(name ="profesional")
 public class Profesional extends TrabajadorAbstract{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -32758458147602560L;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long idProfesional;

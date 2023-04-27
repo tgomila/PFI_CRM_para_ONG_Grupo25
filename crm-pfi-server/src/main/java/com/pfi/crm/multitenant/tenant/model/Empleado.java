@@ -12,6 +12,11 @@ import com.pfi.crm.multitenant.tenant.payload.EmpleadoPayload;
 @Table(name="empleado")
 public class Empleado extends TrabajadorAbstract{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6566425112277670572L;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long idEmpleado;

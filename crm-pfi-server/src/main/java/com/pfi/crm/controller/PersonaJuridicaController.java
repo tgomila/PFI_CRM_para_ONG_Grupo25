@@ -109,7 +109,7 @@ public class PersonaJuridicaController {
 	// Devuelve un ejemplo de Persona juridica
 
 	@GetMapping("/test")
-	public PersonaJuridicaPayload altaVoluntarioTest(/* @Valid @RequestBody PersonaJuridicaPayload payload */) {
+	public PersonaJuridicaPayload altaPersonaJuridicaTest(/* @Valid @RequestBody PersonaJuridicaPayload payload */) {
 		
 		PersonaJuridica m = new PersonaJuridica();
 

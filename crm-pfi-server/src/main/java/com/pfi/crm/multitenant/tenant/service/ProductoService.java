@@ -28,6 +28,7 @@ public class ProductoService {
 	private static final Logger logger = LoggerFactory.getLogger(ProductoService.class);
 	
 	public ProductoPayload getProductoById(@PathVariable Long id) {
+		System.out.println("ID producto: " + id);
 		return productoRepository.findById(id).orElseThrow(
 				() -> new ResourceNotFoundException("Producto", "id", id)).toPayload();
 	}
@@ -46,7 +47,9 @@ public class ProductoService {
 		Producto m = productoRepository.findById(id).orElseThrow(
 				() -> new ResourceNotFoundException("Producto", "id", id));
 		m.setEstadoActivo(false);
-		productoRepository.save(m);
+		m.setProveedor(null);
+		m = productoRepository.save(m);
+		productoRepository.delete(m);
 	}
 	
 	public ProductoPayload modificarProducto(ProductoPayload payload) {

@@ -22,6 +22,7 @@ import javax.persistence.Table;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.pfi.crm.multitenant.tenant.model.audit.UserDateAudit;
 import com.pfi.crm.multitenant.tenant.payload.ModuloPayload;
 
 @Entity
@@ -31,8 +32,13 @@ import com.pfi.crm.multitenant.tenant.payload.ModuloPayload;
 			//})
 //}
 )
-public class ModuloVisibilidadPorRol {
+public class ModuloVisibilidadPorRol extends UserDateAudit {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8712936844945415850L;
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(ModuloVisibilidadPorRol.class);
 	
 	@Id

@@ -11,11 +11,17 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
+import com.pfi.crm.multitenant.tenant.model.audit.UserDateAudit;
 import com.pfi.crm.multitenant.tenant.payload.ProductoPayload;
 
 @Entity
 @Table(name ="producto")
-public class Producto {
+public class Producto extends UserDateAudit {
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1226006295987384493L;
 	
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

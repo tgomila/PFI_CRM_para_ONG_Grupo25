@@ -1,7 +1,10 @@
 package com.pfi.crm.controller;
 
+import java.time.Instant;
+import java.time.ZoneId;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.validation.Valid;
 
@@ -86,5 +89,33 @@ public class ContactoController {
 		p.setTelefono("1234-4567");
 
 		return p;
+	}
+	
+	@GetMapping("/test/fecha")
+	public Instant getFecha(/* @Valid @RequestBody ContactoPayload payload */) {
+		Instant now = Instant.now();
+		Instant firstDayOfMonth = now.atZone(ZoneId.systemDefault())
+			    .toLocalDate()
+			    .withDayOfMonth(1)
+			    .atStartOfDay()
+			    .atZone(ZoneId.systemDefault())
+			    .toInstant();
+		
+		return firstDayOfMonth;
+	}
+	
+	@GetMapping("/test/contactos_este_mes")
+	public int getContactos30dias(/* @Valid @RequestBody ContactoPayload payload */) {
+		return contactoService.getContactosCreadosEnLosUltimos30Dias().size();
+	}
+	
+	@GetMapping("/test/contar_contactos_este_mes")
+	public List<Map<String, Object>> countContactosCreadosEsteAnio() {
+		return contactoService.countContactosCreadosEsteAnioPorMes();
+	}
+	
+	@GetMapping("/test/contar_contactos_ultimos_12_meses")
+	public List<Map<String, Object>> countContactosCreadosUltimos12meses() {
+		return contactoService.countContactosCreadosUltimos12meses();
 	}
 }

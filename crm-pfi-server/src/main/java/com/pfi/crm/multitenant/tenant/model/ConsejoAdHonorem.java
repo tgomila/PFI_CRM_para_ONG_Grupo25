@@ -12,6 +12,11 @@ import com.pfi.crm.multitenant.tenant.payload.ConsejoAdHonoremPayload;
 @Table(name="consejoAdHonorem")
 public class ConsejoAdHonorem extends PersonaFisicaAbstract {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4866410821724580413L;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long idConsejoAdHonorem;

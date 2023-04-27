@@ -92,8 +92,6 @@ public class ActividadService {
 		Actividad m = actividadRepository.findById(id).orElseThrow(
 				() -> new ResourceNotFoundException("Actividad", "id", id));
 		m.setEstadoActivoActividad(false);
-		m = actividadRepository.save(m);
-		
 		m.setBeneficiarios(null);
 		m.setProfesionales(null);
 		m = actividadRepository.save(m);

@@ -12,6 +12,11 @@ import com.pfi.crm.multitenant.tenant.payload.ColaboradorPayload;
 @Table(name ="colaborador")
 public class Colaborador extends TrabajadorAbstract{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6689081239108287905L;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long idColaborador;

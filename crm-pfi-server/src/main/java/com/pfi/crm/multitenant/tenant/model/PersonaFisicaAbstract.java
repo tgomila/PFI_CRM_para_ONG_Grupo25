@@ -6,12 +6,17 @@ import javax.persistence.CascadeType;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
 
+import com.pfi.crm.multitenant.tenant.model.audit.UserDateAudit;
 import com.pfi.crm.multitenant.tenant.payload.PersonaFisicaAbstractPayload;
 import com.pfi.crm.multitenant.tenant.payload.PersonaFisicaPayload;
 
 @MappedSuperclass
-public abstract class PersonaFisicaAbstract /*extends ContactoAbstract*/{
+public abstract class PersonaFisicaAbstract extends UserDateAudit /*extends ContactoAbstract*/{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	
 	@ManyToOne(cascade = {CascadeType.MERGE})
 	private PersonaFisica personaFisica;

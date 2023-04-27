@@ -90,6 +90,7 @@ public class Actividad extends UserDateAudit implements Comparable < Actividad >
 		p.setId(id);
 		p.setFechaHoraDesde(fechaHoraDesde);
 		p.setFechaHoraHasta(fechaHoraHasta);
+		p.setDescripcion(descripcion);
 		beneficiarios.forEach((m) -> p.agregarBeneficiario(m.toPayload()));
 		profesionales.forEach((m) -> p.agregarProfesional(m.toPayload()));
 		return p;

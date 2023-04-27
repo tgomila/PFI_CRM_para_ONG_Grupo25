@@ -7,6 +7,11 @@ import com.pfi.crm.multitenant.tenant.payload.TrabajadorAbstractPayload;
 @MappedSuperclass
 public abstract class TrabajadorAbstract extends PersonaFisicaAbstract{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
 	private String datosBancarios;
 	
 	//Las facturas se buscan de manera aparte

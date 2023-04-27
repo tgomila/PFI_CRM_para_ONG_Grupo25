@@ -7,11 +7,17 @@ import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.OrderBy;
 
+import com.pfi.crm.multitenant.tenant.model.audit.UserDateAudit;
 import com.pfi.crm.multitenant.tenant.payload.ContactoAbstractPayload;
 import com.pfi.crm.multitenant.tenant.payload.ContactoPayload;
 
 @MappedSuperclass
-public abstract class ContactoAbstract {
+public abstract class ContactoAbstract extends UserDateAudit {
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	
 	@ManyToOne(cascade = {CascadeType.MERGE} )
 	@OrderBy("nombreDescripcion ASC")

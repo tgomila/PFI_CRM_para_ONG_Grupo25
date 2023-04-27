@@ -29,6 +29,7 @@ public class ProgramaDeActividadesPayload {
 			p.setFechaHoraHasta(actividadARepetir.getFechaHoraHasta().plusWeeks(i));
 			p.setBeneficiarios(actividadARepetir.getBeneficiarios());
 			p.setProfesionales(actividadARepetir.getProfesionales());
+			p.setDescripcion(actividadARepetir.getDescripcion());
 			actividades.add(p);
 		}
 		ordenarActividades();

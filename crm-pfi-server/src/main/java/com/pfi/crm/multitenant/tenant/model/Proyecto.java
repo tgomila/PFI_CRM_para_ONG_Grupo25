@@ -22,9 +22,12 @@ import com.pfi.crm.multitenant.tenant.payload.ProyectoPayload;
 @Entity
 @Table(name ="proyecto")
 public class Proyecto extends UserDateAudit {
-	
-	private static final long serialVersionUID = 1L;
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 953565293845694276L;
+	
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 	

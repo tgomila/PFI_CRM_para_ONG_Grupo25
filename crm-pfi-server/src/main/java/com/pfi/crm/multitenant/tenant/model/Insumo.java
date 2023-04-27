@@ -6,11 +6,17 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import com.pfi.crm.multitenant.tenant.model.audit.UserDateAudit;
 import com.pfi.crm.multitenant.tenant.payload.InsumoPayload;
 
 @Entity
 @Table(name ="insumo")
-public class Insumo {
+public class Insumo extends UserDateAudit {
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2953441460328381036L;
 	
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

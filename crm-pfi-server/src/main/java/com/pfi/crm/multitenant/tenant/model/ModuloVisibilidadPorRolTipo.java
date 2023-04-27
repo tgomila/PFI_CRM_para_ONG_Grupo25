@@ -10,11 +10,17 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import com.pfi.crm.multitenant.tenant.model.audit.UserDateAudit;
 import com.pfi.crm.multitenant.tenant.payload.ModuloItemPayload;
 
 @Entity
 @Table(name = "modulo_visibilidad_por_rol_tipo")
-public class ModuloVisibilidadPorRolTipo {
+public class ModuloVisibilidadPorRolTipo extends UserDateAudit {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8500741471631762779L;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;

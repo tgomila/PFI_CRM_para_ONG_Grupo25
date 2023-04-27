@@ -14,6 +14,11 @@ import com.pfi.crm.multitenant.tenant.payload.PersonaJuridicaPayload;
 @Table(name ="personaJuridica")
 public class PersonaJuridica extends ContactoAbstract{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7847670806500841485L;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long idPersonaJuridica;

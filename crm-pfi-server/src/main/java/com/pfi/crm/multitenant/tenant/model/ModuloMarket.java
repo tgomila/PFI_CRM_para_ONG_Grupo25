@@ -12,12 +12,18 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import com.pfi.crm.exception.BadRequestException;
+import com.pfi.crm.multitenant.tenant.model.audit.UserDateAudit;
 import com.pfi.crm.multitenant.tenant.payload.ModuloMarketPayload;
 
 @Entity
 @Table(name = "modulo_market")
-public class ModuloMarket {
+public class ModuloMarket extends UserDateAudit {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8160834696759597980L;
+
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
