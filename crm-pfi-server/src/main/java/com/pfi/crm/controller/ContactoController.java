@@ -10,6 +10,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -76,6 +77,7 @@ public class ContactoController {
 	// Devuelve un ejemplo de contacto payload
 
 	@GetMapping("/test")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ContactoPayload getContactoTest(/* @Valid @RequestBody ContactoPayload payload */) {
 
 		ContactoPayload p = new ContactoPayload();
@@ -92,6 +94,7 @@ public class ContactoController {
 	}
 	
 	@GetMapping("/test/fecha")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public Instant getFecha(/* @Valid @RequestBody ContactoPayload payload */) {
 		Instant now = Instant.now();
 		Instant firstDayOfMonth = now.atZone(ZoneId.systemDefault())
@@ -105,16 +108,19 @@ public class ContactoController {
 	}
 	
 	@GetMapping("/test/contactos_este_mes")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public int getContactos30dias(/* @Valid @RequestBody ContactoPayload payload */) {
 		return contactoService.getContactosCreadosEnLosUltimos30Dias().size();
 	}
 	
 	@GetMapping("/test/contar_contactos_este_mes")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public List<Map<String, Object>> countContactosCreadosEsteAnio() {
 		return contactoService.countContactosCreadosEsteAnioPorMes();
 	}
 	
 	@GetMapping("/test/contar_contactos_ultimos_12_meses")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public List<Map<String, Object>> countContactosCreadosUltimos12meses() {
 		return contactoService.countContactosCreadosUltimos12meses();
 	}

@@ -1,5 +1,6 @@
 package com.pfi.crm.multitenant.tenant.service;
 
+import java.text.Normalizer;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.temporal.ChronoUnit;
@@ -273,10 +274,16 @@ public class PersonaFisicaService {
 			edadMinima = inputMinimoEdadPersona.intValue();
 		
 		int edadMaxima = 120;
-		if(inputMinimoEdadPersona != null && inputMinimoEdadPersona>0 && inputMinimoEdadPersona<120)
+		if(inputMaximoEdadPersona != null && inputMaximoEdadPersona>0 && inputMaximoEdadPersona<120)
 			edadMaxima = inputMinimoEdadPersona.intValue();
 		
+		//Se corrigen errores si algun input se ingresó mal
 		if(edadMinima>edadMaxima) {
+			edadMinima = 1;
+			edadMaxima = 120;
+		}
+		
+		if(inputMinimoEdadPersona == null && inputMaximoEdadPersona == null) {
 			int numAleatorio = random.nextInt(100);
 	        if (numAleatorio < 65) { // 65% de probabilidad
 	        	edadMinima = 5;
@@ -336,7 +343,16 @@ public class PersonaFisicaService {
 		personaGenerada.setCuit(cuit);
 		
 		//Modifico su dni
-		personaGenerada.setEmail(personaGenerada.getNombre()+personaGenerada.getApellido()+"@testing.com");
+		String nombre = personaGenerada.getNombre();
+		String apellido = personaGenerada.getApellido();
+		//Minúsculas y sin acentos
+		String nombreMinusculasSinAcento = Normalizer.normalize(nombre, Normalizer.Form.NFD)
+		        .replaceAll("\\p{M}", "")
+		        .toLowerCase();
+		String apellidoMinusculasSinAcentos = Normalizer.normalize(apellido, Normalizer.Form.NFD)
+		        .replaceAll("\\p{M}", "")
+		        .toLowerCase();
+		personaGenerada.setEmail(nombreMinusculasSinAcento + apellidoMinusculasSinAcentos + "@testing.com");
 		
 		//Modifico su descripción
 		if(nombreDescripcion!=null)

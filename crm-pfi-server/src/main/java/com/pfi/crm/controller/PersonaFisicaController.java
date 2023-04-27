@@ -8,6 +8,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -78,6 +79,7 @@ public class PersonaFisicaController {
 	//Devuelve un ejemplo de PersonaFisica
 	
 	@GetMapping("/test")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public PersonaFisicaPayload altaPersonaFisicaTest(/* @Valid @RequestBody PersonaFisicaPayload payload */) {
 		System.out.println("Entre aca");
 
@@ -106,6 +108,7 @@ public class PersonaFisicaController {
 	}
 	
 	@GetMapping("/test/aleatorio")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public PersonaFisicaPayload personaFisicaAleatoriaTest(/* @Valid @RequestBody PersonaFisicaPayload payload */) {
 		return personaFisicaService.personaFisicaGenerator();
 	}
