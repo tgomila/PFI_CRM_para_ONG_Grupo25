@@ -1,5 +1,6 @@
 package com.pfi.crm.multitenant.tenant.persistence.repository;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -38,9 +39,21 @@ public interface ContactoRepository extends JpaRepository<Contacto, Long> {
 	
 	//A partir de acá, es para gráficos dashboard en Frontend
 	
+	//Contadores mensuales
+	
+	/**
+	 * Contador creados por mes
+	 * @param Mes input
+	 * @return cuántos se crearon este mes
+	 */
 	@Query("SELECT p FROM Contacto p WHERE YEAR(p.createdAt) = YEAR(:now) AND MONTH(p.createdAt) = MONTH(:now)")
 	List<Contacto> findContactosCreatedThisMonth(@Param("now") LocalDate now);
 	
+	/**
+	 * Contador creados este año input, por mes
+	 * @param Año input
+	 * @return cuántos se crearon ese año, por mes
+	 */
 	@Query("SELECT MONTH(p.createdAt) as month, COUNT(p) as count FROM Contacto p WHERE YEAR(p.createdAt) = YEAR(:now) GROUP BY MONTH(p.createdAt)")
 	List<Map<String, Object>> countContactosCreatedThisYearByMonth(@Param("now") LocalDate now);
 	
@@ -50,8 +63,8 @@ public interface ContactoRepository extends JpaRepository<Contacto, Long> {
 	 * @param end Debería ser 31 de diciembre mismo año que start.
 	 * @return
 	 */
-	@Query("SELECT MONTH(p.createdAt) as month, COUNT(p) as count FROM Contacto p WHERE p.createdAt BETWEEN :start AND :end GROUP BY MONTH(p.createdAt)")
-	List<Map<String, Object>> countContactosCreatedByMonthBetweenDates(@Param("start") LocalDateTime start, @Param("end") LocalDateTime end);
+	@Query("SELECT MONTH(p.createdAt) as month, COUNT(p) as count FROM Contacto p WHERE p.createdAt BETWEEN :start AND :end GROUP BY MONTH(p.createdAt) ORDER BY MONTH(p.createdAt) ASC")
+	List<Map<String, Object>> countContactosCreatedByMonthBetweenDates(@Param("start") Instant start, @Param("end") Instant end);
 	
 	
 	
@@ -61,8 +74,8 @@ public interface ContactoRepository extends JpaRepository<Contacto, Long> {
 	 * @param end   cualquier fecha/año
 	 * @return Devuelve int de contactos creados por mes/año
 	 */
-	@Query("SELECT YEAR(p.createdAt) as year, MONTH(p.createdAt) as month, COUNT(p) as count FROM Contacto p WHERE p.createdAt BETWEEN :start AND :end GROUP BY YEAR(p.createdAt), MONTH(p.createdAt)")
-	List<Map<String, Object>> countContactosCreatedLast12MonthsByMonth(@Param("start") LocalDateTime start, @Param("end") LocalDateTime end);
+	@Query("SELECT YEAR(p.createdAt) as year, MONTH(p.createdAt) as month, COUNT(p) as count FROM Contacto p WHERE p.createdAt BETWEEN :start AND :end GROUP BY YEAR(p.createdAt), MONTH(p.createdAt) ORDER BY YEAR(p.createdAt) ASC, MONTH(p.createdAt) ASC")
+	List<Map<String, Object>> countContactosCreatedLast12MonthsByMonth(@Param("start") Instant start, @Param("end") Instant end);
 	
 	//TODO quitarlo a futuro, ingreso year=2020 start=1/1/2017 end=31/12/2022 y solo cuenta 2020.
 	/**

@@ -232,6 +232,8 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 			cargarUsuariosTenant2();
 			cargarProductosInsumosFacturaPrestamoProgramaDeActividadesTenant2();
 			cargarDonacionesTenant2();
+			
+			generarCienBeneficiariosTenant2();
 		}
 	}
 	
@@ -1866,6 +1868,10 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		donacion2.setTipoDonacion(DonacionTipo.INSUMO);
 		donacion2.setDescripcion("Galletitas variadas");
 		donacion2 = donacionService.altaDonacion(donacion2);
+	}
+	
+	public void generarCienBeneficiariosTenant2() {
+		beneficiarioService.generar_100_Beneficiarios(2022);
 	}
 	
 	public void cargarUsuariosDefault() {

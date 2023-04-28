@@ -1,8 +1,12 @@
 package com.pfi.crm.multitenant.tenant.service;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -158,6 +162,22 @@ public class ContactoService {
 		return contactoRepository.save(model);
 	}
 	
+	/**Sirve para generador de contactos y modificar su create date principalmente
+	 * @param payload
+	 * @return
+	 */
+	public Contacto modificarContactoModel(Contacto model) {
+		if(model == null)
+			throw new BadRequestException("Ha introducido un null como contacto a modificar. Por favor ingrese un contacto que no sea null.");
+		if(model.getId() == null) //Necesito el id de contacto o se crearia uno nuevo
+			throw new BadRequestException("No se puede modificar contacto sin ID");
+		if(!existeContacto(model.getId()))
+			throw new BadRequestException("Ha ingresado un ID '" + model.getId().toString() + "' a modificar, y no existe. "
+					+ "Es posible que sea otro número o haya sido dado de baja.");
+		
+		return contactoRepository.save(model);
+	}
+	
 	/**
 	 * Método hecho para otros services, por si ingresan un payload y desean buscarlo o darlo de alta.
 	 * @param payload (ContactoPayload)
@@ -184,7 +204,7 @@ public class ContactoService {
 	
 	
 	//Dashboard
-	public List<ContactoPayload> getContactosCreadosEnLosUltimos30Dias() {
+	public List<ContactoPayload> getContactosCreadosEsteMes() {
 		return contactoRepository.findContactosCreatedThisMonth(LocalDate.now()).stream().map(e -> e.toPayload()).collect(Collectors.toList());
 	}
 	
@@ -196,8 +216,15 @@ public class ContactoService {
 	public List<Map<String, Object>> countContactosCreadosUltimos12meses() {
 		LocalDateTime start = LocalDateTime.now().minusMonths(11).withDayOfMonth(1).withHour(0).withMinute(0).withSecond(0).withNano(0);
 		LocalDateTime end = LocalDateTime.now().withHour(23).withMinute(59).withSecond(59).withNano(999);
-		List<Map<String, Object>> countContactosCreatedLast12MonthsByMonth = contactoRepository.countContactosCreatedLast12MonthsByMonth(start, end);
+		List<Map<String, Object>> countContactosCreatedLast12MonthsByMonth = contactoRepository.countContactosCreatedLast12MonthsByMonth(start.toInstant(ZoneOffset.UTC), end.toInstant(ZoneOffset.UTC));
 		return countContactosCreatedLast12MonthsByMonth;
+	}
+	
+	public List<Map<String, Object>> countContactosByAnioMes(int anio) {
+		LocalDateTime start = LocalDateTime.of(anio, 1, 1, 0, 0, 0, 0);
+		LocalDateTime end = LocalDateTime.of(anio, 12, 31, 23, 59, 59, 999);
+		List<Map<String, Object>> countContactosCreadosAnioPasado = contactoRepository.countContactosCreatedByMonthBetweenDates(start.toInstant(ZoneOffset.UTC), end.toInstant(ZoneOffset.UTC));
+		return countContactosCreadosAnioPasado;
 	}
 	
 	
@@ -216,6 +243,124 @@ public class ContactoService {
 	
 	
 	
+	
+	
+	
+	
+	
+	/**
+	 * Solo para uso de testing
+	 * @return
+	 */
+	public List<ContactoPayload> generar_100_Contactos(int anioCreacion){
+		List<Contacto> listAltas = new ArrayList<Contacto>();
+		for(int i=0; i<100; i++) {
+			ContactoPayload payloadGenerado = this.contactoGenerator();
+			Contacto model = this.altaContactoModel(payloadGenerado);
+			listAltas.add(model);
+		}
+		List<ContactoPayload> listAltasPayload = new ArrayList<ContactoPayload>();
+		List<LocalDateTime> fechas = generarCienFechasDistribuidasPorAnio(anioCreacion);
+		for(Contacto alta: listAltas) {
+			if(fechas.isEmpty())
+				break;
+			alta.setCreatedAt(fechas.get(0).toInstant(ZoneOffset.UTC));
+			fechas.remove(0);
+			ContactoPayload payload = this.modificarContactoModel(alta).toPayload();
+			listAltasPayload.add(payload);
+		}
+		return listAltasPayload;
+	}
+	
+	public List<LocalDateTime> generarCienFechasDistribuidasPorAnio(int anio){
+		
+		LocalDate mes = LocalDate.of(anio, 1, 1);
+		List<LocalDateTime> fechas = new ArrayList<>();
+		
+		//Enero
+		mes = LocalDate.of(anio, 1, 1);
+		fechas.addAll(generarFechasMes(mes, 9, 8));
+		
+		//Febrero
+		mes = LocalDate.of(anio, 2, 1);
+		fechas.addAll(generarFechasMes(mes, 7, 7));
+		
+		//Marzo
+		mes = LocalDate.of(anio, 3, 1);
+		fechas.addAll(generarFechasMes(mes, 4, 3));
+		
+		//Abril
+		mes = LocalDate.of(anio, 4, 1);
+		fechas.addAll(generarFechasMes(mes, 2, 1));
+		
+		//Mayo
+		mes = LocalDate.of(anio, 5, 1);
+		fechas.addAll(generarFechasMes(mes, 1, 1));
+		
+		//Junio
+		mes = LocalDate.of(anio, 6, 1);
+		fechas.addAll(generarFechasMes(mes, 6, 5));
+		
+		//Julio
+		mes = LocalDate.of(anio, 7, 1);
+		fechas.addAll(generarFechasMes(mes, 7, 7));
+		
+		//Agosto
+		mes = LocalDate.of(anio, 8, 1);
+		fechas.addAll(generarFechasMes(mes, 2, 2));
+		
+		//Septiembre
+		mes = LocalDate.of(anio, 9, 1);
+		fechas.addAll(generarFechasMes(mes, 4, 3));
+		
+		//Octubre
+		mes = LocalDate.of(anio, 10, 1);
+		fechas.addAll(generarFechasMes(mes, 1, 1));
+		
+		//Noviembre
+		mes = LocalDate.of(anio, 11, 1);
+		fechas.addAll(generarFechasMes(mes, 4, 3));
+		
+		//Diciembre
+		mes = LocalDate.of(anio, 12, 1);
+		fechas.addAll(generarFechasMes(mes, 6, 6));
+		
+		Collections.sort(fechas);
+		
+		return fechas;
+	}
+	
+	public List<LocalDateTime> generarFechasMes(LocalDate mes, int lunVie, int finde){
+		LocalDate startDate = mes.withDayOfMonth(1);
+		LocalDate endDate = mes.withDayOfMonth(mes.getMonth().length(mes.isLeapYear()));
+		
+		List<LocalDateTime> weekdays = new ArrayList<>();
+		List<LocalDateTime> weekends = new ArrayList<>();
+		
+		Random random = new Random();
+		for (LocalDate date = startDate; !date.isAfter(endDate); date = date.plusDays(1)) {
+			if (date.getDayOfWeek() == DayOfWeek.SATURDAY || date.getDayOfWeek() == DayOfWeek.SUNDAY) {
+				weekends.add(date.atTime(9 + random.nextInt(9), random.nextInt(60)));
+			} else {
+				weekdays.add(date.atTime(9 + random.nextInt(4), random.nextInt(60)));
+			}
+		}
+		
+		Collections.shuffle(weekdays);
+		List<LocalDateTime> diasDeSemana = weekdays.subList(0, lunVie);
+		
+		
+		Collections.shuffle(weekends);
+		List<LocalDateTime> findes = weekends.subList(0, finde);
+		
+		List<LocalDateTime> dias = new ArrayList<>(diasDeSemana);
+		dias.addAll(findes);
+		Collections.sort(dias);
+		
+		return dias;
+	}
+	
+	
 	/**
 	 * Solo para uso de testing
 	 * @return contacto testing con datos randoms.
@@ -224,7 +369,7 @@ public class ContactoService {
 		ContactoPayload contactoGenerado = new ContactoPayload();
 		
 		//NombreDescripcion
-		contactoGenerado.setNombreDescripcion("Testing nombre/descripción");
+		contactoGenerado.setNombreDescripcion("Testing nombre de contacto");
 		
 		//Cuit
 		Random random = new Random();
@@ -267,4 +412,28 @@ public class ContactoService {
 		
 		return contactoGenerado;
 	}
+}
+	
+enum Meses {
+	ENERO(1, 0.17),
+	FEBRERO(2, 0.14),
+	MARZO(3, 0.07),
+	ABRIL(4, 0.03),
+	MAYO(5, 0.02),
+	JUNIO(6, 0.11),
+	JULIO(7, 0.14),
+	AGOSTO(8, 0.04),
+	SEPTIEMBRE(9, 0.07),
+	OCTUBRE(10, 0.02),
+	NOVIEMBRE(11, 0.07),
+	DICIEMBRE(12, 0.12);
+	
+	private final int nroMes;
+	private final double porcentaje;
+	private Meses(int nroMes, double porcentaje) {
+		this.nroMes = nroMes;
+		this.porcentaje = porcentaje;
+	}
+	public int getNroMes() {return nroMes;}
+	public double getPorcentaje() {return porcentaje;}
 }

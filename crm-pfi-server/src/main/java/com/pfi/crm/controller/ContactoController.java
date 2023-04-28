@@ -1,6 +1,7 @@
 package com.pfi.crm.controller;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -109,19 +110,32 @@ public class ContactoController {
 	
 	@GetMapping("/test/contactos_este_mes")
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	public int getContactos30dias(/* @Valid @RequestBody ContactoPayload payload */) {
-		return contactoService.getContactosCreadosEnLosUltimos30Dias().size();
+	public int getContactosEsteMes(/* @Valid @RequestBody ContactoPayload payload */) {
+		return contactoService.getContactosCreadosEsteMes().size();
 	}
 	
-	@GetMapping("/test/contar_contactos_este_mes")
+	@GetMapping("/test/contar_contactos/este_mes")
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	public List<Map<String, Object>> countContactosCreadosEsteAnio() {
+	public List<Map<String, Object>> countContactosCreadosEsteMes() {
 		return contactoService.countContactosCreadosEsteAnioPorMes();
 	}
 	
-	@GetMapping("/test/contar_contactos_ultimos_12_meses")
+	@GetMapping("/test/contar_contactos/ultimos_12_meses")
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public List<Map<String, Object>> countContactosCreadosUltimos12meses() {
 		return contactoService.countContactosCreadosUltimos12meses();
+	}
+	
+	@GetMapping("/test/contar_contactos/este_anio/")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	public List<Map<String, Object>> countContactosCreadosEsteAnio() {
+		int esteAnio = LocalDate.now().getYear();
+		return contactoService.countContactosByAnioMes(esteAnio);
+	}
+	
+	@GetMapping("/test/contar_contactos/este_anio/{anioInput}")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	public List<Map<String, Object>> countContactosCreadosEnAnioInput(@PathVariable int anioInput) {
+		return contactoService.countContactosByAnioMes(anioInput);
 	}
 }

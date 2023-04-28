@@ -1,9 +1,12 @@
 package com.pfi.crm.multitenant.tenant.service;
 
 import java.text.Normalizer;
+import java.time.Instant;
 import java.time.LocalDate;
-import java.time.Period;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
@@ -167,6 +170,19 @@ public class PersonaFisicaService {
 		throw new BadRequestException("No se puede modificar Persona Fisica sin ID");
 	}
 	
+	/**
+	 * Sirve para generador de personas y modificar su create date principalmente
+	 * @param payload
+	 * @return
+	 */
+	public PersonaFisica modificarPersonaFisicaModel(PersonaFisica model) {
+		if (model != null && model.getId() != null) {
+			//Necesito el id de persona Fisica o se crearia uno nuevo
+			return personaFisicaRepository.save(model);
+		}
+		throw new BadRequestException("No se puede modificar Persona Fisica sin ID");
+	}
+	
 	public boolean existePersonaFisicaPorIdContacto(Long id) {
 		return personaFisicaRepository.existsByContacto_Id(id);
 	}
@@ -209,7 +225,35 @@ public class PersonaFisicaService {
 	
 	
 	
+	/**
+	 * Solo para uso de testing
+	 * @return
+	 */
+	public List<PersonaFisicaPayload> generar_100_Personas(int anioCreacion){
+		List<PersonaFisica> listAltas = new ArrayList<PersonaFisica>();
+		for(int i=0; i<100; i++) {
+			PersonaFisicaPayload payloadGenerado = this.personaFisicaGenerator();
+			PersonaFisica model = this.altaPersonaFisicaModel(payloadGenerado);
+			listAltas.add(model);
+		}
+		List<PersonaFisicaPayload> listAltasPayload = new ArrayList<PersonaFisicaPayload>();
+		List<LocalDateTime> fechas = contactoService.generarCienFechasDistribuidasPorAnio(anioCreacion);
+		for(PersonaFisica alta: listAltas) {
+			if(fechas.isEmpty())
+				break;
+			Instant fecha = fechas.get(0).toInstant(ZoneOffset.UTC);
+			alta.setCreatedAt(fecha);
+			alta.getContacto().setCreatedAt(fecha);
+			fechas.remove(0);
+			PersonaFisicaPayload payload = this.modificarPersonaFisicaModel(alta).toPayload();
+			listAltasPayload.add(payload);
+		}
+		return listAltasPayload;
+	}
 	
+	public List<LocalDateTime> generarCienFechasDistribuidasPorAnio(int anioCreacion){
+		return contactoService.generarCienFechasDistribuidasPorAnio(anioCreacion);
+	}
 	
 	/**
 	 * Solo para uso de Testing
@@ -297,7 +341,7 @@ public class PersonaFisicaService {
 	        }
 		}
 		LocalDate now = LocalDate.now();
-		LocalDate minFechaNacimiento = now.minusYears(edadMaxima).plusDays(1);
+		LocalDate minFechaNacimiento = now.minusYears(edadMaxima+1).plusDays(1);
 		LocalDate maxFechaNacimiento = now.minusYears(edadMinima);
 		
 		long daysBetween = ChronoUnit.DAYS.between(minFechaNacimiento, maxFechaNacimiento);
@@ -307,34 +351,75 @@ public class PersonaFisicaService {
 		personaGenerada.setFechaNacimiento(fechaDeNacimiento);
 		
 		//dni + cuit
-		Period periodo = Period.between(fechaDeNacimiento, now);
-		int edad = periodo.getYears();
-		int dias = periodo.getDays();
+		int añoNacimiento = fechaDeNacimiento.getYear();
 		int dniAleatorioEstimado;
 		//Estimación dni por millón: (pensado en abril 2023 por si se actualiza)
-		//40m a 55m = 0 a 25 años
-		//30m a 40m = 26 a 39 años
-		//20m a 30m = 40 a 57 años
-		//10m a 20m = 58 años a 69 años
+		//40m a 55m = 0  a 25 años, 2023-1998
+		//30m a 40m = 26 a 39 años, 1984-1997
+		//20m a 30m = 40 a 57 años, 1966-1983
+		//10m a 20m = 58 a 69 años, 1954-1965
 		// 0m a 10m = +70 años
 		
 		//DNI "aleatorio" estimado
-		//Ejemplo AA.BBB.BBB = AA dni minimo por edad + cuanto vale 1 día en 10M * dias de 26 a 39 años 
-		double dniEstimadoAux;
-		if(edad <= 25)//DNI 40M a 55M
-			dniEstimadoAux = 40000000 + (14999999/(25*12*365))*((dias-25*12*365)*(-1));
-		else if(edad <= 39)//DNI 30M a 40M, 26 a 39 años, hay 14 años inclusive
-			dniEstimadoAux = 30000000 + (9999999/(14*12*365))*(((dias-39*12*365)+26*12*365)*(-1));
-		else if(edad <= 56)//DNI 20M a 30M, 40 a 56 años, hay 17 años inclusive
-			dniEstimadoAux = 20000000 + (9999999/(17*12*365))*(((dias-56*12*365)+40*12*365)*(-1));
-		else if(edad <= 69)//DNI 10M a 20M, 57 a 69 años, hay 13 años inclusive
-			dniEstimadoAux = 10000000 + (9999999/(13*12*365))*(((dias-69*12*365)+57*12*365)*(-1));
-		else if(edad <= 100)//(aleatorio) DNI 1M a 10M, 70 a 100 años, hay 31 años inclusive
-			dniEstimadoAux = 1000000  + (8999999/(31*12*365))*(((dias-100*12*365)+70*12*365)*(-1));
-		else
-			dniEstimadoAux = random.nextInt(100000, 999999);
+		//Ejemplo AB.BBB.BBB = A dni minimo por edad + B.. cuanto vale 1 día en 10M * dias de 26 a 39 años
+		double nro10M = 9999999.0; //es casi 10M
+		if(añoNacimiento >= 1998){//DNI 30M a 40M
+			double loQueValeUnDiaEntre1998yEsteAño = nro10M / (15.0*365.0);//Asumo rango 15 años en 10M de habitantes para el futuro.
+			double diasExtras1998 = ChronoUnit.DAYS.between(LocalDate.of(1998,1,1), fechaDeNacimiento);
+			double sumarDni = diasExtras1998*loQueValeUnDiaEntre1998yEsteAño;
+			double sumarDniMinimo = sumarDni;
+			double sumarDniMaximo = sumarDni + loQueValeUnDiaEntre1998yEsteAño-1;
+			int sumarDniAleatorio = Double.valueOf(random.nextDouble(sumarDniMinimo, sumarDniMaximo)).intValue();
+			dniAleatorioEstimado = 40000000 + sumarDniAleatorio;
+		}
 		
-		dniAleatorioEstimado = Double.valueOf(dniEstimadoAux).intValue();
+		else if(añoNacimiento >= 1984){//DNI 30M a 40M
+			double diasEntre1984y1997 = ChronoUnit.DAYS.between(LocalDate.of(1984,1,1), LocalDate.of(1997,12,31));
+			double loQueValeUnDiaEntre1984y1997 = nro10M / diasEntre1984y1997;
+			double diasExtras1984 = ChronoUnit.DAYS.between(LocalDate.of(1984,1,1), fechaDeNacimiento);
+			double sumarDni = diasExtras1984*loQueValeUnDiaEntre1984y1997;
+			double sumarDniMinimo = sumarDni;
+			double sumarDniMaximo = sumarDni + loQueValeUnDiaEntre1984y1997-1;
+			int sumarDniAleatorio = Double.valueOf(random.nextDouble(sumarDniMinimo, sumarDniMaximo)).intValue();
+			dniAleatorioEstimado = 30000000 + sumarDniAleatorio;
+		}
+		
+		else if(añoNacimiento >= 1966){//DNI 20M a 30M
+			double diasEntre1966y1983 = ChronoUnit.DAYS.between(LocalDate.of(1966,1,1), LocalDate.of(1983,12,31));
+			double loQueValeUnDiaEntre1966y1983 = nro10M / diasEntre1966y1983;
+			double diasExtras1966 = ChronoUnit.DAYS.between(LocalDate.of(1966,1,1), fechaDeNacimiento);
+			double sumarDni = diasExtras1966*loQueValeUnDiaEntre1966y1983;
+			double sumarDniMinimo = sumarDni;
+			double sumarDniMaximo = sumarDni + loQueValeUnDiaEntre1966y1983-1;
+			int sumarDniAleatorio = Double.valueOf(random.nextDouble(sumarDniMinimo, sumarDniMaximo)).intValue();
+			dniAleatorioEstimado = 20000000 + sumarDniAleatorio;
+		}
+		
+		else if(añoNacimiento >= 1954){//DNI 10M a 20M
+			double diasEntre1954y1965 = ChronoUnit.DAYS.between(LocalDate.of(1954,1,1), LocalDate.of(1965,12,31));
+			double loQueValeUnDiaEntre1954y1965 = nro10M / diasEntre1954y1965;
+			double diasExtras1954 = ChronoUnit.DAYS.between(LocalDate.of(1954,1,1), fechaDeNacimiento);
+			double sumarDni = diasExtras1954*loQueValeUnDiaEntre1954y1965;
+			double sumarDniMinimo = sumarDni;
+			double sumarDniMaximo = sumarDni + loQueValeUnDiaEntre1954y1965-1;
+			int sumarDniAleatorio = Double.valueOf(random.nextDouble(sumarDniMinimo, sumarDniMaximo)).intValue();
+			dniAleatorioEstimado = 10000000 + sumarDniAleatorio;
+		}
+		
+		else if(añoNacimiento >= 1923){//DNI 10M a 20M
+			double diasEntre1923y1953 = ChronoUnit.DAYS.between(LocalDate.of(1923,1,1), LocalDate.of(1953,12,31));
+			double loQueValeUnDiaEntre1923y1953 = 8999999 / diasEntre1923y1953;
+			double diasExtras1923 = ChronoUnit.DAYS.between(LocalDate.of(1923,1,1), fechaDeNacimiento);
+			double sumarDni = diasExtras1923*loQueValeUnDiaEntre1923y1953;
+			double sumarDniMinimo = sumarDni;
+			double sumarDniMaximo = sumarDni + loQueValeUnDiaEntre1923y1953-1;
+			int sumarDniAleatorio = Double.valueOf(random.nextDouble(sumarDniMinimo, sumarDniMaximo)).intValue();
+			dniAleatorioEstimado = 1000000 + sumarDniAleatorio;
+		}
+		
+		else {
+			dniAleatorioEstimado = random.nextInt(100000, 999999);
+		}
 		personaGenerada.setDni(dniAleatorioEstimado);
 		
 		//Modifico su cuit
@@ -357,6 +442,8 @@ public class PersonaFisicaService {
 		//Modifico su descripción
 		if(nombreDescripcion!=null)
 			personaGenerada.setNombreDescripcion(nombreDescripcion);
+		else
+			personaGenerada.setNombreDescripcion("Testing descripción de persona");
 		
 		
 		
