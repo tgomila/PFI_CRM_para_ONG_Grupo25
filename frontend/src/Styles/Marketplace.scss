@@ -9,6 +9,65 @@
   box-sizing: inherit;
 }
 
+.TituloComponentePrincipal{
+  text-align: center;
+  color: white;
+}
+
+h1 {
+  text-align: center;
+  font-size: clamp(2rem, 8vmin, 6rem);
+  font-family: sans-serif;
+  color: hsl(0 0% 98%);
+}
+h2 {
+  text-align: center;
+  font-size: clamp(2rem, 7vmin, 6rem);
+  font-family: sans-serif;
+  color: hsl(0 0% 98%);
+}
+.parrafo1 {
+  text-align: left;
+  font-size: clamp(1rem, 4vmin, 4rem);
+  font-family: sans-serif;
+  color: hsl(0 0% 98%);
+}
+.precio1 {
+  text-align: left;
+  font-size: clamp(1rem, 4vmin, 4rem);
+  font-family: sans-serif;
+  color: hsl(115, 85%, 40%);
+}
+.underlined {
+  position: relative;
+}
+.underline-clip-title:after {
+  content: '';
+  position: absolute;
+  top: 95%;
+  width: 150%;
+  aspect-ratio: 5 / 1;
+  left: 50%;
+  transform: translate(-50%, 0);
+  border-radius: 50%;
+  border: 6px solid hsla(103, 92%, 49%, 0.897);
+  /* Use a clip-path to hide and show the bits you want */
+  clip-path: polygon(0 0, 50% 50%, 100% 0);
+}
+.underline-clip-subtitle:after {
+  content: '';
+  position: absolute;
+  top: 95%;
+  width: 150%;
+  aspect-ratio: 5 / 1;
+  left: 50%;
+  transform: translate(-50%, 0);
+  border-radius: 50%;
+  border: 6px solid hsla(61, 100%, 50%, 0.932);
+  /* Use a clip-path to hide and show the bits you want */
+  clip-path: polygon(0 0, 50% 50%, 100% 0);
+}
+
 html {
   box-sizing: border-box;
   font-size: 62.5%;

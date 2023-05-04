@@ -145,9 +145,6 @@ const App = () => {
 
     
     <div className="principal">
-      <head>
-        <title>Current Title</title>
-      </head>
       
 
 
@@ -223,6 +220,7 @@ const App = () => {
 
       <div className="sidebarYRoutes">
         <Sidebar style={{ marginLeft: "0px" }}>
+          {/**<br></br><br></br> */}
           <Routes>
 
             {/* Lista */}
@@ -302,7 +300,7 @@ const App = () => {
       </div>
 
 
-        </div>
+    </div>
   );
 };
 

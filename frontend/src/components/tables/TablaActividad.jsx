@@ -10,6 +10,11 @@ import { useNavigate } from 'react-router-dom';
 
 import TablasDinamicas from "./TablasDinamicas";
 
+function formatDate(string){
+  var options = { year: 'numeric', month: 'long', day: 'numeric' };
+  return new Date(string).toLocaleDateString([],options);
+}
+
 
 function Table({ columns, data }) {
   let navigate = useNavigate();

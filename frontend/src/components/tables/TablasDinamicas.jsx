@@ -7,7 +7,12 @@ import "../../Styles/TablasDinamicas.scss";
 
 import { useNavigate } from 'react-router-dom';
 
-import { Modal, Button } from "react-bootstrap";
+//Para que funcione el tooptip (Button a la derecha)
+import { Modal, Button, OverlayTrigger, Tooltip } from "react-bootstrap";
+//import "../../../node_modules/bootstrap/dist/css/bootstrap.min.css";
+import { FaTrashAlt, FaRegEdit } from "react-icons/fa";
+//import ReactToolTip from 'react-tooltip';
+
 
 import {
   Route,
@@ -104,8 +109,8 @@ function Table({redireccionamiento, columns, data }) {
           <thead>
             {headerGroups.map((headerGroup) => (
               <tr {...headerGroup.getHeaderGroupProps()}>
-                {headerGroup.headers.map((column) => (
-                  <th {...column.getHeaderProps()}>
+                {headerGroup.headers.map((column, index) => (
+                  <th {...column.getHeaderProps()} className={index === 0 ? 'th-first' : 'th'}>
                     {column.render("Header").toUpperCase()}
                   </th>
                 ))}
@@ -114,7 +119,7 @@ function Table({redireccionamiento, columns, data }) {
                     EDITAR
                   </th>
 
-                  <th>
+                  <th className='th-last'>
                     BORRAR
                   </th>
     
@@ -138,24 +143,41 @@ function Table({redireccionamiento, columns, data }) {
                   <td>
                     {/*console.log("Boton:")*/}
                     {/*console.log(row.values.id)*/}
-                    <button
+                    <OverlayTrigger
+                      placement="top"
+                      overlay={
+                        <Tooltip id="tooltip-top">
+                          Editar ID: {row.values.id}
+                        </Tooltip>
+                      }
+                    >
+                    <Button
                       className="buttonAnimadoVerde"
                       onClick={() => navigate( window.location.pathname + "/update", {state:{id:row.values.id}})}
                     >
                       {" "}
-                      Editar
-                    </button>
+                      <FaRegEdit/>{/**Editar*/}
+                    </Button>
+                    </OverlayTrigger>
                   </td>
 
 
                   <td>
-                    <button
+                    <OverlayTrigger
+                      placement="top"
+                      overlay={
+                        <Tooltip id="tooltip-top">
+                          ¿Seguro desea <strong>borrar</strong> ID: {row.values.id} ?
+                        </Tooltip>
+                      }
+                    >
+                    <Button
                       className="buttonAnimadoRojo"
-                      type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter"
                       onClick={() => changeTrueModalOpen(row)}
                     >
-                      Borrar
-                    </button>
+                      <FaTrashAlt/>{/**Borrar*/}
+                    </Button>
+                    </OverlayTrigger>
                   </td>
 
 
@@ -318,6 +340,10 @@ function TablasDinamicas(redireccionamiento) {
   console.log("columnaaas: ");
   console.log(columns);
   console.log("Fin lectura columnas");
+
+  console.log("Dato: ");
+  console.log(data);
+  console.log("Fin lectura data");
 
   //this.addEmployee = this.addEmployee.bind(this);
   //this.editEmployee = this.editEmployee.bind(this);
