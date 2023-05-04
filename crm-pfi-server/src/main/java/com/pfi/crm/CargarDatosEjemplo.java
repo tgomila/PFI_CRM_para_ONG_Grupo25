@@ -234,6 +234,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 			cargarDonacionesTenant2();
 			
 			generarCienBeneficiariosTenant2();
+			generar30productosTenant2();
 		}
 	}
 	
@@ -266,12 +267,12 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 	}
 	
 	public void cargarSuscripcionModulosTenant1() {
-		moduloMarketService.suscripcionPremiumMes();
+		moduloMarketService.activarPrueba7dias();
 		moduloVisibilidadPorRolService.cargarVisibilidadSuscripcionDefault();
 	}
 	
 	public void cargarSuscripcionModulosTenant2() {
-		moduloMarketService.activarPrueba7dias();
+		moduloMarketService.suscripcionPremiumMes();
 		moduloVisibilidadPorRolService.cargarVisibilidadSuscripcionDefault();
 	}
 	
@@ -1431,7 +1432,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		// Empleado
 		m.setDatosBancarios("CBU: 001234");
 		m.setFuncion("Soporte");
-		m.setDescripcion("Atiene llamadas de beneficiarios");
+		m.setDescripcion("Atiende llamadas de beneficiarios");
 		// Fin Empleado
 		
 		empleadoService.altaEmpleado(m);
@@ -1872,6 +1873,10 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 	
 	public void generarCienBeneficiariosTenant2() {
 		beneficiarioService.generar_100_Beneficiarios(2022);
+	}
+	
+	public void generar30productosTenant2() {
+		productoService.generar_30_productos();
 	}
 	
 	public void cargarUsuariosDefault() {

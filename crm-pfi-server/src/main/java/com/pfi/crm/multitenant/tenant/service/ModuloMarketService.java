@@ -46,6 +46,13 @@ public class ModuloMarketService {
 		return moduloMarketRepository.findAll().stream().map(e -> e.toPayload()).collect(Collectors.toList());
 	}
 	
+	public List<ModuloMarketPayload> getPaidModuloMarkets() {
+		return moduloMarketRepository.findAll().stream()
+				.filter(m -> m.isPaidModule())
+				.map(m -> m.toPayload())
+				.collect(Collectors.toList());
+	}
+	
 	public ModuloMarketPayload altaModuloMarket(ModuloMarket moduloMarket) {
 		moduloMarket.setId(null);
 		boolean existeModuloEnum = moduloMarketRepository.existsByModuloEnum(moduloMarket.getModuloEnum());
@@ -82,7 +89,7 @@ public class ModuloMarketService {
 	}
 	
 	public ModuloMarketPayload getModuloMarketByModuloEnum(ModuloEnum moduloEnum) {
-		return getModuloMarketByModuloEnum(moduloEnum);
+		return getModuloMarketModelByModuloEnum(moduloEnum).toPayload();
 	}
 	
 	private  ModuloMarket getModuloMarketModelByModuloEnum(ModuloEnum moduloEnum) {
@@ -124,7 +131,28 @@ public class ModuloMarketService {
 		return precio*0.60;//Cobrar 60% por premium, o 40% de descuento del total de módulos
 	}
 	
+	public boolean isPrueba7diasUtilizada() {
+		List<ModuloMarket> modulos = moduloMarketRepository.findAll();
+		if(modulos.isEmpty())
+			return false;
+		boolean pruebaUtilizada = true;
+		for(ModuloMarket m: modulos) {
+			if(m.isPaidModule() && !m.isPrueba7DiasUtilizada()) {
+				pruebaUtilizada = false;
+			}
+		}
+		return pruebaUtilizada;
+	}
+	
+	public boolean isPrueba7diasUtilizada(ModuloEnum moduloEnum) {
+		ModuloMarket m = getModuloMarketModelByModuloEnum(moduloEnum);
+		return (m.isPrueba7DiasUtilizada() && m.isPaidModule());
+	}
+	
 	public ModuloMarketPayload activarPrueba7dias(ModuloEnum moduloEnum) {
+		if(moduloEnum.isFreeModule())
+			throw new BadRequestException("No se puede activar período de prueba a un módulo gratuito");
+		
 		ModuloMarket m = getModuloMarketModelByModuloEnum(moduloEnum);
 		if(m.isPrueba7DiasUtilizada())
 			if(m.getFechaPrueba7DiasUtilizada() != null)
@@ -133,6 +161,17 @@ public class ModuloMarketService {
 			else
 				throw new BadRequestException("La prueba gratuita de 7 días ya ha sido utilizada");
 		
+
+		if(moduloEnum.equals(ModuloEnum.ACTIVIDAD)) {
+			ModuloMarket aux = getModuloMarketModelByModuloEnum(ModuloEnum.PROGRAMA_DE_ACTIVIDADES);
+			aux.activarSieteDiasGratis();
+			this.modificarModuloMarket(aux);
+		}
+		else if(moduloEnum.equals(ModuloEnum.PROGRAMA_DE_ACTIVIDADES)) {
+			ModuloMarket aux = getModuloMarketModelByModuloEnum(ModuloEnum.ACTIVIDAD);
+			aux.activarSieteDiasGratis();
+			this.modificarModuloMarket(aux);
+		}
 		m.activarSieteDiasGratis();
 		return this.modificarModuloMarket(m);
 	}
@@ -161,6 +200,16 @@ public class ModuloMarketService {
 	public ModuloMarketPayload suscripcionBasicMes(ModuloEnum moduloEnum) {
 		ModuloMarket m = getModuloMarketModelByModuloEnum(moduloEnum);
 		if(!m.isFreeModule()) {
+			if(moduloEnum.equals(ModuloEnum.ACTIVIDAD)) {
+				ModuloMarket aux = getModuloMarketModelByModuloEnum(ModuloEnum.PROGRAMA_DE_ACTIVIDADES);
+				aux.sumarUnMes();
+				this.modificarModuloMarket(aux);
+			}
+			else if(moduloEnum.equals(ModuloEnum.PROGRAMA_DE_ACTIVIDADES)) {
+				ModuloMarket aux = getModuloMarketModelByModuloEnum(ModuloEnum.ACTIVIDAD);
+				aux.sumarUnMes();
+				this.modificarModuloMarket(aux);
+			}
 			m.sumarUnMes();
 			return this.modificarModuloMarket(m);
 		}
@@ -171,6 +220,16 @@ public class ModuloMarketService {
 	public ModuloMarketPayload suscripcionBasicAnio(ModuloEnum moduloEnum) {
 		ModuloMarket m = getModuloMarketModelByModuloEnum(moduloEnum);
 		if(!m.isFreeModule()) {
+			if(moduloEnum.equals(ModuloEnum.ACTIVIDAD)) {
+				ModuloMarket aux = getModuloMarketModelByModuloEnum(ModuloEnum.PROGRAMA_DE_ACTIVIDADES);
+				aux.sumarUnAnio();
+				this.modificarModuloMarket(aux);
+			}
+			else if(moduloEnum.equals(ModuloEnum.PROGRAMA_DE_ACTIVIDADES)) {
+				ModuloMarket aux = getModuloMarketModelByModuloEnum(ModuloEnum.ACTIVIDAD);
+				aux.sumarUnAnio();
+				this.modificarModuloMarket(aux);
+			}
 			m.sumarUnAnio();
 			return this.modificarModuloMarket(m);
 		}

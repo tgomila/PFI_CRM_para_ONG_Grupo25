@@ -18,6 +18,10 @@ public class ModuloMarketPayload {
 	
 	private LocalDateTime fechaMaximaSuscripcion;
 	
+	private double precioUnMes;
+	
+	private double precioUnAnio;
+	
 	private boolean suscripcionActiva;
 	
 	//Constructores
@@ -87,6 +91,22 @@ public class ModuloMarketPayload {
 
 	public void setFechaMaximaSuscripcion(LocalDateTime fechaMaximaSuscripcion) {
 		this.fechaMaximaSuscripcion = fechaMaximaSuscripcion;
+	}
+
+	public double getPrecioUnMes() {
+		return precioUnMes;
+	}
+
+	public void setPrecioUnMes(double precioUnMes) {
+		this.precioUnMes = precioUnMes;
+	}
+
+	public double getPrecioUnAnio() {
+		return precioUnAnio;
+	}
+
+	public void setPrecioUnAnio(double precioUnAnio) {
+		this.precioUnAnio = precioUnAnio;
 	}
 
 	public boolean isSuscripcionActiva() {

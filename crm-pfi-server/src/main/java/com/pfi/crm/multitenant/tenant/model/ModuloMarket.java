@@ -236,6 +236,8 @@ public class ModuloMarket extends UserDateAudit {
 		p.setFechaPrueba7DiasUtilizada(this.getFechaPrueba7DiasUtilizada());
 		p.setFechaInicioSuscripcion(this.getFechaInicioSuscripcion());
 		p.setFechaMaximaSuscripcion(this.getFechaMaximaSuscripcion());
+		p.setPrecioUnMes(this.getModuloEnum().getPriceOneMonth());
+		p.setPrecioUnAnio(this.getModuloEnum().getPriceOneYear());
 		p.setSuscripcionActiva(this.isSuscripcionActivaByBoolean());
 		return p;
 	}

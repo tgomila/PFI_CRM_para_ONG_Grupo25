@@ -29,15 +29,40 @@ public class ProductoController {
 	private ProductoService productoService;
 
 	@GetMapping("/{id}")
-	@PreAuthorize("hasRole('ROLE_PROFESIONAL') or hasRole('ROLE_EMPLOYEE') or hasRole('ROLE_ADMIN')")
+	//@PreAuthorize("hasRole('ROLE_PROFESIONAL') or hasRole('ROLE_EMPLOYEE') or hasRole('ROLE_ADMIN')")
 	public ProductoPayload getProductoById(@PathVariable Long id) {
 		return productoService.getProductoById(id);
 	}
 
 	@GetMapping({ "/", "/all" })
-	@PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_PROFESIONAL') or hasRole('ROLE_EMPLOYEE') or hasRole('ROLE_ADMIN')")
-	public List<ProductoPayload> getProducto() {
+	//@PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_PROFESIONAL') or hasRole('ROLE_EMPLOYEE') or hasRole('ROLE_ADMIN')")
+	public List<ProductoPayload> getProductos() {
 		return productoService.getProductos();
+	}
+	
+	@GetMapping({ "/sin_stock" })
+	public List<ProductoPayload> getProductosSinStock() {
+		return productoService.getProductosSinStock();
+	}
+	
+	@GetMapping({ "/con_stock" })
+	public List<ProductoPayload> getProductosConStock() {
+		return productoService.getProductosConStock();
+	}
+	
+	@GetMapping({ "/con_bajo_stock" })
+	public List<ProductoPayload> getProductosConBajoStock() {
+		return productoService.getProductosConBajoStock();
+	}
+	
+	@GetMapping({ "/con_suficiente_stock" })
+	public List<ProductoPayload> getProductosConSuficienteStock() {
+		return productoService.getProductosConSuficienteStock();
+	}
+	
+	@GetMapping({ "/calcular_precio_reposicion_stock" })
+	public String calcularPrecioReposicion() {
+		return productoService.calcularPrecioReposicion();
 	}
 
 	@PostMapping({ "/", "/alta" })

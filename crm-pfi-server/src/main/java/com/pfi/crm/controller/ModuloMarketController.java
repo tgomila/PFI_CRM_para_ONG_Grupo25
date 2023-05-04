@@ -29,16 +29,22 @@ public class ModuloMarketController {
 		return moduloMarketService.getModuloMarketById(id);
 	}
 	
+	@GetMapping("/modulo/find/{moduloEnum}")
+	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_EMPLOYEE')")
+	public ModuloMarketPayload getModuloMarketByModuloEnum(@PathVariable("moduloEnum") ModuloEnum moduloEnum) {
+		return moduloMarketService.getModuloMarketByModuloEnum(moduloEnum);
+	}
+	
 	@GetMapping({"/", "/all"})
 	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_EMPLOYEE')")
 	public List<ModuloMarketPayload> getModuloMarkets() {
 		return moduloMarketService.getModuloMarkets();
 	}
 	
-	@GetMapping("/modulo/find/{moduloEnum}")
+	@GetMapping({"/paid_modules"})
 	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_EMPLOYEE')")
-	public ModuloMarketPayload getModuloMarketByModuloEnum(@PathVariable("moduloEnum") ModuloEnum moduloEnum) {
-		return moduloMarketService.getModuloMarketByModuloEnum(moduloEnum);
+	public List<ModuloMarketPayload> getPaidModuloMarkets() {
+		return moduloMarketService.getPaidModuloMarkets();
 	}
 	
 	//@GetMapping("/modulo2str")
@@ -58,6 +64,18 @@ public class ModuloMarketController {
 	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_EMPLOYEE')")
 	public double precioSuscripcionPremiumAnio() {
 		return moduloMarketService.precioSuscripcionPremiumAnio();
+	}
+	
+	@GetMapping({"/suscripcion/isPrueba7diasUtilizada"})
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	public boolean isPrueba7diasUtilizada() {
+		return moduloMarketService.isPrueba7diasUtilizada();
+	}
+	
+	@GetMapping({"/suscripcion/isPrueba7diasUtilizada/{moduloEnum}"})
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	public boolean isPrueba7diasUtilizada(@PathVariable("moduloEnum") ModuloEnum moduloEnum) {
+		return moduloMarketService.isPrueba7diasUtilizada(moduloEnum);
 	}
 	
 	@PostMapping({"/suscripcion/activarPrueba7dias/{moduloEnum}"})
