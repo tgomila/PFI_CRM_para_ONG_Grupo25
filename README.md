@@ -104,7 +104,7 @@ Para más información leer la documentación.
 #### Requisitos:
 * Tener eclipse ide (se utilizó una versión del 2022).
 * Base de datos MySQL Workbench (en este caso se usó la versión 8.0). Setear username "root" y password "1234" para este ejemplo, luego cambiar contraseña a una más fuerte.
-* Java SDK 18.
+* Java SDK 11 en adelante (se utilizó Java 18).
 
 <p align="right">(<a href="#readme-top">volver a arriba</a>)</p>
 
@@ -139,67 +139,17 @@ Para más información leer la documentación.
           ```java
           properties.put(Environment.HBM2DDL_AUTO, "create");
           ```
-5)	Luego anda a ``` com.pri.crm.cargarDatosEjemplo.java ```:
-    *	Allí dentro primero ejecuta el código así, agregando “//” a tenants 1 y 2
-        ```java
-        //cargarTenant1();
-        //cargarTenant2();
-        cargarTenant3();
-        ```
-    *	En la base de datos “master_db” anda a la tabla y agrega este dato:
+5)	Luego encendé el proyecto hasta que salga el mensaje de reiniciar (apagar server y volver a encender)
+
+    ![Paso5_Reinicio1][paso-5-reinicio-1-screenshot]
     
-        [![PasoTenant3MySQL][paso-tenant3-mysql-screenshot]]
-        ```
-        '300', 'tenant3', 'ONG Sapito', 'jdbc:mysql://localhost:3306/tenant3?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false', 'root', '1234', 'com.mysql.cj.jdbc.Driver', 'Active'
-        ```
-6)	Ahora volve a eclipse, com.pri.crm.PfiApplication.java, hace click derecho --> Run As --> Spring Boot App.
-7)	Una vez que se haya ejecutado, dale a “Stop”. Ya se crearon las tablas para “tenant3”, ahora hay que crear las tablas para tenant2 y tenant1.
-8)	En MySQL en la tabla de master_db, modifica los datos del tenant1 y que sean para tenant2:
-    ```
-    '200', 'tenant2', 'ONG Comida para los chicos', 'jdbc:mysql://localhost:3306/tenant2?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false', 'root', '1234', 'com.mysql.cj.jdbc.Driver', 'Active'
-    ```
-    * En MySQL debería verse así:
+    * Realizalo aproximadamente 2 o 3 veces hasta que salga el siguiente mensaje de cambiar "create" a "none".
     
-        [![PasoTenant2MySQL][paso-tenant2-mysql-screenshot]]
-    * En eclipse así:
-        ```java
-        //cargarTenant1();
-        cargarTenant2();
-        //cargarTenant3();
-        ```
-    * Ahora ejecuta eclipse (igual a paso 6).
-9)	Una vez que se haya ejecutado, dale a “Stop”. Ya se crearon las tablas para “tenant2”, ahora hay que crear las tablas para tenant1.
-10)	En MySQL en la tabla de master_db, modifica los datos del tenant2 y que sean para tenant1:
-    ```
-    '100', 'tenant1', 'ONG Mi Arbolito', 'jdbc:mysql://localhost:3306/tenant1?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false', 'root', '1234', 'com.mysql.cj.jdbc.Driver', 'Active'
-    ```
-    * En MySQL debería verse así:
+    ![Paso5_Reinicio2][paso-5-reinicio-final-screenshot]
     
-        [![PasoTenant1MySQL][paso-tenant1-mysql-screenshot]]
-    * En eclipse así:
-        ```java
-        cargarTenant1();
-        //cargarTenant2();
-        //cargarTenant3();
-        ```
-    * Ahora ejecuta eclipse (igual a paso 6).
-11) Una vez que se haya ejecutado, dale a “Stop”. Ya se crearon las tablas para “tenant1”.
-12) En MySQL en la tabla de master_db, agrega todos los tenants. Se deja un ejemplo que se puede copiar:
-    ```
-    '100', 'tenant1', 'ONG Mi Arbolito', 'jdbc:mysql://localhost:3306/tenant1?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false', 'root', '1234', 'com.mysql.cj.jdbc.Driver', 'Active'
-    '200', 'tenant2', 'ONG Comida para los chicos', 'jdbc:mysql://localhost:3306/tenant2?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false', 'root', '1234', 'com.mysql.cj.jdbc.Driver', 'Active'
-    '300', 'tenant3', 'ONG Sapito', 'jdbc:mysql://localhost:3306/tenant3?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false', 'root', '1234', 'com.mysql.cj.jdbc.Driver', 'Active'
-    ```
-    * En MySQL debería verse así:
+    * Apague el servidor y pase al paso 6 (es el paso de la captura de pantalla de arriba).
     
-        [![PasoTenantsMySQL][paso-tenants-mysql-screenshot]]
-    * En eclipse así:
-        ```java
-        cargarTenant1();
-        cargarTenant2();
-        cargarTenant3();
-        ```
-13) (similar al paso 4) En eclipse, anda al archivo en carpeta com.pfi.crm.multitenant.tenant.config."TenantDatabaseConfig.java".
+6)	(similar al paso 4) En eclipse, anda al archivo en carpeta com.pfi.crm.multitenant.tenant.config."TenantDatabaseConfig.java".
     *	En casi las últimas líneas vas a encontrar:
           ```java
           properties.put(Environment.HBM2DDL_AUTO, "create");
@@ -215,7 +165,10 @@ Para más información leer la documentación.
 ### Instrucción cómo correr el frontend
 
 ```java
-//TODO
+//TODO pendiente realizar a futuro.
+//En pocas palabras si se requiere ya y quien tenga conocimiento, es:
+// - Importar el proyecto, ejecutar comando "npm install" y corregir errores que salgan en consola googleando.
+// - Luego "npm start" y arrancar server.
 ```
 
 <p align="right">(<a href="#readme-top">volver arriba</a>)</p>
@@ -227,15 +180,17 @@ Para más información leer la documentación.
 - [x] Base de Datos
 - [x] Backend multitenancy
 - [x] Frontend multitenancy
+- [x] Front de personas, beneficiarios, etc
 - [ ] Conversaciones (chat springboot o de nube)
-- [ ] Actividades y programa actividades (list actividades).
-- [ ] Taller/Actividad
-- [ ] Inventario (Producto, cantidad, precio, notas, subtotal) --> Clase producto
-- [ ] Préstamos
-- [ ] Insumos
-- [ ] Proyectos
+- [ ] Actividades y programa (list actividades) de actividades (hecho en backend).
+- [ ] Taller/Actividad (hecho en backend)
+- [ ] Inventario (Producto, cantidad, precio, notas, subtotal) --> Clase producto (hecho en backend)
+- [ ] Préstamos (hecho en backend)
+- [ ] Insumos (hecho en backend)
+- [ ] Proyectos (hecho en backend)
+- [ ] Gráficos front
 - [ ] OAuth
-- [ ] Módulos
+- [ ] Módulos (hecho en backend)
 - [ ] Tutoriales de video
 
 <p align="right">(<a href="#readme-top">volver arriba</a>)</p>
@@ -255,6 +210,10 @@ Link del Proyecto: [https://github.com/tgomila/PFI_CRM_para_ONG_Grupo25](https:/
 <!-- LINKS & IMAGES -->
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://www.linkedin.com/in/tomas-gomila/
+
+[paso-5-reinicio-1-screenshot]: images/Paso5_Reinicio1.PNG
+[paso-5-reinicio-final-screenshot]: images/Paso5_ReinicioFin.PNG
+<!-- OLD IMAGES -->
 [paso-tenant3-mysql-screenshot]: images/PasoTenant3MySQL.png
 [paso-tenant2-mysql-screenshot]: images/PasoTenant2MySQL.png
 [paso-tenant1-mysql-screenshot]: images/PasoTenant1MySQL.png
