@@ -32,11 +32,17 @@ h2 {
   font-family: sans-serif;
   color: hsl(0 0% 98%);
 }
-.precio1 {
+.suscripto-true {
   text-align: left;
   font-size: clamp(1rem, 4vmin, 4rem);
   font-family: sans-serif;
   color: hsl(115, 85%, 40%);
+}
+.suscripto-false {
+  text-align: left;
+  font-size: clamp(1rem, 4vmin, 4rem);
+  font-family: sans-serif;
+  color: hsl(0, 0%, 66%);
 }
 .underlined {
   position: relative;
@@ -92,6 +98,7 @@ body {
   
   grid-gap: 6rem;
   grid-template-columns: repeat(auto-fit, minmax(3rem, 1fr));
+  //grid-template-columns: repeat(3, 350px);
   align-items: start;
 }
 @media (max-width: 60em) {
@@ -127,6 +134,13 @@ body {
   color: #0d0d0d;
   margin-bottom: 1.5rem;
 }
+.card__text_info {
+  font-size: 1rem;
+  letter-spacing: 0.1rem;
+  line-height: 1.7;
+  color: #3d3d3d;
+  margin-bottom: 0.5rem;
+}
 .card__text {
   font-size: 1rem;
   letter-spacing: 0.1rem;
@@ -158,8 +172,133 @@ body {
   margin-left: 1.5rem;
 }
 
+
+.row{
+  margin: 0px;
+  //margin-bottom: 50px;
+}
+/*.row .col-lg-4 + .col-lg-4,
+.row .col-md-6 + .col-md-6,
+.row .col-md-12 + .col-md-12 {
+  margin-top: 150px; // Espacio arriba del segundo elemento en adelante
+}*/
 .grid__item_modulos{
+  background-color: #fff;
+  border-radius: 0.4rem;
+  overflow: hidden;
+  box-shadow: 0 3rem 6rem rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  //transition: 0.2s;
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
   margin: 50px;
 }
+.grid__item_modulos:hover {
+  transform: translateY(-0.5%);
+  box-shadow: 0 4rem 8rem rgba(0, 0, 0, 0.2);
+}
+
+
+//Samsung note 20 ultra:
+//Vertical   412px
+//Horizontal 1000px
+
+//Extra Small: Celular vertical
+@media screen and (min-width: 0px) {
+  .grid__item_modulos{
+    margin: 0px;
+    //margin-left: 0px;
+    //margin-right: 0px;
+    margin-top: 25px;
+    margin-bottom: 25px;
+  }
+}
+//Small: Celular horizontal
+@media screen and (min-width: 576px) {
+  .grid__item_modulos{
+    margin: 0px;
+    margin-top: 25px;
+    margin-bottom: 25px;
+  }
+}
+//Medium: Celular horizontal/Dispositivo mediano
+@media screen and (min-width: 768px) {
+  .grid__item_modulos{
+    margin: 50px;
+  }
+}
+
+//Large: Computadora
+@media screen and (min-width: 992px) {
+  .grid__item_modulos{
+    margin: 50px;
+  }
+  
+}
+
+
+
+
+
+
+
+
+
+/*
+.row {
+  display: flex;
+}
+
+.col-lg-4, .col-md-12 {
+  flex: 1;
+}
+
+.row{
+  margin-left: 0px;
+  margin-right: 0px;
+}
+@media screen and (min-width: 0px) and (max-width: 500px) {
+  .row{
+    margin-left: 0px;
+    margin-right: 0px;
+  }
+}
+
+.grid__item_modulos{
+  background-color: #fff;
+  border-radius: 0.4rem;
+  overflow: hidden;
+  box-shadow: 0 3rem 6rem rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: 0.2s;
+  margin: 0px;
+}
+.grid__item_modulos:hover {
+  transform: translateY(-0.5%);
+  box-shadow: 0 4rem 8rem rgba(0, 0, 0, 0.2);
+}
+
+.col-lg-4:not(:first-child) {
+  margin-left: 50px;
+}
+.col-md-6:not(:first-child) {
+  margin-left: 20px;
+}
+.col-md-6 ~ .col-md-6 {
+  margin-top: 10px;
+}
+*/
+
+
+
+
+
+
+
+
+//Input Tarjeta
+
+
+
+
 
 }

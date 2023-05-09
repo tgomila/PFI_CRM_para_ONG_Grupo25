@@ -65,7 +65,9 @@ const Sidebar = ({ children }) => {
         console.log("Modulos: ");
         console.log(modulos);
         modulos.then((res) => {
-            setMenuitem(res.data);
+            const menuItemConNoVista = res.data;
+            const filteredMenuItems = menuItemConNoVista.filter(item => item.tipoVisibilidad !== "NO_VISTA");
+            setMenuitem(filteredMenuItems);
         });
 
         setUrlLogo("http://ssl.gstatic.com/accounts/ui/avatar_2x.png");//Default

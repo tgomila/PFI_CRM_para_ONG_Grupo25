@@ -4,7 +4,10 @@ import * as constantsURL from "../components/constants/ConstantsURL";
 const BACKEND_API_BASE_URL = constantsURL.API_BASE_URL;
 
 
-
+/**
+ * Incluye NO_VISTA
+ * @returns 
+ */
 const getAll = () => {
     //return  ["Persona", "Beneficiario","Empleado","Colaborador","Consejo Adhonorem","Persona Juridica","Profesional","Donacion","Factura","Users"];
     console.log("Imprimo rol: " + getBestRoleLink());

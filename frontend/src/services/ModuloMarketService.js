@@ -3,14 +3,14 @@ import authHeader from "./auth-header";
 import * as constantsURL from "../components/constants/ConstantsURL";
 const BACKEND_API_BASE_URL = constantsURL.API_BASE_URL;
 
-class ContactoService {
+class ModuloMarketService {
 
     getById(dtoId){
-        return axios.get(BACKEND_API_BASE_URL + 'modulomarket/' + dtoId, { headers: authHeader() });
+        return axios.get(BACKEND_API_BASE_URL + 'modulomarket/' + dtoId, null, { headers: authHeader() });
     }
     
     getByModuloEnum(dto){
-        return axios.get(BACKEND_API_BASE_URL + 'modulomarket/find/' + dto, { headers: authHeader() });
+        return axios.get(BACKEND_API_BASE_URL + 'modulomarket/find/' + dto, null, { headers: authHeader() });
     }
     
     getAll(){
@@ -30,7 +30,7 @@ class ContactoService {
     }
 
     isPrueba7diasUtilizadaByEnum(dtoEnumName){
-        return axios.get(BACKEND_API_BASE_URL + 'modulomarket/suscripcion/isPrueba7diasUtilizada/' + dtoEnumName, { headers: authHeader() });
+        return axios.get(BACKEND_API_BASE_URL + 'modulomarket/suscripcion/isPrueba7diasUtilizada/' + dtoEnumName, null, { headers: authHeader() });
     }
 
     isPrueba7diasUtilizada(){
@@ -38,7 +38,7 @@ class ContactoService {
     }
 
     activarPrueba7diasByEnum(dtoEnumName){
-        return axios.post(BACKEND_API_BASE_URL + 'modulomarket/suscripcion/activarPrueba7dias/' + dtoEnumName, { headers: authHeader() });
+        return axios.post(BACKEND_API_BASE_URL + 'modulomarket/suscripcion/activarPrueba7dias/' + dtoEnumName, null, { headers: authHeader() });
     }
 
     activarPrueba7dias(){
@@ -46,11 +46,11 @@ class ContactoService {
     }
 
     suscripcionBasicMes(dtoEnumName){
-        return axios.post(BACKEND_API_BASE_URL + 'modulomarket/suscripcion/mes/' + dtoEnumName, { headers: authHeader() });
+        return axios.post(BACKEND_API_BASE_URL + 'modulomarket/suscripcion/mes/' + dtoEnumName, null, { headers: authHeader() });
     }
 
     suscripcionBasicAnio(dtoEnumName){
-        return axios.post(BACKEND_API_BASE_URL + 'modulomarket/suscripcion/anio/' + dtoEnumName, { headers: authHeader() });
+        return axios.post(BACKEND_API_BASE_URL + 'modulomarket/suscripcion/anio/' + dtoEnumName, null, { headers: authHeader() });
     }
 
     suscripcionPremiumMes(){
@@ -66,16 +66,16 @@ class ContactoService {
     }
 
     poseeAcceso(dtoEnumName){
-        return axios.get(BACKEND_API_BASE_URL + 'modulomarket/modulo/acceso/' + dtoEnumName, { headers: authHeader() });
+        return axios.get(BACKEND_API_BASE_URL + 'modulomarket/modulo/acceso/' + dtoEnumName, null, { headers: authHeader() });
     }
 
     poseeSuscripcionActiva(dtoEnumName){
-        return axios.get(BACKEND_API_BASE_URL + 'modulomarket/suscripto/' + dtoEnumName, { headers: authHeader() });
+        return axios.get(BACKEND_API_BASE_URL + 'modulomarket/suscripto/' + dtoEnumName, null, { headers: authHeader() });
     }
 
     getModuloMarketVencidosByBoolean(dtoEnumName){
-        return axios.get(BACKEND_API_BASE_URL + 'modulomarket/modulo/vencido' + dtoEnumName, { headers: authHeader() });
+        return axios.get(BACKEND_API_BASE_URL + 'modulomarket/modulo/vencido' + dtoEnumName, null, { headers: authHeader() });
     }
 }
 
-export default new ContactoService( )
+export default new ModuloMarketService( )

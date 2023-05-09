@@ -57,6 +57,7 @@ import AuthService from "./services/auth.service";
 import modulosService from "./services/modulosService";
 import Login from "./components/Login";
 import Marketplace from "./components/Marketplace";
+import RealizarPagoComponent from "./components/marketplace/RealizarPagoComponent";
 import BoardAdmin from "./components/BoardAdmin";
 import EventBus from "./common/EventBus";
 import Register from "./components/Register";
@@ -244,7 +245,8 @@ const App = () => {
             <Route path="/prestamo" element={<TablasDinamicas redireccionamiento='prestamo' />} />
             <Route path="/proyecto" element={<TablasDinamicas redireccionamiento='proyecto' />} />
             <Route path="/chat" element={<TablasDinamicas redireccionamiento='chat' />} />
-            <Route path="/Marketplace" element={<Marketplace  />} />
+            <Route path="/marketplace" element={<Marketplace  />} />
+            <Route path="/marketplace/pagar" element={<RealizarPagoComponent  />} />
             <Route path="/Testing" element={<Testing  />} />
             
 
