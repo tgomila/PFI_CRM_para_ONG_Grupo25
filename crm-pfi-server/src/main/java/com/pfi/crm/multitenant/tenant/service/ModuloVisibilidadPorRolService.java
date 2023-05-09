@@ -253,24 +253,40 @@ public class ModuloVisibilidadPorRolService {
 	}
 	
 	private List<ModuloVisibilidadPorRolTipo> obtenerModuloVisibilidadRolUser() {
-		List<ModuloVisibilidadPorRolTipo> moduloTipos = obtenerModuloVisibilidadRolDefault();
-		moduloTipos.add(new ModuloVisibilidadPorRolTipo(ModuloEnum.CONTACTO, ModuloTipoVisibilidadEnum.SOLO_VISTA));
-		moduloTipos.add(new ModuloVisibilidadPorRolTipo(ModuloEnum.PERSONA, ModuloTipoVisibilidadEnum.SOLO_VISTA));
-		moduloTipos.add(new ModuloVisibilidadPorRolTipo(ModuloEnum.BENEFICIARIO, ModuloTipoVisibilidadEnum.SOLO_VISTA));
-		moduloTipos.add(new ModuloVisibilidadPorRolTipo(ModuloEnum.VOLUNTARIO, ModuloTipoVisibilidadEnum.SOLO_VISTA));
-		moduloTipos.forEach(m -> m.setTipoVisibilidad(ModuloTipoVisibilidadEnum.SOLO_VISTA));
+		//List<ModuloVisibilidadPorRolTipo> moduloTipos = obtenerModuloVisibilidadRolDefault();
+		List<ModuloVisibilidadPorRolTipo> moduloTipos = new ArrayList<ModuloVisibilidadPorRolTipo>();
+		//moduloTipos.forEach(m -> m.setTipoVisibilidad(ModuloTipoVisibilidadEnum.SOLO_VISTA));
 		return moduloTipos;
 	}
 	
 	public List<ModuloVisibilidadPorRolTipo> obtenerModuloVisibilidadRolProfesional() {
-		List<ModuloVisibilidadPorRolTipo> moduloTipos = obtenerModuloVisibilidadRolUser();
+		//List<ModuloVisibilidadPorRolTipo> moduloTipos = obtenerModuloVisibilidadRolUser();
+		List<ModuloVisibilidadPorRolTipo> moduloTipos = new ArrayList<ModuloVisibilidadPorRolTipo>();
+		moduloTipos.add(new ModuloVisibilidadPorRolTipo(ModuloEnum.BENEFICIARIO, ModuloTipoVisibilidadEnum.SOLO_VISTA));
+		moduloTipos.add(new ModuloVisibilidadPorRolTipo(ModuloEnum.PROFESIONAL, ModuloTipoVisibilidadEnum.SOLO_VISTA));
+		
+		moduloTipos.add(new ModuloVisibilidadPorRolTipo(ModuloEnum.ACTIVIDAD, ModuloTipoVisibilidadEnum.SOLO_VISTA));
+		moduloTipos.add(new ModuloVisibilidadPorRolTipo(ModuloEnum.PROGRAMA_DE_ACTIVIDADES, ModuloTipoVisibilidadEnum.SOLO_VISTA));
+		moduloTipos.add(new ModuloVisibilidadPorRolTipo(ModuloEnum.CHAT, ModuloTipoVisibilidadEnum.EDITAR));
+		//Total 3+14 = 17 modulos
+		return moduloTipos;
+	}	
+	
+	public List<ModuloVisibilidadPorRolTipo> obtenerModuloVisibilidadRolEmployee() {
+		//List<ModuloVisibilidadPorRolTipo> moduloTipos = obtenerModuloVisibilidadRolProfesional();
+		List<ModuloVisibilidadPorRolTipo> moduloTipos = new ArrayList<ModuloVisibilidadPorRolTipo>();
+		
+		//Personas
+		moduloTipos.add(new ModuloVisibilidadPorRolTipo(ModuloEnum.PERSONA, ModuloTipoVisibilidadEnum.EDITAR));
+		moduloTipos.add(new ModuloVisibilidadPorRolTipo(ModuloEnum.BENEFICIARIO, ModuloTipoVisibilidadEnum.EDITAR));
+		moduloTipos.add(new ModuloVisibilidadPorRolTipo(ModuloEnum.VOLUNTARIO, ModuloTipoVisibilidadEnum.EDITAR));
 		moduloTipos.add(new ModuloVisibilidadPorRolTipo(ModuloEnum.EMPLEADO, ModuloTipoVisibilidadEnum.SOLO_VISTA));
 		moduloTipos.add(new ModuloVisibilidadPorRolTipo(ModuloEnum.COLABORADOR, ModuloTipoVisibilidadEnum.SOLO_VISTA));
 		moduloTipos.add(new ModuloVisibilidadPorRolTipo(ModuloEnum.CONSEJOADHONOREM, ModuloTipoVisibilidadEnum.SOLO_VISTA));
 		moduloTipos.add(new ModuloVisibilidadPorRolTipo(ModuloEnum.PERSONAJURIDICA, ModuloTipoVisibilidadEnum.SOLO_VISTA));
 		moduloTipos.add(new ModuloVisibilidadPorRolTipo(ModuloEnum.PROFESIONAL, ModuloTipoVisibilidadEnum.SOLO_VISTA));
-		moduloTipos.add(new ModuloVisibilidadPorRolTipo(ModuloEnum.USERS, ModuloTipoVisibilidadEnum.SOLO_VISTA));
-		
+
+		//Acciones de personas
 		moduloTipos.add(new ModuloVisibilidadPorRolTipo(ModuloEnum.ACTIVIDAD, ModuloTipoVisibilidadEnum.SOLO_VISTA));
 		moduloTipos.add(new ModuloVisibilidadPorRolTipo(ModuloEnum.PROGRAMA_DE_ACTIVIDADES, ModuloTipoVisibilidadEnum.SOLO_VISTA));
 		moduloTipos.add(new ModuloVisibilidadPorRolTipo(ModuloEnum.PRODUCTO, ModuloTipoVisibilidadEnum.SOLO_VISTA));
@@ -278,23 +294,42 @@ public class ModuloVisibilidadPorRolService {
 		moduloTipos.add(new ModuloVisibilidadPorRolTipo(ModuloEnum.FACTURA, ModuloTipoVisibilidadEnum.EDITAR));
 		moduloTipos.add(new ModuloVisibilidadPorRolTipo(ModuloEnum.PRESTAMO, ModuloTipoVisibilidadEnum.SOLO_VISTA));
 		moduloTipos.add(new ModuloVisibilidadPorRolTipo(ModuloEnum.PROYECTO, ModuloTipoVisibilidadEnum.SOLO_VISTA));
+		
+		//Chat
 		moduloTipos.add(new ModuloVisibilidadPorRolTipo(ModuloEnum.CHAT, ModuloTipoVisibilidadEnum.EDITAR));
-		//Total 3+14 = 17 modulos
-		return moduloTipos;
-	}	
-	
-	public List<ModuloVisibilidadPorRolTipo> obtenerModuloVisibilidadRolEmployee() {
-		List<ModuloVisibilidadPorRolTipo> moduloTipos = obtenerModuloVisibilidadRolProfesional();
 		//Stream map no almacena al realizar set.
 		//moduloTipos.stream().map(m -> m.setTipoVisibilidad(ModuloTipoVisibilidadEnum.EDITAR));
-		moduloTipos.add(new ModuloVisibilidadPorRolTipo(ModuloEnum.INSUMO, ModuloTipoVisibilidadEnum.SOLO_VISTA));
 		moduloTipos.forEach(m -> m.setTipoVisibilidad(ModuloTipoVisibilidadEnum.EDITAR));
 		//Total 3+14+1 = 18 modulos
 		return moduloTipos;
 	}
 	
 	public List<ModuloVisibilidadPorRolTipo> obtenerModuloVisibilidadRolAdmin() {
-		List<ModuloVisibilidadPorRolTipo> moduloTipos = obtenerModuloVisibilidadRolEmployee();
+		//List<ModuloVisibilidadPorRolTipo> moduloTipos = obtenerModuloVisibilidadRolEmployee();
+		List<ModuloVisibilidadPorRolTipo> moduloTipos = new ArrayList<ModuloVisibilidadPorRolTipo>();
+		
+		//Personas
+		moduloTipos.add(new ModuloVisibilidadPorRolTipo(ModuloEnum.CONTACTO, ModuloTipoVisibilidadEnum.NO_VISTA));
+		moduloTipos.add(new ModuloVisibilidadPorRolTipo(ModuloEnum.PERSONA, ModuloTipoVisibilidadEnum.NO_VISTA));
+		moduloTipos.add(new ModuloVisibilidadPorRolTipo(ModuloEnum.BENEFICIARIO, ModuloTipoVisibilidadEnum.SOLO_VISTA));
+		moduloTipos.add(new ModuloVisibilidadPorRolTipo(ModuloEnum.VOLUNTARIO, ModuloTipoVisibilidadEnum.NO_VISTA));
+		moduloTipos.add(new ModuloVisibilidadPorRolTipo(ModuloEnum.EMPLEADO, ModuloTipoVisibilidadEnum.SOLO_VISTA));
+		moduloTipos.add(new ModuloVisibilidadPorRolTipo(ModuloEnum.COLABORADOR, ModuloTipoVisibilidadEnum.SOLO_VISTA));
+		moduloTipos.add(new ModuloVisibilidadPorRolTipo(ModuloEnum.CONSEJOADHONOREM, ModuloTipoVisibilidadEnum.SOLO_VISTA));
+		moduloTipos.add(new ModuloVisibilidadPorRolTipo(ModuloEnum.PERSONAJURIDICA, ModuloTipoVisibilidadEnum.SOLO_VISTA));
+		moduloTipos.add(new ModuloVisibilidadPorRolTipo(ModuloEnum.PROFESIONAL, ModuloTipoVisibilidadEnum.SOLO_VISTA));
+		moduloTipos.add(new ModuloVisibilidadPorRolTipo(ModuloEnum.USERS, ModuloTipoVisibilidadEnum.SOLO_VISTA));
+		
+		//Acciones de personas
+		moduloTipos.add(new ModuloVisibilidadPorRolTipo(ModuloEnum.ACTIVIDAD, ModuloTipoVisibilidadEnum.SOLO_VISTA));
+		moduloTipos.add(new ModuloVisibilidadPorRolTipo(ModuloEnum.PROGRAMA_DE_ACTIVIDADES, ModuloTipoVisibilidadEnum.SOLO_VISTA));
+		moduloTipos.add(new ModuloVisibilidadPorRolTipo(ModuloEnum.PRODUCTO, ModuloTipoVisibilidadEnum.SOLO_VISTA));
+		moduloTipos.add(new ModuloVisibilidadPorRolTipo(ModuloEnum.DONACION, ModuloTipoVisibilidadEnum.EDITAR));
+		moduloTipos.add(new ModuloVisibilidadPorRolTipo(ModuloEnum.FACTURA, ModuloTipoVisibilidadEnum.EDITAR));
+		moduloTipos.add(new ModuloVisibilidadPorRolTipo(ModuloEnum.INSUMO, ModuloTipoVisibilidadEnum.SOLO_VISTA));
+		moduloTipos.add(new ModuloVisibilidadPorRolTipo(ModuloEnum.PRESTAMO, ModuloTipoVisibilidadEnum.SOLO_VISTA));
+		moduloTipos.add(new ModuloVisibilidadPorRolTipo(ModuloEnum.PROYECTO, ModuloTipoVisibilidadEnum.SOLO_VISTA));
+		moduloTipos.add(new ModuloVisibilidadPorRolTipo(ModuloEnum.CHAT, ModuloTipoVisibilidadEnum.EDITAR));
 		moduloTipos.add(new ModuloVisibilidadPorRolTipo(ModuloEnum.MARKETPLACE, ModuloTipoVisibilidadEnum.EDITAR));
 		//Stream map no almacena al realizar set.
 		//moduloTipos.stream().map(m -> m.setTipoVisibilidad(ModuloTipoVisibilidadEnum.EDITAR));

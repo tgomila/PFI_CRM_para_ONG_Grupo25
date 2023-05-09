@@ -233,8 +233,8 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 			cargarProductosInsumosFacturaPrestamoProgramaDeActividadesTenant2();
 			cargarDonacionesTenant2();
 			
-			generarCienBeneficiariosTenant2();
-			generar30productosTenant2();
+			//generarCienBeneficiariosTenant2();
+			//generar30productosTenant2();
 		}
 	}
 	
@@ -290,7 +290,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		// Contacto
 		m.setNombreDescripcion("Pibe");
 		m.setCuit("20-1235678-9");
-		m.setDomicilio("Avenida siempre falsa 123, piso 4, depto A");
+		m.setDomicilio("Zapiola 970, piso 4, depto A");
 		m.setEmail("felipeGarcia@gmail.com");
 		m.setTelefono("1234-4567");
 
@@ -319,7 +319,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		// Contacto
 		m.setNombreDescripcion("Piba");
 		m.setCuit("20-1235678-9");
-		m.setDomicilio("Avenida siempre falsa 123, piso 4, depto A");
+		m.setDomicilio("Charcas 4431, piso 4, depto A");
 		m.setEmail("mariajosefina@gmail.com");
 		m.setTelefono("1234-4567");
 
@@ -349,7 +349,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		// Contacto
 		m.setNombreDescripcion("Piba");
 		m.setCuit("20-1235678-9");
-		m.setDomicilio("Uruguay 782, piso 1, depto B");
+		m.setDomicilio("Almafuerte 2740, piso 1, depto B");
 		m.setEmail("carlagomez@gmail.com");
 		m.setTelefono("1234-4567");
 
@@ -374,7 +374,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		
 		
 		
-////////////////////////////////////////////
+		////////////////////////////////////////////
 		m = new BeneficiarioPayload();
 
 		// Contacto
@@ -408,7 +408,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		VoluntarioPayload m = new VoluntarioPayload();
 
 		// Contacto
-		m.setNombreDescripcion("Voluntario duro");
+		m.setNombreDescripcion("Voluntario que ayuda a los chicos");
 		m.setCuit("20-1297349-9");
 		m.setDomicilio("Peralta 457, piso 2, depto A");
 		m.setEmail("julioroque@gmail.com");
@@ -429,7 +429,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		
 		// Contacto
 		m = new VoluntarioPayload();
-		m.setNombreDescripcion("Voluntario blando");
+		m.setNombreDescripcion("Voluntario que ayuda a los chicos");
 		m.setCuit("20-1297349-9");
 		m.setDomicilio("Peralta 457, piso 2, depto A");
 		m.setEmail("santiagogomez@gmail.com");
@@ -473,16 +473,16 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		ProfesionalPayload m = new ProfesionalPayload();
 
 		// Contacto
-		m.setNombreDescripcion("Profesional Don psicologo");
+		m.setNombreDescripcion("Profesional psicologo");
 		m.setCuit("20-1235678-9");
 		m.setDomicilio("Avenida Las Heras 4578, piso 4, depto B");
-		m.setEmail("estebanquito@gmail.com");
+		m.setEmail("estebangarcia@gmail.com");
 		m.setTelefono("1234-4567");
 
 		// PersonaFisica
 		m.setDni(1235678);
 		m.setNombre("Esteban");
-		m.setApellido("Quito");
+		m.setApellido("García");
 		m.setFechaNacimiento(LocalDate.of(1990, 1, 20));
 
 		// Profesional
@@ -490,7 +490,6 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		m.setProfesion("Psicologo");
 		// Fin Profesional
 		profesionalService.altaProfesional(m);
-		
 		
 		////////////////////////////////////////
 		m = new ProfesionalPayload();
@@ -518,7 +517,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		
 		
 		////////////////////////////////////////
-		m = new ProfesionalPayload();		
+		m = new ProfesionalPayload();
 		
 		// Contacto
 		m.setNombreDescripcion("Contadora");
@@ -541,7 +540,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		
 		
 		////////////////////////////////////////
-		m = new ProfesionalPayload();		
+		m = new ProfesionalPayload();
 		
 		// Contacto
 		m.setNombreDescripcion("Medica clinica");
@@ -565,6 +564,32 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 	
 	public void cargarEmpleadosTenant1() {
 		EmpleadoPayload m = new EmpleadoPayload();
+		
+		/////////////////////////////////////////////
+		m = new EmpleadoPayload();
+
+		// Contacto
+		m.setNombreDescripcion("Jefe CEO");
+		m.setCuit("20-1235678-9");
+		m.setDomicilio("Avenida Callao 357, piso 4, depto A");
+		m.setEmail("nahuelvacca@gmail.com");
+		m.setTelefono("1234-4567");
+
+		// PersonaFisica
+		m.setDni(1235678);
+		m.setNombre("Nahuel");
+		m.setApellido("Vacca");
+		m.setFechaNacimiento(LocalDate.of(1985, 3, 17));
+
+		// Empleado
+		m.setDatosBancarios("CBU: 001234");
+		m.setFuncion("Jefe");
+		m.setDescripcion("Da las altas y bajas de empleados");
+		// Fin Empleado
+		
+		empleadoService.altaEmpleado(m);
+		
+		/////////////////////////////////////////////
 
 		// Contacto
 		m.setNombreDescripcion("Empleado");
@@ -586,33 +611,6 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		// Fin Empleado
 		
 		empleadoService.altaEmpleado(m);
-		
-		
-		
-		/////////////////////////////////////////////
-		m = new EmpleadoPayload();
-
-		// Contacto
-		m.setNombreDescripcion("Jefe CEO");
-		m.setCuit("20-1235678-9");
-		m.setDomicilio("Avenida siempre falsa 123, piso 4, depto A");
-		m.setEmail("estebanquito@gmail.com");
-		m.setTelefono("1234-4567");
-
-		// PersonaFisica
-		m.setDni(1235678);
-		m.setNombre("Nahuel");
-		m.setApellido("Vacca");
-		m.setFechaNacimiento(LocalDate.of(1985, 3, 17));
-
-		// Empleado
-		m.setDatosBancarios("CBU: 001234");
-		m.setFuncion("Jefe");
-		m.setDescripcion("Da las altas y bajas de empleados");
-		// Fin Empleado
-		
-		empleadoService.altaEmpleado(m);
-		
 		
 		
 		/////////////////////////////////////////////
@@ -740,7 +738,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		m.setFechaNacimiento(LocalDate.of(1997, 1, 20));
 
 		// ConsejoAdHonorem
-		m.setFuncion("Da buenos consejos");
+		m.setFuncion("Aconseja a los superiores");
 		
 		consejoAdHonoremService.altaConsejoAdHonorem(m);
 		
@@ -750,7 +748,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		m = new ConsejoAdHonoremPayload();
 
 		// Contacto
-		m.setNombreDescripcion("ConsejeraAdHonorem Feli");
+		m.setNombreDescripcion("ConsejeraAdHonorem");
 		m.setCuit("20-274569465-9");
 		m.setDomicilio("Gallo 956, piso 4, depto A");
 		m.setEmail("felicitasvicines@gmail.com");
@@ -763,7 +761,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		m.setFechaNacimiento(LocalDate.of(1984, 10, 12));
 
 		// ConsejoAdHonorem
-		m.setFuncion("Administradora del consejo");
+		m.setFuncion("Aconseja a los empleados");
 		
 		consejoAdHonoremService.altaConsejoAdHonorem(m);
 		
@@ -774,7 +772,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		m = new ConsejoAdHonoremPayload();
 
 		// Contacto
-		m.setNombreDescripcion("ConsejeroAdHonorem Feli");
+		m.setNombreDescripcion("ConsejeroAdHonorem");
 		m.setCuit("20-274569465-9");
 		m.setDomicilio("Sartinez 654, piso 1, depto B");
 		m.setEmail("juanquintana@gmail.com");
@@ -787,7 +785,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		m.setFechaNacimiento(LocalDate.of(1998, 2, 22));
 
 		// ConsejoAdHonorem
-		m.setFuncion("Asistente del consejo");
+		m.setFuncion("Asistente");
 		
 		consejoAdHonoremService.altaConsejoAdHonorem(m);
 		
@@ -868,14 +866,49 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 	}
 	
 	public void cargarUsuariosTenant1() {
+		User user;
 		
-		cargarUsuariosDefault();
+		List<EmpleadoPayload> empleados = empleadoService.getEmpleados();
+		List<ProfesionalPayload> profesionales = profesionalService.getProfesionales();
+		//Admin
+		if(empleados.size()>0) {
+			user = cargarUserAux(empleados.get(0), RoleName.ROLE_ADMIN);
+			user.setUsername("admin");
+			userService.altaUsuario(user);
+		}
+		//Empleado
+		if(empleados.size()>1) {
+			user = cargarUserAux(empleados.get(1), RoleName.ROLE_EMPLOYEE);
+			user.setUsername("employee");
+			userService.altaUsuario(user);
+		}
+		if(empleados.size()>2) {
+			user = cargarUserAux(empleados.get(2), RoleName.ROLE_EMPLOYEE);
+			userService.altaUsuario(user);
+		}
+		//Profesional
+		if(profesionales.size()>0) {
+			user = cargarUserAux(profesionales.get(0), RoleName.ROLE_PROFESIONAL);
+			user.setUsername("profesional");
+			userService.altaUsuario(user);
+		}
+		if(profesionales.size()>1) {
+			user = cargarUserAux(profesionales.get(1), RoleName.ROLE_PROFESIONAL);
+			userService.altaUsuario(user);
+		}
+		//cargarUsuariosDefault();
 		
-		String nombre = "Federico del tenant 1";
-		String username = "fulano1";
-		String email = "fulano1@gmail.com";
-		cargarUsuarioBasico(nombre, username, email, RoleName.ROLE_EMPLOYEE);
-		
+	}
+	
+	private User cargarUserAux(PersonaFisicaAbstractPayload persona, RoleName roleName) {
+		User user = new User();
+		user.setName(persona.getNombre().split(" ")[0] + " " + persona.getApellido().split(" ")[0]);
+		user.setUsername(persona.getNombre().split(" ")[0].toLowerCase().substring(0, 1) + persona.getApellido().split(" ")[0].toLowerCase());
+		user.setEmail(persona.getEmail());
+		user.setPassword(passwordEncoder.encode("123456"));
+		user.setContacto(contactoService.getContactoModelById(persona.getId()));
+		user.agregarRol(new Role(roleName));
+		return user;
 	}
 	
 	public void cargarProductosInsumosFacturaPrestamoProgramaDeActividadesTenant1() {
@@ -1062,8 +1095,8 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 
 		// PersonaFisica
 		voluntarioPayload.setDni(1235678);
-		voluntarioPayload.setNombre("Super Persona");
-		voluntarioPayload.setApellido("Voluntario y Empleado");
+		voluntarioPayload.setNombre("Raúl");
+		voluntarioPayload.setApellido("Dominguez");
 		voluntarioPayload.setFechaNacimiento(LocalDate.of(2000, 1, 15));
 
 		//Voluntario
@@ -1087,8 +1120,8 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 
 		// PersonaFisica
 		empleadoPayload.setDni(1235678);
-		empleadoPayload.setNombre("Super Persona modificado");
-		empleadoPayload.setApellido("Voluntario y Empleado modificado");
+		empleadoPayload.setNombre("Raúl");
+		empleadoPayload.setApellido("Dominguez");
 		empleadoPayload.setFechaNacimiento(LocalDate.of(2000, 1, 15));
 
 		// Empleado
@@ -1294,9 +1327,9 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		ProfesionalPayload m = new ProfesionalPayload();
 
 		// Contacto
-		m.setNombreDescripcion("Profesora Doña profe");
+		m.setNombreDescripcion("Profesora");
 		m.setCuit("20-1235678-9");
-		m.setDomicilio("Avenida Las Profesoras 2373, piso 2, depto D");
+		m.setDomicilio("Viamonte 1678, piso 2, depto D");
 		m.setEmail("eugeniavarela@gmail.com");
 		m.setTelefono("1234-4567");
 
@@ -1320,7 +1353,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		m.setNombreDescripcion("Pintor");
 		m.setCuit("20-1235678-9");
 		m.setDomicilio("Ñandues 5470, piso 1, depto A");
-		m.setEmail("alejandrogrisgmail.com");
+		m.setEmail("alejandrogris@gmail.com");
 		m.setTelefono("1234-4567");
 
 		// PersonaFisica
@@ -1386,6 +1419,30 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 	
 	public void cargarEmpleadosTenant2() {
 		EmpleadoPayload m = new EmpleadoPayload();
+
+		/////////////////////////////////////////////
+		m = new EmpleadoPayload();
+
+		// Contacto
+		m.setNombreDescripcion("Jefa Gral");
+		m.setCuit("20-1235678-9");
+		m.setDomicilio("Quintana 237, piso 1, depto F");
+		m.setEmail("patriciacastro@gmail.com");
+		m.setTelefono("6541-5616");
+
+		// PersonaFisica
+		m.setDni(1235678);
+		m.setNombre("Patricia");
+		m.setApellido("Castro");
+		m.setFechaNacimiento(LocalDate.of(1985, 3, 17));
+
+		// Empleado
+		m.setDatosBancarios("CBU: 001234");
+		m.setFuncion("Jefa Gral");
+		m.setDescripcion("Da todas las órdenes del establecimiento");
+		// Fin Empleado
+		
+		empleadoService.altaEmpleado(m);
 		
 		/////////////////////////////////////////////
 		
@@ -1436,34 +1493,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		// Fin Empleado
 		
 		empleadoService.altaEmpleado(m);
-		
-		
-		
 		/////////////////////////////////////////////
-		m = new EmpleadoPayload();
-
-		// Contacto
-		m.setNombreDescripcion("Jefa Gral");
-		m.setCuit("20-1235678-9");
-		m.setDomicilio("Quintana 237, piso 1, depto F");
-		m.setEmail("patriciacastro@gmail.com");
-		m.setTelefono("6541-5616");
-
-		// PersonaFisica
-		m.setDni(1235678);
-		m.setNombre("Patricia");
-		m.setApellido("Castro");
-		m.setFechaNacimiento(LocalDate.of(1985, 3, 17));
-
-		// Empleado
-		m.setDatosBancarios("CBU: 001234");
-		m.setFuncion("Jefa Gral");
-		m.setDescripcion("Da todas las órdenes del establecimiento");
-		// Fin Empleado
-		
-		empleadoService.altaEmpleado(m);
-		
-		
 	}
 	
 	public void cargarColaboradorTenant2() {
@@ -1693,13 +1723,37 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 	}
 	
 	public void cargarUsuariosTenant2() {
+		User user;
 		
-		cargarUsuariosDefault();
-		
-		String nombre = "Federico del tenant 2";
-		String username = "fulano2";
-		String email = "fulano2@gmail.com";
-		cargarUsuarioBasico(nombre, username, email, RoleName.ROLE_EMPLOYEE);
+		List<EmpleadoPayload> empleados = empleadoService.getEmpleados();
+		List<ProfesionalPayload> profesionales = profesionalService.getProfesionales();
+		//Admin
+		if(empleados.size()>0) {
+			user = cargarUserAux(empleados.get(0), RoleName.ROLE_ADMIN);
+			user.setUsername("admin");
+			userService.altaUsuario(user);
+		}
+		//Empleado
+		if(empleados.size()>1) {
+			user = cargarUserAux(empleados.get(1), RoleName.ROLE_EMPLOYEE);
+			user.setUsername("employee");
+			userService.altaUsuario(user);
+		}
+		if(empleados.size()>2) {
+			user = cargarUserAux(empleados.get(2), RoleName.ROLE_EMPLOYEE);
+			userService.altaUsuario(user);
+		}
+		//Profesional
+		if(profesionales.size()>0) {
+			user = cargarUserAux(profesionales.get(0), RoleName.ROLE_PROFESIONAL);
+			user.setUsername("profesional");
+			userService.altaUsuario(user);
+		}
+		if(profesionales.size()>1) {
+			user = cargarUserAux(profesionales.get(1), RoleName.ROLE_PROFESIONAL);
+			userService.altaUsuario(user);
+		}
+		//cargarUsuariosDefault();
 	}
 	
 
@@ -1884,7 +1938,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		cargarUsuarioBasico("admin", RoleName.ROLE_ADMIN);
 		cargarUsuarioBasico("employee", RoleName.ROLE_EMPLOYEE);
 		cargarUsuarioBasico("profesional", RoleName.ROLE_PROFESIONAL);
-		cargarUsuarioBasico("user", RoleName.ROLE_USER);
+		//cargarUsuarioBasico("user", RoleName.ROLE_USER);
 		
 	}
 	
