@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.BeanIds;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -73,45 +74,47 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     
     
     // HttpSecurity se usa para sesiones en sessionManagement, agrega las reglas de ROLE
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http
-                .cors()
-                    .and()
-                .csrf()
-                    .disable()
-                .exceptionHandling()
-                    .authenticationEntryPoint(unauthorizedHandler)
-                    .and()
-                .sessionManagement()
-                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                    .and()
-                .authorizeRequests()
-                    .antMatchers("/",
-                        "/favicon.ico",
-                        "/**/*.png",
-                        "/**/*.gif",
-                        "/**/*.svg",
-                        "/**/*.jpg",
-                        "/**/*.html",
-                        "/**/*.css",
-                        "/**/*.js")
-                        .permitAll()
-                    .antMatchers("/api/auth/**")
-                    //.antMatchers("/api/**")
-                        .permitAll()
-                    .antMatchers("/api/tenant/all")
-                        .permitAll()
-                    .antMatchers("/api/user/checkUsernameAvailability", "/api/user/checkEmailAvailability")
-                        .permitAll()
-                    //.antMatchers(HttpMethod.GET, "/api/employee/**", "/api/users/**", "/api/contacto/**")
-                    //    .permitAll()
-                    .anyRequest()
-                        .authenticated();
+	@Override
+	protected void configure(HttpSecurity http) throws Exception {
+		http
+				.cors()
+					.and()
+				.csrf()
+					.disable()
+				.exceptionHandling()
+					.authenticationEntryPoint(unauthorizedHandler)
+					.and()
+				.sessionManagement()
+					.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+					.and()
+				.authorizeRequests()
+					.antMatchers("/",
+						"/favicon.ico",
+						"/**/*.png",
+						"/**/*.gif",
+						"/**/*.svg",
+						//"/**/*.jpg",//Esto permite consultar mis imágenes sin token
+						"/**/*.html",
+						"/**/*.css",
+						"/**/*.js")
+						.permitAll()
+					.antMatchers("/api/auth/**")
+					//.antMatchers("/api/**")
+						.permitAll()
+					.antMatchers("/api/tenant/all")
+						.permitAll()
+					.antMatchers("/api/user/checkUsernameAvailability", "/api/user/checkEmailAvailability")
+						.permitAll()
+					//.antMatchers(HttpMethod.GET, "/api/images/images/**")
+					//	.permitAll()
+					//.antMatchers(HttpMethod.GET, "/api/employee/**", "/api/users/**", "/api/contacto/**")
+					//	.permitAll()
+					.anyRequest()
+						.authenticated();
 
-        // Agrega nuestro custom JWT security filter
-        http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
-
+		// Agrega nuestro custom JWT security filter
+		http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+		
     }
     
     
