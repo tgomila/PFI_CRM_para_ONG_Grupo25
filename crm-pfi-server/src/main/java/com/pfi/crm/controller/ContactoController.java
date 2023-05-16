@@ -22,10 +22,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.pfi.crm.exception.BadRequestException;
+import com.pfi.crm.multitenant.tenant.model.ModuloEnum;
+import com.pfi.crm.multitenant.tenant.model.ModuloTipoVisibilidadEnum;
 import com.pfi.crm.multitenant.tenant.payload.ContactoPayload;
 import com.pfi.crm.multitenant.tenant.payload.nombres_tabla.ContactoNombreTablaPayload;
 import com.pfi.crm.multitenant.tenant.service.ContactoService;
+import com.pfi.crm.multitenant.tenant.service.ModuloVisibilidadPorRolService;
 import com.pfi.crm.payload.response.ApiResponse;
+import com.pfi.crm.security.CurrentUser;
+import com.pfi.crm.security.UserPrincipal;
 
 @RestController
 @RequestMapping("/api/contacto")
@@ -34,29 +39,35 @@ public class ContactoController {
 	@Autowired
 	private ContactoService contactoService;
 	
+	@Autowired
+	private ModuloVisibilidadPorRolService seguridad;
+	
 	
 	
 	@GetMapping("/{id}")
-    public ContactoPayload getContactoById(@PathVariable Long id) {
+    public ContactoPayload getContactoById(@PathVariable Long id, @CurrentUser UserPrincipal currentUser) {
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.CONTACTO, "Ver un id");
         return contactoService.getContactoById(id);
     }
 	
 	@GetMapping({"/", "/all"})
-	//@PreAuthorize("hasRole('ROLE_EMPLOYEE')")
-    public List<ContactoPayload> getContactos() {
+	public List<ContactoPayload> getContactos(@CurrentUser UserPrincipal currentUser) {
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.CONTACTO, "Ver todos los contactos");
 		System.out.println("\n\n\n----------------------------Entre acá /all-----------------------------------\n\n\n");
     	//return  contactoService.getContactos().stream().map(e -> contactoService.toPayload(e)).collect(Collectors.toList());
 		return  contactoService.getContactos();
 	}
 	
 	@PostMapping({"/", "/alta"})
-    public ContactoPayload altaContacto(@Valid @RequestBody ContactoPayload payload) {
+    public ContactoPayload altaContacto(@Valid @RequestBody ContactoPayload payload, @CurrentUser UserPrincipal currentUser) {
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.CONTACTO, "Dar de alta un contacto");
 		System.out.println("\n\nEntre acáaaaaaaaaaaaaaaaaa\n\n");
     	return contactoService.altaContacto(payload);
     }
 	
 	@DeleteMapping({"/{id}", "/baja/{id}"})
-    public ResponseEntity<?> bajaContacto(@PathVariable Long id) {
+    public ResponseEntity<?> bajaContacto(@PathVariable Long id, @CurrentUser UserPrincipal currentUser) {
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.CONTACTO, "Dar de baja un contacto");
     	String message = contactoService.bajaContacto(id);
     	if(!message.isEmpty())
     		return ResponseEntity.ok().body(new ApiResponse(true, message));
@@ -65,12 +76,14 @@ public class ContactoController {
     }	
 	
 	@PutMapping({"/", "/modificar"})
-    public ContactoPayload modificarContacto(@Valid @RequestBody ContactoPayload payload) {
+    public ContactoPayload modificarContacto(@Valid @RequestBody ContactoPayload payload, @CurrentUser UserPrincipal currentUser) {
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.CONTACTO, "Modificar un contacto");
     	return contactoService.modificarContacto(payload);
     }
 	
 	@GetMapping({"/nombres_tabla"})
-	public LinkedHashMap<String, String> getNombresTabla() {
+	public LinkedHashMap<String, String> getNombresTabla(@CurrentUser UserPrincipal currentUser) {
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.CONTACTO, "ver nombres para la tabla");
 		return  new ContactoNombreTablaPayload().getNombresContactoTabla();
 	}
 	
@@ -78,9 +91,10 @@ public class ContactoController {
 	// Devuelve un ejemplo de contacto payload
 
 	@GetMapping("/test")
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	public ContactoPayload getContactoTest(/* @Valid @RequestBody ContactoPayload payload */) {
-
+	@PreAuthorize("hasRole('ADMIN')")
+	public ContactoPayload getContactoTest(@CurrentUser UserPrincipal currentUser) {
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.CONTACTO, "test");
+		
 		ContactoPayload p = new ContactoPayload();
 
 		// Contacto
@@ -96,7 +110,8 @@ public class ContactoController {
 	
 	@GetMapping("/test/fecha")
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	public Instant getFecha(/* @Valid @RequestBody ContactoPayload payload */) {
+	public Instant getFecha(@CurrentUser UserPrincipal currentUser) {
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.CONTACTO, "test get fecha");
 		Instant now = Instant.now();
 		Instant firstDayOfMonth = now.atZone(ZoneId.systemDefault())
 			    .toLocalDate()
@@ -110,32 +125,37 @@ public class ContactoController {
 	
 	@GetMapping("/test/contactos_este_mes")
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	public int getContactosEsteMes(/* @Valid @RequestBody ContactoPayload payload */) {
+	public int getContactosEsteMes(@CurrentUser UserPrincipal currentUser) {
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.CONTACTO, "Ver número de contactos creados este mes");
 		return contactoService.getContactosCreadosEsteMes().size();
 	}
 	
 	@GetMapping("/test/contar_contactos/este_mes")
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	public List<Map<String, Object>> countContactosCreadosEsteMes() {
+	public List<Map<String, Object>> countContactosCreadosEsteMes(@CurrentUser UserPrincipal currentUser) {
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.CONTACTO, "Ver contactos creados este año por mes");
 		return contactoService.countContactosCreadosEsteAnioPorMes();
 	}
 	
 	@GetMapping("/test/contar_contactos/ultimos_12_meses")
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	public List<Map<String, Object>> countContactosCreadosUltimos12meses() {
+	public List<Map<String, Object>> countContactosCreadosUltimos12meses(@CurrentUser UserPrincipal currentUser) {
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.CONTACTO, "Ver contactos creados en los ultimos 12 meses por mes");
 		return contactoService.countContactosCreadosUltimos12meses();
 	}
 	
 	@GetMapping("/test/contar_contactos/este_anio/")
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	public List<Map<String, Object>> countContactosCreadosEsteAnio() {
+	public List<Map<String, Object>> countContactosCreadosEsteAnio(@CurrentUser UserPrincipal currentUser) {
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.CONTACTO, "Ver contactos creados este año por mes");
 		int esteAnio = LocalDate.now().getYear();
 		return contactoService.countContactosByAnioMes(esteAnio);
 	}
 	
 	@GetMapping("/test/contar_contactos/este_anio/{anioInput}")
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	public List<Map<String, Object>> countContactosCreadosEnAnioInput(@PathVariable int anioInput) {
+	public List<Map<String, Object>> countContactosCreadosEnAnioInput(@PathVariable int anioInput, @CurrentUser UserPrincipal currentUser) {
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.CONTACTO, "Ver contactos creados por mes en el año "+anioInput);
 		return contactoService.countContactosByAnioMes(anioInput);
 	}
 }

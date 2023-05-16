@@ -49,26 +49,63 @@ public class PrestamoService {
 		return prestamoRepository.save(new Prestamo(payload)).toPayload();
 	}
 	
-	public void bajaPrestamo(Long id) {
+	public String bajaPrestamo(Long id) {
 		Prestamo m = prestamoRepository.findById(id).orElseThrow(
 				() -> new ResourceNotFoundException("Prestamo", "id", id));
-		m.setPrestamista(null);
-		m.setPrestatario(null);
-		prestamoRepository.save(m);
+		String message = "Se ha dado de baja al prestamo id: " + m.getId();
+		if(m.getPrestamista() != null || m.getPrestatario() != null) {
+			if(m.getPrestamista()!=null) {
+				message += ", y desasociado a su prestamista id: " + m.getPrestamista().getId();
+				m.setPrestamista(null);
+			}
+			if(m.getPrestatario() != null) {
+				message += ", y desasociado a su prestatario id: " + m.getPrestamista().getId();
+				m.setPrestatario(null);
+			}
+			prestamoRepository.save(m);
+		}
 		prestamoRepository.delete(m);
+		return message;
 	}
 	
-	public void quitarContactoDeSusPrestamos(Long idContacto) {
+	public String quitarContactoDeSusPrestamos(Long idContacto) {
 		List<Prestamo> prestamosPrestamista = prestamoRepository.findByPrestamista_Id(idContacto);
+		String  message = "";
 		if(!prestamosPrestamista.isEmpty()) {
-			prestamosPrestamista.forEach((prestamo) -> prestamo.setPrestamista(null));
+			message += "Se ha desasociado al contacto id '" +  idContacto + "' como prestamista";
+			if(prestamosPrestamista.size()>1)
+				message += " de los prestamos id's: ";
+			else
+				message += " del prestamo id: ";
+			for(int i=0; i<prestamosPrestamista.size(); i++) {
+				message += prestamosPrestamista.get(i).getId();
+				if(i<prestamosPrestamista.size()-1)//no sea ultimo
+					message += ", ";
+				prestamosPrestamista.get(i).setPrestamista(null);
+			}
 			prestamoRepository.saveAll(prestamosPrestamista);
 		}
+		
 		List<Prestamo> prestamosPrestatario = prestamoRepository.findByPrestatario_Id(idContacto);
 		if(!prestamosPrestatario.isEmpty()) {
-			prestamosPrestatario.forEach((prestamo) -> prestamo.setPrestatario(null));
+			if(!message.isEmpty())
+				message += ". También se";
+			else
+				message += "Se";
+			message += " ha desasociado al contacto id '" + idContacto + "' como prestatario";
+			if(prestamosPrestatario.size()>1)
+				message += " de los prestamos id's: ";
+			else
+				message += " del prestamo id: ";
+			for(int i=0; i<prestamosPrestatario.size(); i++) {
+				message += prestamosPrestatario.get(i).getId();
+				if(i<prestamosPrestatario.size()-1)//no sea ultimo
+					message += ", ";
+				prestamosPrestatario.get(i).setPrestamista(null);
+			}
 			prestamoRepository.saveAll(prestamosPrestatario);
 		}
+		return message;
 	}
 	
 	public PrestamoPayload modificarPrestamo(PrestamoPayload payload) {

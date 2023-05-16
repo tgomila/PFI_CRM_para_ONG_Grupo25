@@ -17,10 +17,17 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.pfi.crm.exception.BadRequestException;
+import com.pfi.crm.multitenant.tenant.model.ModuloEnum;
+import com.pfi.crm.multitenant.tenant.model.ModuloTipoVisibilidadEnum;
 import com.pfi.crm.multitenant.tenant.model.Voluntario;
 import com.pfi.crm.multitenant.tenant.payload.VoluntarioPayload;
 import com.pfi.crm.multitenant.tenant.payload.nombres_tabla.VoluntarioNombreTablaPayload;
+import com.pfi.crm.multitenant.tenant.service.ModuloVisibilidadPorRolService;
 import com.pfi.crm.multitenant.tenant.service.VoluntarioService;
+import com.pfi.crm.payload.response.ApiResponse;
+import com.pfi.crm.security.CurrentUser;
+import com.pfi.crm.security.UserPrincipal;
 
 @RestController
 @RequestMapping("/api/voluntario")
@@ -28,43 +35,56 @@ public class VoluntarioController {
 	
 	@Autowired
 	private VoluntarioService voluntarioService;
+	@Autowired
+	private ModuloVisibilidadPorRolService seguridad;
 	
 	
 	
 	@GetMapping("/{id}")
-    public VoluntarioPayload getVoluntarioById(@PathVariable Long id) {
+    public VoluntarioPayload getVoluntarioById(@PathVariable Long id, @CurrentUser UserPrincipal currentUser) {
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.VOLUNTARIO, "Ver voluntario con id: '" + id + "'");
         return voluntarioService.getVoluntarioByIdContacto(id);
     }
 	
 	@GetMapping({"/", "/all"})
 	//@PreAuthorize("hasRole('ROLE_EMPLOYEE')")
-    public List<VoluntarioPayload> getVoluntario() {
+    public List<VoluntarioPayload> getVoluntario(@CurrentUser UserPrincipal currentUser) {
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.VOLUNTARIO, "Ver lista de voluntarios");
     	return  voluntarioService.getVoluntarios();
 	}
 	
 	@PostMapping({"/", "/alta"})
-    public VoluntarioPayload altaVoluntario(@Valid @RequestBody VoluntarioPayload payload) {
+    public VoluntarioPayload altaVoluntario(@Valid @RequestBody VoluntarioPayload payload, @CurrentUser UserPrincipal currentUser) {
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.VOLUNTARIO, "Cargar nuevo voluntario");
     	return voluntarioService.altaVoluntario(payload);
     }
 	
 	@DeleteMapping({"/{id}", "/baja/{id}"})
-    public void bajaVoluntario(@PathVariable Long id) {
-		voluntarioService.bajaVoluntario(id);
+    public ResponseEntity<?> bajaVoluntario(@PathVariable Long id, @CurrentUser UserPrincipal currentUser) {
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.VOLUNTARIO, "Eliminar un voluntario");
+		String message = voluntarioService.bajaVoluntario(id);
+    	if(!message.isEmpty())
+    		return ResponseEntity.ok().body(new ApiResponse(true, message));
+    	else
+    		throw new BadRequestException("Algo salió mal en la baja. Verifique message que retorna en backend.");
     }
 	
 	@PutMapping({"/", "/modificar"})
-    public VoluntarioPayload modificarVoluntario(@Valid @RequestBody VoluntarioPayload payload) {
+    public VoluntarioPayload modificarVoluntario(@Valid @RequestBody VoluntarioPayload payload, @CurrentUser UserPrincipal currentUser) {
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.VOLUNTARIO, "Modificar voluntario");
     	return voluntarioService.modificarVoluntario(payload);
     }
 	
 	@GetMapping({"/nombres_tabla"})
-	public LinkedHashMap<String, String> getNombresTabla() {
+	public LinkedHashMap<String, String> getNombresTabla(@CurrentUser UserPrincipal currentUser) {
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.VOLUNTARIO, "Ver nombre de cada columna de tabla voluntario");
 		return new VoluntarioNombreTablaPayload().getNombresVoluntarioTabla();
 	}
 	
 	//Devuelve dto (si existe) de Persona, o de contacto, o not found. 
 	@GetMapping("/search/{id}")
-    public ResponseEntity<?> searchVoluntarioById(@PathVariable Long id) {
+    public ResponseEntity<?> searchVoluntarioById(@PathVariable Long id, @CurrentUser UserPrincipal currentUser) {
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.VOLUNTARIO, "Buscar voluntario/persona/contacto con id: '" + id + "'");
         return voluntarioService.buscarPersonaFisicaSiExiste(id);
     }
 	
@@ -76,7 +96,8 @@ public class VoluntarioController {
 	// Devuelve un ejemplo del payload
 
 	@GetMapping("/test")
-	public VoluntarioPayload altaVoluntarioTest(/* @Valid @RequestBody VoluntarioPayload payload */) {
+	public VoluntarioPayload getVoluntarioTest(@CurrentUser UserPrincipal currentUser) {
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.VOLUNTARIO, "Ver un ejemplo de voluntario");
 
 		Voluntario m = new Voluntario();
 

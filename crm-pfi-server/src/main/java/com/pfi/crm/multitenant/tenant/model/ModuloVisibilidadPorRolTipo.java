@@ -96,6 +96,10 @@ public class ModuloVisibilidadPorRolTipo {
 		if(moduloEnum.isPaidModule())
 			tipoVisibilidad = ModuloTipoVisibilidadEnum.SIN_SUSCRIPCION;
 	}
+	
+	public boolean poseePermiso(ModuloTipoVisibilidadEnum permisoRequerido) {
+		return tipoVisibilidad.poseePermiso(permisoRequerido);
+	}
 
 	public Long getId() {
 		return id;

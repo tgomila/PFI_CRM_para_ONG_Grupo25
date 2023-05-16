@@ -1,5 +1,7 @@
 package com.pfi.crm.multitenant.tenant.persistence.repository;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -14,7 +16,13 @@ public interface ActividadRepository extends JpaRepository<Actividad, Long> {
 	//@Query("SELECT e FROM  Actividad e WHERE e.estadoActivoActividad=?1")
 	//List<Actividad> findAll();
 	
+	List<Actividad> findByBeneficiariosPersonaFisicaContactoId(Long personaId);
 	
+	List<Actividad> findByProfesionalesPersonaFisicaContactoId(Long personaId);
+	
+	List<Actividad> findByBeneficiariosIdBeneficiario(Long personaId);
+	
+	List<Actividad> findByProfesionalesIdProfesional(Long personaId);
 	
 	
 }

@@ -80,16 +80,20 @@ public class DonacionService  {
 		return donacionRepository.save(donacionModel);
 	}
 	
-	public void bajaDonacion(Long id) {
+	public String bajaDonacion(Long id) {
 		
 		//Si Optional es null o no, lo conocemos con ".isPresent()".		
 		Donacion m = this.getDonacionModelById(id);
+		String message = "Se ha dado de baja a la donación id: " + id;
 		if(m.getDonante() != null) {
+			if(m.getDonante().getEmail()!=null)
+				message += ", y desasociado su donante cuyo mail fue " + m.getDonante().getEmail();
 			m.setDonante(null);
 			m = donacionRepository.save(m);
 		}
 		donacionRepository.delete(m);	//Temporalmente se elimina de la BD
 		
+		return message;
 	}
 	
 	public void bajaDonacionesPorContacto(Long id) {

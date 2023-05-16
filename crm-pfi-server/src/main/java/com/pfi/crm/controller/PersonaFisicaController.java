@@ -18,10 +18,17 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.pfi.crm.exception.BadRequestException;
+import com.pfi.crm.multitenant.tenant.model.ModuloEnum;
+import com.pfi.crm.multitenant.tenant.model.ModuloTipoVisibilidadEnum;
 import com.pfi.crm.multitenant.tenant.model.PersonaFisica;
 import com.pfi.crm.multitenant.tenant.payload.PersonaFisicaPayload;
 import com.pfi.crm.multitenant.tenant.payload.nombres_tabla.PersonaFisicaNombreTablaPayload;
+import com.pfi.crm.multitenant.tenant.service.ModuloVisibilidadPorRolService;
 import com.pfi.crm.multitenant.tenant.service.PersonaFisicaService;
+import com.pfi.crm.payload.response.ApiResponse;
+import com.pfi.crm.security.CurrentUser;
+import com.pfi.crm.security.UserPrincipal;
 
 
 
@@ -32,42 +39,56 @@ public class PersonaFisicaController {
 	@Autowired
 	private PersonaFisicaService personaFisicaService;
 	
+	@Autowired
+	private ModuloVisibilidadPorRolService seguridad;
+	
 	
 	
 	@GetMapping("/{id}")
-    public PersonaFisicaPayload getPersonaFisicaById(@PathVariable Long id) {
+    public PersonaFisicaPayload getPersonaFisicaById(@PathVariable Long id, @CurrentUser UserPrincipal currentUser) {
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.PERSONA, "Ver persona con id: '" + id + "'");
         return personaFisicaService.getPersonaFisicaByIdContacto(id);
     }
 	
 	@GetMapping({"/", "/all"})
 	//@PreAuthorize("hasRole('ROLE_EMPLOYEE')")
-    public List<PersonaFisicaPayload> getPersonaFisica() {
+    public List<PersonaFisicaPayload> getPersonaFisica(@CurrentUser UserPrincipal currentUser) {
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.PERSONA, "Ver personas");
     	return  personaFisicaService.getPersonasFisicas();
 	}
 	
 	@PostMapping({"/", "/alta"})
-    public PersonaFisicaPayload altaPersonaFisica(@Valid @RequestBody PersonaFisicaPayload payload) {
+    public PersonaFisicaPayload altaPersonaFisica(@Valid @RequestBody PersonaFisicaPayload payload, @CurrentUser UserPrincipal currentUser) {
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.PERSONA, "Dar de alta una persona");
     	return personaFisicaService.altaPersonaFisica(payload);
     }
 	
 	@DeleteMapping({"/{id}", "/baja/{id}"})
-    public void bajaPersonaFisica(@PathVariable Long id) {
-		personaFisicaService.bajaPersonaFisica(id);
+    public ResponseEntity<?> bajaPersonaFisica(@PathVariable Long id, @CurrentUser UserPrincipal currentUser) {
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.PERSONA, "Dar de baja persona");
+		String message = personaFisicaService.bajaPersonaFisica(id);
+    	if(!message.isEmpty())
+    		return ResponseEntity.ok().body(new ApiResponse(true, message));
+    	else
+    		throw new BadRequestException("Algo salió mal en la baja. Verifique message que retorna en backend.");
     }
 	
 	@PutMapping({"/", "/modificar"})
-    public PersonaFisicaPayload modificarPersonaFisica(@Valid @RequestBody PersonaFisicaPayload payload) {
+    public PersonaFisicaPayload modificarPersonaFisica(@Valid @RequestBody PersonaFisicaPayload payload, @CurrentUser UserPrincipal currentUser) {
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.PERSONA, "Modificar una persona");
     	return personaFisicaService.modificarPersonaFisica(payload);
     }
 	
 	@GetMapping({"/nombres_tabla"})
-	public LinkedHashMap<String, String> getNombresTabla() {
+	public LinkedHashMap<String, String> getNombresTabla(@CurrentUser UserPrincipal currentUser) {
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.PERSONA, "Ver nombre de cada columna de tabla persona");
 		return new PersonaFisicaNombreTablaPayload().getNombresPersonaFisicaTabla();
 	}
 	
 	//Devuelve dto (si existe) de Persona, o de contacto, o not found. 
 	@GetMapping("/search/{id}")
-    public ResponseEntity<?> searchPersonaFisicaById(@PathVariable Long id) {
+    public ResponseEntity<?> searchPersonaFisicaById(@PathVariable Long id, @CurrentUser UserPrincipal currentUser) {
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.PERSONA, "Buscar una persona/contacto");
         return personaFisicaService.buscarContactoSiExiste(id);
     }
 	
@@ -80,7 +101,8 @@ public class PersonaFisicaController {
 	
 	@GetMapping("/test")
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	public PersonaFisicaPayload altaPersonaFisicaTest(/* @Valid @RequestBody PersonaFisicaPayload payload */) {
+	public PersonaFisicaPayload getPersonaFisicaTest(@CurrentUser UserPrincipal currentUser) {
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.PERSONA, "Testing ver un ejemplo de persona");
 		System.out.println("Entre aca");
 
 		PersonaFisica m = new PersonaFisica();
@@ -109,7 +131,8 @@ public class PersonaFisicaController {
 	
 	@GetMapping("/test/aleatorio")
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	public PersonaFisicaPayload personaFisicaAleatoriaTest(/* @Valid @RequestBody PersonaFisicaPayload payload */) {
+	public PersonaFisicaPayload personaFisicaAleatoriaTest(@CurrentUser UserPrincipal currentUser) {
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.PERSONA, "Testing ver un ejemplo de persona aleatoria");
 		return personaFisicaService.personaFisicaGenerator();
 	}
 }

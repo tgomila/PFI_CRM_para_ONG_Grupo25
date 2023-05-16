@@ -7,10 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import com.pfi.crm.exception.BadRequestException;
 import com.pfi.crm.exception.ResourceNotFoundException;
 import com.pfi.crm.multitenant.tenant.model.Chat;
 import com.pfi.crm.multitenant.tenant.payload.ChatPayload;
 import com.pfi.crm.multitenant.tenant.persistence.repository.ChatRepository;
+import com.pfi.crm.security.UserPrincipal;
 
 @Service
 public class ChatService {
@@ -28,8 +30,20 @@ public class ChatService {
 		return chatRepository.findAll().stream().map(e -> e.toPayload()).collect(Collectors.toList());
     }
 	
-	public ChatPayload altaChat (ChatPayload payload) {
+	/**
+	 * Controlador debería tener como input "@CurrentUser UserPrincipal currentUser" para este método.
+	 * @param payload
+	 * @return
+	 */
+	public ChatPayload altaChat (UserPrincipal currentUser, ChatPayload payload) {
+		if(payload==null)
+			throw new BadRequestException("Ha intentado dar de alta un chat null!");
+		if(payload.getUserNameTo() == null || payload.getUserNameTo().isEmpty())
+			throw new BadRequestException("No ha ingresado a quién le envía el mensaje!");
+		if(payload.getMensaje() == null || payload.getMensaje().isEmpty())
+			throw new BadRequestException("No ha ingresado el mensaje!");
 		payload.setId(null);
+		payload.setUserNameFrom(currentUser.getUsername());
 		return chatRepository.save(new Chat(payload)).toPayload();
 	}
 	

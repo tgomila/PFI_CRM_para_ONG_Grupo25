@@ -17,10 +17,17 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.pfi.crm.exception.BadRequestException;
 import com.pfi.crm.multitenant.tenant.model.Colaborador;
+import com.pfi.crm.multitenant.tenant.model.ModuloEnum;
+import com.pfi.crm.multitenant.tenant.model.ModuloTipoVisibilidadEnum;
 import com.pfi.crm.multitenant.tenant.payload.ColaboradorPayload;
 import com.pfi.crm.multitenant.tenant.payload.nombres_tabla.ColaboradorNombreTablaPayload;
 import com.pfi.crm.multitenant.tenant.service.ColaboradorService;
+import com.pfi.crm.multitenant.tenant.service.ModuloVisibilidadPorRolService;
+import com.pfi.crm.payload.response.ApiResponse;
+import com.pfi.crm.security.CurrentUser;
+import com.pfi.crm.security.UserPrincipal;
 
 @RestController
 @RequestMapping("/api/colaborador")
@@ -29,42 +36,56 @@ public class ColaboradorController  {
 	@Autowired
 	private ColaboradorService colaboradorService;
 	
+	@Autowired
+	private ModuloVisibilidadPorRolService seguridad;
+	
 	
 	
 	@GetMapping("/{id}")
-    public ColaboradorPayload getColaboradorById(@PathVariable Long id) {
+    public ColaboradorPayload getColaboradorById(@PathVariable Long id, @CurrentUser UserPrincipal currentUser) {
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.COLABORADOR, "Buscar un colaborador por id: '" + id + "'");
         return colaboradorService.getColaboradorByIdContacto(id);
     }
 	
 	@GetMapping({"/", "/all"})
 	//@PreAuthorize("hasRole('ROLE_EMPLOYEE')")
-    public List<ColaboradorPayload> getColaborador() {
+    public List<ColaboradorPayload> getColaborador(@CurrentUser UserPrincipal currentUser) {
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.COLABORADOR, "Buscar una lista de colaboradores");
     	return  colaboradorService.getColaboradores();
 	}
 	
 	@PostMapping({"/", "/alta"})
-    public ColaboradorPayload altaColaborador(@Valid @RequestBody ColaboradorPayload payload) {
+    public ColaboradorPayload altaColaborador(@Valid @RequestBody ColaboradorPayload payload, @CurrentUser UserPrincipal currentUser) {
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.COLABORADOR, "Cargar un nuevo colaborador");
     	return colaboradorService.altaColaborador(payload);
     }
 	
 	@DeleteMapping({"/{id}", "/baja/{id}"})
-    public void bajaColaborador(@PathVariable Long id) {
-		colaboradorService.bajaColaborador(id);
+    public ResponseEntity<?> bajaColaborador(@PathVariable Long id, @CurrentUser UserPrincipal currentUser) {
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.COLABORADOR, "Eliminar un colaborador con id: '" + id + "'");
+		String message = colaboradorService.bajaColaborador(id);
+    	if(!message.isEmpty())
+    		return ResponseEntity.ok().body(new ApiResponse(true, message));
+    	else
+    		throw new BadRequestException("Algo salió mal en la baja. Verifique message que retorna en backend.");
     }
 	
 	@PutMapping({"/", "/modificar"})
-    public ColaboradorPayload modificarColaborador(@Valid @RequestBody ColaboradorPayload payload) {
+    public ColaboradorPayload modificarColaborador(@Valid @RequestBody ColaboradorPayload payload, @CurrentUser UserPrincipal currentUser) {
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.COLABORADOR, "Modificar un colaborador");
     	return colaboradorService.modificarColaborador(payload);
     }
 	
 	@GetMapping({"/nombres_tabla"})
-	public LinkedHashMap<String, String> getNombresTabla() {
+	public LinkedHashMap<String, String> getNombresTabla(@CurrentUser UserPrincipal currentUser) {
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.COLABORADOR, "Ver el nombre de la tabla Colaborador");
 		return new ColaboradorNombreTablaPayload().getNombresColaboradorTabla();
 	}
 	
 	//Devuelve dto (si existe) de Persona, o de contacto, o not found. 
 	@GetMapping("/search/{id}")
-    public ResponseEntity<?> searchColaboradorById(@PathVariable Long id) {
+    public ResponseEntity<?> searchColaboradorById(@PathVariable Long id, @CurrentUser UserPrincipal currentUser) {
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.COLABORADOR, "Buscar un colaborador/persona/contacto");
         return colaboradorService.buscarPersonaFisicaSiExiste(id);
     }
 	
@@ -76,7 +97,8 @@ public class ColaboradorController  {
 	// Devuelve un ejemplo de colaborador payload
 
 	@GetMapping("/test")
-	public ColaboradorPayload altaColaboradorTest(/* @Valid @RequestBody ColaboradorPayload payload */) {
+	public ColaboradorPayload altaColaboradorTest(@CurrentUser UserPrincipal currentUser) {
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.COLABORADOR, "Ver un ejemplo de colaborador");
 
 		Colaborador m = new Colaborador();
 

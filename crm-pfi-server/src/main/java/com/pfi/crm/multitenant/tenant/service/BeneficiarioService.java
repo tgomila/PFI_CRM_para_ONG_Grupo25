@@ -104,20 +104,28 @@ public class BeneficiarioService {
 		return altaBeneficiarioModel(payload);
 	}
 	
-	public void bajaBeneficiario(Long id) {
+	public String bajaBeneficiario(Long id) {
 		if(id == null)
 			throw new BadRequestException("Ha introducido un id='null' a dar de baja, por favor ingrese un número válido.");
 		
 		Beneficiario m = getBeneficiarioModelByIdContacto(id);
+		String message = "Se ha dado de baja a beneficiario";
+		
+		//Eliminar objeto en todo lo que esta asociado Beneficiario
+		String aux = actividadService.bajaBeneficiarioEnActividades(m.getId());
+		if(aux != null && !aux.isEmpty())
+			message += ". " + aux;
 		m.setEstadoActivoBeneficiario(false);
 		m.setPersonaFisica(null);
 		m = beneficiarioRepository.save(m);
 		
-		//Eliminar objeto en todo lo que esta asociado Beneficiario
-		actividadService.bajaBeneficiarioEnActividades(m.getId());
-		
 		beneficiarioRepository.delete(m);	//Temporalmente se elimina de la BD			
 		
+		
+		aux = personaFisicaService.bajaPersonaFisicaSiNoTieneAsociados(id);
+		if(aux != null && !aux.isEmpty())
+			message += ". " + aux;
+		return message;
 	}
 	
 	/**

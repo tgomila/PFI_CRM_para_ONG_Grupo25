@@ -43,10 +43,10 @@ public class FacturaItemService {
 		return facturaItemRepository.save(new FacturaItem(payload)).toPayload();
 	}
 	
-	public void bajaFacturaItem(Long id) {
+	public String bajaFacturaItem(Long id) {
 		FacturaItem m = this.getFacturaItemModelById(id);
 		facturaItemRepository.delete(m);	//Temporalmente se elimina de la BD
-		
+		return "Se ha dado de baja el item id: " + id;
 	}
 	
 	public FacturaItemPayload modificarFacturaItem(FacturaItemPayload payload) {

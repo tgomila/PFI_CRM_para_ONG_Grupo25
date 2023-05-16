@@ -1,6 +1,5 @@
 package com.pfi.crm.multitenant.tenant.service;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -88,7 +87,7 @@ public class ActividadService {
 		return actividadRepository.save(m);
 	}
 	
-	public void bajaActividad(Long id) {
+	public String bajaActividad(Long id) {
 		Actividad m = actividadRepository.findById(id).orElseThrow(
 				() -> new ResourceNotFoundException("Actividad", "id", id));
 		m.setEstadoActivoActividad(false);
@@ -96,6 +95,8 @@ public class ActividadService {
 		m.setProfesionales(null);
 		m = actividadRepository.save(m);
 		actividadRepository.delete(m);
+		
+		return "Se ha dado de baja a la actividad id: " + id;
 	}
 	
 	public ActividadPayload modificarActividad(ActividadPayload payload) {
@@ -133,34 +134,48 @@ public class ActividadService {
 		return actividadRepository.save(model);
 	}
 	
-	public void bajaBeneficiarioEnActividades(Long idContacto) {
+	public String bajaBeneficiarioEnActividades(Long idContacto) {
 		Beneficiario beneficiario = beneficiarioService.getBeneficiarioModelByIdContacto(idContacto);
-		List<Actividad> actividades = actividadRepository.findAll();
-		List<Actividad> actividadesAModificar = new ArrayList<Actividad>();
-		for(Actividad actividad: actividades) {
-			if(actividad.getBeneficiarios().contains(beneficiario)) {
-				actividad.getBeneficiarios().remove(beneficiario);
-				actividadesAModificar.add(actividad);
-			}
+		Long idBeneficiario = beneficiario.getIdBeneficiario();
+		List<Actividad> actividadesBeneficiario = actividadRepository.findByBeneficiariosIdBeneficiario(idBeneficiario);
+		String message = "";
+		if(actividadesBeneficiario.size()>1)
+			message += "Se lo ha desasociado de las actividades id's: ";
+		else if(actividadesBeneficiario.size()==1)
+			message += "Se lo ha desasociado de la actividad id: ";
+		else//size ==0
+			return "";
+		for(int i=0; i<actividadesBeneficiario.size(); i++) {
+			message += actividadesBeneficiario.get(i);
+			if(i<actividadesBeneficiario.size()-1)
+				message += ", ";
+			actividadesBeneficiario.get(i).getBeneficiarios().remove(beneficiario);
 		}
-		if(!actividadesAModificar.isEmpty())
-			actividadRepository.saveAll(actividadesAModificar);
+		actividadRepository.saveAll(actividadesBeneficiario);
+		return message;
 	}
 	
 
 	
-	public void bajaProfesionalEnActividades(Long idContacto) {
+	public String bajaProfesionalEnActividades(Long idContacto) {
 		Profesional profesional = profesionalService.getProfesionalModelByIdContacto(idContacto);
-		List<Actividad> actividades = actividadRepository.findAll();
-		List<Actividad> actividadesAModificar = new ArrayList<Actividad>();
-		for(Actividad actividad: actividades) {
-			if(actividad.getProfesionales().contains(profesional)) {
-				actividad.getProfesionales().remove(profesional);
-				actividadesAModificar.add(actividad);
-			}
+		Long idProfesional = profesional.getIdProfesional();
+		List<Actividad> actividadesProfesional = actividadRepository.findByProfesionalesIdProfesional(idProfesional);
+		String message = "";
+		if(actividadesProfesional.size()>1)
+			message += "Se lo ha desasociado de las actividades id's: ";
+		else if(actividadesProfesional.size()==1)
+			message += "Se lo ha desasociado de la actividad id: ";
+		else//size ==0
+			return "";
+		for(int i=0; i<actividadesProfesional.size(); i++) {
+			message += actividadesProfesional.get(i);
+			if(i<actividadesProfesional.size()-1)
+				message += ", ";
+			actividadesProfesional.get(i).getProfesionales().remove(profesional);
 		}
-		if(!actividadesAModificar.isEmpty())
-			actividadRepository.saveAll(actividadesAModificar);
+		actividadRepository.saveAll(actividadesProfesional);
+		return message;
 	}
 	
 	

@@ -17,11 +17,18 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.pfi.crm.exception.BadRequestException;
+import com.pfi.crm.multitenant.tenant.model.ModuloEnum;
+import com.pfi.crm.multitenant.tenant.model.ModuloTipoVisibilidadEnum;
 import com.pfi.crm.multitenant.tenant.model.PersonaJuridica;
 import com.pfi.crm.multitenant.tenant.model.TipoPersonaJuridica;
 import com.pfi.crm.multitenant.tenant.payload.PersonaJuridicaPayload;
 import com.pfi.crm.multitenant.tenant.payload.nombres_tabla.PersonaJuridicaNombreTablaPayload;
+import com.pfi.crm.multitenant.tenant.service.ModuloVisibilidadPorRolService;
 import com.pfi.crm.multitenant.tenant.service.PersonaJuridicaService;
+import com.pfi.crm.payload.response.ApiResponse;
+import com.pfi.crm.security.CurrentUser;
+import com.pfi.crm.security.UserPrincipal;
 
 @RestController
 @RequestMapping("/api/personajuridica")
@@ -30,36 +37,48 @@ public class PersonaJuridicaController {
 	@Autowired
 	private PersonaJuridicaService personaJuridicaService;
 	
+	@Autowired
+	private ModuloVisibilidadPorRolService seguridad;
+	
 	
 	
 	@GetMapping("/{id}")
-    public PersonaJuridicaPayload getPersonaJuridicaById(@PathVariable Long id) {
+    public PersonaJuridicaPayload getPersonaJuridicaById(@PathVariable Long id, @CurrentUser UserPrincipal currentUser) {
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.PERSONAJURIDICA, "Ver PersonaJuridica con id: '" + id + "'");
         return personaJuridicaService.getPersonaJuridicaByIdContacto(id);
     }
 	
 	@GetMapping({"/", "/all"})
-	//@PreAuthorize("hasRole('ROLE_EMPLOYEE')")
-    public List<PersonaJuridicaPayload> getPersonaJuridica() {
+    public List<PersonaJuridicaPayload> getPersonaJuridica(@CurrentUser UserPrincipal currentUser) {
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.PERSONAJURIDICA, "Ver lista completa de PersonaJuridicas");
     	return  personaJuridicaService.getPersonasJuridicas();
 	}
 	
 	@PostMapping({"/", "/alta"})
-    public PersonaJuridicaPayload altaPersonaJuridica(@Valid @RequestBody PersonaJuridicaPayload payload) {
+    public PersonaJuridicaPayload altaPersonaJuridica(@Valid @RequestBody PersonaJuridicaPayload payload, @CurrentUser UserPrincipal currentUser) {
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.PERSONAJURIDICA, "Cargar una PersonaJuridica");
     	return personaJuridicaService.altaPersonaJuridica(payload);
     }
 	
 	@DeleteMapping({"/{id}", "/baja/{id}"})
-    public void bajaPersonaJuridica(@PathVariable Long id) {
-		personaJuridicaService.bajaPersonaJuridica(id);
+    public ResponseEntity<?> bajaPersonaJuridica(@PathVariable Long id, @CurrentUser UserPrincipal currentUser) {
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.PERSONAJURIDICA, "Baja de PersonaJuridica con id: '" + id + "'");
+		String message = personaJuridicaService.bajaPersonaJuridica(id);
+    	if(!message.isEmpty())
+    		return ResponseEntity.ok().body(new ApiResponse(true, message));
+    	else
+    		throw new BadRequestException("Algo salió mal en la baja. Verifique message que retorna en backend.");
     }
 	
 	@PutMapping({"/", "/modificar"})
-    public PersonaJuridicaPayload modificarPersonaJuridica(@Valid @RequestBody PersonaJuridicaPayload payload) {
+    public PersonaJuridicaPayload modificarPersonaJuridica(@Valid @RequestBody PersonaJuridicaPayload payload, @CurrentUser UserPrincipal currentUser) {
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.PERSONAJURIDICA, "Modificar una PersonaJuridica");
     	return personaJuridicaService.modificarPersonaJuridica(payload);
     }
 	
 	@GetMapping({"/nombres_tabla"})
-	public LinkedHashMap<String, String> getNombresTabla() {
+	public LinkedHashMap<String, String> getNombresTabla(@CurrentUser UserPrincipal currentUser) {
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.PERSONAJURIDICA, "Ver nombre de columna de tablas de PersonaJuridica");
 		return new PersonaJuridicaNombreTablaPayload().getNombresPersonaJuridicaTabla();
 	}
 	
@@ -86,7 +105,8 @@ public class PersonaJuridicaController {
 		
 	}
 	@GetMapping({"/enum/tipo_persona_puridica"})
-	public List<TipoPayload> getTipoPersonaJuridicaEnum() {
+	public List<TipoPayload> getTipoPersonaJuridicaEnum(@CurrentUser UserPrincipal currentUser) {
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.PERSONAJURIDICA, "Ver tipo enum de PersonaJuridica");
 		TipoPersonaJuridica allTipos[] = TipoPersonaJuridica.values();
 		List<TipoPayload> allTiposPayload = new ArrayList<TipoPayload>();
 		for(int i=0; i < allTipos.length; i++) {
@@ -97,7 +117,8 @@ public class PersonaJuridicaController {
 	
 	//Devuelve dto (si existe) de Persona, o de contacto, o not found. 
 	@GetMapping("/search/{id}")
-    public ResponseEntity<?> searchPersonaJuridicaById(@PathVariable Long id) {
+    public ResponseEntity<?> searchPersonaJuridicaById(@PathVariable Long id, @CurrentUser UserPrincipal currentUser) {
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.PERSONAJURIDICA, "Buscar una PersonaJuridica con id: '" + id + "'");
         return personaJuridicaService.buscarContactoSiExiste(id);
     }
 	
@@ -109,7 +130,8 @@ public class PersonaJuridicaController {
 	// Devuelve un ejemplo de Persona juridica
 
 	@GetMapping("/test")
-	public PersonaJuridicaPayload altaPersonaJuridicaTest(/* @Valid @RequestBody PersonaJuridicaPayload payload */) {
+	public PersonaJuridicaPayload altaPersonaJuridicaTest(@CurrentUser UserPrincipal currentUser) {
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.PERSONAJURIDICA, "Ver un ejemplo de PersonaJuridica");
 		
 		PersonaJuridica m = new PersonaJuridica();
 

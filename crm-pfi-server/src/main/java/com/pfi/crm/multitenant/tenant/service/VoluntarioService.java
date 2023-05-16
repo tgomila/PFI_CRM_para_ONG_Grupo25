@@ -86,14 +86,20 @@ public class VoluntarioService {
 		return altaVoluntarioModel(payload);
 	}
 	
-	public void bajaVoluntario(Long id) {
+	public String bajaVoluntario(Long id) {
 		
 		Voluntario m = voluntarioRepository.findByPersonaFisica_Contacto_Id(id).orElseThrow(
                 () -> new ResourceNotFoundException("Voluntario", "id", id));
 		m.setEstadoActivoVoluntario(false);
 		m.setPersonaFisica(null);
 		voluntarioRepository.save(m);
-		voluntarioRepository.delete(m);	//Temporalmente se elimina de la BD
+		voluntarioRepository.delete(m);	//Temporalmente se elimina de la BD	
+		
+		String message = "Se ha dado de baja a voluntario";
+		String aux = personaFisicaService.bajaPersonaFisicaSiNoTieneAsociados(id);
+		if(aux != null)
+			message += ". " + aux;
+		return message;
 		
 	}
 	

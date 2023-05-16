@@ -17,10 +17,17 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.pfi.crm.exception.BadRequestException;
 import com.pfi.crm.multitenant.tenant.model.Beneficiario;
+import com.pfi.crm.multitenant.tenant.model.ModuloEnum;
+import com.pfi.crm.multitenant.tenant.model.ModuloTipoVisibilidadEnum;
 import com.pfi.crm.multitenant.tenant.payload.BeneficiarioPayload;
 import com.pfi.crm.multitenant.tenant.payload.nombres_tabla.BeneficiarioNombreTablaPayload;
 import com.pfi.crm.multitenant.tenant.service.BeneficiarioService;
+import com.pfi.crm.multitenant.tenant.service.ModuloVisibilidadPorRolService;
+import com.pfi.crm.payload.response.ApiResponse;
+import com.pfi.crm.security.CurrentUser;
+import com.pfi.crm.security.UserPrincipal;
 
 @RestController
 @RequestMapping("/api/beneficiario")
@@ -29,42 +36,55 @@ public class BeneficiarioController {
 	@Autowired
 	private BeneficiarioService beneficiarioService;
 	
+	@Autowired
+	private ModuloVisibilidadPorRolService seguridad;
+	
 	
 	
 	@GetMapping("/{id}")
-	//@PreAuthorize("hasRole('USER')")
-    public BeneficiarioPayload getBeneficiarioById(@PathVariable Long id) {
+    public BeneficiarioPayload getBeneficiarioById(@PathVariable Long id, @CurrentUser UserPrincipal currentUser) {
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.BENEFICIARIO, "Buscar un beneficiario por su ID");
         return beneficiarioService.getBeneficiarioByIdContacto(id);
     }
 	
 	@GetMapping({"/", "/all"})
-    public List<BeneficiarioPayload> getBeneficiario() {
+    public List<BeneficiarioPayload> getBeneficiario(@CurrentUser UserPrincipal currentUser) {
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.BENEFICIARIO, "Ver todos los beneficiarios");
     	return  beneficiarioService.getBeneficiarios();
 	}
 	
 	@PostMapping({"/", "/alta"})
-    public BeneficiarioPayload altaBeneficiario(@Valid @RequestBody BeneficiarioPayload payload) {
+    public BeneficiarioPayload altaBeneficiario(@Valid @RequestBody BeneficiarioPayload payload, @CurrentUser UserPrincipal currentUser) {
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.BENEFICIARIO, "Cargar un nuevo beneficiario");
     	return beneficiarioService.altaBeneficiario(payload);
     }
 	
 	@DeleteMapping({"/{id}", "/baja/{id}"})
-    public void bajaBeneficiario(@PathVariable Long id) {
-		beneficiarioService.bajaBeneficiario(id);
+    public ResponseEntity<?> bajaBeneficiario(@PathVariable Long id, @CurrentUser UserPrincipal currentUser) {
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.BENEFICIARIO, "Eliminar un beneficiario");
+		String message = beneficiarioService.bajaBeneficiario(id);
+    	if(!message.isEmpty())
+    		return ResponseEntity.ok().body(new ApiResponse(true, message));
+    	else
+    		throw new BadRequestException("Algo salió mal en la baja. Verifique message que retorna en backend.");
     }
 	
 	@PutMapping({"/", "/modificar"})
-    public BeneficiarioPayload modificarBeneficiario(@Valid @RequestBody BeneficiarioPayload payload) {
+    public BeneficiarioPayload modificarBeneficiario(@Valid @RequestBody BeneficiarioPayload payload, @CurrentUser UserPrincipal currentUser) {
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.BENEFICIARIO, "Modificar un beneficiario");
     	return beneficiarioService.modificarBeneficiario(payload);
     }
 	
 	@GetMapping({"/nombres_tabla"})
-	public LinkedHashMap<String, String> getNombresTabla() {
+	public LinkedHashMap<String, String> getNombresTabla(@CurrentUser UserPrincipal currentUser) {
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.BENEFICIARIO, "Ver nombres de la tabla beneficiario");
 		return new BeneficiarioNombreTablaPayload().getNombresBeneficiarioTabla();
 	}
 	
 	//Devuelve dto (si existe) de Persona, o de contacto, o not found. 
 	@GetMapping("/search/{id}")
-    public ResponseEntity<?> searchBeneficiarioById(@PathVariable Long id) {
+    public ResponseEntity<?> searchBeneficiarioById(@PathVariable Long id, @CurrentUser UserPrincipal currentUser) {
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.BENEFICIARIO, "Buscar un beneficiario por su verdadero ID en DB");
         return beneficiarioService.buscarPersonaFisicaSiExiste(id);
     }
 	
@@ -76,7 +96,8 @@ public class BeneficiarioController {
 	// Devuelve un ejemplo de beneficiario payload
 
 	@GetMapping("/test")
-	public BeneficiarioPayload altaBeneficiarioTest(/* @Valid @RequestBody BeneficiarioPayload payload */) {
+	public BeneficiarioPayload getBeneficiarioTest(@CurrentUser UserPrincipal currentUser) {
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.BENEFICIARIO, "Obtener un ejemplo de beneficiario");
 
 		Beneficiario m = new Beneficiario();
 

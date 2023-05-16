@@ -88,12 +88,16 @@ public class PersonaJuridicaService {
 		if(id == null)
 			throw new BadRequestException("Ha introducido un id='null' a dar de baja, por favor ingrese un número válido.");
 		
-		String message = "Se ha dado de baja a Persona Jurídica";
 		PersonaJuridica model = this.getPersonaJuridicaModelByIdContacto(id);
 		model.setEstadoActivoPersonaJuridica(false);
 		model.setContacto(null);
 		model = personaJuridicaRepository.save(model);
 		personaJuridicaRepository.delete(model);	//Temporalmente se elimina de la BD
+		
+		String message = "Se ha dado de baja a persona jurídica";
+		String aux = contactoService.bajaContactoSiNoTieneAsociados(id);
+		if(aux != null)
+			message += ". " + aux;
 		return message;
 	}
 	

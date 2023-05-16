@@ -1,17 +1,21 @@
 package com.pfi.crm.multitenant.tenant.service;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import com.pfi.crm.exception.BadRequestException;
+import com.pfi.crm.exception.ForbiddenException;
 import com.pfi.crm.exception.ResourceNotFoundException;
 import com.pfi.crm.multitenant.tenant.model.ModuloEnum;
 import com.pfi.crm.multitenant.tenant.model.ModuloTipoVisibilidadEnum;
@@ -49,23 +53,107 @@ public class ModuloVisibilidadPorRolService {
                 () -> new ResourceNotFoundException("ModuloVisibilidadPorRol", "id", id));
 	}
 	
-	public ModuloPayload getModulosVisibilidadPorRol(UserPrincipal currentUser) {
-		User user = userRepository.getOne(currentUser.getId());
-		//Set<RoleName> roles = new HashSet<RoleName>();
-		//user.getRoles().forEach((rol) -> roles.add(rol.getRoleName()));
+	/**
+	 * Un método que chequea permisos del usuario. Si tiene permisos sigue de largo, caso contrario lanza un throw Forbidden Exception.<br>
+	 * Evitaría roles bajos acceder a recursos no autorizados de roles superiores.<br><br>
+	 * 
+	 * Imagina que estas en un supermercado como cliente y entras a una puerta de "Solo empleados", podes pasar pero un patova (este método) te espera a chequear tus credenciales.<br>
+	 * Este método es como el patova del boliche, entras al método pero si no tenes el permiso, te echa y no se ejecuta el método del controlador.<br>
+	 * 	Si tenes el permiso, te deja pasar con gusto a todo lo que quieras.<br>
+	 * Este es un método de seguridad, que suma seguridad.<br><br>
+	 * 
+	 * @param currentUser en tu controller pone (@CurrentUser UserPrincipal currentUser) para acceder al usuario.
+	 * @param visibilidadRequerida por ejemplo si estas dentro de método getAll() pone "ModuloTipoVisibilidadEnum.SOLO_VISTA", si el User posee permisos SOLO_VISTA o EDITAR podría acceder.
+	 * @param modulo_a_acceder por ejemplo si estas en ActividadController pone: "ModuloEnum.ACTIVIDAD".
+	 * @param mensajeAccion por ejemplo si estas en ActividadController pone: "ver 1 id de actividad".
+	 */
+	public void poseePermisosParaAccederAlMetodo(UserPrincipal currentUser, ModuloTipoVisibilidadEnum visibilidadRequerida, ModuloEnum modulo_a_acceder, String mensajeAccion) {
+		Set<String> rolesUsuario = new HashSet<>();//Esto es solo si no tiene permisos, se prepara el mensaje.
+		for (GrantedAuthority authority : currentUser.getAuthorities()) {
+			String roleString = authority.getAuthority();
+			RoleName unRolDelUsuario = RoleName.valueOf(roleString);
+			ModuloVisibilidadPorRol moduloVisibilidad = getModulosVisibilidadPorRolModel(unRolDelUsuario);
+			if(moduloVisibilidad != null && moduloVisibilidad.poseePermiso(modulo_a_acceder, visibilidadRequerida))
+				return;//Posee permisos, ya puede volver
+			rolesUsuario.add(unRolDelUsuario.getName());
+		}
 		
+		//Exception no tiene permisos, se preparará el mensaje:
+		String accion = mensajeAccion != null && !mensajeAccion.isEmpty() ? mensajeAccion : visibilidadRequerida.getName();
+		String modulo = modulo_a_acceder.getName();
+		String mensaje = "Su usuario " + currentUser.getUsername();
+		if(rolesUsuario.size()==0)
+			mensaje += " no posee ningún rol asignado, por lo tanto no tiene permiso";
+		else if(rolesUsuario.size()==1)
+			mensaje += " con rol '" + rolesUsuario.iterator().next() + "' no tiene permiso";
+		else if(rolesUsuario.size()>=2) {
+			mensaje += " con roles:";
+			for(String rol: rolesUsuario)
+				mensaje += " '" + rol + "',";
+			mensaje += " no tiene permisos";
+		}
+		mensaje+= " para realizar la acción de: '" + accion + "' en módulo: '" + modulo + "'.";
+		throw new ForbiddenException(mensaje);
+	}
+	
+	public List<ModuloItemPayload> getModulosVisibilidadPorRol(UserPrincipal currentUser){
+		User user = obtenerUser(currentUser);
 		RoleName rolSuperior = user.getRoleMasValuado();
-		System.out.println("El rol superior es: " + rolSuperior.getName());
+		List<ModuloVisibilidadPorRolTipo> items = this.getModulosVisibilidadPorRolModel(rolSuperior).getModulos();
 		
-		
-		return moduloVisibilidadPorRolRepository.findByRoleRoleName(rolSuperior).orElseThrow(
-                () -> new ResourceNotFoundException("ModuloVisibilidadPorRol", "Role->RoleName", rolSuperior.toString())).toPayload();
+		if(user.getRoles().size()>=2) {//Situacion rara pero ante la duda se programa
+			Set<RoleName> rolesUser = user.getRoleNames();
+			rolesUser.remove(rolSuperior);
+			//Si hay uno que es solo_vista y otro editar, me quedo con editar.
+			for(RoleName rol: rolesUser) {
+				List<ModuloVisibilidadPorRolTipo> itemsAux = this.getModulosVisibilidadPorRolModel(rol).getModulos();
+				//recorro los permisos de este rol
+				for(ModuloVisibilidadPorRolTipo itemMejorRango: items) {
+					for(ModuloVisibilidadPorRolTipo itemComparar: itemsAux) {
+						if(itemMejorRango.getModuloEnum().equals(itemComparar.getModuloEnum()) &&
+								!itemMejorRango.getTipoVisibilidad().esMejorQue(itemComparar.getTipoVisibilidad())){
+							itemMejorRango.setTipoVisibilidad(itemComparar.getTipoVisibilidad());
+						}
+					}
+					
+				}
+			}
+		}
+		return items.stream().map(e -> e.toPayload()).collect(Collectors.toList());
+	}
+	
+	//Obsoleto
+	//public ModuloPayload getModulosVisibilidadPorRol(UserPrincipal currentUser) {
+	//	RoleName rolSuperior = obtenerMejorRoleDelUser(currentUser);
+	//	
+	//	return moduloVisibilidadPorRolRepository.findByRoleRoleName(rolSuperior).orElseThrow(
+    //            () -> new ResourceNotFoundException("ModuloVisibilidadPorRol", "Role->RoleName", rolSuperior.toString())).toPayload();
+	//}
+	
+	//private RoleName obtenerMejorRoleDelUser(UserPrincipal currentUser) {
+	//	User user = obtenerUser(currentUser);
+	//	RoleName rolSuperior = user.getRoleMasValuado();
+	//	System.out.println("El rol superior es: " + rolSuperior.getName());
+	//	return rolSuperior;
+	//}
+	
+	private User obtenerUser(UserPrincipal currentUser) {
+		if(currentUser == null || currentUser.getId() == null)//no deberia suceder
+			throw new BadRequestException("Ha iniciado sesión con un User cuyo id es null");
+		User user = userRepository.findById(currentUser.getId()).get();
+		if(user == null)
+			throw new BadRequestException("Ha iniciado sesión con un id que ya no existe o ha sido borrado, por favor cierre sesión en su navegador.");
+		return user;
 	}
 	
 	public ModuloPayload getModulosVisibilidadPorRol(RoleName roleName){
+		return getModulosVisibilidadPorRolModel(roleName).toPayload();
+    }
+	
+	private ModuloVisibilidadPorRol getModulosVisibilidadPorRolModel(RoleName roleName){
 		Optional<ModuloVisibilidadPorRol> optional = moduloVisibilidadPorRolRepository.findByRoleRoleName(roleName);
 		if(optional.isPresent()) {   //Si existe
-			return optional.get().toPayload();
+			return optional.get();
 		}
 		return null;
     }

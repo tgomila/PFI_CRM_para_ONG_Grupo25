@@ -88,21 +88,27 @@ public class ProfesionalService {
 		return altaProfesionalModel(payload);
 	}
 	
-	public void bajaProfesional(Long id) {
+	public String bajaProfesional(Long id) {
 		if(id == null)
 			throw new BadRequestException("Ha introducido un id='null' a dar de baja, por favor ingrese un número válido.");
 		
 		Profesional m = this.getProfesionalModelByIdContacto(id);
+		String message = "Se ha dado de baja a profesional";
+		
+		//Eliminar objeto en todo lo que esta asociado Profesional
+		String aux = actividadService.bajaProfesionalEnActividades(m.getId());
+		if(aux != null && !aux.isEmpty())
+			message += " " + aux;
+		
 		m.setEstadoActivoProfesional(false);
 		m.setPersonaFisica(null);
 		profesionalRepository.save(m);
+		profesionalRepository.delete(m);	//Temporalmente se elimina de la BD		
 		
-		//Eliminar objeto en todo lo que esta asociado Profesional
-		actividadService.bajaProfesionalEnActividades(m.getId());
-		
-		
-		profesionalRepository.delete(m);	//Temporalmente se elimina de la BD	
-		
+		aux = personaFisicaService.bajaPersonaFisicaSiNoTieneAsociados(id);
+		if(aux != null && !aux.isEmpty())
+			message += " " + aux;
+		return message;
 	}
 	
 	/**

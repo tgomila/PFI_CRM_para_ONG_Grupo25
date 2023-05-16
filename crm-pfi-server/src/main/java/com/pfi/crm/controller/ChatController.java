@@ -6,14 +6,18 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.pfi.crm.multitenant.tenant.model.ModuloEnum;
+import com.pfi.crm.multitenant.tenant.model.ModuloTipoVisibilidadEnum;
 import com.pfi.crm.multitenant.tenant.payload.ChatPayload;
 import com.pfi.crm.multitenant.tenant.service.ChatService;
+import com.pfi.crm.multitenant.tenant.service.ModuloVisibilidadPorRolService;
+import com.pfi.crm.security.CurrentUser;
+import com.pfi.crm.security.UserPrincipal;
 
 
 
@@ -24,33 +28,40 @@ public class ChatController {
 	@Autowired
 	private ChatService chatService;
 	
+	@Autowired
+	private ModuloVisibilidadPorRolService seguridad;
 	
 	
-	@GetMapping("/{id}")
-    public ChatPayload getChatById(@PathVariable Long id) {
-        return chatService.getChatByIdContacto(id);
-    }
+	
+	//@GetMapping("/{id}")
+    //public ChatPayload getChatById(@PathVariable Long id, @CurrentUser UserPrincipal currentUser) {
+	//	seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.CHAT, "Buscar un mensaje de chat por su ID");
+	//	return chatService.getChatByIdContacto(id);
+	//}
 	
 	@GetMapping({"/", "/all"})
-	//@PreAuthorize("hasRole('ROLE_EMPLOYEE')")
-    public List<ChatPayload> getChat() {
+    public List<ChatPayload> getChat(@CurrentUser UserPrincipal currentUser) {
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.CHAT, "Ver todos los chats");
     	return  chatService.getChats();
 	}
 	
-	@GetMapping({"/{usernameFrom}"})
-    public List<ChatPayload> getChatByUsernameFrom(@PathVariable String usernameFrom) {
-    	return  chatService.getChatsByUsernameFrom(usernameFrom);
+	@GetMapping({"/from"})
+    public List<ChatPayload> getChatByUsernameFrom(@CurrentUser UserPrincipal currentUser) {
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.CHAT, "");
+		return chatService.getChatsByUsernameFrom(currentUser.getUsername());
 	}
 	
 	@PostMapping({"/", "/alta"})
-    public ChatPayload altaChat(@Valid @RequestBody ChatPayload payload) {
-    	return chatService.altaChat(payload);
+    public ChatPayload altaChat(@CurrentUser UserPrincipal currentUser, @Valid @RequestBody ChatPayload payload) {
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.CHAT, "");
+		return chatService.altaChat(currentUser, payload);
     }
 	
 	
 	
 	@GetMapping("/nombredeheadersdetabla")
-	public Object getNombreDeTabla() {
+	public Object getNombreDeTabla(@CurrentUser UserPrincipal currentUser) {
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.CHAT, "");
 		return new ChatPayload().nombreDeColumnaParaTablaFrontend();
 	}
 	
@@ -58,7 +69,8 @@ public class ChatController {
 	//Devuelve un ejemplo de Chat
 	
 	@GetMapping("/test")
-	public ChatPayload testChat(/* @Valid @RequestBody ChatPayload payload */) {
+	public ChatPayload testChat(@CurrentUser UserPrincipal currentUser) {
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.CHAT, "");
 		System.out.println("Entre aca");
 		
 		ChatPayload p = new ChatPayload();
@@ -68,6 +80,6 @@ public class ChatController {
 		p.setMensaje("Hola mundo!");
 		p.setLeido(false);
 				
-		return this.altaChat(p);
+		return p;
 	}
 }

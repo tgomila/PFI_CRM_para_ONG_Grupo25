@@ -206,6 +206,14 @@ public class ModuloVisibilidadPorRol {
 		}
 	}
 	
+	public boolean poseePermiso(ModuloEnum enum_a_acceder, ModuloTipoVisibilidadEnum visibilidadRequerida) {
+		for(ModuloVisibilidadPorRolTipo modulo: modulos) {
+			if(modulo.getModuloEnum().equals(enum_a_acceder))
+				return modulo.poseePermiso(visibilidadRequerida);
+		}
+		return false;
+	}
+	
 	
 	public ModuloPayload toPayload() {
 		ModuloPayload payload = new ModuloPayload();

@@ -17,10 +17,17 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.pfi.crm.exception.BadRequestException;
+import com.pfi.crm.multitenant.tenant.model.ModuloEnum;
+import com.pfi.crm.multitenant.tenant.model.ModuloTipoVisibilidadEnum;
 import com.pfi.crm.multitenant.tenant.model.Profesional;
 import com.pfi.crm.multitenant.tenant.payload.ProfesionalPayload;
 import com.pfi.crm.multitenant.tenant.payload.nombres_tabla.ProfesionalNombreTablaPayload;
+import com.pfi.crm.multitenant.tenant.service.ModuloVisibilidadPorRolService;
 import com.pfi.crm.multitenant.tenant.service.ProfesionalService;
+import com.pfi.crm.payload.response.ApiResponse;
+import com.pfi.crm.security.CurrentUser;
+import com.pfi.crm.security.UserPrincipal;
 
 @RestController
 @RequestMapping("/api/profesional")
@@ -29,42 +36,55 @@ public class ProfesionalController {
 	@Autowired
 	private ProfesionalService profesionalService;
 	
+	@Autowired
+	private ModuloVisibilidadPorRolService seguridad;
+	
 	
 	
 	@GetMapping("/{id}")
-    public ProfesionalPayload getProfesionalById(@PathVariable Long id) {
+    public ProfesionalPayload getProfesionalById(@PathVariable Long id, @CurrentUser UserPrincipal currentUser) {
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.PROFESIONAL, "Ver profesional id: '" + id + "'");
         return profesionalService.getProfesionalByIdContacto(id);
     }
 	
 	@GetMapping({"/", "/all"})
-	//@PreAuthorize("hasRole('ROLE_EMPLOYEE')")
-    public List<ProfesionalPayload> getProfesional() {
+    public List<ProfesionalPayload> getProfesional(@CurrentUser UserPrincipal currentUser) {
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.PROFESIONAL, "Ver profesionales");
     	return  profesionalService.getProfesionales();
 	}
 	
 	@PostMapping({"/", "/alta"})
-    public ProfesionalPayload altaProfesional(@Valid @RequestBody ProfesionalPayload payload) {
+    public ProfesionalPayload altaProfesional(@Valid @RequestBody ProfesionalPayload payload, @CurrentUser UserPrincipal currentUser) {
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.PROFESIONAL, "Cargar nuevo profesional");
     	return profesionalService.altaProfesional(payload);
     }
 	
 	@DeleteMapping({"/{id}", "/baja/{id}"})
-    public void bajaProfesional(@PathVariable Long id) {
-		profesionalService.bajaProfesional(id);
+    public ResponseEntity<?> bajaProfesional(@PathVariable Long id, @CurrentUser UserPrincipal currentUser) {
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.PROFESIONAL, "Dar de baja a profesional con id: '" + id + "'");
+		String message = profesionalService.bajaProfesional(id);
+    	if(!message.isEmpty())
+    		return ResponseEntity.ok().body(new ApiResponse(true, message));
+    	else
+    		throw new BadRequestException("Algo salió mal en la baja. Verifique message que retorna en backend.");
     }
 	
 	@PutMapping({"/", "/modificar"})
-    public ProfesionalPayload modificarProfesional(@Valid @RequestBody ProfesionalPayload payload) {
+    public ProfesionalPayload modificarProfesional(@Valid @RequestBody ProfesionalPayload payload, @CurrentUser UserPrincipal currentUser) {
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.PROFESIONAL, "Modificar profesional");
     	return profesionalService.modificarProfesional(payload);
     }
 	
 	@GetMapping({"/nombres_tabla"})
-	public LinkedHashMap<String, String> getNombresTabla() {
+	public LinkedHashMap<String, String> getNombresTabla(@CurrentUser UserPrincipal currentUser) {
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.PROFESIONAL, "Ver nombre de columnas de tabla profesional");
 		return new ProfesionalNombreTablaPayload().getNombresProfesionalTabla();
 	}
 	
 	//Devuelve dto (si existe) de Persona, o de contacto, o not found. 
 	@GetMapping("/search/{id}")
-    public ResponseEntity<?> searchProfesionalById(@PathVariable Long id) {
+    public ResponseEntity<?> searchProfesionalById(@PathVariable Long id, @CurrentUser UserPrincipal currentUser) {
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.PROFESIONAL, "Buscar profesional/persona/contacto con id: '" + id + "'");
         return profesionalService.buscarPersonaFisicaSiExiste(id);
     }
 	
@@ -76,7 +96,8 @@ public class ProfesionalController {
 	// Devuelve un ejemplo de PersonaFisica
 
 	@GetMapping("/test")
-	public ProfesionalPayload altaProfesionalTest(/* @Valid @RequestBody ProfesionalPayload payload */) {
+	public ProfesionalPayload getProfesionalTest(@CurrentUser UserPrincipal currentUser) {
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.PROFESIONAL, "Ejemplo de un profesional");
 
 		Profesional m = new Profesional();
 

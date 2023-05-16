@@ -126,7 +126,7 @@ public class UserService {
 	public String bajaUsuariosPorContactoSiExiste(Long id) {
 		if(existeUserPorIdContacto(id))
 			return bajaUsuariosPorContacto(id);
-		return "";
+		return "No existen usuarios con id: '" + id + "', por lo tanto se lo considera usuarios dados de baja";
 	}
 	
 	public String desasociarContactoDeUsers(Long id) {
@@ -159,6 +159,8 @@ public class UserService {
 			}
 			if(!message.isEmpty())
 				message += " del Contacto ID: " + id.toString();
+			message += ". Si desea darlo de baja, recuerde los id's mencionados anteriormente,"
+					+ " y délos de baja de forma aparte pidiendolo al Jefe/Administrador.";
 			return message;
 		}
 		return "";

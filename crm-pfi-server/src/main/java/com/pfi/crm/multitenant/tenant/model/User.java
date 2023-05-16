@@ -13,6 +13,7 @@ import javax.validation.constraints.Size;
 import java.text.Normalizer;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "users", uniqueConstraints = {
@@ -105,6 +106,10 @@ public class User extends UserDateAudit{
     	*/
 		
     	return rolSuperior;
+    }
+    
+    public Set<RoleName> getRoleNames() {
+    	return roles.stream().map(Role::getRoleName).collect(Collectors.toSet());
     }
 
     public Long getId() {

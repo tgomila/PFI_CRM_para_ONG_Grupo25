@@ -142,7 +142,31 @@ public class PersonaFisicaService {
 		m = personaFisicaRepository.save(m);
 		personaFisicaRepository.delete(m);	//Temporalmente se elimina de la BD
 		
+		String aux = contactoService.bajaContacto(id);
+		if(aux != null && !aux.isEmpty())
+			message += ". " + aux;
+		
 		return message;
+	}
+	
+	/**
+	 * Este método se llama en bajas de services superiores. Si no tiene empleado, beneficiario, etc asociado, se debe eliminar.
+	 * @param id de la persona
+	 * @return "mensaje..." si se dio de baja, "" empty si no se dio de baja porque tiene asociados.
+	 */
+	public String bajaPersonaFisicaSiNoTieneAsociados(Long id) {
+		if(!existePersonaFisicaPorIdContacto(id))
+			return "";
+		if(		   beneficiarioService.existeBeneficiarioPorIdContacto(id)
+				|| colaboradorService.existeColaboradorPorIdContacto(id)
+				|| consejoAdHonoremService.existeConsejoAdHonoremPorIdContacto(id)
+				|| empleadoService.existeEmpleadoPorIdContacto(id)
+				|| profesionalService.existeProfesionalPorIdContacto(id)
+				|| voluntarioService.existeVoluntarioPorIdContacto(id) ) {
+			return "";
+		}
+		//Si llegue acá, no tiene asociados
+		return this.bajaPersonaFisica(id);
 	}
 	
 	/**

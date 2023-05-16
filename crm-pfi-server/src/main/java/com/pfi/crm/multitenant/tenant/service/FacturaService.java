@@ -51,19 +51,24 @@ public class FacturaService {
 		return altaModificarFactura(payload);
 	}
 	
-	public void bajaFactura(Long id) {
+	public String bajaFactura(Long id) {
 		if(id == null)
 			throw new BadRequestException("Ha introducido un 'null' como id a dar de baja, por favor ingrese un número válido.");
 		
 		//Si Optional es null o no, lo conocemos con ".isPresent()".		
 		Factura m = this.getFacturaModelById(id);
+		String message = "Se ha dado de baja la factura id:" + id;
 		if(m.getCliente() != null || m.getEmisorFactura() !=  null) {
+			if(m.getCliente() != null && m.getCliente().getCuit() != null)
+				message += ", y desasociado a su cliente cuit: " + m.getCliente().getCuit();
 			m.setCliente(null);
+			if(m.getEmisorFactura() != null && m.getEmisorFactura().getCuit() != null)
+				message += ", y desasociado a su emisor factura cuit: " + m.getEmisorFactura().getCuit();
 			m.setEmisorFactura(null);
 			m = facturaRepository.save(m);
 		}
 		facturaRepository.delete(m);	//Temporalmente se elimina de la BD
-		
+		return message;
 	}
 	
 	public FacturaPayload modificarFactura(FacturaPayload payload) {

@@ -122,6 +122,22 @@ public class ContactoService {
 	}
 	
 	/**
+	 * Este método se llama en bajas de services superiores. Si no tiene PersonaFisica o PersonaJuridica asociado, se debe eliminar.
+	 * @param id
+	 * @return
+	 */
+	public String bajaContactoSiNoTieneAsociados(Long id) {
+		if(!existeContacto(id))
+			return "";
+		if(personaFisicaService.existePersonaFisicaPorIdContacto(id)
+				|| personaJuridicaService.existePersonaJuridicaPorIdContacto(id)) {
+			return "";
+		}
+		//Si llegue acá, no tiene asociados
+		return this.bajaContacto(id);
+	}
+	
+	/**
 	 * 
 	 * @param id
 	 * @return True si existe y se dió de baja, false si no existe y no se dió de baja.

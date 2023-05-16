@@ -99,13 +99,18 @@ public class ProductoService {
 		//return productoRepository.save(new Producto(payload)).toPayload();
 	}
 	
-	public void bajaProducto(Long id) {
+	public String bajaProducto(Long id) {
 		Producto m = productoRepository.findById(id).orElseThrow(
 				() -> new ResourceNotFoundException("Producto", "id", id));
+		String message = "Se ha dado de baja al producto id: '" + id + "'";
 		m.setEstadoActivo(false);
-		m.setProveedor(null);
+		if(m.getProveedor()!=null) {
+			message += ", y desasociado a su proveedor id: '" + m.getProveedor().getId() + "'";
+			m.setProveedor(null);
+		}
 		m = productoRepository.save(m);
 		productoRepository.delete(m);
+		return message;
 	}
 	
 	public ProductoPayload modificarProducto(ProductoPayload payload) {

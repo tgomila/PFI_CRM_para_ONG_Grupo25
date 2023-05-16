@@ -49,13 +49,27 @@ public class ProgramaDeActividadesService {
 		return altaModificarProgramaDeActividades(payload).toPayload();
 	}
 	
-	public void bajaProgramaDeActividades(Long id) {
+	public String bajaProgramaDeActividades(Long id) {
 		ProgramaDeActividades model = this.getProgramaDeActividadesModelById(id);
+		String message = "Se ha dado de baja al programa de actividades id: '" + id + "'";
 		model.setEstadoActivoPrograma(false);
-		model.getActividades().forEach(act -> actividadService.bajaActividad(act.getId()));
-		model.setActividades(null);
+		List<Actividad> actividades = model.getActividades();
+		if(actividades != null) {
+			if(actividades.size()>=2)
+				message += ", junto a sus actividades id's: ";
+			else
+				message += ", junto a su actividad id: ";
+			for(int i=0; i<actividades.size(); i++) {
+				message += actividades.get(i).getId();
+				if(i<actividades.size()-1)//no sea el ultimo
+					message += ", ";
+				actividadService.bajaActividad(actividades.get(i).getId());
+			}
+			model.setActividades(null);
+		}
 		programaDeActividadesRepository.save(model);
 		programaDeActividadesRepository.delete(model);
+		return message;
 	}
 	
 	public ProgramaDeActividadesPayload modificarProgramaDeActividades(ProgramaDeActividadesPayload payload) {

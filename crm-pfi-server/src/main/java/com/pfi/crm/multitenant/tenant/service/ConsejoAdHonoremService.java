@@ -87,13 +87,19 @@ public class ConsejoAdHonoremService {
 		return altaConsejoAdHonoremModel(payload);
 	}
 	
-	public void bajaConsejoAdHonorem(Long id) {
+	public String bajaConsejoAdHonorem(Long id) {
 		
 		ConsejoAdHonorem m = this.getConsejoAdHonoremModelByIdContacto(id);
 		m.setEstadoActivoConsejoAdHonorem(false);
 		m.setPersonaFisica(null);
 		consejoAdHonoremRepository.save(m);
-		consejoAdHonoremRepository.delete(m);	//Temporalmente se elimina de la BD
+		consejoAdHonoremRepository.delete(m);	//Temporalmente se elimina de la BD	
+		
+		String message = "Se ha dado de baja a ConsejoAdHonorem";
+		String aux = personaFisicaService.bajaPersonaFisicaSiNoTieneAsociados(id);
+		if(aux != null)
+			message += ". " + aux;
+		return message;
 		
 	}
 	

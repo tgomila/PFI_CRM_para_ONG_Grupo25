@@ -84,7 +84,7 @@ public class EmpleadoService {
 		return altaEmpleadoModel(payload);
 	}
 	
-	public void bajaEmpleado(Long id) {
+	public String bajaEmpleado(Long id) {
 		if(id == null)
 			throw new BadRequestException("Ha introducido un id='null' a dar de baja, por favor ingrese un número válido.");
 		
@@ -92,7 +92,13 @@ public class EmpleadoService {
 		m.setEstadoActivoEmpleado(false);
 		m.setPersonaFisica(null);
 		empleadoRepository.save(m);
-		empleadoRepository.delete(m);
+		empleadoRepository.delete(m);	
+		
+		String message = "Se ha dado de baja a empleado";
+		String aux = personaFisicaService.bajaPersonaFisicaSiNoTieneAsociados(id);
+		if(aux != null)
+			message += ". " + aux;
+		return message;
 	}
 	
 	/**

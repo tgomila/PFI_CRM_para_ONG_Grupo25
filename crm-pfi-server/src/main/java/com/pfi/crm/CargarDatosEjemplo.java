@@ -1451,13 +1451,13 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		m.setNombreDescripcion("Empleada");
 		m.setCuit("20-1235678-9");
 		m.setDomicilio("Gallo 7923, piso 4, depto A");
-		m.setEmail("gabrielluchetti@gmail.com");
+		m.setEmail("frodriguez@gmail.com");
 		m.setTelefono("1234-4567");
 
 		// PersonaFisica
 		m.setDni(1235678);
 		m.setNombre("Florencia");
-		m.setApellido("Altamirano");
+		m.setApellido("Rodriguez");
 		m.setFechaNacimiento(LocalDate.of(1990, 1, 20));
 
 		// Empleado

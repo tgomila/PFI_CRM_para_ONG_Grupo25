@@ -17,10 +17,17 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.pfi.crm.exception.BadRequestException;
 import com.pfi.crm.multitenant.tenant.model.ConsejoAdHonorem;
+import com.pfi.crm.multitenant.tenant.model.ModuloEnum;
+import com.pfi.crm.multitenant.tenant.model.ModuloTipoVisibilidadEnum;
 import com.pfi.crm.multitenant.tenant.payload.ConsejoAdHonoremPayload;
 import com.pfi.crm.multitenant.tenant.payload.nombres_tabla.ConsejoAdHonoremNombreTablaPayload;
 import com.pfi.crm.multitenant.tenant.service.ConsejoAdHonoremService;
+import com.pfi.crm.multitenant.tenant.service.ModuloVisibilidadPorRolService;
+import com.pfi.crm.payload.response.ApiResponse;
+import com.pfi.crm.security.CurrentUser;
+import com.pfi.crm.security.UserPrincipal;
 
 @RestController
 @RequestMapping("/api/consejoadhonorem")
@@ -29,42 +36,56 @@ public class ConsejoAdHonoremController {
 	@Autowired
 	private ConsejoAdHonoremService consejoAdHonoremService;
 	
+	@Autowired
+	private ModuloVisibilidadPorRolService seguridad;
+	
 	
 	
 	@GetMapping("/{id}")
-    public ConsejoAdHonoremPayload getConsejoAdHonoremById(@PathVariable Long id) {
+    public ConsejoAdHonoremPayload getConsejoAdHonoremById(@PathVariable Long id, @CurrentUser UserPrincipal currentUser) {
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.CONSEJOADHONOREM, "Buscar ConsejoAdHonorem por id: '" + id + "'");
         return consejoAdHonoremService.getConsejoAdHonoremByIdContacto(id);
     }
 	
 	@GetMapping({"/", "/all"})
 	//@PreAuthorize("hasRole('ROLE_EMPLOYEE')")
-    public List<ConsejoAdHonoremPayload> getConsejoAdHonorem() {
+    public List<ConsejoAdHonoremPayload> getConsejoAdHonorem(@CurrentUser UserPrincipal currentUser) {
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.CONSEJOADHONOREM, "Buscar la lista completa de ConsejoAdHonorem");
     	return  consejoAdHonoremService.getConsejoAdHonorems();
 	}
 	
 	@PostMapping({"/", "/alta"})
-    public ConsejoAdHonoremPayload altaConsejoAdHonorem(@Valid @RequestBody ConsejoAdHonoremPayload payload) {
+    public ConsejoAdHonoremPayload altaConsejoAdHonorem(@Valid @RequestBody ConsejoAdHonoremPayload payload, @CurrentUser UserPrincipal currentUser) {
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.CONSEJOADHONOREM, "Dar de alta un nuevo ConsejoAdHonorem");
     	return consejoAdHonoremService.altaConsejoAdHonorem(payload);
     }
 	
 	@DeleteMapping({"/{id}", "/baja/{id}"})
-    public void bajaConsejoAdHonorem(@PathVariable Long id) {
-		consejoAdHonoremService.bajaConsejoAdHonorem(id);
+    public ResponseEntity<?> bajaConsejoAdHonorem(@PathVariable Long id, @CurrentUser UserPrincipal currentUser) {
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.CONSEJOADHONOREM, "Eliminar un ConsejoAdHonorem");
+		String message = consejoAdHonoremService.bajaConsejoAdHonorem(id);
+    	if(!message.isEmpty())
+    		return ResponseEntity.ok().body(new ApiResponse(true, message));
+    	else
+    		throw new BadRequestException("Algo salió mal en la baja. Verifique message que retorna en backend.");
     }
 	
 	@PutMapping({"/", "/modificar"})
-    public ConsejoAdHonoremPayload modificarConsejoAdHonorem(@Valid @RequestBody ConsejoAdHonoremPayload payload) {
+    public ConsejoAdHonoremPayload modificarConsejoAdHonorem(@Valid @RequestBody ConsejoAdHonoremPayload payload, @CurrentUser UserPrincipal currentUser) {
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.CONSEJOADHONOREM, "Modificar un ConsejoAdHonorem");
     	return consejoAdHonoremService.modificarConsejoAdHonorem(payload);
     }
 	
 	@GetMapping({"/nombres_tabla"})
-	public LinkedHashMap<String, String> getNombresTabla() {
+	public LinkedHashMap<String, String> getNombresTabla(@CurrentUser UserPrincipal currentUser) {
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.CONSEJOADHONOREM, "Ver nombre de cada columna de tabla ConsejoAdHonorem");
 		return new ConsejoAdHonoremNombreTablaPayload().getNombresConsejoAdHonoremTabla();
 	}
 	
 	//Devuelve dto (si existe) de Persona, o de contacto, o not found. 
 	@GetMapping("/search/{id}")
-    public ResponseEntity<?> searchConsejoAdHonoremById(@PathVariable Long id) {
+    public ResponseEntity<?> searchConsejoAdHonoremById(@PathVariable Long id, @CurrentUser UserPrincipal currentUser) {
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.CONSEJOADHONOREM, "Buscar un consejoAdHonorem/persona/contacto por id: '" + id + "'");
         return consejoAdHonoremService.buscarPersonaFisicaSiExiste(id);
     }
 	
@@ -76,7 +97,8 @@ public class ConsejoAdHonoremController {
 	// Devuelve un ejemplo de ConsejoAdHonorem payload
 
 	@GetMapping("/test")
-	public ConsejoAdHonoremPayload altaConsejoAdHonoremTest(/* @Valid @RequestBody ConsejoAdHonoremPayload payload */) {
+	public ConsejoAdHonoremPayload getConsejoAdHonoremTest(@CurrentUser UserPrincipal currentUser) {
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.CONSEJOADHONOREM, "Ver un ejemplo de ConsejoAdHonorem");
 
 		ConsejoAdHonorem m = new ConsejoAdHonorem();
 

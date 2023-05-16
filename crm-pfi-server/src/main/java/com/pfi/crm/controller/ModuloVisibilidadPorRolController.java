@@ -3,13 +3,14 @@ package com.pfi.crm.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.pfi.crm.multitenant.tenant.model.ModuloEnum;
+import com.pfi.crm.multitenant.tenant.model.ModuloTipoVisibilidadEnum;
 import com.pfi.crm.multitenant.tenant.model.ModuloVisibilidadPorRol;
 import com.pfi.crm.multitenant.tenant.model.RoleName;
 import com.pfi.crm.multitenant.tenant.payload.ModuloItemPayload;
@@ -24,42 +25,53 @@ public class ModuloVisibilidadPorRolController {
 	
 	@Autowired
 	ModuloVisibilidadPorRolService moduloVisibilidadPorRolService;
+	
+	@Autowired
+	private ModuloVisibilidadPorRolService seguridad;
 
 	@GetMapping("/{id}")
-	public ModuloVisibilidadPorRol getModuloVisibilidadPorRolById(@PathVariable Long id) {
+	public ModuloVisibilidadPorRol getModuloVisibilidadPorRolById(@PathVariable Long id, @CurrentUser UserPrincipal currentUser) {
+		//seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.CHAT, "Ver módulos accesibles por el usuario");
 		return moduloVisibilidadPorRolService.getModuloVisibilidadPorRolById(id);
 	}
 	
 	@GetMapping({"/"})
-	public ModuloPayload getModuloPorRol(@CurrentUser UserPrincipal currentUser) {
+	public List<ModuloItemPayload> getModuloPorRolDelUsuario(@CurrentUser UserPrincipal currentUser) {
+		//seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.CHAT, "Ver módulos accesibles por el usuario");
 		return  moduloVisibilidadPorRolService.getModulosVisibilidadPorRol(currentUser);
 	}
 	
+	/**
+	 * Si no funciona "getModuloPorRolDelUsuario", se utilizará este.
+	 * @param roleName
+	 * @return modulos
+	 */
+	@GetMapping({"/name/{roleName}"})
+	public List<ModuloItemPayload> getModuloPorRol(@PathVariable("roleName") RoleName roleName) {
+		//seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.CHAT, "Ver módulos accesibles por el usuario");
+		return moduloVisibilidadPorRolService.getModulosVisibilidadPorRol(roleName).getItems();
+	}
+	
 	@GetMapping({"/name/default"})
-	public ModuloPayload getModuloDefault() {
+	public ModuloPayload getModuloDefault(@CurrentUser UserPrincipal currentUser) {
+		//seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.MARKETPLACE, "Ver módulos de rol default");
 		ModuloPayload payload = new ModuloPayload();
 		return payload;
 	}
 	
-	@GetMapping({"/name/{roleName}"})
-	public List<ModuloItemPayload> getModuloPorRol(@PathVariable("roleName") RoleName roleName) {
-		return moduloVisibilidadPorRolService.getModulosVisibilidadPorRol(roleName).getItems();
-	}
-	
 	@GetMapping({"/all"})
-	//@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_EMPLOYEE')")
-	public List<ModuloPayload> getModulos() {
+	public List<ModuloPayload> getModulos(@CurrentUser UserPrincipal currentUser) {
+		//seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.MARKETPLACE, "Ver todos los módulos que puede ver cada rol");
 		return  moduloVisibilidadPorRolService.getModulosVisibilidadPorRol();
 	}
 	
 	@PostMapping({"/", "/alta"})
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	public List<ModuloPayload> agregarTodosLosModulos() {
+	public List<ModuloPayload> agregarTodosLosModulos(@CurrentUser UserPrincipal currentUser) {
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.MARKETPLACE, "Asegurar que estén todos los módulos dados de alta");
 		return moduloVisibilidadPorRolService.agregarTodosLosModulos();
 	}
 	
 	//@PostMapping({"/", "/alta"})
-	//@PreAuthorize("hasRole('ROLE_ADMIN')")
 	//public ModuloPayload altaModuloVisibilidadPorRol(@Valid @RequestBody ModuloPayload payload) {
 	//	return moduloVisibilidadPorRolService.altaModuloVisibilidadPorRol(payload);
 	//}

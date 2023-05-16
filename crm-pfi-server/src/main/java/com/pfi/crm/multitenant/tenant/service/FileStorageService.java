@@ -22,7 +22,7 @@ public class FileStorageService {
 		try {
 			Files.createDirectories(root);
 		} catch (IOException e) {
-			throw new RuntimeException("No se pudo inicializar/crear la carpeta uploads!");
+			throw new RuntimeException("No se pudo inicializar/crear la carpeta fileTenantDB!");
 		}
 	}
 	

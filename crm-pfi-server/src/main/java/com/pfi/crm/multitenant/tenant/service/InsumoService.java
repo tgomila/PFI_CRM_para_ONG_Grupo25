@@ -39,11 +39,12 @@ public class InsumoService {
 		return insumoRepository.save(m).toPayload();
 	}
 	
-	public void bajaInsumo(Long id) {
+	public String bajaInsumo(Long id) {
 		Insumo m = insumoRepository.findById(id).orElseThrow(
 				() -> new ResourceNotFoundException("Insumo", "id", id));
 		m.setEstadoActivo(false);
 		insumoRepository.save(m);
+		return "Se ha dado de baja al insumo id: " + id;
 	}
 	
 	public InsumoPayload modificarInsumo(InsumoPayload payload) {
