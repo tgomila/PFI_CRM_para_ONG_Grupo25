@@ -19,9 +19,14 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 
 import com.pfi.crm.exception.BadRequestException;
+import com.pfi.crm.multitenant.tenant.model.ModuloEnum;
+import com.pfi.crm.multitenant.tenant.model.ModuloTipoVisibilidadEnum;
 import com.pfi.crm.multitenant.tenant.payload.FileInfoPayload;
 import com.pfi.crm.multitenant.tenant.service.FileStorageService;
+import com.pfi.crm.multitenant.tenant.service.ModuloVisibilidadPorRolService;
 import com.pfi.crm.payload.response.ApiResponse;
+import com.pfi.crm.security.CurrentUser;
+import com.pfi.crm.security.UserPrincipal;
 
 @RestController
 @RequestMapping("/api/images")
@@ -30,17 +35,47 @@ public class ImageController {
 	@Autowired
 	private FileStorageService fileStorageService;
 	
+	@Autowired
+	private ModuloVisibilidadPorRolService seguridad;
+	
 	@PostMapping("/upload")
-	@PreAuthorize("hasRole('ROLE_PROFESIONAL') or hasRole('ROLE_EMPLOYEE') or hasRole('ROLE_ADMIN')")
-	public String uploadImage(@RequestParam("file") MultipartFile file) {
+	public ResponseEntity<?> uploadImage(@RequestParam("file") MultipartFile file, @CurrentUser UserPrincipal currentUser) {
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.CONTACTO, "Dar de alta una foto a contacto");
 		String message = "";
 		try {
 			fileStorageService.save(file);
 			 message = "Uploaded the image successfully: " + file.getOriginalFilename();
 		} catch (Exception e) {
 			message = "No se pudo cargar el archivo: " + file.getOriginalFilename() + ". Error: " + e.getMessage();
+			throw new BadRequestException(message);
+		}
+		//return message;
+		return ResponseEntity.ok().body(new ApiResponse(true, message));
+	}
+	
+	@GetMapping("/perfil")
+	public ResponseEntity<Resource> getFotoPerfil(@CurrentUser UserPrincipal currentUser) {
+		Resource file = fileStorageService.getFotoPerfil(currentUser);
+		return ResponseEntity.ok()
+				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"").body(file);
+	}
+	
+	@PostMapping("/perfil")
+	public String postFotoPerfil(@RequestParam("file") MultipartFile file, @CurrentUser UserPrincipal currentUser) {
+		String message = "";
+		try {
+			fileStorageService.saveFotoPerfil(file, currentUser);
+			 message = "Uploaded the image successfully: " + file.getOriginalFilename();
+		} catch (Exception e) {
+			message = "No se pudo cargar el archivo: " + file.getOriginalFilename() + ". Error: " + e.getMessage();
 		}
 		return message;
+	}
+	
+	@DeleteMapping("/perfil")
+	public ResponseEntity<?> deleteFotoPerfil(@CurrentUser UserPrincipal currentUser) {
+		fileStorageService.deleteFotoPerfil(currentUser);
+		return ResponseEntity.ok().body(new ApiResponse(true, "La foto de perfil del contacto id: " + currentUser.getIdContacto() + " fue borrado exitosamente"));
 	}
 	
 	@GetMapping("/contacto/{tenant_name}")
@@ -56,7 +91,7 @@ public class ImageController {
 		return imageInfos;
 	}
 	
-	@GetMapping("/{filename:.+}")
+	@GetMapping("/buscar/{filename:.+}")
 	public ResponseEntity<Resource> getImage(@PathVariable String filename) {
 		Resource file = fileStorageService.load(filename);
 		return ResponseEntity.ok()

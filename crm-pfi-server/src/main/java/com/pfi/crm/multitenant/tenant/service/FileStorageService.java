@@ -11,8 +11,15 @@ import java.util.stream.Stream;
 
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
+
+import com.pfi.crm.exception.BadRequestException;
+import com.pfi.crm.mastertenant.config.DBContextHolder;
+import com.pfi.crm.security.UserPrincipal;
 
 @Service
 public class FileStorageService {
@@ -67,6 +74,98 @@ public class FileStorageService {
 		Path destino = root.resolve(tenant_folder).resolve(model_folder).resolve(nuevo_nombre);
 		return destino;
 	}
+	
+	public boolean existeFotoPerfil(UserPrincipal user) {
+		try {
+			String tenantName = DBContextHolder.getCurrentDb();
+			Long idContacto = user.getIdContacto();
+			Path fileFotoPerfil_jpg = root.resolve(tenantName).resolve("contacto").resolve("contacto_" + idContacto.toString() + ".jpg");
+			Path fileFotoPerfil_png = root.resolve(tenantName).resolve("contacto").resolve("contacto_" + idContacto.toString() + ".png");
+			
+			Resource resource_jpg = new UrlResource(fileFotoPerfil_jpg.toUri());
+			Resource resource_png = new UrlResource(fileFotoPerfil_png.toUri());
+			
+			//Se prueba si existe en jpg o png
+			if (resource_jpg.exists() || resource_jpg.isReadable()) {
+				return true;
+			} else if(resource_png.exists() || resource_png.isReadable()) {
+				return true;
+			} else {
+				return false;
+			}
+		} catch (MalformedURLException e) {
+			throw new RuntimeException("Error: " + e.getMessage());
+		}
+	}
+	
+	public Resource getFotoPerfil(UserPrincipal user) {
+		try {
+			String tenantName = DBContextHolder.getCurrentDb();
+			Long idContacto = user.getIdContacto();
+			Path fileFotoPerfil_jpg = root.resolve(tenantName).resolve("contacto").resolve("contacto_" + idContacto.toString() + ".jpg");
+			Path fileFotoPerfil_png = root.resolve(tenantName).resolve("contacto").resolve("contacto_" + idContacto.toString() + ".png");
+			
+			Resource resource_jpg = new UrlResource(fileFotoPerfil_jpg.toUri());
+			Resource resource_png = new UrlResource(fileFotoPerfil_png.toUri());
+			
+			//Se prueba si existe en jpg o png
+			if (resource_jpg.exists() || resource_jpg.isReadable()) {
+				return resource_jpg;
+			} else if(resource_png.exists() || resource_png.isReadable()) {
+				return resource_png;
+			} else {
+				throw new ResponseStatusException(HttpStatus.NOT_FOUND, "La foto de perfil no existe!");
+			}
+		} catch (MalformedURLException e) {
+			throw new RuntimeException("Error: " + e.getMessage());
+		}
+	}
+	
+	public void saveFotoPerfil(MultipartFile file, UserPrincipal user) {
+		try {
+			//Preparo su nombre "miFoto.jpg" a: "contacto_3.jpg"
+			String originalFileName = StringUtils.cleanPath(file.getOriginalFilename());
+		    String extension = StringUtils.getFilenameExtension(originalFileName);
+		    if(!extension.equalsIgnoreCase("jpg") && !extension.equalsIgnoreCase("png")) {
+		    	throw new BadRequestException("Tiene que subir un archivo de tipo foto .jpg o .png");
+		    }
+		    String newFileName = "contacto_" + user.getIdContacto().toString() + "." + extension;
+			
+		    //Preparo su path
+		    String tenantName = DBContextHolder.getCurrentDb();
+			Path fileFotoPerfil = root.resolve(tenantName).resolve("contacto").resolve(newFileName);
+			crearCarpeta(fileFotoPerfil.getParent());
+			
+			//Guardo el archivo
+			Files.copy(file.getInputStream(), fileFotoPerfil, StandardCopyOption.REPLACE_EXISTING);
+			
+		} catch(Exception e) {
+			if(e instanceof FileAlreadyExistsException) {
+				throw new RuntimeException("Un archivo con ese nombre ya existe.");
+			}
+			throw new RuntimeException(e.getMessage());
+		}
+	}
+	
+	public void deleteFotoPerfil(UserPrincipal user) {
+		try {
+			String tenantName = DBContextHolder.getCurrentDb();
+			Long idContacto = user.getIdContacto();
+			Path fileFotoPerfil_jpg = root.resolve(tenantName).resolve("contacto").resolve("contacto_" + idContacto.toString() + ".jpg");
+			Path fileFotoPerfil_png = root.resolve(tenantName).resolve("contacto").resolve("contacto_" + idContacto.toString() + ".png");
+			
+			boolean existe_jpg = Files.deleteIfExists(fileFotoPerfil_jpg);
+			boolean existe_png = Files.deleteIfExists(fileFotoPerfil_png);
+			if(!existe_jpg && !existe_png) {//Si no pudo borrar ninguno de los 2 tipos de fotos.
+				throw new ResponseStatusException(HttpStatus.NOT_FOUND, "La foto de perfil que desea eliminar no existe!");
+			}
+		} catch (MalformedURLException e) {
+			throw new RuntimeException("Error: " + e.getMessage());
+		} catch (IOException e) {
+			throw new RuntimeException("Error: " + e.getMessage());
+		}
+	}
+	
 	
 	public Resource load(String filename) {
 		try {
