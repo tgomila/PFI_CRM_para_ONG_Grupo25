@@ -25,6 +25,12 @@ public interface PersonaFisicaRepository extends JpaRepository<PersonaFisica, Lo
 	Boolean existsByContacto_Email(String email);
 	
 	Boolean existsByContacto_Cuit(String cuit);
+	
+	//Esto debería ser un chequeo para el alta, si existe no deberia suceder el alta.
+	boolean existsByDni(int dni);
+	Optional<PersonaFisica> findByDni(int dni);
+	
+	
     
 	/**
 	 * La idea es que si es contacto es null en personaFisica, se borre personaFisica. 

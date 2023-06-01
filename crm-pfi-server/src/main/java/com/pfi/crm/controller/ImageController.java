@@ -1,13 +1,11 @@
 package com.pfi.crm.controller;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,12 +14,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 
 import com.pfi.crm.exception.BadRequestException;
 import com.pfi.crm.multitenant.tenant.model.ModuloEnum;
 import com.pfi.crm.multitenant.tenant.model.ModuloTipoVisibilidadEnum;
 import com.pfi.crm.multitenant.tenant.payload.FileInfoPayload;
+import com.pfi.crm.multitenant.tenant.payload.ImagenPayload;
 import com.pfi.crm.multitenant.tenant.service.FileStorageService;
 import com.pfi.crm.multitenant.tenant.service.ModuloVisibilidadPorRolService;
 import com.pfi.crm.payload.response.ApiResponse;
@@ -55,13 +53,19 @@ public class ImageController {
 	
 	@GetMapping("/perfil")
 	public ResponseEntity<Resource> getFotoPerfil(@CurrentUser UserPrincipal currentUser) {
-		Resource file = fileStorageService.getFotoPerfil(currentUser);
-		return ResponseEntity.ok()
-				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"").body(file);
+		//No requiere seguridad para ver su foto de perfil
+		return fileStorageService.getFotoPerfilUrl(currentUser);
+	}
+	
+	@GetMapping("/perfil/info")
+	public ResponseEntity<ImagenPayload> getInfoFotoPerfil(@CurrentUser UserPrincipal currentUser) {
+		//No requiere seguridad para ver su foto de perfil
+		return fileStorageService.getInfoFotoPerfil(currentUser);
 	}
 	
 	@PostMapping("/perfil")
 	public String postFotoPerfil(@RequestParam("file") MultipartFile file, @CurrentUser UserPrincipal currentUser) {
+		//No requiere seguridad para cargar/cambiar su foto de perfil
 		String message = "";
 		try {
 			fileStorageService.saveFotoPerfil(file, currentUser);
@@ -74,21 +78,37 @@ public class ImageController {
 	
 	@DeleteMapping("/perfil")
 	public ResponseEntity<?> deleteFotoPerfil(@CurrentUser UserPrincipal currentUser) {
+		//No requiere seguridad para borrar su propia foto de perfil
 		fileStorageService.deleteFotoPerfil(currentUser);
 		return ResponseEntity.ok().body(new ApiResponse(true, "La foto de perfil del contacto id: " + currentUser.getIdContacto() + " fue borrado exitosamente"));
 	}
 	
-	@GetMapping("/contacto/{tenant_name}")
-	@PreAuthorize("hasRole('ROLE_PROFESIONAL') or hasRole('ROLE_EMPLOYEE') or hasRole('ROLE_ADMIN')")
-	public List<FileInfoPayload> getListImages(@PathVariable String tenant_name) {
-		List<FileInfoPayload> imageInfos = fileStorageService.loadAll(tenant_name, "contacto").map(path -> {
-			String filename = tenant_name + "_" + path.getFileName().toString();
-			String url = MvcUriComponentsBuilder.fromMethodName(ImageController.class, "getImage", 
-					tenant_name + "_" + path.getFileName().toString()).build().toString();
-			return new FileInfoPayload(filename, url);
-		}).collect((Collectors.toList()));
+	@GetMapping("/contacto/search/{idContacto}")
+	public ResponseEntity<byte[]> getFotoContacto(@PathVariable Long idContacto, @CurrentUser UserPrincipal currentUser) {
+		//No requiere seguridad para ver su foto de perfil
+		return fileStorageService.getFotoContacto(idContacto);
+	}
+	
+	@GetMapping("/contacto/info")
+	public List<FileInfoPayload> getListImages(@CurrentUser UserPrincipal currentUser) {
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.CONTACTO, "Ver fotos de contactos cargados");
+		//return fileStorageService.loadAllContactos();
+		return fileStorageService.loadAllWithFecha("contacto");
 		
-		return imageInfos;
+		//List<FileInfoPayload> imageInfos = fileStorageService.loadAll("contacto").map(path -> {
+		//	String filename = path.getFileName().toString();
+		//	String url = MvcUriComponentsBuilder.fromMethodName(ImageController.class, "getImage", 
+		//			path.getFileName().toString()).build().toString();
+		//	return new FileInfoPayload(filename, url, null);
+		//}).collect((Collectors.toList()));
+		
+		//return imageInfos;
+	}
+	
+	@GetMapping("/contacto/info/{idContacto}")
+	public ResponseEntity<ImagenPayload> getInfoFotoContacto(@PathVariable Long idContacto, @CurrentUser UserPrincipal currentUser) {
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.CONTACTO, "Ver fotos de contactos cargados");
+		return fileStorageService.getInfoFotoContacto(idContacto);
 	}
 	
 	@GetMapping("/buscar/{filename:.+}")

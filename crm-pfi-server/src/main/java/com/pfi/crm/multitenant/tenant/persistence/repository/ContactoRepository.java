@@ -18,24 +18,30 @@ import com.pfi.crm.multitenant.tenant.model.Contacto;
 public interface ContactoRepository extends JpaRepository<Contacto, Long> {
 	
 	//Los QUERY's es para ver si el contacto esta activo, "e" es entity
-	
+	//Antes era "e.estadoActivoContacto=?1" y se cambió a "e.estadoActivoContacto = true"
 	
 	List<Contacto> findAllByEstadoActivoContactoTrue();
 	
-	@Query("SELECT e FROM  Contacto e WHERE e.estadoActivoContacto=?1")
+	@Query("SELECT e FROM  Contacto e WHERE e.estadoActivoContacto = true AND e.email = ?1")
 	Optional<Contacto> findByEmail(String email);
 	
-	@Query("SELECT e FROM  Contacto e WHERE e.estadoActivoContacto=?1")
+	@Query("SELECT e FROM  Contacto e WHERE e.estadoActivoContacto = true AND e.nombreDescripcion = ?1")
 	Optional<Contacto> findByNombreDescripcion(String nombreDescripcion);
 	
-	@Query("SELECT e FROM  Contacto e WHERE e.estadoActivoContacto=?1")
-	Boolean existsByNombreDescripcion(String username);
+	@Query("SELECT e FROM Contacto e WHERE e.estadoActivoContacto = true AND e.cuit = ?1")
+	Optional<Contacto> findByCuit(String cuit);
 	
-	@Query("SELECT e FROM  Contacto e WHERE e.estadoActivoContacto=?1")
-	Boolean existsByEmail(String email);
+	@Query("SELECT CASE WHEN COUNT(e) > 0 THEN true ELSE false END FROM Contacto e WHERE e.estadoActivoContacto = true AND e.nombreDescripcion = ?1")
+	boolean existsByNombreDescripcion(String username);
 	
-	@Query("SELECT e FROM  Contacto e WHERE e.estadoActivoContacto=?1")
-	Boolean existsByCuit(String cuit);
+	@Query("SELECT CASE WHEN COUNT(e) > 0 THEN true ELSE false END FROM Contacto e WHERE e.estadoActivoContacto = true AND e.email = ?1")
+	boolean existsByEmail(String email);
+	
+	//Funciona perfectamente sin @Query, en este caso lo dejo.
+	//@Query("SELECT e FROM  Contacto e WHERE e.estadoActivoContacto= true AND e.cuit = ?1") //Este me da error.
+	//El @Query de abajo devuelve Null, entonces se agregó el "select case".
+	@Query("SELECT CASE WHEN COUNT(e) > 0 THEN true ELSE false END FROM Contacto e WHERE e.estadoActivoContacto = true AND e.cuit = ?1")
+	boolean existsByCuit(String cuit);
 	
 	//A partir de acá, es para gráficos dashboard en Frontend
 	

@@ -64,6 +64,15 @@ public class PersonaFisicaService {
                 () -> new ResourceNotFoundException("PersonaFisica", "id", id));
     }
 	
+	public PersonaFisicaPayload getPersonaFisicaByDni(@PathVariable int dni) {
+        return this.getPersonaFisicaModelByDni(dni).toPayload();
+    }
+	
+	public PersonaFisica getPersonaFisicaModelByDni(int dni) {
+        return personaFisicaRepository.findByDni(dni).orElseThrow(
+                () -> new ResourceNotFoundException("PersonaFisica", "dni", dni));
+    }
+	
 	public List<PersonaFisicaPayload> getPersonasFisicas() {
 		//return personaFisicaRepository.findAll();
 		return personaFisicaRepository.findAll().stream().map(e -> e.toPayload()).collect(Collectors.toList());
@@ -90,6 +99,17 @@ public class PersonaFisicaService {
 				throw new BadRequestException("Ya existe Persona con ID '" + id.toString() + "' cargado. "
 						+ "Es posible que sea otro número o quiera ir a la pantalla de modificar.");
 		}
+		int dni = payload.getDni();
+		if(personaFisicaRepository.existsByDni(dni)) { //Si existe DNI de persona ya de alta:
+			// 1) No permito dar un 2do mismo dni de alta, solo alta si no existe dni.
+			PersonaFisica personaYaDeAlta = getPersonaFisicaModelByDni(dni);
+			throw new BadRequestException("Ya existe Persona con DNI '" + personaYaDeAlta.getDni() + "' cargado "
+					+ "en la Base de Datos, cuyo ID de Persona es: '" + personaYaDeAlta.getId() + "', "
+					+ "nombre: '" + personaYaDeAlta.getNombre() != null ? personaYaDeAlta.getNombre() : "(vacío)" + "', "
+					+ "apellido: '" + personaYaDeAlta.getApellido() != null ? personaYaDeAlta.getApellido() : "(vacío)" + "'. "
+					+ "Es posible que haya ingresado mal el DNI o quiera ir a la pantalla modificar antes "
+					+ "que dar de alta una misma persona.");
+		}
 		// 2) Buscar/Crear Contacto y asociarlo. Si hay ID Contacto y no existe en BD, se vuelve sin dar de alta.
 		Contacto contacto = contactoService.altaModificarContactoModel(payload);
 		// 3) Alta Persona
@@ -108,17 +128,32 @@ public class PersonaFisicaService {
 		if(payload == null)
 			throw new BadRequestException("Ha introducido un null como persona a dar de alta/modificar, por favor ingrese datos de una persona.");
 		
-		if(payload.getId() != null) { //Si existe ID contacto asociado de alta:
-			boolean existePersona = personaFisicaRepository.existsByContacto_Id(payload.getId());
+		boolean existePersona = false;
+		if(payload.getId() != null) { //Si existe ID contacto asociado de alta, entonces si modifico
+			existePersona = personaFisicaRepository.existsByContacto_Id(payload.getId());
 			if(existePersona)
 				return this.modificarPersonaFisicaModel(payload);
 		}
+		existePersona = personaFisicaRepository.existsByDni(payload.getDni());
+		if(existePersona) {//Si existe DNI de persona asociada de alta, pero su ID payload no tiene nada que ver, entonces por las dudas no modifico
+			PersonaFisica personaYaDeAlta = getPersonaFisicaModelByDni(payload.getDni());
+			throw new BadRequestException("Ya existe Persona con DNI '" + personaYaDeAlta.getDni() + "' cargado "
+					+ "en la Base de Datos, cuyo ID de Persona es: '" + personaYaDeAlta.getId() + "', "
+					+ "nombre: '" + personaYaDeAlta.getNombre() != null ? personaYaDeAlta.getNombre() : "(vacío)" + "', "
+					+ "apellido: '" + personaYaDeAlta.getApellido() != null ? personaYaDeAlta.getApellido() : "(vacío)" + "'. "
+					+ "Si ese esa es la persona que desea asociar, por favor use el botón de '¿Fue cargado anteriormente...' "
+					+ "e ingrese el ID: '" + personaYaDeAlta.getDni() + "' para asociarlo. "
+					+ "Sino verifique el dni ingresado en pantalla, "
+					+ "o modifique datos de la persona en pantalla 'Modificar Persona' si hay algún dato mal cargado.");
+		}
+		
+		
 		//Existe o no persona
 		return altaPersonaFisicaModel(payload);
 	}
 	
 	/**
-	 * Baja de Persona Física y sus models asociados a la persona.
+	 * Baja de Persona Física y sus models asociados a la persona. Sirve para controlador y no services superiores.
 	 * @param id de contacto
 	 * @return mensaje de qué se dió de baja para un ResponseEntity.ok
 	 */
@@ -185,13 +220,21 @@ public class PersonaFisicaService {
 	}
 	
 	public PersonaFisica modificarPersonaFisicaModel(PersonaFisicaAbstractPayload payload) {
-		if (payload != null && payload.getId() != null) {
+		if (payload != null && payload.getId() != null) {	//Primero busco por ID
 			//Necesito el id de persona Fisica o se crearia uno nuevo
 			PersonaFisica model = this.getPersonaFisicaModelByIdContacto(payload.getId());
 			model.modificar(payload);
 			return personaFisicaRepository.save(model);
 		}
-		throw new BadRequestException("No se puede modificar Persona Fisica sin ID");
+		if (payload != null) {	//Sino busco por dni
+			boolean existePersona = personaFisicaRepository.existsByDni(payload.getDni());
+			if(existePersona) {
+				PersonaFisica model = getPersonaFisicaModelByDni(payload.getDni());//
+				model.modificar(payload);
+				return personaFisicaRepository.save(model);
+			}
+		}
+		throw new BadRequestException("No se puede modificar Persona sin ID o DNI inexistente en la base de datos");
 	}
 	
 	/**
@@ -472,5 +515,95 @@ public class PersonaFisicaService {
 		
 		
 		return personaGenerada;
+	}
+	
+	public void testCorregirDni() {
+		List<PersonaFisica> personas = personaFisicaRepository.findAll().stream().map(e -> this.setearDniAleatorio(e, false)).collect(Collectors.toList());
+		if(!personas.isEmpty())
+			personaFisicaRepository.saveAll(personas);
+	}
+	
+	private PersonaFisica setearDniAleatorio(PersonaFisica payload, boolean isFemenino) {
+		Random random = new Random();
+		
+		//dni + cuit
+		LocalDate fechaDeNacimiento = payload.getFechaNacimiento();
+		int añoNacimiento = fechaDeNacimiento.getYear();
+		int dniAleatorioEstimado;
+		//Estimación dni por millón: (pensado en abril 2023 por si se actualiza)
+		//40m a 55m = 0  a 25 años, 2023-1998
+		//30m a 40m = 26 a 39 años, 1984-1997
+		//20m a 30m = 40 a 57 años, 1966-1983
+		//10m a 20m = 58 a 69 años, 1954-1965
+		// 0m a 10m = +70 años
+		
+		//DNI "aleatorio" estimado
+		//Ejemplo AB.BBB.BBB = A dni minimo por edad + B.. cuanto vale 1 día en 10M * dias de 26 a 39 años
+		double nro10M = 9999999.0; //es casi 10M
+		if(añoNacimiento >= 1998){//DNI 30M a 40M
+			double loQueValeUnDiaEntre1998yEsteAño = nro10M / (15.0*365.0);//Asumo rango 15 años en 10M de habitantes para el futuro.
+			double diasExtras1998 = ChronoUnit.DAYS.between(LocalDate.of(1998,1,1), fechaDeNacimiento);
+			double sumarDni = diasExtras1998*loQueValeUnDiaEntre1998yEsteAño;
+			double sumarDniMinimo = sumarDni;
+			double sumarDniMaximo = sumarDni + loQueValeUnDiaEntre1998yEsteAño-1;
+			int sumarDniAleatorio = Double.valueOf(random.nextDouble(sumarDniMinimo, sumarDniMaximo)).intValue();
+			dniAleatorioEstimado = 40000000 + sumarDniAleatorio;
+		}
+		
+		else if(añoNacimiento >= 1984){//DNI 30M a 40M
+			double diasEntre1984y1997 = ChronoUnit.DAYS.between(LocalDate.of(1984,1,1), LocalDate.of(1997,12,31));
+			double loQueValeUnDiaEntre1984y1997 = nro10M / diasEntre1984y1997;
+			double diasExtras1984 = ChronoUnit.DAYS.between(LocalDate.of(1984,1,1), fechaDeNacimiento);
+			double sumarDni = diasExtras1984*loQueValeUnDiaEntre1984y1997;
+			double sumarDniMinimo = sumarDni;
+			double sumarDniMaximo = sumarDni + loQueValeUnDiaEntre1984y1997-1;
+			int sumarDniAleatorio = Double.valueOf(random.nextDouble(sumarDniMinimo, sumarDniMaximo)).intValue();
+			dniAleatorioEstimado = 30000000 + sumarDniAleatorio;
+		}
+		
+		else if(añoNacimiento >= 1966){//DNI 20M a 30M
+			double diasEntre1966y1983 = ChronoUnit.DAYS.between(LocalDate.of(1966,1,1), LocalDate.of(1983,12,31));
+			double loQueValeUnDiaEntre1966y1983 = nro10M / diasEntre1966y1983;
+			double diasExtras1966 = ChronoUnit.DAYS.between(LocalDate.of(1966,1,1), fechaDeNacimiento);
+			double sumarDni = diasExtras1966*loQueValeUnDiaEntre1966y1983;
+			double sumarDniMinimo = sumarDni;
+			double sumarDniMaximo = sumarDni + loQueValeUnDiaEntre1966y1983-1;
+			int sumarDniAleatorio = Double.valueOf(random.nextDouble(sumarDniMinimo, sumarDniMaximo)).intValue();
+			dniAleatorioEstimado = 20000000 + sumarDniAleatorio;
+		}
+		
+		else if(añoNacimiento >= 1954){//DNI 10M a 20M
+			double diasEntre1954y1965 = ChronoUnit.DAYS.between(LocalDate.of(1954,1,1), LocalDate.of(1965,12,31));
+			double loQueValeUnDiaEntre1954y1965 = nro10M / diasEntre1954y1965;
+			double diasExtras1954 = ChronoUnit.DAYS.between(LocalDate.of(1954,1,1), fechaDeNacimiento);
+			double sumarDni = diasExtras1954*loQueValeUnDiaEntre1954y1965;
+			double sumarDniMinimo = sumarDni;
+			double sumarDniMaximo = sumarDni + loQueValeUnDiaEntre1954y1965-1;
+			int sumarDniAleatorio = Double.valueOf(random.nextDouble(sumarDniMinimo, sumarDniMaximo)).intValue();
+			dniAleatorioEstimado = 10000000 + sumarDniAleatorio;
+		}
+		
+		else if(añoNacimiento >= 1923){//DNI 10M a 20M
+			double diasEntre1923y1953 = ChronoUnit.DAYS.between(LocalDate.of(1923,1,1), LocalDate.of(1953,12,31));
+			double loQueValeUnDiaEntre1923y1953 = 8999999 / diasEntre1923y1953;
+			double diasExtras1923 = ChronoUnit.DAYS.between(LocalDate.of(1923,1,1), fechaDeNacimiento);
+			double sumarDni = diasExtras1923*loQueValeUnDiaEntre1923y1953;
+			double sumarDniMinimo = sumarDni;
+			double sumarDniMaximo = sumarDni + loQueValeUnDiaEntre1923y1953-1;
+			int sumarDniAleatorio = Double.valueOf(random.nextDouble(sumarDniMinimo, sumarDniMaximo)).intValue();
+			dniAleatorioEstimado = 1000000 + sumarDniAleatorio;
+		}
+		
+		else {
+			dniAleatorioEstimado = random.nextInt(100000, 999999);
+		}
+		payload.setDni(dniAleatorioEstimado);
+		
+		//Modifico su cuit
+		int nroUnoAlNueveAleatorio = random.nextInt(9) + 1;
+		String cuit = (isFemenino ? "27-" : "20-") + dniAleatorioEstimado + "-" + nroUnoAlNueveAleatorio;
+		payload.setCuit(cuit);
+		
+		return payload;
 	}
 }
