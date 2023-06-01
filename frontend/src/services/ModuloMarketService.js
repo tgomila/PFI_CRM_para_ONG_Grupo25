@@ -42,7 +42,7 @@ class ModuloMarketService {
     }
 
     activarPrueba7dias(){
-        return axios.post(BACKEND_API_BASE_URL + 'modulomarket/suscripcion/activarPrueba7dias', { headers: authHeader() });
+        return axios.post(BACKEND_API_BASE_URL + 'modulomarket/suscripcion/activarPrueba7dias', null, { headers: authHeader() });
     }
 
     suscripcionBasicMes(dtoEnumName){
@@ -54,15 +54,15 @@ class ModuloMarketService {
     }
 
     suscripcionPremiumMes(){
-        return axios.post(BACKEND_API_BASE_URL + 'modulomarket/suscripcion/premium/mes', { headers: authHeader() });
+        return axios.post(BACKEND_API_BASE_URL + 'modulomarket/suscripcion/premium/mes', null, { headers: authHeader() });
     }
 
     suscripcionPremiumAnio(){
-        return axios.post(BACKEND_API_BASE_URL + 'modulomarket/suscripcion/premium/anio', { headers: authHeader() });
+        return axios.post(BACKEND_API_BASE_URL + 'modulomarket/suscripcion/premium/anio', null, { headers: authHeader() });
     }
 
     desuscribir(){
-        return axios.post(BACKEND_API_BASE_URL + 'modulomarket/premium/desuscribir', { headers: authHeader() });
+        return axios.post(BACKEND_API_BASE_URL + 'modulomarket/premium/desuscribir', null, { headers: authHeader() });
     }
 
     poseeAcceso(dtoEnumName){

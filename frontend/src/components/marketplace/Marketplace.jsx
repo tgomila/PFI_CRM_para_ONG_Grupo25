@@ -1,11 +1,11 @@
 import React, { useState, useRef, useEffect, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
-import ModuloMarketService from "../services/ModuloMarketService";
+import { useNavigate, useLocation } from "react-router-dom";
+import ModuloMarketService from "../../services/ModuloMarketService";
 import moment from "moment";
 
 //import AuthService from "../services/auth.service";
 
-import "../Styles/Marketplace.scss";
+import "../../Styles/Marketplace.scss";
 
 
 
@@ -14,6 +14,7 @@ function Marketplace() {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [modulos, setModulos] = useState();
+  const location = useLocation();
 
   const aunTieneModulosParaPruebaLibre = () => {
     return modulos && modulos.some(item => item.fechaPrueba7DiasUtilizada === null);
@@ -34,10 +35,10 @@ function Marketplace() {
   const buttonTrialSiNoFueCanjeado = (modulo) => {
     try{
       const moduloEncontrado = modulos.find((item) => item.moduloEnum === modulo);
-      if (moduloEncontrado) {
-        return <button className="card__btn" onClick={() => chooseSubscription({modulo}, "trial")}>¡Prueba 7 días! <span>&rarr;</span></button>;
+      if (moduloEncontrado && !moduloEncontrado.prueba7DiasUtilizada) {
+        return <button className="card__btn" onClick={() => chooseSubscription(modulo, "trial")}>¡Prueba 7 días! <span>&rarr;</span></button>;
       } else {
-        return <button className="card__btn">Prueba ya probada</button>;
+        return <button className="card__btn">Prueba ya canjeada</button>;
       }
 
     } catch (e) {
@@ -67,8 +68,6 @@ function Marketplace() {
     const fechasSuscripcionDefinidas = modulos.filter(objeto => objeto.fechaMaximaSuscripcion !== null);
     const fechasOrdenadas = fechasSuscripcionDefinidas.sort((a, b) => a.fechaMaximaSuscripcion.localeCompare(b.fechaMaximaSuscripcion));
     const fechaMasBaja = fechasOrdenadas[0]?.fechaMaximaSuscripcion;
-    console.log("Fechas ordenadas");
-    console.log(fechasOrdenadas);
     return formatFecha(fechaMasBaja);// new Date(fechaMasBaja).toLocaleDateString('es-AR');
   };
   const informacionSuscripcion = (busqueda) => {
@@ -76,12 +75,6 @@ function Marketplace() {
       if(!busqueda){
         const suscripto = !(modulos && modulos.some(item => item.suscripcionActiva === false));
         const fechaMasBaja = buscarFechaPremiumMasBaja();
-        const aux1 = modulos.some(item => item.fechaPrueba7DiasUtilizada === null);
-        const aux2 = modulos.some(item => item.fechaPrueba7DiasUtilizada !== null);
-        console.log("aux1: ");
-        console.log(aux1);
-        console.log("aux2: ");
-        console.log(aux2);
         return(
           <div>
             {suscripto ? (
@@ -134,7 +127,7 @@ function Marketplace() {
                 )}
               </div>
             )}
-            <p className="card__text_info">Trial 7 días utilizado: {moduloEncontrado.fechaPrueba7DiasUtilizada ? "Si, fecha canjeado " + formatFecha(moduloEncontrado.fechaPrueba7DiasUtilizada) : "No"} </p>
+            <p className="card__text_info">Trial 7 días utilizado: {moduloEncontrado.fechaPrueba7DiasUtilizada ? "Si, canjeado el día " + formatFecha(moduloEncontrado.fechaPrueba7DiasUtilizada) : "No"} </p>
           </div>
         );
       } else {
@@ -201,199 +194,21 @@ function Marketplace() {
   
   const navigate = useNavigate();
   const chooseSubscription = (moduloClick, tiempoClick) => {
-    //setModuloElegido(moduloClick);
-    //setTiempoElegido(tiempoClick);
-    console.log("modulo: " + moduloClick);
-    console.log("tiempo: " + tiempoClick);
-    navigate( window.location.pathname + "/pagar", {state:{modulo:moduloClick, tiempo: tiempoClick}})
+    navigate( window.location.pathname + "/pagar", {state:{modulo:moduloClick, tiempo: tiempoClick, 
+      scroll_horizontal: window.scrollX, scroll_vertical: window.scrollY}})
   }
   const chooseTrial = (moduloClick, tiempoClick) => {
     setModuloElegido(moduloClick);
     setTiempoElegido(tiempoClick);
-    console.log("modulo: " + moduloElegido);
-    console.log("tiempo: " + tiempoElegido);
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    //window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
   const cancel = () => {
     setModuloElegido("");
     setTiempoElegido("");
-    setMensajeOk("");
-    setSubmitted(false);
     setModulos("");
     setMessage("");
   }
-
-  const [mensajeOk, setMensajeOk] = useState("");
-  const [submitted, setSubmitted] = useState(false);
-  const handleSubmitSuscripcion = (e) => {
-    e.preventDefault();
-    //modulo, tiempo
-
-    //trial, mes, anio
-    if(tiempoElegido==="trial"){
-      //Plan total
-      if(moduloElegido==="all"){
-        setLoading(true);
-        ModuloMarketService.activarPrueba7dias().then
-          (response => {
-            setMessage("");
-            setLoading(false);
-            setSubmitted(true);
-            setModulos(response.data);
-            console.log(response.data);
-          },
-          (error) => {
-              const resMessage =
-                (error.response &&
-                  error.response.data &&
-                  error.response.data.message) ||
-                error.message ||
-                error.toString();
-    
-              setLoading(false);
-              setMessage(resMessage);
-          }
-        );
-      }
-      //ACTIVIDAD, etc
-      else if(moduloElegido){
-        setLoading(true);
-        ModuloMarketService.activarPrueba7diasByEnum(moduloElegido).then
-          (response => {
-            setMessage("");
-            setLoading(false);
-            setSubmitted(true);
-            setModulos(response.data);
-            console.log(response.data);
-          },
-          (error) => {
-              const resMessage =
-                (error.response &&
-                  error.response.data &&
-                  error.response.data.message) ||
-                error.message ||
-                error.toString();
-    
-              setLoading(false);
-              setMessage(resMessage);
-          }
-        );
-      }
-      else{
-        //Hay tiempo, no hay modulo, no deberia llegar acá.
-      }
-    }
-    else if(tiempoElegido==="mes"){
-      //Plan total
-      if(moduloElegido==="all"){
-        setLoading(true);
-        ModuloMarketService.suscripcionPremiumMes().then
-          (response => {
-            setMessage("");
-            setLoading(false);
-            setSubmitted(true);
-            setModulos(response.data);
-            console.log(response.data);
-          },
-          (error) => {
-              const resMessage =
-                (error.response &&
-                  error.response.data &&
-                  error.response.data.message) ||
-                error.message ||
-                error.toString();
-    
-              setLoading(false);
-              setMessage(resMessage);
-          }
-        );
-      }
-      //ACTIVIDAD, etc
-      else if(moduloElegido){
-        setLoading(true);
-        ModuloMarketService.suscripcionBasicMes(moduloElegido).then
-          (response => {
-            setMessage("");
-            setLoading(false);
-            setSubmitted(true);
-            setModulos(response.data);
-            console.log(response.data);
-          },
-          (error) => {
-              const resMessage =
-                (error.response &&
-                  error.response.data &&
-                  error.response.data.message) ||
-                error.message ||
-                error.toString();
-    
-              setLoading(false);
-              setMessage(resMessage);
-          }
-        );
-      }
-      else{
-        //Hay tiempo, no hay modulo, no deberia llegar acá.
-      }
-    }
-    else if(tiempoElegido==="anio"){
-      //Plan total
-      if(moduloElegido==="all"){
-        setLoading(true);
-        ModuloMarketService.suscripcionPremiumAnio().then
-          (response => {
-            setMessage("");
-            setLoading(false);
-            setSubmitted(true);
-            setModulos(response.data);
-            console.log(response.data);
-          },
-          (error) => {
-              const resMessage =
-                (error.response &&
-                  error.response.data &&
-                  error.response.data.message) ||
-                error.message ||
-                error.toString();
-    
-              setLoading(false);
-              setMessage(resMessage);
-          }
-        );
-      }
-      //ACTIVIDAD, etc
-      else if(moduloElegido){
-        setLoading(true);
-        ModuloMarketService.suscripcionBasicAnio(moduloElegido).then
-          (response => {
-            setMessage("");
-            setLoading(false);
-            setSubmitted(true);
-            setModulos(response.data);
-            console.log(response.data);
-          },
-          (error) => {
-              const resMessage =
-                (error.response &&
-                  error.response.data &&
-                  error.response.data.message) ||
-                error.message ||
-                error.toString();
-    
-              setLoading(false);
-              setMessage(resMessage);
-          }
-        );
-      }
-      else{
-        //Hay tiempo, no hay modulo, no deberia llegar acá.
-      }
-    }
-    else{
-      //No hay tiempo definido, no deberia llegar acá.
-    }
-  };
 
   useEffect(() => {
     cancel();
@@ -402,7 +217,6 @@ function Marketplace() {
       (response => {
         setLoading(false);
         setModulos(response.data);
-        console.log(response.data);
       },
       (error) => {
           const resMessage =
@@ -429,6 +243,26 @@ function Marketplace() {
     );
     //window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
+
+  
+  const scrollDespuesDePagar = () => {
+    
+    //Si volví de pagar, te muevo al modulo que estabas viendo antes:
+    if(location.state && typeof location.state.scroll_horizontal === "number" && !isNaN(location.state.scroll_horizontal) && typeof location.state.scroll_vertical === "number" && !isNaN(location.state.scroll_vertical)){
+      //const scroll_horizontalA = location.state.scroll_horizontal;
+      //const scroll_vertical = location.state.scroll_vertical;
+      //Borrar las variables scroll
+      const { scroll_horizontal, scroll_vertical, ...newState } = location.state;
+      window.history.replaceState(newState, document.title)
+
+      window.scrollTo({ top: 0 });
+      window.scrollTo({top: scroll_vertical, left: scroll_horizontal, behavior: 'smooth'});
+    }
+    else{
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }
+  scrollDespuesDePagar();
 
   return (
     <div className="Marketplace">

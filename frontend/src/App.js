@@ -8,7 +8,9 @@ import TablaActividadBeneficiario from "./components/tables/TablaActividadBenefi
 
 import RealizarPago from "./components/RealizarPago";
 
-import TablaContacto from "./components/tables/TablaContacto";
+import ContactoVista from "./components/vista_grafico_tabla/ContactoVista";
+
+import TablaContacto from "./components/tables/TablaContacto_old";
 import FooterComponent from "./components/FooterComponent";
 
 //Creates
@@ -56,7 +58,7 @@ import ProductList from "./pages/ProductList.jsx";
 import AuthService from "./services/auth.service";
 import modulosService from "./services/modulosService";
 import Login from "./components/Login";
-import Marketplace from "./components/Marketplace";
+import Marketplace from "./components/marketplace/Marketplace";
 import RealizarPagoComponent from "./components/marketplace/RealizarPagoComponent";
 import BoardAdmin from "./components/BoardAdmin";
 import EventBus from "./common/EventBus";
@@ -221,8 +223,12 @@ const App = () => {
 
       <div className="sidebarYRoutes">
         <Sidebar style={{ marginLeft: "0px" }}>
+          <br/><br/>
           {/**<br></br><br></br> */}
           <Routes>
+
+            {/* Test estático */}
+            <Route path="/contacto_estatico" element={<ContactoVista/>} />
 
             {/* Lista */}
             <Route path="/contacto" element={<TablaContacto redireccionamiento='contacto' />} />
@@ -296,6 +302,7 @@ const App = () => {
             <Route path="*" element={<Error404 />} />
             
           </Routes>
+          <br/><br/>
         </Sidebar>
 
         <FooterComponent></FooterComponent>

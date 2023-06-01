@@ -103,192 +103,195 @@ function Table({redireccionamiento, columns, data }) {
   // Render the UI for your table
   const [auxIdCell, setAuxIdCell] = useState("");
   return (
-    <div className="TablasDinamicas">
-      <div className="tablaDinamica">
-        <table>
-          <thead>
-            {headerGroups.map((headerGroup) => (
-              <tr {...headerGroup.getHeaderGroupProps()}>
-                {headerGroup.headers.map((column, index) => (
-                  <th {...column.getHeaderProps()} className={index === 0 ? 'th-first' : 'th'}>
-                    {column.render("Header").toUpperCase()}
-                  </th>
-                ))}
+    <div className="row">
+      <div className="TablasDinamicas">
+        <div className="tablaDinamica">
+          <table>
+            <thead>
+              {headerGroups.map((headerGroup) => (
+                <tr {...headerGroup.getHeaderGroupProps()}>
+                  {headerGroup.headers.map((column, index) => (
+                    <th {...column.getHeaderProps()} className={index === 0 ? 'th-first' : 'th'}>
+                      {column.render("Header").toUpperCase()}
+                    </th>
+                  ))}
 
-                  <th>
-                    EDITAR
-                  </th>
+                    <th>
+                      EDITAR
+                    </th>
 
-                  <th className='th-last'>
-                    BORRAR
-                  </th>
-    
-              </tr>
-            ))}
-          </thead>
-
-          <tbody {...getTableBodyProps()}>
-            {page.map((row, i) => {
-              prepareRow(row);
-              return (
-                <tr {...row.getRowProps()}>
-                  {row.cells.map((cell) => {
-                    // console.log("Aqui test:");
-                    // console.log(cell);
-                    return (
-                      <td {...cell.getCellProps()}>{(cell.column.id!="id" && cell.value== true) ? "✅" : (cell.value== false) ? "❌" : cell.render("Cell")}</td>
-                    );
-                  })}
-
-                  <td>
-                    {/*console.log("Boton:")*/}
-                    {/*console.log(row.values.id)*/}
-                    <OverlayTrigger
-                      placement="top"
-                      overlay={
-                        <Tooltip id="tooltip-top">
-                          Editar ID: {row.values.id}
-                        </Tooltip>
-                      }
-                    >
-                    <Button
-                      className="buttonAnimadoVerde"
-                      onClick={() => navigate( window.location.pathname + "/update", {state:{id:row.values.id}})}
-                    >
-                      {" "}
-                      <FaRegEdit/>{/**Editar*/}
-                    </Button>
-                    </OverlayTrigger>
-                  </td>
-
-
-                  <td>
-                    <OverlayTrigger
-                      placement="top"
-                      overlay={
-                        <Tooltip id="tooltip-top">
-                          ¿Seguro desea <strong>borrar</strong> ID: {row.values.id} ?
-                        </Tooltip>
-                      }
-                    >
-                    <Button
-                      className="buttonAnimadoRojo"
-                      onClick={() => changeTrueModalOpen(row)}
-                    >
-                      <FaTrashAlt/>{/**Borrar*/}
-                    </Button>
-                    </OverlayTrigger>
-                  </td>
-
-
-
-
+                    <th className='th-last'>
+                      BORRAR
+                    </th>
+      
                 </tr>
-              );
-            })}
-          </tbody>
-        </table>
+              ))}
+            </thead>
 
-        <div>
-          <button
-            className="buttonAnimadoAzul"
-            onClick={() => gotoPage(0)}
-            disabled={!canPreviousPage}
-          >
-            {"<<"}
-          </button>{" "}
-          <button
-            className="buttonAnimadoAzul"
-            onClick={() => previousPage()}
-            disabled={!canPreviousPage}
-          >
-            Anterior
-          </button>{" "}
-          <button
-            className="buttonAnimadoAzul"
-            onClick={() => nextPage()}
-            disabled={!canNextPage}
-          >
-            Siguiente
-          </button>{" "}
-          <button
-            className="buttonAnimadoAzul"
-            onClick={() => gotoPage(pageCount - 1)}
-            disabled={!canNextPage}
-          >
-            {">>"}
-          </button>{" "}
-          <span>
-            Página{" "}
-            <strong>
-              {pageIndex + 1} de {pageOptions.length}
-            </strong>{" "}
-          </span>
-          <span>
-            | Ir a la Página:{" "}
-            <input
-              type="number"
-              defaultValue={pageIndex + 1}
-              onChange={(e) => {
-                const pageNumber = e.target.value
-                  ? Number(e.target.value) - 1
-                  : 0;
-                gotoPage(pageNumber);
-              }}
-              style={{ width: "50px" }}
-            />
-          </span>{" "}
-          <span className="miDivSelect">
-            <span className="dropup">
-              <select
-                className="selectAnimado"
-                value={pageSize}
-                onChange={(e) => setPageSize(Number(e.target.value))}
-              >
-                {[10, 25, 50].map((pageSize) => (
-                  <option
-                    className="dropup-content"
-                    key={pageSize}
-                    value={pageSize}
-                  >
-                    Mostrar {pageSize}
-                  </option>
-                ))}
-              </select>
+            <tbody {...getTableBodyProps()}>
+              {page.map((row, i) => {
+                prepareRow(row);
+                return (
+                  <tr {...row.getRowProps()}>
+                    {row.cells.map((cell) => {
+                      // console.log("Aqui test:");
+                      // console.log(cell);
+                      return (
+                        <td {...cell.getCellProps()}>{(cell.column.id!="id" && cell.value== true) ? "✅" : (cell.value== false) ? "❌" : cell.render("Cell")}</td>
+                      );
+                    })}
+
+                    <td>
+                      {/*console.log("Boton:")*/}
+                      {/*console.log(row.values.id)*/}
+                      <OverlayTrigger
+                        placement="top"
+                        overlay={
+                          <Tooltip id="tooltip-top">
+                            Editar ID: {row.values.id}
+                          </Tooltip>
+                        }
+                      >
+                      <Button
+                        className="buttonAnimadoVerde"
+                        onClick={() => navigate( window.location.pathname + "/update", {state:{id:row.values.id}})}
+                      >
+                        {" "}
+                        <FaRegEdit/>{/**Editar*/}
+                      </Button>
+                      </OverlayTrigger>
+                    </td>
+
+
+                    <td>
+                      <OverlayTrigger
+                        placement="top"
+                        overlay={
+                          <Tooltip id="tooltip-top">
+                            ¿Seguro desea <strong>borrar</strong> ID: {row.values.id} ?
+                          </Tooltip>
+                        }
+                      >
+                      <Button
+                        className="buttonAnimadoRojo"
+                        onClick={() => changeTrueModalOpen(row)}
+                      >
+                        <FaTrashAlt/>{/**Borrar*/}
+                      </Button>
+                      </OverlayTrigger>
+                    </td>
+
+
+
+
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+
+          <div>
+            <button
+              className="buttonAnimadoAzul"
+              onClick={() => gotoPage(0)}
+              disabled={!canPreviousPage}
+            >
+              {"<<"}
+            </button>{" "}
+            <button
+              className="buttonAnimadoAzul"
+              onClick={() => previousPage()}
+              disabled={!canPreviousPage}
+            >
+              Anterior
+            </button>{" "}
+            <button
+              className="buttonAnimadoAzul"
+              onClick={() => nextPage()}
+              disabled={!canNextPage}
+            >
+              Siguiente
+            </button>{" "}
+            <button
+              className="buttonAnimadoAzul"
+              onClick={() => gotoPage(pageCount - 1)}
+              disabled={!canNextPage}
+            >
+              {">>"}
+            </button>{" "}
+            <span>
+              Página{" "}
+              <strong>
+                {pageIndex + 1} de {pageOptions.length}
+              </strong>{" "}
             </span>
-          </span>
+            <span>
+              | Ir a la Página:{" "}
+              <input
+                type="number"
+                defaultValue={pageIndex + 1}
+                onChange={(e) => {
+                  const pageNumber = e.target.value
+                    ? Number(e.target.value) - 1
+                    : 0;
+                  gotoPage(pageNumber);
+                }}
+                style={{ width: "50px" }}
+              />
+            </span>{" "}
+            <span className="miDivSelect">
+              <span className="dropup">
+                <select
+                  className="selectAnimado"
+                  value={pageSize}
+                  onChange={(e) => setPageSize(Number(e.target.value))}
+                >
+                  {[10, 25, 50].map((pageSize) => (
+                    <option
+                      className="dropup-content"
+                      key={pageSize}
+                      value={pageSize}
+                    >
+                      Mostrar {pageSize}
+                    </option>
+                  ))}
+                </select>
+              </span>
+            </span>
+          </div>
         </div>
+        
+        {/** Este es el cartel que aparece delante "desea borrar?" */}
+        <div>
+          <Modal
+            show={modalOpen}
+            onHide={() => changeTrueModalOpen()}
+          >
+            <Modal.Header closeButton>
+              <Modal.Title>Deseas borrar al ID {rowAux ? rowAux.values.id : ""}?</Modal.Title>
+            </Modal.Header>
+
+            <Modal.Body>
+              <p>Deseas borrar al ID {rowAux ? rowAux.values.id : ""}?</p>
+            </Modal.Body>
+
+            <Modal.Footer>
+              <Button variant="secondary"
+                onClick={() => changeFalseModalOpen()}
+              >CERRAR</Button>
+              <Button variant="primary"
+                onClick={() => eliminarRegistro(rowAux ? rowAux.values.id : null)}
+              >ELIMINAR</Button>
+              {loading && (
+                <span className="spinner-border spinner-border-sm"></span>
+              )}
+            </Modal.Footer>
+          </Modal>
+        </div>
+
+
+
       </div>
-
-      <div>
-    <Modal
-      show={modalOpen}
-      onHide={() => changeTrueModalOpen()}
-    >
-      <Modal.Header closeButton>
-        <Modal.Title>Deseas borrar al ID {rowAux ? rowAux.values.id : ""}?</Modal.Title>
-      </Modal.Header>
-
-      <Modal.Body>
-        <p>Deseas borrar al ID {rowAux ? rowAux.values.id : ""}?</p>
-      </Modal.Body>
-
-      <Modal.Footer>
-        <Button variant="secondary"
-          onClick={() => changeFalseModalOpen()}
-        >CERRAR</Button>
-        <Button variant="primary"
-          onClick={() => eliminarRegistro(rowAux ? rowAux.values.id : null)}
-        >ELIMINAR</Button>
-        {loading && (
-          <span className="spinner-border spinner-border-sm"></span>
-        )}
-      </Modal.Footer>
-    </Modal>
-  </div>
-
-
-
     </div>
   );
 }
@@ -318,6 +321,8 @@ function TablasDinamicas(redireccionamiento) {
     // Update the document title using the browser API
 
     BaseService.getAll(redireccionamiento).then((res) => {
+      console.log("res.data");
+      console.log(res.data);
       setData(res.data);
     });
 
@@ -330,6 +335,8 @@ function TablasDinamicas(redireccionamiento) {
     console.log(direccion);
 
   }, [redireccionamiento]);
+
+  
 
   //const columns = Object.keys(data[0] || []).map((key) => ({
   //const columns = Object.keys(columnNames || []).map((key) => ({
@@ -377,7 +384,7 @@ function TablasDinamicas(redireccionamiento) {
   return (
     <div className="TablasDinamicas">
       <div className="ComponentePrincipal">
-        <h2 className="TituloComponentePrincipal">Tablas Dinámicas</h2>
+        <h2 className="TituloComponentePrincipal">Tabla</h2>
 
         <div className="row">
 
@@ -389,9 +396,7 @@ function TablasDinamicas(redireccionamiento) {
 
         </div>
         <br></br>
-        <div className="row">
-          <Table redireccionamiento={redireccionamiento} columns={columns} data={data} />
-        </div>
+        <Table redireccionamiento={redireccionamiento} columns={columns} data={data} />
       </div>
 
 

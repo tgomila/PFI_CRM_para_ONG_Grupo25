@@ -13,7 +13,8 @@ const getAll = () => {
     console.log("Imprimo rol: " + getBestRoleLink());
     let link = BACKEND_API_BASE_URL + getBestRoleLink();
     let rta = axios
-    .get(link, { headers: authHeader() })
+    //.get(link, { headers: authHeader() }) //V1 cuando backend no leia roles del usuario, se lo ponía a mano.
+    .get(BACKEND_API_BASE_URL + "modulo/", { headers: authHeader() })
     .then((response) => {
         if (response.data) {
             if (localStorage.getItem("modulos") !== null){
@@ -25,8 +26,6 @@ const getAll = () => {
 
         return response;
     });
-    console.log("rta: ");
-    console.log(rta);
     return rta;
 
 
@@ -40,6 +39,9 @@ const getBestRoleLink = () => {
         return "modulo/default";
 }
 
+//Realmente solo 2 roles lo utilizarán: Profesional y Empleado
+//Rol admin también lo utilizará (el jefe)
+//El resto de roles son por default
 const getBestRole = () => {
     const user = JSON.parse(localStorage.getItem('user'));
     if (user) {

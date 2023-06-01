@@ -1,0 +1,2 @@
+Fuente de imagen default:
+http://ssl.gstatic.com/accounts/ui/avatar_2x.png

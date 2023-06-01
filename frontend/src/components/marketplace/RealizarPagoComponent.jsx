@@ -22,9 +22,15 @@ function RealizarPagoComponent() {
     const [submitted, setSubmitted] = useState(false);
     const tiempoElegido = location.state.tiempo;
     const moduloElegido = location.state.modulo;
+    const scroll_horizontal = location.state.scroll_horizontal;
+    const scroll_vertical = location.state.scroll_vertical;
 
     const handleSubmitSuscripcion = (e) => {
         e.preventDefault();
+        handleEntrySubmitSuscripcion();
+    }
+
+    const handleEntrySubmitSuscripcion = () => {
 
         setMessage("");
         setLoading(true);
@@ -153,7 +159,14 @@ function RealizarPagoComponent() {
     };
 
     const cancel = () => {
-        navigate("/marketplace");
+        console.log(location.state);
+        if(typeof scroll_horizontal === "number" && !isNaN(scroll_horizontal) && typeof scroll_vertical === "number" && !isNaN(scroll_vertical)){
+            navigate("/marketplace", {state:{scroll_horizontal: location.state.scroll_horizontal, 
+                scroll_vertical: location.state.scroll_vertical}});
+        }
+        else{
+            navigate("/marketplace");
+        }
         //window.location.reload();
     }
 
@@ -161,17 +174,22 @@ function RealizarPagoComponent() {
         if(location.state.modulo && location.state.tiempo){
             window.scrollTo({ top: 0, behavior: "smooth" });
             console.log("modulo: " + location.state.modulo + ", tiempo: " + location.state.tiempo);
+            console.log(location.state);
+            if(location.state.tiempo === "trial")
+                handleEntrySubmitSuscripcion();
         }
+
     }, []);
 
     
     return (
         <div className="submit-form">
             <div>
-                <br></br>
+                <br></br><br></br>
                 <div className = "container">
                     <div className = "row">
-                        <div className = "card col-md-6 offset-md-3 offset-md-3">
+                        {/*<div className = "card col-md-6 offset-md-3 offset-md-3">*/}
+                        <div className = "card-form col-md-6 offset-md-3 offset-md-3">
                           {!submitted ? (
                             <div className = "card-body">
                                 {(location.state.modulo && location.state.tiempo) && (
@@ -181,17 +199,20 @@ function RealizarPagoComponent() {
                                             <div className="card-form-container">
                                                 <CardForm modulo={moduloElegido} tiempo={tiempoElegido} />
                                             </div>
-                                            <div className="form-group">
-                                                <button className="btn btn-success" href="#" disabled={loading}>
-                                                    <span></span>
-                                                    <span></span>
-                                                    <span></span>
-                                                    <span></span>
-                                                    {loading && (
-                                                        <span className="spinner-border spinner-border-sm"></span>
-                                                    )}
-                                                    Realizar pago y suscribirse
-                                                </button>
+                                            <div className="text-center">
+                                                <div className="form-group">
+                                                    <br></br>
+                                                    <button className="btn btn-success" href="#" disabled={loading}>
+                                                        <span></span>
+                                                        <span></span>
+                                                        <span></span>
+                                                        <span></span>
+                                                        {loading && (
+                                                            <span className="spinner-border spinner-border-sm"></span>
+                                                        )}
+                                                        Realizar pago y suscribirse
+                                                    </button>
+                                                </div>
                                             </div>
                                             {message && (
                                                 <div className="form-group">
@@ -202,9 +223,12 @@ function RealizarPagoComponent() {
                                             )}
                                             <CheckButton style={{ display: "none" }} ref={checkBtn} />
                                         </Form>
-                                        <button className="btn btn-danger" onClick={cancel} style={{marginLeft: "00px"}}>
-                                            Cancelar
-                                        </button>
+                                        <br></br>
+                                        <div className="text-center">
+                                            <button className="btn btn-danger" onClick={cancel} style={{marginLeft: "00px"}}>
+                                                Cancelar
+                                            </button>
+                                        </div>
                                     </div>
                                 )}
                             </div>
@@ -231,9 +255,6 @@ export default RealizarPagoComponent;
 //Nombre: Andrew Choung
 //Link: https://codesandbox.io/s/credit-card-form-50fy0?file=/src/components/CardForm.js:75-1746
 function CardForm(data) {
-    console.log("data:")
-    console.log(data);
-    
     const [modulo, setModulo] = useState("");
     const [tiempo, setTiempo] = useState("");
     const [submittedData, setSubmittedData] = useState({});
@@ -271,33 +292,33 @@ function CardForm(data) {
 
     const[suscripcionDetalle, setSuscripcionDetalle] = useState("");
     useEffect(() => {
-        if(data.modulo)
+        if(data && data.modulo && (typeof data.modulo === "string") &&
+            data.tiempo && (typeof data.tiempo === "string")){
             setModulo(data.modulo.toLowerCase());
-        if(data.tiempo){
             setTiempo(data.tiempo.toLowerCase());
+            let texto = "Suscripción por ";
+            if(tiempo === "trial")
+                texto += "7 días ";
+            else if(tiempo === "mes")
+                texto += "1 mes ";
+            else if(tiempo === "anio")
+                texto += "1 año ";
+            else
+                texto += tiempo + " ";
+            texto += "para ";
+            if(modulo === "all")
+                texto += "plan total.";
+            else
+                texto += modulo;
+            setSuscripcionDetalle(texto);
         }
-        let texto = "Suscripción por ";
-        if(tiempo === "trial")
-            texto += "7 días ";
-        else if(tiempo === "mes")
-            texto += "1 mes ";
-        else if(tiempo === "anio")
-            texto += "1 año ";
-        else
-            texto += tiempo + " ";
-        texto += "para ";
-        if(modulo === "all")
-            texto += "plan total.";
-        else
-            texto += modulo;
-        setSuscripcionDetalle(texto);
     }, [data]);
 
     useEffect(() => {
     }, []);
 
     return (
-      <form className="card-form">
+      <form>
         <h2 className="text-center">Formulario de tarjeta de crédito</h2>
         <div><text className="text-center">{suscripcionDetalle}</text></div>
         <div><text className="text-center">Ingrese datos ficticios</text></div>
@@ -354,13 +375,13 @@ function CardForm(data) {
                 />
             </div>
         </div>
-        <button
+        {/*<button
           type="submit"
           className="btn btn-primary btn-block"
           onClick={handleSubmit}
         >
           Submit
-        </button>
+        </button>*/}
         <hr />
         <Results data={submittedData} />
       </form>
@@ -390,7 +411,7 @@ function Results(props) {
         </div>
         <div className="text-center">
           <button className="btn btn-info mt-3" onClick={toggleCardFlip}>
-            Dar vuelta tarjeta
+            {isFrontOfCardVisible ? "Ver dorso de tarjeta" : "Ver frente de tarjeta"}
           </button>
         </div>
       </div>

@@ -62,13 +62,12 @@ const Sidebar = ({ children }) => {
     
         //Lista de modulos a mostrar
         let modulos = modulosService.getModulos();
-        console.log("Modulos: ");
-        console.log(modulos);
         modulos.then((res) => {
             const menuItemConNoVista = res.data;
             const filteredMenuItems = menuItemConNoVista.filter(item => item.tipoVisibilidad !== "NO_VISTA");
             setMenuitem(filteredMenuItems);
         });
+        //TODO testing borrarlo despues
 
         setUrlLogo("http://ssl.gstatic.com/accounts/ui/avatar_2x.png");//Default
         const user = AuthService.getCurrentUser();
@@ -83,8 +82,7 @@ const Sidebar = ({ children }) => {
         }
         
     }, []);
-    //console.log("Imprimo menuItemService");
-    //console.log(menuItemService);
+    
     if (user) {
         
         //menuItem = mockSERVICIODEMODULOS.map((item) => {
@@ -165,14 +163,23 @@ const Sidebar = ({ children }) => {
 
                 case 'Marketplace':
                     commonItems['icon'] = <MdLocalGroceryStore />;break;
-                }
-                return commonItems;
 
+                case 'Contacto estático':
+                    commonItems['icon'] = <MdLocalGroceryStore />;break;
             }
+            return commonItems;
 
-        );
+        });
+        //TODO luego quitar
+        let commonItemsAux = {
+            order: 21,
+            path: "/contacto_estatico",
+            name: "Contacto estático",
+            tipoVisibilidad: "EDITAR",
+            icon: <AiFillContacts />
+        };
+        menuItem.push(commonItemsAux);
         
-
     }
     else {
 
