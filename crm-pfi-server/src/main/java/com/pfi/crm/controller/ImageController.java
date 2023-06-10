@@ -89,8 +89,20 @@ public class ImageController {
 		return fileStorageService.getFotoContacto(idContacto);
 	}
 	
+	@GetMapping("/contacto/search_tabla/{idContacto}")
+	public ResponseEntity<byte[]> getFotoTablaContacto(@PathVariable Long idContacto, @CurrentUser UserPrincipal currentUser) {
+		//No requiere seguridad para ver su foto de perfil
+		return fileStorageService.getFotoTablaContacto(idContacto);
+	}
+	
+	@GetMapping("/contacto/info/{idContacto}")
+	public ResponseEntity<ImagenPayload> getInfoFotoContacto(@PathVariable Long idContacto, @CurrentUser UserPrincipal currentUser) {
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.CONTACTO, "Ver fotos de contactos cargados");
+		return fileStorageService.getInfoFotoContacto(idContacto);
+	}
+	
 	@GetMapping("/contacto/info")
-	public List<FileInfoPayload> getListImages(@CurrentUser UserPrincipal currentUser) {
+	public List<ImagenPayload> getListImages(@CurrentUser UserPrincipal currentUser) {
 		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.CONTACTO, "Ver fotos de contactos cargados");
 		//return fileStorageService.loadAllContactos();
 		return fileStorageService.loadAllWithFecha("contacto");
@@ -103,12 +115,6 @@ public class ImageController {
 		//}).collect((Collectors.toList()));
 		
 		//return imageInfos;
-	}
-	
-	@GetMapping("/contacto/info/{idContacto}")
-	public ResponseEntity<ImagenPayload> getInfoFotoContacto(@PathVariable Long idContacto, @CurrentUser UserPrincipal currentUser) {
-		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.CONTACTO, "Ver fotos de contactos cargados");
-		return fileStorageService.getInfoFotoContacto(idContacto);
 	}
 	
 	@GetMapping("/buscar/{filename:.+}")

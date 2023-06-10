@@ -36,9 +36,15 @@ public class ModuloVisibilidadPorRolController {
 	}
 	
 	@GetMapping({"/"})
-	public List<ModuloItemPayload> getModuloPorRolDelUsuario(@CurrentUser UserPrincipal currentUser) {
+	public List<ModuloItemPayload> getModulosPorRolDelUsuario(@CurrentUser UserPrincipal currentUser) {
 		//seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.CHAT, "Ver módulos accesibles por el usuario");
 		return  moduloVisibilidadPorRolService.getModulosVisibilidadPorRol(currentUser);
+	}
+	
+	@GetMapping({"/moduloname/{moduloName}"})
+	public ModuloItemPayload getUnModuloPorRolDelUsuario(@PathVariable("moduloName") ModuloEnum moduloName, @CurrentUser UserPrincipal currentUser) {
+		//seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.CHAT, "Ver módulos accesibles por el usuario");
+		return  moduloVisibilidadPorRolService.getUnModuloPorRolDelUsuario(moduloName, currentUser);
 	}
 	
 	/**
@@ -46,13 +52,13 @@ public class ModuloVisibilidadPorRolController {
 	 * @param roleName
 	 * @return modulos
 	 */
-	@GetMapping({"/name/{roleName}"})
+	@GetMapping({"/rolename/{roleName}"})
 	public List<ModuloItemPayload> getModuloPorRol(@PathVariable("roleName") RoleName roleName) {
 		//seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.CHAT, "Ver módulos accesibles por el usuario");
 		return moduloVisibilidadPorRolService.getModulosVisibilidadPorRol(roleName).getItems();
 	}
 	
-	@GetMapping({"/name/default"})
+	@GetMapping({"/rolename/default"})
 	public ModuloPayload getModuloDefault(@CurrentUser UserPrincipal currentUser) {
 		//seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.MARKETPLACE, "Ver módulos de rol default");
 		ModuloPayload payload = new ModuloPayload();

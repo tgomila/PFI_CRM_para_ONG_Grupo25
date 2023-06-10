@@ -17,6 +17,8 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -202,6 +204,62 @@ public class FileStorageService {
 			BufferedImage originalImage = ImageIO.read(file.getFile());
 			
 			// Redimensionar la imagen a 96x96 píxeles
+		    //Image resizedImage = originalImage.getScaledInstance(96, 96, Image.SCALE_DEFAULT);
+		    //BufferedImage resizedBufferedImage = new BufferedImage(96, 96, BufferedImage.TYPE_INT_RGB);
+		    //resizedBufferedImage.getGraphics().drawImage(resizedImage, 0, 0, null);
+		    
+		    // Convertir la imagen redimensionada a un arreglo de bytes
+		    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		    ImageIO.write(originalImage, "jpeg", baos);
+		    byte[] imageBytes = baos.toByteArray();
+			
+		    // Configurar las cabeceras de la respuesta
+		    headers.setContentLength(imageBytes.length);
+			String filename = file.getFilename();
+			String contentDispositionValue;
+			contentDispositionValue = String.format("inline; filename=\"%s\"; filename*=UTF-8''%s", 
+			        filename, URLEncoder.encode(filename, StandardCharsets.UTF_8.toString()).replace("+", "%20"));
+			headers.set(HttpHeaders.CONTENT_DISPOSITION, contentDispositionValue); // Establecer el encabezado de contenido en línea
+			return ResponseEntity.ok().headers(headers).body(imageBytes);
+			
+		} catch (MalformedURLException e) {
+			throw new RuntimeException("Error: " + e.getMessage());
+		} catch (IOException e) {
+			throw new RuntimeException("Error: " + e.getMessage());
+		}
+	}
+	
+	public ResponseEntity<byte[]> getFotoTablaContacto(Long idContacto) {
+		try {
+			//Primero busco su foto de perfil (esto en formato "descarga, tomá el archivo").
+			String tenantName = DBContextHolder.getCurrentDb();
+			Path fileFotoPerfil_jpg = root.resolve(tenantName).resolve("contacto").resolve("contacto_" + idContacto.toString() + ".jpg");
+			Path fileFotoPerfil_png = root.resolve(tenantName).resolve("contacto").resolve("contacto_" + idContacto.toString() + ".png");
+			
+			Resource resource_jpg = new UrlResource(fileFotoPerfil_jpg.toUri());
+			Resource resource_png = new UrlResource(fileFotoPerfil_png.toUri());
+			Resource file;//resource
+
+			//Segundo, lo convierto en URL para front, sino se me descarga la foto y no es lo que quiero.
+			//Se prueba si existe en jpg o png
+			HttpHeaders headers = new HttpHeaders();
+			if (resource_jpg.exists() || resource_jpg.isReadable()) {
+				file =resource_jpg;
+				headers.setContentType(MediaType.IMAGE_JPEG); // Establecer el tipo de contenido a imagen JPEG
+			} else if(resource_png.exists() || resource_png.isReadable()) {
+				file = resource_png;
+				headers.setContentType(MediaType.IMAGE_PNG); // Establecer el tipo de contenido a imagen JPEG
+			} else {
+				String mensaje = "Foto no encontrada para el contacto con el id: " + idContacto;
+		        //return ResponseEntity.status(HttpStatus.NOT_FOUND).body(mensaje.getBytes());
+				throw new ResponseStatusException(HttpStatus.NOT_FOUND, mensaje);
+			}
+			
+			//Lo convierto a 96x96px
+			// Leer la imagen original
+			BufferedImage originalImage = ImageIO.read(file.getFile());
+			
+			// Redimensionar la imagen a 96x96 píxeles
 		    Image resizedImage = originalImage.getScaledInstance(96, 96, Image.SCALE_DEFAULT);
 		    BufferedImage resizedBufferedImage = new BufferedImage(96, 96, BufferedImage.TYPE_INT_RGB);
 		    resizedBufferedImage.getGraphics().drawImage(resizedImage, 0, 0, null);
@@ -251,8 +309,9 @@ public class FileStorageService {
 				fecha_mas_tardia = getFechaMasTardia(fileFotoPerfil_png);
 			} else {
 				String mensaje = "Foto no encontrada para el contacto con el id: " + idContacto;
-		        //return ResponseEntity.status(HttpStatus.NOT_FOUND).body(mensaje.getBytes());
-				throw new ResponseStatusException(HttpStatus.NOT_FOUND, mensaje);
+		        ImagenPayload imagen = new ImagenPayload(idContacto, "contacto", null);
+				return ResponseEntity.ok().body(imagen);
+				//throw new ResponseStatusException(HttpStatus.NOT_FOUND, mensaje);
 			}
 			
 		    // Configurar las cabeceras de la respuesta
@@ -338,6 +397,7 @@ public class FileStorageService {
 	//	FileSystemUtils.deleteRecursively(root.toFile());
 	//}
 	
+	//Probablemente no funciona
 	public List<FileInfoPayload> loadAllContactos() {
 		List<FileInfoPayload> imageInfos = this.loadAll("contacto").map(path -> {
 			String filename = path.getFileName().toString();
@@ -383,21 +443,24 @@ public class FileStorageService {
 	 * @param model_folder ejemplo "contacto"
 	 * @return lista
 	 */
-	public List<FileInfoPayload> loadAllWithFecha(String model_folder) {
+	public List<ImagenPayload> loadAllWithFecha(String model_folder) {
 		try {
 			String tenant_folder = DBContextHolder.getCurrentDb();
 			Path pathContacto = root.resolve(tenant_folder).resolve(model_folder);
 			
 			//filter quita path de carpeta "contacto", dejando solo "contacto_1.jpg", "contacto_2.jpg", etc...
-			List<FileInfoPayload> contactos = Files.walk(pathContacto, 1)
+			List<ImagenPayload> contactos = Files.walk(pathContacto, 1)
 					.filter(path -> !path.equals(pathContacto))
+					.filter(path -> !Files.isDirectory(path)) // Filtrar solo archivos, no carpetas
 					//.map(pathContacto::relativize);
 					.map(path -> {
 						String filename = path.getFileName().toString();
-						String url = MvcUriComponentsBuilder.fromMethodName(ImageController.class, "getImage", 
-								path.getFileName().toString()).build().toString();
+						Long id = obtenerNumero(filename);
+						//String url = MvcUriComponentsBuilder.fromMethodName(ImageController.class, "getImage", 
+						//		path.getFileName().toString()).build().toString();
 						LocalDateTime fecha_mas_tardia = getFechaMasTardia(path);
-						return new FileInfoPayload(filename, url, fecha_mas_tardia);
+						return new ImagenPayload(id, model_folder,fecha_mas_tardia);
+						//return new FileInfoPayload(filename, url, fecha_mas_tardia);
 					})
 					.filter(fileWithPathAndCreationDate -> fileWithPathAndCreationDate != null)
 					.collect((Collectors.toList()));
@@ -405,6 +468,22 @@ public class FileStorageService {
 		} catch (IOException e) {
 			throw new RuntimeException("No se pudo cargar los archivos!");
 		}
+	}
+	
+	/**
+	 * "contacto_1.jpg" obtendrías "1"
+	 * @param nombreArchivo
+	 * @return
+	 */
+	private Long obtenerNumero(String nombreArchivo) {
+		Pattern patron = Pattern.compile("_(\\d+)\\.");
+		Matcher matcher = patron.matcher(nombreArchivo);
+		
+		if (matcher.find()) {
+			return Long.parseLong(matcher.group(1));
+		}
+		
+		return null;
 	}
 	
 	private LocalDateTime getFechaMasTardia(Path path) {

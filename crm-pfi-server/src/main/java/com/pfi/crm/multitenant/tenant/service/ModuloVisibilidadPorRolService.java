@@ -137,6 +137,21 @@ public class ModuloVisibilidadPorRolService {
 	//	return rolSuperior;
 	//}
 	
+	public ModuloItemPayload getUnModuloPorRolDelUsuario(ModuloEnum moduloEnum, UserPrincipal currentUser){
+		List<ModuloItemPayload> items = getModulosVisibilidadPorRol(currentUser);
+		return items.stream()//Es un for
+				.filter(itemModulo -> itemModulo.getModuloEnum().equalsIgnoreCase(moduloEnum.toString()))//Es un if
+				.findFirst()//Solo deberia existir uno en la lista, no 2 o mas
+				.orElseThrow(() -> new ResourceNotFoundException("ModuloEnum", "moduloEnum", moduloEnum.toString()));//Raro si sucede, pero por si sucede.
+		/*for(ModuloItemPayload item: items) {
+			if(item.getModuloEnum().equalsIgnoreCase(moduloEnum.toString())) {
+				return item;
+			}
+		}
+		throw new ResourceNotFoundException("ModuloEnum", "moduloEnum", moduloEnum.toString());
+		*/
+	}
+	
 	private User obtenerUser(UserPrincipal currentUser) {
 		if(currentUser == null || currentUser.getId() == null)//no deberia suceder
 			throw new BadRequestException("Ha iniciado sesión con un User cuyo id es null");
