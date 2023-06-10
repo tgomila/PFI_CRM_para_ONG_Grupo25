@@ -31,8 +31,9 @@ const login = (usernameOrEmail, password, tenantOrClientId) => {
 };
 
 const logout = () => {
-  localStorage.removeItem("user");
-  localStorage.removeItem("modulos");
+  //localStorage.removeItem("user");
+  //localStorage.removeItem("modulos");
+  localStorage.clear();
 };
 
 const getCurrentUser = () => {

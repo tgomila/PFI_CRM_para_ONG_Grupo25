@@ -3,6 +3,27 @@ import authHeader from "./auth-header";
 import * as constantsURL from "../components/constants/ConstantsURL";
 const BACKEND_API_BASE_URL = constantsURL.API_BASE_URL;
 
+/**
+ * 
+ * @param {*} moduloName ejemplo tiene que ser "CONTACTO", etc. Modulos del backend
+ * @returns 
+ */
+const getVisibilidadByModulo = (moduloName) => {
+    let rta = axios
+    .get(BACKEND_API_BASE_URL + "modulo/moduloname/" + moduloName, { headers: authHeader() })
+    .then((response) => {
+        if (response.data.tipoVisibilidad) {
+            return response.data.tipoVisibilidad;
+        }
+        else {
+            return "NO_VISTA";
+        }
+    });
+    return rta;
+
+
+};
+
 
 /**
  * Incluye NO_VISTA
@@ -10,7 +31,6 @@ const BACKEND_API_BASE_URL = constantsURL.API_BASE_URL;
  */
 const getAll = () => {
     //return  ["Persona", "Beneficiario","Empleado","Colaborador","Consejo Adhonorem","Persona Juridica","Profesional","Donacion","Factura","Users"];
-    console.log("Imprimo rol: " + getBestRoleLink());
     let link = BACKEND_API_BASE_URL + getBestRoleLink();
     let rta = axios
     //.get(link, { headers: authHeader() }) //V1 cuando backend no leia roles del usuario, se lo ponía a mano.
@@ -34,7 +54,7 @@ const getAll = () => {
 const getBestRoleLink = () => {
     let rol = getBestRole();
     if(rol !== null)
-        return "modulo/name/" + rol;
+        return "modulo/rolename/" + rol;
     else
         return "modulo/default";
 }
@@ -79,6 +99,7 @@ const getModulos = () => {
 };
 
 const modulosService = {
+    getVisibilidadByModulo,
     getAll,
     getBestRole,
     getModulos,

@@ -1,6 +1,7 @@
 import React, { forwardRef, useMemo, useState, useEffect, useRef } from "react";
 import ContactoService from "../../services/ContactoService";
 import ImageService from "../../services/ImageService";
+import modulosService from "../../services/modulosService";
 
 import { useTable, usePagination, useSortBy, useRowState } from "react-table";
 
@@ -13,7 +14,7 @@ import { Modal, Button, OverlayTrigger, Tooltip } from "react-bootstrap";
 //import "../../../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import { FaTrashAlt, FaRegEdit } from "react-icons/fa";
 //import ReactToolTip from 'react-tooltip';
-import IndeterminateCheckbox from"./Tabla_Variables";
+import { IndeterminateCheckbox, RenderFotoPerfil } from"./Tabla_Variables";
 
 
 import {
@@ -26,27 +27,37 @@ import {
 
 function TablaContacto() {
   const [data, setData] = useState([]);
-  const [fotoPerfil, setFotoPerfil] = useState(null);
+  const [visibilidad, setVisibilidad] = useState("");
+  //const [fotoPerfil, setFotoPerfil] = useState(null);
   //const [columnNames, setColumnNames] = useState([]);
 
   useEffect(() => {
 
-    ContactoService.getAll().then((res) => {
-      setData(res.data);
-      console.log(res.data);
+    let modulo = modulosService.getVisibilidadByModulo("CONTACTO");
+    modulo.then(async (response) => {
+      if(response){
+        setVisibilidad(response);
+      }
     });
 
     ContactoService.getAll().then(async (res) => {
-      const newData = [];
+      
+      /*const newData2 = [];
+      console.log("Data sin imagen");
+      const ids = res.data.map(dato => dato.id);
+      console.log(ids);
+      newData2.push(await ImageService.getAllContactoTablaFotos(ids, res.data));
+      console.log("Data sin imagen 2");
+      console.log(newData2);*/
     
+      const newData = [];
       for (const contacto of res.data) {
-        const fotoUrl = await ImageService.getFotoContacto(contacto.id);
-        const contactoConFoto = { ...contacto, imagen: fotoUrl };
+        const fotoUrl = await ImageService.getFotoContactoTabla(contacto.id);
+        const contactoConFoto = { ...contacto, imagen_tabla: fotoUrl };
         newData.push(contactoConFoto);
       }
     
       setData(newData);
-      console.log(newData);
     });
 
     /*const fetchFotoPerfil = ImageService.getFotoPerfilNew();
@@ -57,7 +68,7 @@ function TablaContacto() {
     }*/
 
     
-    const fetchFotoPerfil = async () => {
+    /*const fetchFotoPerfil = async () => {
       try {
         //const data = await ImageService.getFotoPerfil();
         //const blob = new Blob([data]);
@@ -70,7 +81,7 @@ function TablaContacto() {
       }
     };
 
-    fetchFotoPerfil();
+    fetchFotoPerfil();*/
     
    
 
@@ -88,42 +99,48 @@ function TablaContacto() {
   //  Header: value.toString(),
   //  accessor: key,
   //}));
-  const columns = useMemo(
-    () => [
-    {
-      Header: "ID",
-      accessor: "id",
-    },
-    {
-      Header: "Foto",
-      Cell: ({ row }) => renderFotoPerfil(row.original.imagen),
-    },
-    {
-      Header: "Nombre/Descripción",
-      accessor: "nombreDescripcion",
-    },
-    {
-      Header: "Email",
-      accessor: "email",
-    },
-    {
-      Header: "Cuit",
-      accessor: "cuit",
-    },
-    {
-      Header: "Telefono",
-      accessor: "telefono",
-    },
-    {
-      Header: 'Editar',
-      Cell: ({ row }) => renderBotonEditar(row.original.id),
-    },
-    {
-      Header: 'Borrar',
-      Cell: ({ row }) => renderBotonBorrar(row.original.id),
-    },
-  ],
-  []);
+  const columns = useMemo(() => {
+    let baseColumns = [
+      {
+        Header: "ID",
+        accessor: "id",
+      },
+      {
+        Header: "Foto",
+        Cell: ({ row }) => RenderFotoPerfil(row.original.id, "contacto", row.original.imagen_tabla, row.original.nombreDescripcion),
+      },
+      {
+        Header: "Nombre/Descripción",
+        accessor: "nombreDescripcion",
+      },
+      {
+        Header: "Email",
+        accessor: "email",
+      },
+      {
+        Header: "Cuit",
+        accessor: "cuit",
+      },
+      {
+        Header: "Telefono",
+        accessor: "telefono",
+      },
+    ];
+    if (visibilidad === "EDITAR") {
+      baseColumns.push(
+        {
+          Header: 'Editar',
+          Cell: ({ row }) => renderBotonEditar(row.original.id),
+        },
+        {
+          Header: 'Borrar',
+          Cell: ({ row }) => RenderBotonBorrar(row.original.id),
+        }
+      );
+    }
+
+  return baseColumns;
+  }, [visibilidad]);
 
   const columns2 = useMemo(
     () => [
@@ -158,7 +175,7 @@ function TablaContacto() {
           },
           {
             Header: 'Borrar',
-            Cell: ({ row }) => renderBotonBorrar(row.original.id),
+            Cell: ({ row }) => RenderBotonBorrar(row.original.id),
           },
         ],
       },
@@ -211,31 +228,19 @@ function TablaContacto() {
   window.scrollTo({ top: 0, behavior: "smooth" });
 
   
-  const [modalOpen, setModalOpen] = useState(false);
-  const [idAux, setIdAux] = useState();
   const [loading, setLoading] = useState(false);
+  const [loadingErase, setLoadingErase] = useState(false);
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
-
-  const changeTrueModalOpen = (row) => {
-    setModalOpen(!modalOpen);
-    setIdAux(row);
-    console.log(row.values.id);
-  };
-
-  const changeFalseModalOpen = () => {
-    setModalOpen(false);
-    setIdAux();
-  };
 
   const eliminarRegistro = (id) => {
     if(id != null){
 
       setMessage("");
-      setLoading(true);
+      setLoadingErase(true);
       ContactoService.delete(id).then(
         () => {
-          setLoading(false);
+          setLoadingErase(false);
           window.location.reload();
         },
         (error) => {
@@ -246,11 +251,11 @@ function TablaContacto() {
             error.message ||
             error.toString();
 
-          setLoading(false);
+            setLoadingErase(false);
           setMessage(resMessage);
         });
     } else {
-      setLoading(false);
+      setLoadingErase(false);
     }
   }
 
@@ -275,35 +280,86 @@ function TablaContacto() {
     );
   };
 
-  const renderBotonBorrar = (idInput) => {
+
+
+  const RenderBotonBorrar = (idInput) => {
+    const [showModal, setShowModal] = useState(false);
+
+    const handleOpenModal = () => {
+      setShowModal(true);
+    };
+
+    const handleCloseModal = () => {
+      setShowModal(false);
+    };
+    
     return (
-      <OverlayTrigger
-        placement="top"
-        overlay={
-          <Tooltip id="tooltip-top">
-            ¿Seguro desea <strong>borrar</strong> ID: {idInput} ?
-          </Tooltip>
-        }
-      >
-      <Button
-        className="buttonAnimadoRojo"
-        onClick={() => changeTrueModalOpen(idInput)}
-      >
-        <FaTrashAlt/>{/**Borrar*/}
-      </Button>
-      </OverlayTrigger>
+      <div>
+        <OverlayTrigger
+          placement="top"
+          overlay={
+            <Tooltip id="tooltip-top">
+              ¿Seguro desea <strong>borrar</strong> ID: {idInput} ?
+            </Tooltip>
+          }
+        >
+        <Button
+          className="buttonAnimadoRojo"
+          onClick={() => handleOpenModal()}
+        >
+          <FaTrashAlt/>{/**Borrar*/}
+        </Button>
+        </OverlayTrigger>
+        {/** Este es el cartel que aparece delante "desea borrar?" */}
+        <div>
+          <Modal show={showModal} onHide={handleCloseModal}>
+            <Modal.Header closeButton>
+              <Modal.Title>Deseas borrar al ID {idInput ? idInput : ""}?</Modal.Title>
+            </Modal.Header>
+
+            <Modal.Body>
+              <p>Deseas borrar al ID {idInput ? idInput : ""}?</p>
+            </Modal.Body>
+
+            <Modal.Footer>
+              <Button variant="secondary"
+                onClick={() => handleCloseModal()}
+              >CERRAR</Button>
+              <Button variant="primary"
+                onClick={() => eliminarRegistro(idInput ? idInput : null)}
+              >ELIMINAR</Button>
+              {loadingErase && (
+                <span className="spinner-border spinner-border-sm"></span>
+              )}
+            </Modal.Footer>
+          </Modal>
+        </div>
+      </div>
     );
   };
 
-  const renderFotoPerfil = (imagen) => {
+
+
+  const renderFotoPerfil2 = (imagen_tabla) => {
     return(
       <div>
-        {imagen ? (
+        {imagen_tabla ? (
+      <div className="contenedor-imagenes">
+        <div>
         <img 
-        src={imagen} 
+        src={imagen_tabla} 
         alt="Foto de perfil" 
         className="contacto-img-card"
         />
+        <div><text>John</text></div>
+        <div><text>Smith</text></div>
+        </div>
+        <img 
+        src={imagen_tabla} 
+        alt="Foto de perfil" 
+        className="contacto-img-card"
+        />
+        </div>
       ) : (
         <p>Cargando foto de perfil...</p>
       )}
@@ -318,26 +374,12 @@ function TablaContacto() {
     <div className="componentePrincipal">
       
       {/**Botones agregar quitar */}
-      <div className="row">
-        <button className="btn btn-primary" onClick={() => navigate( window.location.pathname + "/create")}> Nuevo contacto</button>
-        &nbsp;&nbsp;&nbsp;
-        <button className="btn btn-primary" onClick={() => navigate( window.location.pathname + "/update")}> Modificar contacto</button>
-      </div>
-
-      {/**Test foto perfil */}
-      <img
-          src="//ssl.gstatic.com/accounts/ui/avatar_2x.png"
-          alt="profile-img"
-          className="profile-img-card"
-      />
-      {fotoPerfil ? (
-        <img 
-        src={fotoPerfil} 
-        alt="Foto de perfil" 
-        className="contacto-img-card"
-        />
-      ) : (
-        <p>Cargando foto de perfil...</p>
+      {visibilidad === "EDITAR" && (
+        <div className="row">
+          <button className="btn btn-primary" onClick={() => navigate( window.location.pathname + "/create")}> Nuevo contacto</button>
+          &nbsp;&nbsp;&nbsp;
+          <button className="btn btn-primary" onClick={() => navigate( window.location.pathname + "/update")}> Modificar contacto</button>
+        </div>
       )}
       
       
@@ -464,35 +506,6 @@ function TablaContacto() {
               </span>
             </div>
           </div>
-          
-          {/** Este es el cartel que aparece delante "desea borrar?" */}
-          <div>
-            <Modal
-              show={modalOpen}
-              onHide={() => changeTrueModalOpen()}
-            >
-              <Modal.Header closeButton>
-                <Modal.Title>Deseas borrar al ID {idAux ? idAux : ""}?</Modal.Title>
-              </Modal.Header>
-
-              <Modal.Body>
-                <p>Deseas borrar al ID {idAux ? idAux : ""}?</p>
-              </Modal.Body>
-
-              <Modal.Footer>
-                <Button variant="secondary"
-                  onClick={() => changeFalseModalOpen()}
-                >CERRAR</Button>
-                <Button variant="primary"
-                  onClick={() => eliminarRegistro(idAux ? idAux : null)}
-                >ELIMINAR</Button>
-                {loading && (
-                  <span className="spinner-border spinner-border-sm"></span>
-                )}
-              </Modal.Footer>
-            </Modal>
-          </div>
-
 
 
         </div>

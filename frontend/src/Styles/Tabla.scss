@@ -235,4 +235,148 @@ cursor: pointer;
   -moz-border-radius: 50%;
   -webkit-border-radius: 50%;
   border-radius: 50%;
+  
+  border: 3px solid #f7f7f7;
+  filter: drop-shadow(-10px 0 10px rgba(0, 0, 0, 0.1));
+  cursor: pointer;
+  position: relative;
+  transition: all 0.3s;
 }
+  
+.contacto-img-card:hover {
+  transform: translateY(5px);//25
+}
+
+.contacto-img-card .name {
+    position: absolute;
+    background-color: #10996d;
+    color: #fff;
+    font-family: "Bebas Neue", cursive;
+    padding: 15px 30px;
+    border-radius: 100px;
+    bottom: -80px; left: 50%;
+    white-space: nowrap;
+    transform: translate(-50%, -50px);
+    letter-spacing: 1px;
+    font-size: 20px;
+    opacity: 0;
+    transition: all 0.3s;
+}
+  
+.contacto-img-card .name::before {
+    content: "";
+    position: absolute;
+    width: 15px; height: 15px;
+    background-color: #10996d;
+    top: 0; left: 50%;
+    transform: translate(-50%, -50%) rotate(45deg);
+}
+  
+.contacto-img-card img:hover + .name {
+    opacity: 1;
+    transform: translateX(-50%);
+    box-shadow: 0 10px 20px rgba(86, 86, 198, 0.3);
+}
+
+.contacto-img-modal {
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+.contenedor-imagenes {
+    display: flex;
+}
+
+.contenedor-imagenes img:nth-child(n+2) {
+  margin-left: 10px;
+}
+
+//Esto es circulos de imagenes que con mouse se mueven
+.react-table .rt-td .container {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+.container {
+    display: flex;
+    justify-content: center;
+    width: 90%;
+    //max-width: var(--container-max-width);
+  max-height: 96px;
+  max-width: 480px;
+    margin: 0 auto;
+  background-color: #243b55;
+  }
+  
+  .profile {
+    position: relative;
+    transition: all 0.3s;
+  }
+  
+  .profile:hover {
+    transform: translateY(10px);//25
+  }
+  
+  .profile img {
+    max-height: 100%;
+    max-width: 100%;
+    border-radius: 50%;
+    //border: calc(1/288 * var(--container-max-width)) solid #f7f7f7;
+     border: 3px solid #f7f7f7;
+    filter: drop-shadow(-10px 0 10px rgba(0, 0, 0, 0.1));
+    cursor: pointer;
+    width: 72px;
+    height: 72px;
+  }
+
+
+    //Esto es de adorno, no funciona
+    .profile img:nth-child(n) {
+        margin-left: calc(-80px * (counter(n)));
+    }
+
+.profile .name {
+    position: absolute;
+    background-color: #10996d;
+    color: #fff;
+    font-family: "Bebas Neue", cursive;
+    padding: 15px 30px;
+    border-radius: 100px;
+    bottom: -80px; left: 50%;
+    white-space: nowrap;
+    transform: translate(-50%, -50px);
+    letter-spacing: 1px;
+    font-size: 20px;
+    opacity: 0;
+    transition: all 0.3s;
+    z-index: 9999;//para que se vea lo mas al frente posible
+}
+  
+.profile .name::before {
+    content: "";
+    position: absolute;
+    width: 15px; height: 15px;
+    background-color: #10996d;
+    top: 0; left: 50%;
+    transform: translate(-50%, -50%) rotate(45deg); 
+}
+  
+.profile img:hover + .name {
+    opacity: 1;
+    transform: translateX(-50%);
+    box-shadow: 0 10px 20px rgba(86, 86, 198, 0.3);
+}
+//Fin imagenes que con mouse se mueven

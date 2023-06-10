@@ -74,7 +74,6 @@ const Sidebar = ({ children }) => {
         if (user) {
             setCurrentUser(user);
             setUrlLogo("http://localhost:8080/logo/" + user.dbName + ".png");
-            console.log("El urlLogo es: " + urlLogo);
             //setUrlLogo("http://localhost:8080/logo/tenant2.png");
         }
         else {//Default

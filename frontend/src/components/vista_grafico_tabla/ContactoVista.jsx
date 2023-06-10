@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import BaseService from "../../services/BaseService";
 import TablaContacto from "../tables/TablaContacto";
+import ContactoGrafico from "../graficos/ContactoGrafico";
 
 import "../../Styles/TablasDinamicas.scss";
 
@@ -22,15 +23,19 @@ function ContactoVista() {
 
 
 
-  useEffect(() => {
+  /*useEffect(() => {
     // Fetch data
     // Update the document title using the browser API
 
-  }, []);
+  }, []);*/
 
   return (
     <div className="Vista">
       <div className="ComponentePrincipal">
+
+        <ContactoGrafico />
+        <br/>
+        
         {/** Tabla de contactos aquí */}
         <TablaContacto />
 
