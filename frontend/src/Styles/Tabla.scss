@@ -33,7 +33,7 @@
     font-weight: 100;
     border-radius: 20px 20px 20px 20px;
     box-shadow: 0 15px 25px rgba(0,0,0,.6);
-    margin-right: 0px;
+    margin-right: 20px;
     .container {
         position: absolute;
         top: 50%;
@@ -102,7 +102,7 @@
                     right: 0;
                     top: -9999px;
                     bottom: -9999px;
-                    background-color: rgba(255,255,255,0.2);
+                    //background-color: rgba(255,255,255,0.2);
                     z-index: -1;
                 }
             }
@@ -380,3 +380,41 @@ cursor: pointer;
     box-shadow: 0 10px 20px rgba(86, 86, 198, 0.3);
 }
 //Fin imagenes que con mouse se mueven
+
+//Inicio Tabla_Filters
+.search-field {
+    font-size: 1.1rem;
+    border: 0;
+    color: black;
+    border-radius: 10px;
+    position: relative;
+    background-color: rgba(255, 255, 255, 0.904);
+    transition: 0.3s all;
+}
+.search-field:hover {
+    background-color: rgba(255, 255, 255, 0.45);
+    box-shadow: 0px 4px 20px 0px rgba(0, 0, 0, 0.05);
+}
+.search-field::placeholder {
+  color: grey;
+  text-indent: 10px;
+}
+
+.icono-en-texto {
+    font-size: 20px;
+    .izq {
+        margin-right: 5px;
+    }
+    .der {
+        margin-left: 15px;
+    }
+    .center {
+        margin-left: 5px;
+        margin-right: 5px;
+    }
+}
+.icono-en-texto-dere {
+    margin-left: 5px;
+    font-size: 20px;
+}
+//Fin Tabla_Filters

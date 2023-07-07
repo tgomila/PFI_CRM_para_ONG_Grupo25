@@ -1,11 +1,11 @@
 import React, { forwardRef, useMemo, useState, useEffect, useRef } from "react";
-import ContactoService from "../../services/ContactoService";
-import ImageService from "../../services/ImageService";
-import modulosService from "../../services/modulosService";
+import ContactoService from "../../../../services/ContactoService";
+import ImageService from "../../../../services/ImageService";
+import modulosService from "../../../../services/modulosService";
 
 import { useTable, usePagination, useSortBy, useRowState } from "react-table";
 
-import "../../Styles/Tabla.scss";
+import "../../../Styles/Tabla.scss";
 
 import { useNavigate } from 'react-router-dom';
 
@@ -14,16 +14,19 @@ import { Modal, Button, OverlayTrigger, Tooltip } from "react-bootstrap";
 //import "../../../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import { FaTrashAlt, FaRegEdit } from "react-icons/fa";
 //import ReactToolTip from 'react-tooltip';
-import { IndeterminateCheckbox, RenderFotoPerfil } from"./Tabla_Variables";
+import { 
+  IndeterminateCheckbox, 
+  RenderFotoPerfil,
+  RenderBotonEditar,
+  RenderBotonBorrar,
+} from"../Tabla_Variables";
 
 
-import {
-  Route,
-  Routes,
-  BrowserRouter
-} from "react-router-dom";
-
-
+//Que tenes que cambiar si queres reciclar este código para otro tipo de persona:
+//Por ejemplo persona a empleado, cambiar palabras de:
+//"Persona" por "Empleado"
+//"PERSONA" por "EMPLEADO", fijate como se llama en postman, por lo general es en mayúsculas
+//"persona" por "empleado", fijate que si dice nueva persona, cambialo por "nuevo" con o
 
 function TablaContacto() {
   const [data, setData] = useState([]);
@@ -41,64 +44,12 @@ function TablaContacto() {
     });
 
     ContactoService.getAll().then(async (res) => {
-      
-      /*const newData2 = [];
-      console.log("Data sin imagen");
-      const ids = res.data.map(dato => dato.id);
-      console.log(ids);
-      newData2.push(await ImageService.getAllContactoTablaFotos(ids, res.data));
-      console.log("Data sin imagen 2");
-      console.log(newData2);*/
-    
-      const newData = [];
-      for (const contacto of res.data) {
-        const fotoUrl = await ImageService.getFotoContactoTabla(contacto.id);
-        const contactoConFoto = { ...contacto, imagen_tabla: fotoUrl };
-        newData.push(contactoConFoto);
-      }
-    
+      const newData = await ImageService.getAllContactoTablaFotos(res.data);
       setData(newData);
     });
 
-    /*const fetchFotoPerfil = ImageService.getFotoPerfilNew();
-    if(fetchFotoPerfil) {
-      console.log("foto");
-      console.log(fetchFotoPerfil);
-      setFotoPerfil(fetchFotoPerfil);
-    }*/
-
-    
-    /*const fetchFotoPerfil = async () => {
-      try {
-        //const data = await ImageService.getFotoPerfil();
-        //const blob = new Blob([data]);
-        //const fotoUrl = URL.createObjectURL(blob);
-        //setFotoPerfil(fotoUrl);
-        const fotoUrl = await ImageService.getFotoPerfil();
-        setFotoPerfil(fotoUrl);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    fetchFotoPerfil();*/
-    
-   
-
-    //ImageService.getFotoPerfil().then((res) => {
-    //  setFotoPerfil(res.data);
-    //});
-
-    //ContactoService.getColumnNames().then((res) => {
-    //  setColumnNames(res.data);
-    //});
-
   }, []);
 
-  //const columns = Object.entries(columnNames || []).map(([key,value]) => ({
-  //  Header: value.toString(),
-  //  accessor: key,
-  //}));
   const columns = useMemo(() => {
     let baseColumns = [
       {
@@ -130,11 +81,11 @@ function TablaContacto() {
       baseColumns.push(
         {
           Header: 'Editar',
-          Cell: ({ row }) => renderBotonEditar(row.original.id),
+          Cell: ({ row }) => RenderBotonEditar(row.original.id),
         },
         {
           Header: 'Borrar',
-          Cell: ({ row }) => RenderBotonBorrar(row.original.id),
+          Cell: ({ row }) => RenderBotonBorrar(row.original.id, row.original.nombreDescripcion, ContactoService),
         }
       );
     }
@@ -171,11 +122,11 @@ function TablaContacto() {
           },
           {
             Header: 'Editar',
-            Cell: ({ row }) => renderBotonEditar(row.original.id),
+            Cell: ({ row }) => RenderBotonEditar(row.original.id),
           },
           {
             Header: 'Borrar',
-            Cell: ({ row }) => RenderBotonBorrar(row.original.id),
+            Cell: ({ row }) => RenderBotonBorrar(row.original.id, row.original.nombreDescripcion, ContactoService),
           },
         ],
       },
@@ -226,147 +177,8 @@ function TablaContacto() {
 
   const { pageIndex, pageSize } = state;
   window.scrollTo({ top: 0, behavior: "smooth" });
-
   
-  const [loading, setLoading] = useState(false);
-  const [loadingErase, setLoadingErase] = useState(false);
-  const [message, setMessage] = useState("");
   const navigate = useNavigate();
-
-  const eliminarRegistro = (id) => {
-    if(id != null){
-
-      setMessage("");
-      setLoadingErase(true);
-      ContactoService.delete(id).then(
-        () => {
-          setLoadingErase(false);
-          window.location.reload();
-        },
-        (error) => {
-          const resMessage =
-            (error.response &&
-              error.response.data &&
-              error.response.data.message) ||
-            error.message ||
-            error.toString();
-
-            setLoadingErase(false);
-          setMessage(resMessage);
-        });
-    } else {
-      setLoadingErase(false);
-    }
-  }
-
-  const renderBotonEditar = (idInput) => {
-    return (
-      <OverlayTrigger
-        placement="top"
-        overlay={
-          <Tooltip id="tooltip-top">
-            Editar ID: {idInput}
-          </Tooltip>
-        }
-      >
-        <Button
-          className="buttonAnimadoVerde"
-          onClick={() => navigate( window.location.pathname + "/update", {state:{id:idInput}})}
-        >
-          {" "}
-          <FaRegEdit/>{/**Editar*/}
-        </Button>
-      </OverlayTrigger>
-    );
-  };
-
-
-
-  const RenderBotonBorrar = (idInput) => {
-    const [showModal, setShowModal] = useState(false);
-
-    const handleOpenModal = () => {
-      setShowModal(true);
-    };
-
-    const handleCloseModal = () => {
-      setShowModal(false);
-    };
-    
-    return (
-      <div>
-        <OverlayTrigger
-          placement="top"
-          overlay={
-            <Tooltip id="tooltip-top">
-              ¿Seguro desea <strong>borrar</strong> ID: {idInput} ?
-            </Tooltip>
-          }
-        >
-        <Button
-          className="buttonAnimadoRojo"
-          onClick={() => handleOpenModal()}
-        >
-          <FaTrashAlt/>{/**Borrar*/}
-        </Button>
-        </OverlayTrigger>
-        {/** Este es el cartel que aparece delante "desea borrar?" */}
-        <div>
-          <Modal show={showModal} onHide={handleCloseModal}>
-            <Modal.Header closeButton>
-              <Modal.Title>Deseas borrar al ID {idInput ? idInput : ""}?</Modal.Title>
-            </Modal.Header>
-
-            <Modal.Body>
-              <p>Deseas borrar al ID {idInput ? idInput : ""}?</p>
-            </Modal.Body>
-
-            <Modal.Footer>
-              <Button variant="secondary"
-                onClick={() => handleCloseModal()}
-              >CERRAR</Button>
-              <Button variant="primary"
-                onClick={() => eliminarRegistro(idInput ? idInput : null)}
-              >ELIMINAR</Button>
-              {loadingErase && (
-                <span className="spinner-border spinner-border-sm"></span>
-              )}
-            </Modal.Footer>
-          </Modal>
-        </div>
-      </div>
-    );
-  };
-
-
-
-  const renderFotoPerfil2 = (imagen_tabla) => {
-    return(
-      <div>
-        {imagen_tabla ? (
-      <div className="contenedor-imagenes">
-        <div>
-        <img 
-        src={imagen_tabla} 
-        alt="Foto de perfil" 
-        className="contacto-img-card"
-        />
-        <div><text>John</text></div>
-        <div><text>Smith</text></div>
-        </div>
-        <img 
-        src={imagen_tabla} 
-        alt="Foto de perfil" 
-        className="contacto-img-card"
-        />
-        </div>
-      ) : (
-        <p>Cargando foto de perfil...</p>
-      )}
-      </div>
-
-    );
-  };
 
 
   // Render the UI for your table

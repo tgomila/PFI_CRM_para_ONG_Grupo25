@@ -3,10 +3,14 @@ import Form from "react-validation/build/form";
 import Input from "react-validation/build/input";
 import CheckButton from "react-validation/build/button";
 import PersonaService from '../../../services/PersonaService';
+import ImageService from '../../../services/ImageService';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { cargarPersonaDefault } from '../Constants/ConstantsCargarDefault';
 import { PersonaUpdateInput } from '../Constants/ConstantsInputModel';
+import { FotoPerfil } from '../Constants/ConstantsCrudElements';
 import { required } from '../Constants/ConstantsInput';
+
+import "../../../Styles/CRUD.scss";
 
 //Reciclado de UpdatePersonaComponent, y reciclado de create
 function UpdatePersonaComponent() {
@@ -61,6 +65,7 @@ function UpdatePersonaComponent() {
                     setLoadingSearch(false);
                     setMostrarSearchID(false);
                     window.scrollTo({ top: 0, behavior: "smooth" });
+                    console.log("Entre aquí");
                 },
                 (error) => {
                     const resMessage =
@@ -154,12 +159,17 @@ function UpdatePersonaComponent() {
         }
     }, []);
 
+    const [isFotoClicked, setIsFotoClicked] = useState(false);
+
+    const handleFotoClick = () => {
+        setIsFotoClicked(!isFotoClicked);
+    };
     
     return (
         <div className="submit-form">
             <div>
-                <br></br>
-                <div className = "container">
+                {/**<div className = "container">*/}
+                <div>
                     <div className = "row">
                         <div className = "card col-md-6 offset-md-3 offset-md-3">
                           {!submitted ? (
@@ -213,6 +223,7 @@ function UpdatePersonaComponent() {
                                 {(forzarRenderizado) && (<div></div>)}
                                 {(!mostrarSearchID) && (
                                     <div className="form-group">
+                                        <FotoPerfil id={persona.id} visibilidad={"EDITAR"} />
                                         <Form onSubmit={handleSubmit} ref={form}>
                                             <PersonaUpdateInput data={persona} handleInputChange={handleInputChange} />
 

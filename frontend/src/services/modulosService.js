@@ -5,10 +5,25 @@ const BACKEND_API_BASE_URL = constantsURL.API_BASE_URL;
 
 /**
  * 
- * @param {*} moduloName ejemplo tiene que ser "CONTACTO", etc. Modulos del backend
+ * @param {string} moduloName ejemplo tiene que ser "CONTACTO", etc. Modulos del backend
  * @returns 
  */
 const getVisibilidadByModulo = (moduloName) => {
+    /*const modulo = getModulo(moduloName);
+    if(modulo.tipoVisibilidad) {
+        return modulo.tipoVisibilidad;
+    } else {
+        return "NO_VISTA";
+    }*/
+
+    /*const modulos = JSON.parse(localStorage.getItem("modulos"));
+    if(modulos) {
+        const contactoModulo = modulos.find((modulo) => modulo.moduloEnum === moduloName);
+        if(contactoModulo && contactoModulo.tipoVisibilidad){
+            return contactoModulo.tipoVisibilidad;
+        }
+    }*/
+
     let rta = axios
     .get(BACKEND_API_BASE_URL + "modulo/moduloname/" + moduloName, { headers: authHeader() })
     .then((response) => {
@@ -23,6 +38,37 @@ const getVisibilidadByModulo = (moduloName) => {
 
 
 };
+
+/**
+ * 
+ * @param {string} moduloName ejemplo tiene que ser "CONTACTO", etc. Modulos del backend
+ * @returns 
+ */
+const getModulo = (moduloName) => {
+    const modulos = JSON.parse(localStorage.getItem("modulos"));
+    if(modulos) {
+        const contactoModulo = modulos.find((modulo) => modulo.moduloEnum === moduloName);
+        if(contactoModulo){
+            return contactoModulo;
+        }
+    }
+
+    let rta = axios
+    .get(BACKEND_API_BASE_URL + "modulo/moduloname/" + moduloName, { headers: authHeader() })
+    .then((response) => {
+        if (response.data) {
+            return response.data;
+        }
+        else {
+            return null;
+        }
+    });
+    return rta;
+
+
+};
+
+
 
 
 /**

@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
-import BaseService from "../../services/BaseService";
+import BaseService from "../../../services/BaseService";
 
 import { useTable, usePagination } from "react-table";
 
-import "../../Styles/TablasDinamicas.scss";
+import "../../../Styles/TablasDinamicas.scss";
 
-import { useNavigate } from 'react-router-dom';    
+import { useNavigate } from 'react-router-dom';
 
+import { Modal, Button } from "react-bootstrap";
 
 import {
   Route,
@@ -14,16 +15,8 @@ import {
   BrowserRouter
 } from "react-router-dom";
 
-/*
-Para reciclar esta tabla:
- - Tener en cuenta import BaseService.
- - Cambiar import Create...Component
- - 
 
-
-*/
-
-function Table({ columns, data }) {
+function Table({redireccionamiento, columns, data }) {
   const {
     getTableProps,
     getTableBodyProps,
@@ -50,8 +43,51 @@ function Table({ columns, data }) {
   );
 
   const { pageIndex, pageSize } = state;
-  
   window.scrollTo({ top: 0, behavior: "smooth" });
+
+  
+  const [modalOpen, setModalOpen] = useState(false);
+  const [rowAux, setRowAux] = useState();
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
+
+  const changeTrueModalOpen = (row) => {
+    setModalOpen(!modalOpen);
+    setRowAux(row);
+    console.log(row.values.id);
+  };
+
+  const changeFalseModalOpen = () => {
+    setModalOpen(false);
+    setRowAux();
+  };
+
+  const eliminarRegistro = (id) => {
+    if(id != null){
+
+      setMessage("");
+      setLoading(true);
+      BaseService.delete(redireccionamiento, id).then(
+        () => {
+          setLoading(false);
+          window.location.reload();
+        },
+        (error) => {
+          const resMessage =
+            (error.response &&
+              error.response.data &&
+              error.response.data.message) ||
+            error.message ||
+            error.toString();
+
+          setLoading(false);
+          setMessage(resMessage);
+        });
+    } else {
+      setLoading(false);
+    }
+  }
+
 
   // Render the UI for your table
   return (
@@ -85,8 +121,10 @@ function Table({ columns, data }) {
               return (
                 <tr {...row.getRowProps()}>
                   {row.cells.map((cell) => {
+                    // console.log("Aqui test:");
+                    // console.log(cell);
                     return (
-                      <td {...cell.getCellProps()}>{cell.render("Cell")}</td>
+                      <td {...cell.getCellProps()}>{(cell.column.id!="id" && cell.value== true) ? "✅" : (cell.value== false) ? "❌" : cell.render("Cell")}</td>
                     );
                   })}
 
@@ -103,8 +141,9 @@ function Table({ columns, data }) {
                   <td>
                     <button
                       className="buttonAnimadoRojo"
+                      type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter"
+                      onClick={() => changeTrueModalOpen(row)}
                     >
-                      {" "}
                       Borrar
                     </button>
                   </td>
@@ -121,43 +160,28 @@ function Table({ columns, data }) {
         <div>
           <button
             className="buttonAnimadoAzul"
-            onClick={() => {
-                gotoPage(0);
-                window.scrollTo(0, document.body.scrollHeight);
-              }
-            }
+            onClick={() => gotoPage(0)}
             disabled={!canPreviousPage}
           >
             {"<<"}
           </button>{" "}
           <button
             className="buttonAnimadoAzul"
-            onClick={() => {
-                previousPage();
-                window.scrollTo(0, document.body.scrollHeight);
-              }
-            }
+            onClick={() => previousPage()}
             disabled={!canPreviousPage}
           >
             Anterior
           </button>{" "}
           <button
             className="buttonAnimadoAzul"
-            onClick={() => {
-              nextPage();
-              window.scrollTo(0, document.body.scrollHeight);
-            }}
+            onClick={() => nextPage()}
             disabled={!canNextPage}
           >
             Siguiente
           </button>{" "}
           <button
             className="buttonAnimadoAzul"
-            onClick={() => {
-                gotoPage(pageCount - 1);
-                window.scrollTo(0, document.body.scrollHeight);
-              }
-            }
+            onClick={() => gotoPage(pageCount - 1)}
             disabled={!canNextPage}
           >
             {">>"}
@@ -178,7 +202,6 @@ function Table({ columns, data }) {
                   ? Number(e.target.value) - 1
                   : 0;
                 gotoPage(pageNumber);
-                window.scrollTo(0, document.body.scrollHeight);
               }}
               style={{ width: "50px" }}
             />
@@ -188,11 +211,7 @@ function Table({ columns, data }) {
               <select
                 className="selectAnimado"
                 value={pageSize}
-                onChange={(e) => {
-                    setPageSize(Number(e.target.value));
-                    window.scrollTo(0, document.body.scrollHeight);
-                  }
-                }
+                onChange={(e) => setPageSize(Number(e.target.value))}
               >
                 {[10, 25, 50].map((pageSize) => (
                   <option
@@ -208,16 +227,47 @@ function Table({ columns, data }) {
           </span>
         </div>
       </div>
+
+      <div>
+    <Modal
+      show={modalOpen}
+      onHide={() => changeTrueModalOpen()}
+    >
+      <Modal.Header closeButton>
+        <Modal.Title>Deseas borrar al ID {rowAux ? rowAux.values.id : ""}?</Modal.Title>
+      </Modal.Header>
+
+      <Modal.Body>
+        <p>Deseas borrar al ID {rowAux ? rowAux.values.id : ""}?</p>
+      </Modal.Body>
+
+      <Modal.Footer>
+        <Button variant="secondary"
+          onClick={() => changeFalseModalOpen()}
+        >CERRAR</Button>
+        <Button variant="primary"
+          onClick={() => eliminarRegistro(rowAux ? rowAux.values.id : null)}
+        >ELIMINAR</Button>
+        {loading && (
+          <span className="spinner-border spinner-border-sm"></span>
+        )}
+      </Modal.Footer>
+    </Modal>
+  </div>
+
+
+
     </div>
   );
 }
 
-function TablaContacto(redireccionamiento) {
+function TablaActividadBeneficiario(redireccionamiento) {
   const [data, setData] = useState([]);
   const [columnNames, setColumnNames] = useState([]);
   const [direccion, setDireccion] = useState(redireccionamiento);
 
   console.log(redireccionamiento);
+
 
   
   const navigate = useNavigate();
@@ -230,17 +280,21 @@ function TablaContacto(redireccionamiento) {
   const componentDidMount = () => {};
 
 
+  const actividadId = localStorage.getItem("ActividadId")
 
   useEffect(() => {
     // Fetch data
     // Update the document title using the browser API
 
+    const actividadBeneficiario = localStorage.getItem("ActividadBeneficiario")
+    
+
     BaseService.getAll(redireccionamiento).then((res) => {
-      setData(res.data);
+      setData(actividadBeneficiario);
     });
 
     BaseService.getColumnNames(redireccionamiento).then((res) => {
-      setColumnNames(res.data);
+      setColumnNames(actividadBeneficiario);
     });
 
     setDireccion(redireccionamiento);
@@ -296,17 +350,23 @@ function TablaContacto(redireccionamiento) {
         <div className="row">
 
         {/*<button className="btn btn-primary" onClick={() => navigate( window.location.pathname + "/create", {state:{seccionURL:redireccionamiento.redireccionamiento, firstName:"tomas",lastName:"gomila",emailId:"tomas@gomila.com"}})}> Add Employee</button>*/}
-        <button className="btn btn-primary" onClick={() => navigate( window.location.pathname + "/create", {state:{seccionURL:redireccionamiento.redireccionamiento, firstName:"tomas",lastName:"gomila",emailId:"tomas@gomila.com"}})}> Agregar nuevo contacto</button>
+        <button className="btn btn-primary" onClick={() => navigate( window.location.pathname + "/create", {state:{seccionURL:redireccionamiento.redireccionamiento, firstName:"tomas",lastName:"gomila",emailId:"tomas@gomila.com"}})}> Agregar {redireccionamiento.redireccionamiento}</button>
+        &nbsp;&nbsp;&nbsp;
+        <button className="btn btn-primary" onClick={() => navigate( window.location.pathname + "/update", {state:{seccionURL:redireccionamiento.redireccionamiento, firstName:"tomas",lastName:"gomila",emailId:"tomas@gomila.com"}})}> Modificar {redireccionamiento.redireccionamiento}</button>
 
 
         </div>
         <br></br>
         <div className="row">
-          <Table columns={columns} data={data} />
+          <Table redireccionamiento={redireccionamiento} columns={columns} data={data} />
         </div>
       </div>
+
+
+
+
     </div>
   );
 }
 
-export default TablaContacto;
+export default TablaActividadBeneficiario;

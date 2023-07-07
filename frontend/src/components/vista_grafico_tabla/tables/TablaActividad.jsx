@@ -1,22 +1,23 @@
 import React, { useState, useEffect } from "react";
-import BaseService from "../../services/BaseService";
+import BaseService from "../../../services/BaseService";
 
 import { useTable, usePagination } from "react-table";
 
-import "../../Styles/TablasDinamicas.scss";
+import "../../../Styles/TablasDinamicas.scss";
 
 import { useNavigate } from 'react-router-dom';
 
-import { Modal, Button } from "react-bootstrap";
 
-import {
-  Route,
-  Routes,
-  BrowserRouter
-} from "react-router-dom";
+import TablasDinamicas from "./TablasDinamicas";
+
+function formatDate(string){
+  var options = { year: 'numeric', month: 'long', day: 'numeric' };
+  return new Date(string).toLocaleDateString([],options);
+}
 
 
-function Table({redireccionamiento, columns, data }) {
+function Table({ columns, data }) {
+  let navigate = useNavigate();
   const {
     getTableProps,
     getTableBodyProps,
@@ -45,48 +46,37 @@ function Table({redireccionamiento, columns, data }) {
   const { pageIndex, pageSize } = state;
   window.scrollTo({ top: 0, behavior: "smooth" });
 
-  
-  const [modalOpen, setModalOpen] = useState(false);
-  const [rowAux, setRowAux] = useState();
-  const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState("");
 
-  const changeTrueModalOpen = (row) => {
-    setModalOpen(!modalOpen);
-    setRowAux(row);
-    console.log(row.values.id);
-  };
-
-  const changeFalseModalOpen = () => {
-    setModalOpen(false);
-    setRowAux();
-  };
-
-  const eliminarRegistro = (id) => {
-    if(id != null){
-
-      setMessage("");
-      setLoading(true);
-      BaseService.delete(redireccionamiento, id).then(
-        () => {
-          setLoading(false);
-          window.location.reload();
-        },
-        (error) => {
-          const resMessage =
-            (error.response &&
-              error.response.data &&
-              error.response.data.message) ||
-            error.message ||
-            error.toString();
-
-          setLoading(false);
-          setMessage(resMessage);
-        });
-    } else {
-      setLoading(false);
-    }
+  const mostrarBeneficiarioFiltrado = () => {
+    
+    navigate("/beneficiario");
+    window.location.reload();
   }
+
+  function irTablaActividadBeneficiario(e) {
+
+    console.log("HOLAAAAAAAAAAA")
+    
+    localStorage.setItem("ActividadBeneficiario", e[3]);
+    localStorage.setItem("ActividadId", e[0]);
+
+    
+    //navigate("/tablaActividadBeneficiario");
+    //window.location.reload();
+  }
+
+  const irTablaActividadProfesional = (e) => {
+
+    localStorage.setItem("ActividadProfesional", e[4]);
+    localStorage.setItem("ActividadId", e[0]);
+
+
+    //navigate("/");
+    //window.location.reload();
+
+  }
+
+  
 
 
   // Render the UI for your table
@@ -97,16 +87,32 @@ function Table({redireccionamiento, columns, data }) {
           <thead>
             {headerGroups.map((headerGroup) => (
               <tr {...headerGroup.getHeaderGroupProps()}>
-                {headerGroup.headers.map((column) => (
+                {/*headerGroup.headers.map((column) => (
                   <th {...column.getHeaderProps()}>
                     {column.render("Header").toUpperCase()}
                   </th>
-                ))}
-
+                ))*/}
+                  <th>
+                  ID
+                  </th>
+                  <th>
+                  FECHA Y HORA DESDE
+                  </th>
+                  <th>
+                  FECHA Y HORA HASTA
+                  </th>
+                  <th>
+                  BENEFICIARIOS
+                  </th>
+                  <th>
+                  PROFESIONALES
+                  </th>
+                  <th>
+                  DESCRIPCIÓN
+                  </th>
                   <th>
                     EDITAR
                   </th>
-
                   <th>
                     BORRAR
                   </th>
@@ -121,12 +127,26 @@ function Table({redireccionamiento, columns, data }) {
               return (
                 <tr {...row.getRowProps()}>
                   {row.cells.map((cell) => {
-                    // console.log("Aqui test:");
-                    // console.log(cell);
+                    console.log(cell)
                     return (
-                      <td {...cell.getCellProps()}>{(cell.column.id!="id" && cell.value== true) ? "✅" : (cell.value== false) ? "❌" : cell.render("Cell")}</td>
-                    );
+
+
+                      <td {...cell.getCellProps()}>{(cell.column.id=="beneficiarios") ? 
+                      
+                      <button class="buttonAnimadoVerde" onClick={irTablaActividadBeneficiario(row.cells)}>Beneficiarios</button>
+                      :
+                      (cell.column.id=="profesionales") ?
+
+                      <button class="buttonAnimadoVerde" onClick={irTablaActividadProfesional(row.cells)}>Profesionales</button>
+
+                      
+                      : cell.render("Cell")}</td>
+                      
+                      
+                    
+                      );
                   })}
+
 
                   <td>
                     <button
@@ -141,9 +161,8 @@ function Table({redireccionamiento, columns, data }) {
                   <td>
                     <button
                       className="buttonAnimadoRojo"
-                      type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter"
-                      onClick={() => changeTrueModalOpen(row)}
                     >
+                      {" "}
                       Borrar
                     </button>
                   </td>
@@ -228,46 +247,24 @@ function Table({redireccionamiento, columns, data }) {
         </div>
       </div>
 
-      <div>
-    <Modal
-      show={modalOpen}
-      onHide={() => changeTrueModalOpen()}
-    >
-      <Modal.Header closeButton>
-        <Modal.Title>Deseas borrar al ID {rowAux ? rowAux.values.id : ""}?</Modal.Title>
-      </Modal.Header>
 
-      <Modal.Body>
-        <p>Deseas borrar al ID {rowAux ? rowAux.values.id : ""}?</p>
-      </Modal.Body>
-
-      <Modal.Footer>
-        <Button variant="secondary"
-          onClick={() => changeFalseModalOpen()}
-        >CERRAR</Button>
-        <Button variant="primary"
-          onClick={() => eliminarRegistro(rowAux ? rowAux.values.id : null)}
-        >ELIMINAR</Button>
-        {loading && (
-          <span className="spinner-border spinner-border-sm"></span>
-        )}
-      </Modal.Footer>
-    </Modal>
-  </div>
-
+                  {/* <Link to={{ 
+                    pathname: '/beneficiario',
+                     state: { redireccionamiento: 'beneficiario'}
+                      }}>Ir al componente Beneficiario
+                  </Link> */}
 
 
     </div>
   );
 }
 
-function TablaActividadBeneficiario(redireccionamiento) {
+function TablaActividad(redireccionamiento) {
   const [data, setData] = useState([]);
   const [columnNames, setColumnNames] = useState([]);
   const [direccion, setDireccion] = useState(redireccionamiento);
 
   console.log(redireccionamiento);
-
 
   
   const navigate = useNavigate();
@@ -280,21 +277,56 @@ function TablaActividadBeneficiario(redireccionamiento) {
   const componentDidMount = () => {};
 
 
-  const actividadId = localStorage.getItem("ActividadId")
 
   useEffect(() => {
     // Fetch data
     // Update the document title using the browser API
 
-    const actividadBeneficiario = localStorage.getItem("ActividadBeneficiario")
-    
-
     BaseService.getAll(redireccionamiento).then((res) => {
-      setData(actividadBeneficiario);
+      
+      let listaActividadData = [];
+      for (let i=0; i < res.data.length ; i++){
+        let     actividadData = {
+          id: res.data[i].id,
+          fechaHoraDesde: res.data[i].fechaHoraDesde,
+          fechaHoraHasta: res.data[i].fechaHoraDesde,
+        }
+
+        listaActividadData.push(actividadData)
+
+      }
+
+      let copiaListaActividadData = [];
+
+      let itemActividad = {};
+
+      res.data.forEach(element => {
+        itemActividad = {
+          id: element.id,
+          fechaHoraDesde: element.fechaHoraDesde,
+          fechaHoraHasta: element.fechaHoraDesde,
+          beneficiarios: JSON.stringify(element.beneficiarios),
+          profesionales: JSON.stringify(element.profesionales),
+          descripcion: element.descripcion
+        }
+
+        copiaListaActividadData.push(itemActividad);
+
+      });
+      
+      console.log("SE IMPRIMIO:")
+      console.log(copiaListaActividadData)
+      setData(copiaListaActividadData);
     });
 
     BaseService.getColumnNames(redireccionamiento).then((res) => {
-      setColumnNames(actividadBeneficiario);
+      let     actividadData = [{
+        id: "",
+        fechaHoraDesde: "",
+        fechaHoraHasta: "",
+      }];
+
+      setColumnNames(res.data);
     });
 
     setDireccion(redireccionamiento);
@@ -350,23 +382,17 @@ function TablaActividadBeneficiario(redireccionamiento) {
         <div className="row">
 
         {/*<button className="btn btn-primary" onClick={() => navigate( window.location.pathname + "/create", {state:{seccionURL:redireccionamiento.redireccionamiento, firstName:"tomas",lastName:"gomila",emailId:"tomas@gomila.com"}})}> Add Employee</button>*/}
-        <button className="btn btn-primary" onClick={() => navigate( window.location.pathname + "/create", {state:{seccionURL:redireccionamiento.redireccionamiento, firstName:"tomas",lastName:"gomila",emailId:"tomas@gomila.com"}})}> Agregar {redireccionamiento.redireccionamiento}</button>
-        &nbsp;&nbsp;&nbsp;
-        <button className="btn btn-primary" onClick={() => navigate( window.location.pathname + "/update", {state:{seccionURL:redireccionamiento.redireccionamiento, firstName:"tomas",lastName:"gomila",emailId:"tomas@gomila.com"}})}> Modificar {redireccionamiento.redireccionamiento}</button>
+        <button className="btn btn-primary" onClick={() => navigate( window.location.pathname + "/create", {state:{seccionURL:redireccionamiento.redireccionamiento, firstName:"tomas",lastName:"gomila",emailId:"tomas@gomila.com"}})}> Create {redireccionamiento.redireccionamiento}</button>
 
 
         </div>
         <br></br>
         <div className="row">
-          <Table redireccionamiento={redireccionamiento} columns={columns} data={data} />
+          <Table columns={columns} data={data} />
         </div>
       </div>
-
-
-
-
     </div>
   );
 }
 
-export default TablaActividadBeneficiario;
+export default TablaActividad;

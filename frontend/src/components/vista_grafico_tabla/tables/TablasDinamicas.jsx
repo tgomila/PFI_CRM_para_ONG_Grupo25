@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import BaseService from "../../services/BaseService";
+import BaseService from "../../../services/BaseService";
 
 import { useTable, usePagination } from "react-table";
 
-import "../../Styles/TablasDinamicas.scss";
+import "../../../Styles/TablasDinamicas.scss";
 
 import { useNavigate } from 'react-router-dom';
 

@@ -2,15 +2,15 @@ import React, { useState, useEffect } from "react";
 import logo from "./logo.svg";
 import "./App.css";
 import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
-import TablasDinamicas from "./components/tables/TablasDinamicas";
-import TablaActividad from "./components/tables/TablaActividad";
-import TablaActividadBeneficiario from "./components/tables/TablaActividadBeneficiario";
+import TablasDinamicas from "./components/vista_grafico_tabla/tables/TablasDinamicas";
+import TablaActividad from "./components/vista_grafico_tabla/tables/TablaActividad";
+import TablaActividadBeneficiario from "./components/vista_grafico_tabla/tables/TablaActividadBeneficiario";
 
 import RealizarPago from "./components/RealizarPago";
 
 import ContactoVista from "./components/vista_grafico_tabla/ContactoVista";
-
-import TablaContacto from "./components/tables/TablaContacto_old";
+import PersonaVista from "./components/vista_grafico_tabla/PersonaVista";
+import BeneficiarioVista from "./components/vista_grafico_tabla/BeneficiarioVista";
 import FooterComponent from "./components/FooterComponent";
 
 //Creates
@@ -227,13 +227,14 @@ const App = () => {
           {/**<br></br><br></br> */}
           <Routes>
 
-            {/* Test estático */}
-            <Route path="/contacto_estatico" element={<ContactoVista/>} />
+            {/* Lista estática con gráficos */}
+            <Route path="/contacto" element={<ContactoVista/>} />
 
-            {/* Lista */}
-            <Route path="/contacto" element={<TablaContacto redireccionamiento='contacto' />} />
-            <Route path="/personafisica" element={<TablasDinamicas redireccionamiento='personafisica' />} />
-            <Route path="/beneficiario" element={<TablasDinamicas redireccionamiento='beneficiario'/>} />
+            {/* Lista dinámica */}
+            <Route path="/personafisica" element={<PersonaVista/>} />
+            {/*<Route path="/personafisica" element={<TablasDinamicas redireccionamiento='personafisica' />} />*/}
+            <Route path="/beneficiario" element={<BeneficiarioVista/>} />
+            {/*<Route path="/beneficiario" element={<TablasDinamicas redireccionamiento='beneficiario'/>} />*/}
             <Route path="/voluntario" element={<TablasDinamicas redireccionamiento='voluntario' />} />
             <Route path="/empleado" element={<TablasDinamicas redireccionamiento='empleado' />} />
             <Route path="/colaborador" element={<TablasDinamicas redireccionamiento='colaborador' />} />

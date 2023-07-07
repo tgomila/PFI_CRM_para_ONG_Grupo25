@@ -29,6 +29,11 @@ class ContactoService {
         return axios.get(BACKEND_API_BASE_URL + 'contacto/search/' + dtoId, {headers: authHeader()} );
     }
 
+    //Graficos
+    contactosCreadosUltimos12meses(){
+        return axios.get(BACKEND_API_BASE_URL + 'contacto/grafico/contar_creados/ultimos_12_meses', { headers: authHeader() });
+    }
+
     //Esto se usa en caso de tabla dinámica, y asignar nombre real de 'headers' de cada columna de la tabla
     getColumnNames(){
         return axios.get(BACKEND_API_BASE_URL + 'contacto/nombres_tabla', { headers: authHeader() });

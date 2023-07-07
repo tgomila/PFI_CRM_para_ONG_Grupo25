@@ -4,45 +4,69 @@ import * as constantsURL from "../components/constants/ConstantsURL";
 import defaultImage from './constantsPictures/default.png';
 const BACKEND_API_BASE_URL = constantsURL.API_BASE_URL;
 
-const getAllContactoTablaFotos = (listaIds, lista) => {
+//
+//
+const getAllContactoTablaFotos = async (lista) => {
+  return getAllFotos(lista, "contacto", "tabla");
+};
+
+/**
+ * 
+ * @param {Array} lista array de datos de contacto, o producto, etc donde se asignan las fotos.
+ * @param {string} tipoFoto "contacto", "producto", etc para backend.
+ * @param {string} tamanio "tabla" o "completa".
+ * @returns 
+ */
+const getAllFotos = async (lista, tipoFoto, tamanio) => {
   const newLista = [];
-  return axios
-    .get(BACKEND_API_BASE_URL + "images/contacto/info", { headers: authHeader() })
-    .then((response) => {
-      if (response.data) {
-        for (const item of lista) {//contacto
-          const infoItem = response.data.find(dato => dato.id === item.id);
-          let fotoUrl;
-          if(infoItem){//Buscar
-            fotoUrl = getFotoContactoTabla(item.id);
-          }
-          else{
-            fotoUrl = defaultImage;
-          }
-          const itemConFoto = { ...item, imagen_tabla: fotoUrl };
-          newLista.push(itemConFoto);
+  //console.log("Entro a getAll");
+  //console.log("lista:");
+  //console.log(lista);
+  try {
+    const response = await axios.get(BACKEND_API_BASE_URL + "images/" + tipoFoto + "/info", { headers: authHeader() });
+    if (response.data) {
+      //console.log("Entro a getAll, hay data");
+      for (const item of lista) {//Asignar su foto a cada contacto
+        //console.log("item:");
+        //console.log(item);
+        const infoItem = response.data.find(dato => dato.id === item.id);
+        let fotoUrl;
+        if(infoItem){//Buscar foto que si existe
+          //console.log("infoItem:");
+          //console.log(infoItem);
+          fotoUrl = await getFotoWithInfo(item.id, tipoFoto, tamanio, infoItem);
         }
-        return newLista;
-      }
-      else{
-        for (const item of lista) {//contacto
-          const itemConFoto = { ...item, imagen_tabla: defaultImage };
-          newLista.push(itemConFoto);
+        else{//No existe foto en bd
+          //console.log("no hay item")
+          fotoUrl = defaultImage;
+          removeFotoFromStorage(item.id, tipoFoto);
         }
-        return newLista;
+        //console.log("fotoUrl:");
+        //console.log(fotoUrl);
+        const itemConFoto = { ...item, imagen_tabla: fotoUrl };
+        newLista.push(itemConFoto);
       }
-    })
-    .catch(error => {//Asumo not found error.response.status === 404
+      return newLista;
+    }
+    else{//Asumo que no existe ni 1 foto en BD
       for (const item of lista) {//contacto
         const itemConFoto = { ...item, imagen_tabla: defaultImage };
         newLista.push(itemConFoto);
       }
+      //console.log("me fui 12");
       return newLista;
-    });
+    }
+  } catch(error) {//Asumo not found error.response.status === 404
+    for (const item of lista) {//contacto
+      const itemConFoto = { ...item, imagen_tabla: defaultImage };
+      newLista.push(itemConFoto);
+    }
+    return newLista;
+  };
 }
 
 const getFotoPerfil = () => {
-  return getFoto(null, "images/perfil");
+  return getFoto(null, "perfil", "completa");
 }
 
 const getFotoContactoTabla = (dtoId) => {
@@ -56,13 +80,41 @@ const getFotoContactoCompleta = (dtoId) => {
 
 /**
  * Retorna foto
- * @param {*} dtoId puede ser solo números ejemplo "17" o solo "perfil"
- * @param {*} tipoFoto "contacto", "producto", etc para backend
- * @param {*} tamanio "tabla" o "completa"
+ * @param {string} dtoId puede ser solo números ejemplo "17" o solo "perfil"
+ * @param {string} tipoFoto "contacto", "producto", etc para backend
+ * @param {string} tamanio "tabla" o "completa"
  * @returns 
  */
 const getFoto = (dtoId, tipoFoto, tamanio) => {
+  return getFotoWithInfo(dtoId, tipoFoto, tamanio, null);
+};
 
+
+/**
+ * @description
+ * Copia y pega esto:
+ * 
+ * const auxFotoInfo = getStorageFotoInfo();
+ * 
+ * let nombreFotoAGuardar = auxFotoInfo.nombreFotoAGuardar;
+ * 
+ * let nombreFotoInfoAGuardar = auxFotoInfo.nombreFotoInfoAGuardar;
+ * 
+ * let direccion = auxFotoInfo.direccion;
+ * 
+ * let direccionInfo = auxFotoInfo.direccionInfo;
+ * 
+ * let imagenGuardada = auxFotoInfo.imagenGuardada;
+ * 
+ * let imagenGuardadaFechaCreacion = auxFotoInfo.imagenGuardadaFechaCreacion;
+ * 
+ * @param {*} dtoId 
+ * @param {*} tipoFoto 
+ * @param {*} tamanio 
+ * @returns 
+ */
+const getStorageFotoInfo = (dtoId, tipoFoto, tamanio) => {
+  
   //Establezco direccion a contactar a Backend
   let nombreFotoAGuardar;
   let nombreFotoInfoAGuardar;
@@ -95,17 +147,58 @@ const getFoto = (dtoId, tipoFoto, tamanio) => {
     imagenGuardadaFechaCreacion = localStorage.getItem("foto."+tipoFoto+"."+dtoId+".fecha_creacion");
   }
 
-  const removeFotoFromBackend = () => {
-    if(dtoId === "perfil" || tipoFoto === "perfil"){//Solo eliminar perfil
-      localStorage.removeItem(nombreFotoAGuardar);
-    }
-    else{//es foto contacto, elimino tamaño "tabla" y "completa"
-      localStorage.removeItem("foto."+tipoFoto+"_"+tamanio+"."+dtoId);//foto tabla
-      localStorage.removeItem("foto."+tipoFoto+"."+dtoId);//foto completa
-    }
-    localStorage.removeItem(nombreFotoInfoAGuardar);
-    return defaultImage;
+  const info = {
+    nombreFotoAGuardar,
+    nombreFotoInfoAGuardar,
+    direccion,
+    direccionInfo,
+    imagenGuardada,
+    imagenGuardadaFechaCreacion,
   }
+  return info;
+};
+
+/**
+ * 
+ * @param {string} dtoId ejemplo "27".
+ * @param {string} tipoFoto Ejemplo "contacto". Si es perfil -> "perfil"..
+ * @returns 
+ */
+const removeFotoFromStorage = (dtoId, tipoFoto) => {
+  if(dtoId === "perfil" || tipoFoto === "perfil"){//Solo eliminar perfil
+    const infoPerfil = getStorageFotoInfo("perfil", null, null);
+    localStorage.removeItem(infoPerfil.nombreFotoAGuardar);
+    localStorage.removeItem(infoPerfil.nombreFotoInfoAGuardar);
+  }
+  else{//es foto contacto, elimino tamaño "tabla" y "completa"
+    const infoFotoTabla = getStorageFotoInfo(dtoId, tipoFoto, "tabla");
+    const infoFotoCompleta = getStorageFotoInfo(dtoId, tipoFoto, "completa");
+    localStorage.removeItem(infoFotoTabla.nombreFotoAGuardar);//foto tabla
+    localStorage.removeItem(infoFotoTabla.nombreFotoInfoAGuardar);//foto info
+    localStorage.removeItem(infoFotoCompleta.nombreFotoAGuardar);//foto completa
+    localStorage.removeItem(infoFotoCompleta.nombreFotoInfoAGuardar);//foto info
+  }
+  return defaultImage;
+}
+
+/**
+ * Retorna foto, fotoInfo NO DEBE SER null o devuelve foto default.
+ * @param {string} dtoId puede ser solo números ejemplo "17" o solo "perfil"
+ * @param {string} tipoFoto "contacto", "producto", etc para backend
+ * @param {string} tamanio "tabla" o "completa"
+ * @param {string} fotoInfoDelBackendActual info de foto actual
+ * @returns 
+ */
+const getFotoWithInfo = (dtoId, tipoFoto, tamanio, fotoInfoDelBackendActual) => {
+
+  //Establezco direccion a contactar a Backend
+  const auxFotoInfo = getStorageFotoInfo(dtoId, tipoFoto, tamanio);
+  let nombreFotoAGuardar = auxFotoInfo.nombreFotoAGuardar;
+  let nombreFotoInfoAGuardar = auxFotoInfo.nombreFotoInfoAGuardar;
+  let direccion = auxFotoInfo.direccion;
+  let direccionInfo = auxFotoInfo.direccionInfo;
+  let imagenGuardada = auxFotoInfo.imagenGuardada;
+  let imagenGuardadaFechaCreacion = auxFotoInfo.imagenGuardadaFechaCreacion;
 
   const dataURLtoBlob = (dataURL) => {
     const arr = dataURL.split(',');
@@ -119,113 +212,86 @@ const getFoto = (dtoId, tipoFoto, tamanio) => {
     return new Blob([u8arr], { type: mime });
   }
 
-  const getFotoFromBackendFast = () => {
-    return axios
-      .get(BACKEND_API_BASE_URL + direccion, { 
-        headers: authHeader(), 
-        responseType: 'blob' 
-      })
-      .then((response) => {
-        if (response.data) {
-          const imagenBlob = new Blob([response.data], { type: response.headers['content-type'] });
-          const imagenURL = URL.createObjectURL(imagenBlob);
-
-          //localStorage.setItem(nombreFotoAGuardar, imagenURL);
-          return imagenURL;// response.data;
-        }
-      })
-      .catch(error => {//Asumo not found error.response.status === 404
-        removeFotoFromBackend();
-        return defaultImage;
-      });
-  }
-  //return getFotoFromBackendFast();
-
   const getFotoFromBackend = () => {
     let fechaDeCreacion;
     return axios.get(BACKEND_API_BASE_URL + direccionInfo, { headers: authHeader() })
       .then((response) => {
-        //Si existe foto entonces hacer todo
-        if (response.data.fechaDeCreacion) {
-          //localStorage.setItem(nombreFotoInfoAGuardar, response.data.fechaDeCreacion);
-          fechaDeCreacion = response.data.fechaDeCreacion;
-
-
-          //
-          return axios
-          .get(BACKEND_API_BASE_URL + direccion, { 
-            headers: authHeader(), 
-            responseType: 'blob' 
-          })
-          .then((response) => {
-            if (response.data) {
-              if(localStorage.getItem(nombreFotoInfoAGuardar) !== fechaDeCreacion){
-                //Elimino foto el otro tipo de foto
-                removeFotoFromBackend();
-                localStorage.setItem(nombreFotoInfoAGuardar, fechaDeCreacion);
-              }
-              const imagenBlob = new Blob([response.data], { type: response.headers['content-type'] });
-              
-              const reader = new FileReader();
-              reader.onload = function(event) {
-                const imagenDataURL = event.target.result;
-                localStorage.setItem(nombreFotoAGuardar, imagenDataURL);
-              };
-              //const imagenURL = URL.createObjectURL(imagenBlob);
-              reader.readAsDataURL(imagenBlob);
-              const imagenURL = localStorage.getItem(nombreFotoAGuardar);
-
-              //localStorage.setItem(nombreFotoAGuardar, imagenURL);
-              return imagenURL;// response.data;
-            }
-          })
-          .catch(error => {//Asumo not found error.response.status === 404
-            removeFotoFromBackend();
-            return defaultImage;
-          });
-          //
-
-
-
-        }
-        else{//Si no existe foto entonces devuelvo default.
-          removeFotoFromBackend();
-          return defaultImage;
-        }
+        return getFotoFromBackendWithInfo(dtoId, tipoFoto, tamanio, response.data);
       }
     );
 
   }
 
-  if(imagenGuardada !== null && imagenGuardadaFechaCreacion !== null) {
-    let fecha_creacion_ultima_foto_server;
-    
-    return axios.get(BACKEND_API_BASE_URL + direccionInfo, { headers: authHeader() })
-      .then((response) => {
-        if (response.data.fechaDeCreacion) {
-          const fechaFront = imagenGuardadaFechaCreacion;
-          const fechaBack = response.data.fechaDeCreacion;
-          if(fechaBack === fechaFront){
-            const imagenBlob = new Blob([imagenGuardada], { type: response.headers['content-type'] });
-            const imagenURL = URL.createObjectURL(imagenBlob);
-            const imagenURL2 = dataURLtoBlob(imagenGuardada);
-            return getFotoFromBackend();
-            //return imagenURL2;
-          }
-          else{
-            return getFotoFromBackend();
-          }
-        }
-      });
-    //return imagenGuardada;
+  let fotito;
+  if(fotoInfoDelBackendActual){
+    fotito = getFotoFromBackendWithInfo(dtoId, tipoFoto, tamanio, fotoInfoDelBackendActual);
   }
-  else {
-    return getFotoFromBackend();
+  else{
+    fotito = getFotoFromBackend();
+    //removeFotoFromStorage(dtoId, tipoFoto);
+    //fotito = defaultImage;
   }
+  //console.log("me fui");
+  return fotito;
+};
+
+const getFotoFromBackendWithInfo = (dtoId, tipoFoto, tamanio, fotoInfoBackend) => {
+  const fotoInfoFrontend = getStorageFotoInfo(dtoId, tipoFoto, tamanio);
+  //Si existe foto entonces hacer todo
+  if (fotoInfoBackend.fechaDeCreacion) {
+    const fechaFrontend = fotoInfoFrontend.imagenGuardadaFechaCreacion;//Podría estar desactualizado
+    const fechaBackend = fotoInfoBackend.fechaDeCreacion;
+    if(fechaFrontend === fechaBackend){
+      const imagenURL = localStorage.getItem(fotoInfoFrontend.nombreFotoAGuardar);
+      if(imagenURL)
+        return imagenURL;
+    }
+
+    //Consulto foto en backend
+    return axios
+    .get(BACKEND_API_BASE_URL + fotoInfoFrontend.direccion, {
+      headers: authHeader(),
+      responseType: 'blob'
+    })
+    .then((response) => {
+      if (response.data) {
+        const imagenBlob = new Blob([response.data], { type: response.headers['content-type'] });
+        
+        return new Promise((resolve) => {//Para que no me devuelva una foto nula, uso "Promise"
+          const reader = new FileReader();
+          reader.onload = function(event) {
+            const imagenDataURL = event.target.result;
+            //Elimino foto completa y de tamaño tabla anterior antes de guardar
+            removeFotoFromStorage(dtoId, tipoFoto);
+            localStorage.setItem(fotoInfoFrontend.nombreFotoInfoAGuardar, fechaBackend);
+            localStorage.setItem(fotoInfoFrontend.nombreFotoAGuardar, imagenDataURL);
+            resolve(imagenDataURL);
+            //Esto se va a ejecutar 2do en el promise
+          };
+          reader.readAsDataURL(imagenBlob);
+          //Esto se va a ejecutar 1ero en el promise
+        });
+      }
+    })
+    .catch(error => {//Asumo not found error.response.status === 404
+      removeFotoFromStorage(dtoId, tipoFoto);
+      return defaultImage;
+    });
+    //
+
+
+
+  }
+  else{//Si no existe foto entonces devuelvo default.
+    removeFotoFromStorage(dtoId, tipoFoto);//Por si se borró la foto en BD.
+    return defaultImage;
+  }
+
 };
 
 const ImageService = {
     getAllContactoTablaFotos,
+    getAllFotos,
     getFoto,
     getFotoPerfil,
     getFotoContactoTabla,

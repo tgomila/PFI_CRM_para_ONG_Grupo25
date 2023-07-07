@@ -64,7 +64,7 @@ const Sidebar = ({ children }) => {
         let modulos = modulosService.getModulos();
         modulos.then((res) => {
             const menuItemConNoVista = res.data;
-            const filteredMenuItems = menuItemConNoVista.filter(item => item.tipoVisibilidad !== "NO_VISTA");
+            const filteredMenuItems = menuItemConNoVista.filter(item => item.tipoVisibilidad !== "NO_VISTA" && item.tipoVisibilidad !== "SIN_SUSCRIPCION");
             setMenuitem(filteredMenuItems);
         });
         //TODO testing borrarlo despues

@@ -1,0 +1,66 @@
+@import './base/_variables.scss';
+
+.tituloNroColumns{
+    font-weight: bold;
+    color: white;
+    text-align: center;
+}
+
+.contacto-img-crud {
+  //width: 272px;
+  //height: 272px;
+  width: 100%;
+  margin: 0 auto 10px;
+  display: block;
+  //-moz-border-radius: 50%;
+  //-webkit-border-radius: 50%;
+  //border-radius: 50%;
+  
+  border: 3px solid #f7f7f7;
+  filter: drop-shadow(-10px 0 10px rgba(0, 0, 0, 0.1));
+  cursor: pointer;
+  position: relative;
+  transition: all 0.3s;
+}
+  
+.contacto-img-crud:hover {
+  transform: translateY(5px);//25
+}
+
+.contacto-img-crud .name {
+    position: absolute;
+    background-color: #10996d;
+    color: #fff;
+    font-family: "Bebas Neue", cursive;
+    padding: 15px 30px;
+    border-radius: 100px;
+    bottom: -80px; left: 50%;
+    white-space: nowrap;
+    transform: translate(-50%, -50px);
+    letter-spacing: 1px;
+    font-size: 20px;
+    opacity: 0;
+    transition: all 0.3s;
+}
+  
+.contacto-img-crud .name::before {
+    content: "";
+    position: absolute;
+    width: 15px; height: 15px;
+    background-color: #10996d;
+    top: 0; left: 50%;
+    transform: translate(-50%, -50%) rotate(45deg);
+}
+  
+.contacto-img-crud img:hover + .name {
+    opacity: 1;
+    transform: translateX(-50%);
+    box-shadow: 0 10px 20px rgba(86, 86, 198, 0.3);
+}
+
+.contacto-img-modal {
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+}

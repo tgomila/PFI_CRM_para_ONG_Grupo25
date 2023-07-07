@@ -186,7 +186,8 @@ function RealizarPagoComponent() {
         <div className="submit-form">
             <div>
                 <br></br><br></br>
-                <div className = "container">
+                {/*<div className = "container">*/}
+                <div>
                     <div className = "row">
                         {/*<div className = "card col-md-6 offset-md-3 offset-md-3">*/}
                         <div className = "card-form col-md-6 offset-md-3 offset-md-3">
@@ -318,73 +319,73 @@ function CardForm(data) {
     }, []);
 
     return (
-      <form>
-        <h2 className="text-center">Formulario de tarjeta de crédito</h2>
-        <div><text className="text-center">{suscripcionDetalle}</text></div>
-        <div><text className="text-center">Ingrese datos ficticios</text></div>
-        <div className="form-group mt-4">
-            <input
-                placeholder="Nombre del dueño de la tarjeta"
-                id="name"
-                name="name"
-                type="text"
-                pattern='[a-z A-Z-]+'
-                className="form-control mt-3"
-                value={tarjeta.name}
-                onChange={handleInputChange}
-                onFocus={handleInputFocus}
-                validations={[required]}
-            />
-            <input
-                placeholder="Número de tarjeta"
-                id="cardNumber"
-                name="cardNumber"
-                type="tel"
-                pattern='[\d| ]{16,22}'
-                maxLength={19}
-                className="form-control mt-3"
-                value={tarjeta.cardNumber}
-                onChange={handleInputChange}
-                onFocus={handleInputFocus}
-                validations={[required]}
-            />
-            <div className="expiry-and-cvc-container mt-3">
+        <form>
+            <h2 className="text-center">Formulario de tarjeta de crédito</h2>
+            <div><span className="text-center">{suscripcionDetalle}</span></div>
+            <div><span className="text-center">Ingrese datos ficticios</span></div>
+            <div className="form-group mt-4">
                 <input
-                    placeholder="MM/YY"
-                    id="expiry"
-                    name="expiry" type="text" className="form-control expiration-date-field" 
-                    value={tarjeta.expiry}
-                    pattern='\d\d/\d\d'
-                    maxLength={4}
-                    onChange={handleInputChange}
-                    onFocus={handleInputFocus}
-                    validations={[required]}
-                />
-                <input
-                    placeholder="CVC"
-                    id="cvc"
-                    name="cvc"
+                    placeholder="Nombre del dueño de la tarjeta"
+                    id="name"
+                    name="name"
                     type="text"
-                    className="form-control cvc-field ml-3"
-                    value={tarjeta.cvc}
-                    pattern='\d{3}'
-                    maxLength={3}
+                    pattern='[a-z A-Z-]+'
+                    className="form-control mt-3"
+                    value={tarjeta.name}
                     onChange={handleInputChange}
                     onFocus={handleInputFocus}
                     validations={[required]}
                 />
+                <input
+                    placeholder="Número de tarjeta"
+                    id="cardNumber"
+                    name="cardNumber"
+                    type="tel"
+                    pattern='[\d| ]{16,22}'
+                    maxLength={19}
+                    className="form-control mt-3"
+                    value={tarjeta.cardNumber}
+                    onChange={handleInputChange}
+                    onFocus={handleInputFocus}
+                    validations={[required]}
+                />
+                <div className="expiry-and-cvc-container mt-3">
+                    <input
+                        placeholder="MM/YY"
+                        id="expiry"
+                        name="expiry" type="text" className="form-control expiration-date-field" 
+                        value={tarjeta.expiry}
+                        pattern='\d\d/\d\d'
+                        maxLength={4}
+                        onChange={handleInputChange}
+                        onFocus={handleInputFocus}
+                        validations={[required]}
+                    />
+                    <input
+                        placeholder="CVC"
+                        id="cvc"
+                        name="cvc"
+                        type="text"
+                        className="form-control cvc-field ml-3"
+                        value={tarjeta.cvc}
+                        pattern='\d{3}'
+                        maxLength={3}
+                        onChange={handleInputChange}
+                        onFocus={handleInputFocus}
+                        validations={[required]}
+                    />
+                </div>
             </div>
-        </div>
-        {/*<button
-          type="submit"
-          className="btn btn-primary btn-block"
-          onClick={handleSubmit}
-        >
-          Submit
-        </button>*/}
-        <hr />
-        <Results data={submittedData} />
-      </form>
+            {/*<button
+            type="submit"
+            className="btn btn-primary btn-block"
+            onClick={handleSubmit}
+            >
+            Submit
+            </button>*/}
+            <hr />
+            <Results data={submittedData} />
+        </form>
     );
 }
 

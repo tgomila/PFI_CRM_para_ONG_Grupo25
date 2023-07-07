@@ -13,6 +13,7 @@
     "cra-template": "^1.2.0",
     "date-fns": "^2.29.3",
     "faker": "^6.6.6",
+    "match-sorter": "^6.3.1",
     "moment": "^2.29.4",
     "namor": "^2.0.4",
     "payment": "^2.4.4",

@@ -1,23 +1,29 @@
 import React, { useState, useEffect } from "react";
-import BaseService from "../../services/BaseService";
+import BaseService from "../services/BaseService";
 
 import { useTable, usePagination } from "react-table";
 
-import "../../Styles/TablasDinamicas.scss";
+import "../../../Styles/TablasDinamicas.scss";
 
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';    
 
 
-import TablasDinamicas from "./TablasDinamicas";
+import {
+  Route,
+  Routes,
+  BrowserRouter
+} from "react-router-dom";
 
-function formatDate(string){
-  var options = { year: 'numeric', month: 'long', day: 'numeric' };
-  return new Date(string).toLocaleDateString([],options);
-}
+/*
+Para reciclar esta tabla:
+ - Tener en cuenta import BaseService.
+ - Cambiar import Create...Component
+ - 
 
+
+*/
 
 function Table({ columns, data }) {
-  let navigate = useNavigate();
   const {
     getTableProps,
     getTableBodyProps,
@@ -44,40 +50,8 @@ function Table({ columns, data }) {
   );
 
   const { pageIndex, pageSize } = state;
-  window.scrollTo({ top: 0, behavior: "smooth" });
-
-
-  const mostrarBeneficiarioFiltrado = () => {
-    
-    navigate("/beneficiario");
-    window.location.reload();
-  }
-
-  function irTablaActividadBeneficiario(e) {
-
-    console.log("HOLAAAAAAAAAAA")
-    
-    localStorage.setItem("ActividadBeneficiario", e[3]);
-    localStorage.setItem("ActividadId", e[0]);
-
-    
-    //navigate("/tablaActividadBeneficiario");
-    //window.location.reload();
-  }
-
-  const irTablaActividadProfesional = (e) => {
-
-    localStorage.setItem("ActividadProfesional", e[4]);
-    localStorage.setItem("ActividadId", e[0]);
-
-
-    //navigate("/");
-    //window.location.reload();
-
-  }
-
   
-
+  window.scrollTo({ top: 0, behavior: "smooth" });
 
   // Render the UI for your table
   return (
@@ -87,32 +61,16 @@ function Table({ columns, data }) {
           <thead>
             {headerGroups.map((headerGroup) => (
               <tr {...headerGroup.getHeaderGroupProps()}>
-                {/*headerGroup.headers.map((column) => (
+                {headerGroup.headers.map((column) => (
                   <th {...column.getHeaderProps()}>
                     {column.render("Header").toUpperCase()}
                   </th>
-                ))*/}
-                  <th>
-                  ID
-                  </th>
-                  <th>
-                  FECHA Y HORA DESDE
-                  </th>
-                  <th>
-                  FECHA Y HORA HASTA
-                  </th>
-                  <th>
-                  BENEFICIARIOS
-                  </th>
-                  <th>
-                  PROFESIONALES
-                  </th>
-                  <th>
-                  DESCRIPCIÓN
-                  </th>
+                ))}
+
                   <th>
                     EDITAR
                   </th>
+
                   <th>
                     BORRAR
                   </th>
@@ -127,26 +85,10 @@ function Table({ columns, data }) {
               return (
                 <tr {...row.getRowProps()}>
                   {row.cells.map((cell) => {
-                    console.log(cell)
                     return (
-
-
-                      <td {...cell.getCellProps()}>{(cell.column.id=="beneficiarios") ? 
-                      
-                      <button class="buttonAnimadoVerde" onClick={irTablaActividadBeneficiario(row.cells)}>Beneficiarios</button>
-                      :
-                      (cell.column.id=="profesionales") ?
-
-                      <button class="buttonAnimadoVerde" onClick={irTablaActividadProfesional(row.cells)}>Profesionales</button>
-
-                      
-                      : cell.render("Cell")}</td>
-                      
-                      
-                    
-                      );
+                      <td {...cell.getCellProps()}>{cell.render("Cell")}</td>
+                    );
                   })}
-
 
                   <td>
                     <button
@@ -179,28 +121,43 @@ function Table({ columns, data }) {
         <div>
           <button
             className="buttonAnimadoAzul"
-            onClick={() => gotoPage(0)}
+            onClick={() => {
+                gotoPage(0);
+                window.scrollTo(0, document.body.scrollHeight);
+              }
+            }
             disabled={!canPreviousPage}
           >
             {"<<"}
           </button>{" "}
           <button
             className="buttonAnimadoAzul"
-            onClick={() => previousPage()}
+            onClick={() => {
+                previousPage();
+                window.scrollTo(0, document.body.scrollHeight);
+              }
+            }
             disabled={!canPreviousPage}
           >
             Anterior
           </button>{" "}
           <button
             className="buttonAnimadoAzul"
-            onClick={() => nextPage()}
+            onClick={() => {
+              nextPage();
+              window.scrollTo(0, document.body.scrollHeight);
+            }}
             disabled={!canNextPage}
           >
             Siguiente
           </button>{" "}
           <button
             className="buttonAnimadoAzul"
-            onClick={() => gotoPage(pageCount - 1)}
+            onClick={() => {
+                gotoPage(pageCount - 1);
+                window.scrollTo(0, document.body.scrollHeight);
+              }
+            }
             disabled={!canNextPage}
           >
             {">>"}
@@ -221,6 +178,7 @@ function Table({ columns, data }) {
                   ? Number(e.target.value) - 1
                   : 0;
                 gotoPage(pageNumber);
+                window.scrollTo(0, document.body.scrollHeight);
               }}
               style={{ width: "50px" }}
             />
@@ -230,7 +188,11 @@ function Table({ columns, data }) {
               <select
                 className="selectAnimado"
                 value={pageSize}
-                onChange={(e) => setPageSize(Number(e.target.value))}
+                onChange={(e) => {
+                    setPageSize(Number(e.target.value));
+                    window.scrollTo(0, document.body.scrollHeight);
+                  }
+                }
               >
                 {[10, 25, 50].map((pageSize) => (
                   <option
@@ -246,20 +208,11 @@ function Table({ columns, data }) {
           </span>
         </div>
       </div>
-
-
-                  {/* <Link to={{ 
-                    pathname: '/beneficiario',
-                     state: { redireccionamiento: 'beneficiario'}
-                      }}>Ir al componente Beneficiario
-                  </Link> */}
-
-
     </div>
   );
 }
 
-function TablaActividad(redireccionamiento) {
+function TablaContacto(redireccionamiento) {
   const [data, setData] = useState([]);
   const [columnNames, setColumnNames] = useState([]);
   const [direccion, setDireccion] = useState(redireccionamiento);
@@ -283,49 +236,10 @@ function TablaActividad(redireccionamiento) {
     // Update the document title using the browser API
 
     BaseService.getAll(redireccionamiento).then((res) => {
-      
-      let listaActividadData = [];
-      for (let i=0; i < res.data.length ; i++){
-        let     actividadData = {
-          id: res.data[i].id,
-          fechaHoraDesde: res.data[i].fechaHoraDesde,
-          fechaHoraHasta: res.data[i].fechaHoraDesde,
-        }
-
-        listaActividadData.push(actividadData)
-
-      }
-
-      let copiaListaActividadData = [];
-
-      let itemActividad = {};
-
-      res.data.forEach(element => {
-        itemActividad = {
-          id: element.id,
-          fechaHoraDesde: element.fechaHoraDesde,
-          fechaHoraHasta: element.fechaHoraDesde,
-          beneficiarios: JSON.stringify(element.beneficiarios),
-          profesionales: JSON.stringify(element.profesionales),
-          descripcion: element.descripcion
-        }
-
-        copiaListaActividadData.push(itemActividad);
-
-      });
-      
-      console.log("SE IMPRIMIO:")
-      console.log(copiaListaActividadData)
-      setData(copiaListaActividadData);
+      setData(res.data);
     });
 
     BaseService.getColumnNames(redireccionamiento).then((res) => {
-      let     actividadData = [{
-        id: "",
-        fechaHoraDesde: "",
-        fechaHoraHasta: "",
-      }];
-
       setColumnNames(res.data);
     });
 
@@ -382,7 +296,7 @@ function TablaActividad(redireccionamiento) {
         <div className="row">
 
         {/*<button className="btn btn-primary" onClick={() => navigate( window.location.pathname + "/create", {state:{seccionURL:redireccionamiento.redireccionamiento, firstName:"tomas",lastName:"gomila",emailId:"tomas@gomila.com"}})}> Add Employee</button>*/}
-        <button className="btn btn-primary" onClick={() => navigate( window.location.pathname + "/create", {state:{seccionURL:redireccionamiento.redireccionamiento, firstName:"tomas",lastName:"gomila",emailId:"tomas@gomila.com"}})}> Create {redireccionamiento.redireccionamiento}</button>
+        <button className="btn btn-primary" onClick={() => navigate( window.location.pathname + "/create", {state:{seccionURL:redireccionamiento.redireccionamiento, firstName:"tomas",lastName:"gomila",emailId:"tomas@gomila.com"}})}> Agregar nuevo contacto</button>
 
 
         </div>
@@ -395,4 +309,4 @@ function TablaActividad(redireccionamiento) {
   );
 }
 
-export default TablaActividad;
+export default TablaContacto;
