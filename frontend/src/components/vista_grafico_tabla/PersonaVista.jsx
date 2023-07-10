@@ -1,18 +1,45 @@
 import React, { useState, useEffect } from "react";
+import { GraficoPersona } from './graficos/GraficoPersona'
 import TablaPersona from "./tables/TablaPersona";
+import modulosService from "../../services/modulosService";
 
 import "../../Styles/TablasDinamicas.scss";
 
 function PersonaVista() {
+  const [visibilidad, setVisibilidad] = useState("");
+  const [isVisibilidadReady, setIsVisibilidadReady] = useState(false);
+
+  useEffect(() => {
+    let modulo = modulosService.getVisibilidadByModulo('PERSONA');
+    modulo.then((response) => {
+      if (response) {
+        setVisibilidad(response);
+        setIsVisibilidadReady(true);
+      }
+    });
+  }, []);
 
   return (
     <div className="Vista">
-      <div className="ComponentePrincipal">
+      {isVisibilidadReady && (
+        <div className="ComponentePrincipal">
 
-        <TablaPersona />
+          <GraficoPersona
+            visibilidadInput={visibilidad}
+          />
+          <br/>
 
-      </div>
-      
+          <TablaPersona
+            visibilidadInput={visibilidad}
+          />
+
+        </div>
+
+      )}
+
+
+
+
     </div>
   );
 }

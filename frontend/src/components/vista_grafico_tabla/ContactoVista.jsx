@@ -1,21 +1,41 @@
 import React, { useState, useEffect } from "react";
-import GraficoContacto from "./graficos/GraficoContacto";
+import { GraficoContacto } from './graficos/GraficoContacto'
 import TablaContacto from "./tables/TablaContacto";
+import modulosService from "../../services/modulosService";
 
 import "../../Styles/TablasDinamicas.scss";
 
 function ContactoVista() {
+  const [visibilidad, setVisibilidad] = useState("");
+  const [isVisibilidadReady, setIsVisibilidadReady] = useState(false);
+
+  useEffect(() => {
+    let modulo = modulosService.getVisibilidadByModulo('CONTACTO');
+    modulo.then((response) => {
+      if (response) {
+        setVisibilidad(response);
+        setIsVisibilidadReady(true);
+      }
+    });
+  }, []);
 
   return (
     <div className="Vista">
-      <div className="ComponentePrincipal">
+      {isVisibilidadReady && (
+        <div className="ComponentePrincipal">
 
-        <GraficoContacto />
-        <br/>
+          <GraficoContacto
+            visibilidadInput={visibilidad}
+          />
+          <br/>
 
-        <TablaContacto />
+          <TablaContacto
+            visibilidadInput={visibilidad}
+          />
 
-      </div>
+        </div>
+
+      )}
 
 
 

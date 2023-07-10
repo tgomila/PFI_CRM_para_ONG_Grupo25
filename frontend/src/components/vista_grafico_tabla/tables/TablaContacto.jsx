@@ -17,7 +17,7 @@ import {
   NumberRangeColumnFilter,
 } from"./Tabla_Filters";
 
-const TablaContacto = () => {
+const TablaContacto = ({visibilidadInput}) => {
 
   const columns = [
     {
@@ -60,6 +60,7 @@ const TablaContacto = () => {
       <TablaGenericaPersona
         columns={columns}
         Service={ContactoService}
+        visibilidadInput={visibilidadInput}
         nombreTipoDatoParaModuloVisibilidad={"CONTACTO"}
         el_la={"el"}
         nombreTipoDato={"contacto"}

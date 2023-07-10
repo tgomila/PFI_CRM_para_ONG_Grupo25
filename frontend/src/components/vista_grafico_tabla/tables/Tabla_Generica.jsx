@@ -49,19 +49,20 @@ import {
  * 
  * @param {Array} columns - Columnas de la tabla.
  * @param {Object} Service - Objeto para obtener datos mediante Axios.
+ * @param {string} visibilidadInput - Ejemplo "EDITAR" permite editar tabla, "SOLO_VISTA" solo ver tabla.
  * @param {string} nombreTipoDatoParaModuloVisibilidad - Nombre del módulo. Ejemplo "PERSONA"
  * @param {string} el_la - Género del tipo de dato.
  * @param {string} nombreTipoDato - Nombre del tipo de dato.
  * @returns {JSX.Element} - Componente de la tabla genérica.
  */
-const TablaGenericaPersona = ({ columns, Service, nombreTipoDatoParaModuloVisibilidad, el_la, nombreTipoDato }) => {
+const TablaGenericaPersona = ({ columns, Service, visibilidadInput, nombreTipoDatoParaModuloVisibilidad, el_la, nombreTipoDato }) => {
   return (
     <div>
       <TablaGenericaConFoto
         columns={columns}
         Service={Service}
+        visibilidadInput={visibilidadInput}
         nombreTipoDatoParaModuloVisibilidad={nombreTipoDatoParaModuloVisibilidad}
-        nombreVisibilidad={""}
         tipoDatoParaFoto={"contacto"}
         el_la={el_la}
         nombreTipoDato={nombreTipoDato}
@@ -76,14 +77,14 @@ const TablaGenericaPersona = ({ columns, Service, nombreTipoDatoParaModuloVisibi
  * 
  * @param {Array} columns - Columnas de la tabla.
  * @param {Object} Service - Objeto para obtener datos mediante Axios.
+ * @param {string} visibilidadInput - Nombre de la visibilidad. Es opcional, ejemplo "" o "EDITAR"
  * @param {string} nombreTipoDatoParaModuloVisibilidad - Nombre del módulo. Ejemplo "PERSONA"
- * @param {string} nombreVisibilidad - Nombre de la visibilidad. Es opcional, ejemplo "" o "EDITAR"
  * @param {string} tipoDatoParaFoto - Tipo de dato para la foto. Ejemplo "contacto", "producto"
  * @param {string} el_la - Género del tipo de dato.
  * @param {string} nombreTipoDato - Nombre del tipo de dato.
  * @returns {JSX.Element} - Componente de la tabla genérica.
  */
-const TablaGenericaConFoto = ({ columns, Service, nombreTipoDatoParaModuloVisibilidad, nombreVisibilidad, tipoDatoParaFoto, el_la, nombreTipoDato }) => {
+const TablaGenericaConFoto = ({ columns, Service, visibilidadInput, nombreTipoDatoParaModuloVisibilidad, nombreVisibilidad, tipoDatoParaFoto, el_la, nombreTipoDato }) => {
   const [data, setData] = useState([]);
   const [columnsData, setColumnsData] = useState([]);
   const [visibilidad, setVisibilidad] = useState("");
@@ -91,8 +92,8 @@ const TablaGenericaConFoto = ({ columns, Service, nombreTipoDatoParaModuloVisibi
   const [isVisibilidadReady, setIsVisibilidadReady] = useState(false);
 
   useEffect(() => {
-    if (nombreVisibilidad !== "") {
-      setVisibilidad(nombreVisibilidad);
+    if (visibilidadInput !== "") {
+      setVisibilidad(visibilidadInput);
       setIsVisibilidadReady(true);
     } else {
       let modulo = modulosService.getVisibilidadByModulo(nombreTipoDatoParaModuloVisibilidad);
@@ -187,7 +188,6 @@ const TablaGenerica = ({columnsIn, data, visibilidad, Service, el_la, nombreTipo
 
   const columns = useMemo(() => {
     let baseColumns = [...columnsIn];
-    console.log("visibilidad: " + visibilidad);
     if (visibilidad === "EDITAR") {
       baseColumns.push(
         {

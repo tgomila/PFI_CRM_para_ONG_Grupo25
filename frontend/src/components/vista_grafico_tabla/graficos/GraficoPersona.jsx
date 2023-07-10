@@ -1,19 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { GraficoCreadosUltimoAño } from './Grafico_creadosUltimoAño';
-import ContactoService from "../../../services/ContactoService";
+import PersonaService from "../../../services/PersonaService";
 
-const GraficoContacto = ({visibilidadInput}) => {
+const GraficoPersona = ({visibilidadInput}) => {
   
   //Que cambiar si copias y pegas este código:
-  const Service = ContactoService;//Tambien cambiar el "Service" importado
-  const el_la = "el";
-  const nombreDatoSingular = "contacto";
-  const las_los = "los";
-  const nombreDatoPlural = "contactos";
+  const Service = PersonaService;//Tambien cambiar el "Service" importado
+  const el_la = "la";
+  const nombreDatoSingular = "persona";
+  const las_los = "las";
+  const nombreDatoPlural = "personas";
   //No olvides cambiar luego del return "{showContent && (" agregar o quitar los gráficos que querés
   //   y agregar <br/> al final
-
-  //no se usa useState porque devuelve array de 2 variables, uno para la variable y otro para "set"
 
   const [useDataExample, setUseDataExample] = useState(false);
   const [visibilidad, setVisibilidad] = useState("NO_VISTA");
@@ -72,5 +70,5 @@ const GraficoContacto = ({visibilidadInput}) => {
 };
 
 export {
-  GraficoContacto
+  GraficoPersona
 }

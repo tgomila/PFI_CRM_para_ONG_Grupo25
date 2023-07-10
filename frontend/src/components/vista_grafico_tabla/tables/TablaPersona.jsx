@@ -10,7 +10,7 @@ import {
 } from"./Tabla_Filters";
 //import moment from "moment";
 
-const TablaPersona = () => {
+const TablaPersona = ({visibilidadInput}) => {
 
   const columns = [
     {
@@ -77,6 +77,7 @@ const TablaPersona = () => {
       <TablaGenericaPersona
         columns={columns}
         Service={PersonaService}
+        visibilidadInput={visibilidadInput}
         nombreTipoDatoParaModuloVisibilidad={"PERSONA"}
         el_la={"la"}
         nombreTipoDato={"persona"}

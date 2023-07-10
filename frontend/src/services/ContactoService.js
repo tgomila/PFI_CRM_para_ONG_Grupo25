@@ -30,7 +30,7 @@ class ContactoService {
     }
 
     //Graficos
-    contactosCreadosUltimos12meses(){
+    creadosUltimos12meses(){
         return axios.get(BACKEND_API_BASE_URL + 'contacto/grafico/contar_creados/ultimos_12_meses', { headers: authHeader() });
     }
 

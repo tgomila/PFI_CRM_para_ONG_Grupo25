@@ -9,7 +9,7 @@ import {
   NumberRangeColumnFilter,
 } from"./Tabla_Filters";
 
-const TablaBeneficiario = () => {
+const TablaBeneficiario = ({visibilidadInput}) => {
 
   const columns = [
     {
@@ -120,6 +120,7 @@ const TablaBeneficiario = () => {
       <TablaGenericaPersona
         columns={columns}
         Service={BeneficiarioService}
+        visibilidadInput={visibilidadInput}
         nombreTipoDatoParaModuloVisibilidad={"BENEFICIARIO"}
         el_la={"el"}
         nombreTipoDato={"beneficiario"}
