@@ -3,6 +3,7 @@ package com.pfi.crm.controller;
 import java.time.LocalDate;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.validation.Valid;
 
@@ -91,6 +92,17 @@ public class PersonaFisicaController {
 		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.PERSONA, "Buscar una persona/contacto");
         return personaFisicaService.buscarContactoSiExiste(id);
     }
+	
+	
+	
+	
+	//Gráficos
+	@GetMapping("/grafico/contar_creados/ultimos_12_meses")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	public List<Map<String, Object>> countUltimos12meses(@CurrentUser UserPrincipal currentUser) {
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.PERSONA, "Ver personas creadas en los ultimos 12 meses por mes");
+		return personaFisicaService.countCreadosUltimos12meses();
+	}
 	
 	
 	

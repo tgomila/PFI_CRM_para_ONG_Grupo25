@@ -6,6 +6,7 @@ public class ImagenPayload {
 	private Long id;
 	private String tipo;
 	private LocalDateTime fechaDeCreacion;
+	private byte[] foto;
 	
 	public ImagenPayload() {
 		super();
@@ -16,6 +17,15 @@ public class ImagenPayload {
 		this.id = id;
 		this.tipo = tipo;
 		this.fechaDeCreacion = fechaDeCreacion;
+		this.foto = null;
+	}
+
+	public ImagenPayload(Long id, String tipo, LocalDateTime fechaDeCreacion, byte[] foto) {
+		super();
+		this.id = id;
+		this.tipo = tipo;
+		this.fechaDeCreacion = fechaDeCreacion;
+		this.foto = foto;
 	}
 
 	public Long getId() {
@@ -40,5 +50,13 @@ public class ImagenPayload {
 
 	public void setFechaDeCreacion(LocalDateTime fechaDeCreacion) {
 		this.fechaDeCreacion = fechaDeCreacion;
+	}
+
+	public byte[] getFoto() {
+		return foto;
+	}
+
+	public void setFoto(byte[] foto) {
+		this.foto = foto;
 	}
 }

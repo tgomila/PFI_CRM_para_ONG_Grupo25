@@ -1,6 +1,9 @@
 package com.pfi.crm.multitenant.tenant.service;
 
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -140,5 +143,18 @@ public class PersonaJuridicaService {
 			throw new BadRequestException("No existe Contacto ID '" + id.toString() + "' cargado. "
 					+ "Es posible que sea otro número o no exista.");
 		return ResponseEntity.ok(contactoService.getContactoById(id));//Devuelve no ok si no hay contacto cargado
+	}
+	
+	
+
+	/**
+	 * Info para gráficos de front 
+	 * @return
+	 */
+	public List<Map<String, Object>> countCreadosUltimos12meses() {
+		LocalDateTime start = LocalDateTime.now().minusMonths(11).withDayOfMonth(1).withHour(0).withMinute(0).withSecond(0).withNano(0);
+		LocalDateTime end = LocalDateTime.now().withHour(23).withMinute(59).withSecond(59).withNano(999);
+		List<Map<String, Object>> countContactosCreatedLast12MonthsByMonth = personaJuridicaRepository.countCreatedLast12MonthsByMonth(start.toInstant(ZoneOffset.UTC), end.toInstant(ZoneOffset.UTC));
+		return countContactosCreatedLast12MonthsByMonth;
 	}
 }

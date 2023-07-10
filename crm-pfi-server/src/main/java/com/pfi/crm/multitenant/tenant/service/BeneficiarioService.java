@@ -8,6 +8,7 @@ import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.stream.Collectors;
 
@@ -181,6 +182,20 @@ public class BeneficiarioService {
 					+ "Es posible que sea otro número o quiera ir a la pantalla de modificar.");
 		return personaFisicaService.buscarPersonaFisicaSiExiste(id);
 	}
+	
+	
+
+	/**
+	 * Info para gráficos de front 
+	 * @return
+	 */
+	public List<Map<String, Object>> countCreadosUltimos12meses() {
+		LocalDateTime start = LocalDateTime.now().minusMonths(11).withDayOfMonth(1).withHour(0).withMinute(0).withSecond(0).withNano(0);
+		LocalDateTime end = LocalDateTime.now().withHour(23).withMinute(59).withSecond(59).withNano(999);
+		List<Map<String, Object>> countContactosCreatedLast12MonthsByMonth = beneficiarioRepository.countCreatedLast12MonthsByMonth(start.toInstant(ZoneOffset.UTC), end.toInstant(ZoneOffset.UTC));
+		return countContactosCreatedLast12MonthsByMonth;
+	}
+	
 	
 	
 	

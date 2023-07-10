@@ -123,28 +123,29 @@ public class ContactoController {
 		return firstDayOfMonth;
 	}
 	
-	@GetMapping("/test/contactos_este_mes")
+	@GetMapping("/grafico/contactos_este_mes")
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public int getContactosEsteMes(@CurrentUser UserPrincipal currentUser) {
 		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.CONTACTO, "Ver número de contactos creados este mes");
 		return contactoService.getContactosCreadosEsteMes().size();
 	}
 	
-	@GetMapping("/test/contar_contactos/este_mes")
+	@GetMapping("/grafico/contar_contactos/este_mes")
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public List<Map<String, Object>> countContactosCreadosEsteMes(@CurrentUser UserPrincipal currentUser) {
 		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.CONTACTO, "Ver contactos creados este año por mes");
 		return contactoService.countContactosCreadosEsteAnioPorMes();
 	}
 	
-	@GetMapping("/test/contar_contactos/ultimos_12_meses")
+	//Utilizado en front
+	@GetMapping("/grafico/contar_creados/ultimos_12_meses")
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public List<Map<String, Object>> countContactosCreadosUltimos12meses(@CurrentUser UserPrincipal currentUser) {
 		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.CONTACTO, "Ver contactos creados en los ultimos 12 meses por mes");
 		return contactoService.countContactosCreadosUltimos12meses();
 	}
 	
-	@GetMapping("/test/contar_contactos/este_anio/")
+	@GetMapping("/grafico/contar_creados/este_anio/")
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public List<Map<String, Object>> countContactosCreadosEsteAnio(@CurrentUser UserPrincipal currentUser) {
 		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.CONTACTO, "Ver contactos creados este año por mes");
@@ -152,7 +153,7 @@ public class ContactoController {
 		return contactoService.countContactosByAnioMes(esteAnio);
 	}
 	
-	@GetMapping("/test/contar_contactos/este_anio/{anioInput}")
+	@GetMapping("/grafico/contar_contactos/este_anio/{anioInput}")
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public List<Map<String, Object>> countContactosCreadosEnAnioInput(@PathVariable int anioInput, @CurrentUser UserPrincipal currentUser) {
 		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.CONTACTO, "Ver contactos creados por mes en el año "+anioInput);

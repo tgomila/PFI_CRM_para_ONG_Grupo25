@@ -33,11 +33,11 @@ public class PersonaFisica extends ContactoAbstract{
 	//private int edad;	//Necesario sabiendo la fecha de nacimiento?
 	
 	//Metodo edad
-	public int getEdad () {
+	public Integer getEdad () {
         if (fechaNacimiento != null) {
             return Period.between(fechaNacimiento, LocalDate.now()).getYears();
         } else {
-            return -1;
+            return null;
         }
     }
 	

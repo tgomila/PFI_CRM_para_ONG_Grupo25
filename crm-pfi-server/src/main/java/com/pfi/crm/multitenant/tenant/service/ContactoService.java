@@ -319,6 +319,11 @@ public class ContactoService {
 		return listAltasPayload;
 	}
 	
+	/**
+	 * Solo para uso de testing
+	 * @param anio
+	 * @return
+	 */
 	public List<LocalDateTime> generarCienFechasDistribuidasPorAnio(int anio){
 		
 		LocalDate mes = LocalDate.of(anio, 1, 1);
@@ -377,6 +382,13 @@ public class ContactoService {
 		return fechas;
 	}
 	
+	/**
+	 * Solo para uso de testing
+	 * @param mes
+	 * @param lunVie
+	 * @param finde
+	 * @return
+	 */
 	public List<LocalDateTime> generarFechasMes(LocalDate mes, int lunVie, int finde){
 		LocalDate startDate = mes.withDayOfMonth(1);
 		LocalDate endDate = mes.withDayOfMonth(mes.getMonth().length(mes.isLeapYear()));
@@ -460,7 +472,12 @@ public class ContactoService {
 		return contactoGenerado;
 	}
 }
-	
+
+/**
+ * Solo para uso de testing
+ * @author tomas
+ *
+ */
 enum Meses {
 	ENERO(1, 0.17),
 	FEBRERO(2, 0.14),

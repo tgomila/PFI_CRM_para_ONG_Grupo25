@@ -8,6 +8,7 @@ import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
@@ -105,10 +106,10 @@ public class PersonaFisicaService {
 			PersonaFisica personaYaDeAlta = getPersonaFisicaModelByDni(dni);
 			throw new BadRequestException("Ya existe Persona con DNI '" + personaYaDeAlta.getDni() + "' cargado "
 					+ "en la Base de Datos, cuyo ID de Persona es: '" + personaYaDeAlta.getId() + "', "
-					+ "nombre: '" + personaYaDeAlta.getNombre() != null ? personaYaDeAlta.getNombre() : "(vacío)" + "', "
-					+ "apellido: '" + personaYaDeAlta.getApellido() != null ? personaYaDeAlta.getApellido() : "(vacío)" + "'. "
+					+ "nombre: '" + (personaYaDeAlta.getNombre() != null ? personaYaDeAlta.getNombre() : "(vacío)") + "', "
+					+ "apellido: '" + (personaYaDeAlta.getApellido() != null ? personaYaDeAlta.getApellido() : "(vacío)") + "'. "
 					+ "Es posible que haya ingresado mal el DNI o quiera ir a la pantalla modificar antes "
-					+ "que dar de alta una misma persona.");
+					+ "que dar de alta a una misma persona.");
 		}
 		// 2) Buscar/Crear Contacto y asociarlo. Si hay ID Contacto y no existe en BD, se vuelve sin dar de alta.
 		Contacto contacto = contactoService.altaModificarContactoModel(payload);
@@ -139,10 +140,10 @@ public class PersonaFisicaService {
 			PersonaFisica personaYaDeAlta = getPersonaFisicaModelByDni(payload.getDni());
 			throw new BadRequestException("Ya existe Persona con DNI '" + personaYaDeAlta.getDni() + "' cargado "
 					+ "en la Base de Datos, cuyo ID de Persona es: '" + personaYaDeAlta.getId() + "', "
-					+ "nombre: '" + personaYaDeAlta.getNombre() != null ? personaYaDeAlta.getNombre() : "(vacío)" + "', "
-					+ "apellido: '" + personaYaDeAlta.getApellido() != null ? personaYaDeAlta.getApellido() : "(vacío)" + "'. "
-					+ "Si ese esa es la persona que desea asociar, por favor use el botón de '¿Fue cargado anteriormente...' "
-					+ "e ingrese el ID: '" + personaYaDeAlta.getDni() + "' para asociarlo. "
+					+ "nombre: '" + (personaYaDeAlta.getNombre() != null ? personaYaDeAlta.getNombre() : "(vacío)") + "', "
+					+ "apellido: '" + (personaYaDeAlta.getApellido() != null ? personaYaDeAlta.getApellido() : "(vacío)") + "'. "
+					+ "Si esa es la persona que desea asociar, por favor use el botón de '¿Fue cargado anteriormente...' "
+					+ "e ingrese el ID: '" + personaYaDeAlta.getId() + "' para asociarlo. "
 					+ "Sino verifique el dni ingresado en pantalla, "
 					+ "o modifique datos de la persona en pantalla 'Modificar Persona' si hay algún dato mal cargado.");
 		}
@@ -283,6 +284,21 @@ public class PersonaFisicaService {
 		//No existen
 		throw new BadRequestException("No existe Contacto ID '" + id.toString() + "' cargado. "
 				+ "Es posible que sea otro número o no exista.");
+	}
+	
+	
+	
+	
+
+	/**
+	 * Info para gráficos de front 
+	 * @return
+	 */
+	public List<Map<String, Object>> countCreadosUltimos12meses() {
+		LocalDateTime start = LocalDateTime.now().minusMonths(11).withDayOfMonth(1).withHour(0).withMinute(0).withSecond(0).withNano(0);
+		LocalDateTime end = LocalDateTime.now().withHour(23).withMinute(59).withSecond(59).withNano(999);
+		List<Map<String, Object>> countContactosCreatedLast12MonthsByMonth = personaFisicaRepository.countCreatedLast12MonthsByMonth(start.toInstant(ZoneOffset.UTC), end.toInstant(ZoneOffset.UTC));
+		return countContactosCreatedLast12MonthsByMonth;
 	}
 	
 	

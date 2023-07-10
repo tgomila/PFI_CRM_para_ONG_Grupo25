@@ -3,11 +3,13 @@ package com.pfi.crm.controller;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -121,6 +123,17 @@ public class PersonaJuridicaController {
 		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.PERSONAJURIDICA, "Buscar una PersonaJuridica con id: '" + id + "'");
         return personaJuridicaService.buscarContactoSiExiste(id);
     }
+	
+	
+	
+	
+	//Gráficos
+	@GetMapping("/grafico/contar_creados/ultimos_12_meses")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	public List<Map<String, Object>> countCreadosUltimos12meses(@CurrentUser UserPrincipal currentUser) {
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.PERSONAJURIDICA, "Ver personas jurídicas creados en los ultimos 12 meses por mes");
+		return personaJuridicaService.countCreadosUltimos12meses();
+	}
 	
 	
 	

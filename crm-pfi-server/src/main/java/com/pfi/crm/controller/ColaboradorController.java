@@ -3,11 +3,13 @@ package com.pfi.crm.controller;
 import java.time.LocalDate;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -88,6 +90,17 @@ public class ColaboradorController  {
 		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.COLABORADOR, "Buscar un colaborador/persona/contacto");
         return colaboradorService.buscarPersonaFisicaSiExiste(id);
     }
+	
+	
+	
+	
+	//Gráficos
+	@GetMapping("/grafico/contar_creados/ultimos_12_meses")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	public List<Map<String, Object>> countCreadosUltimos12meses(@CurrentUser UserPrincipal currentUser) {
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.COLABORADOR, "Ver colaboradores creados en los ultimos 12 meses por mes");
+		return colaboradorService.countCreadosUltimos12meses();
+	}
 	
 	
 	

@@ -1,6 +1,7 @@
 package com.pfi.crm.multitenant.tenant.payload;
 
 import java.time.LocalDate;
+import java.time.Period;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
@@ -19,6 +20,8 @@ public class PersonaFisicaAbstractPayload extends ContactoAbstractPayload{
 	private String apellido;
 	
 	private LocalDate fechaNacimiento;
+	
+	private Integer edad = null;
 	
 	
 	public PersonaFisicaAbstractPayload modificarPersonaFisica(PersonaFisicaAbstractPayload payload) {
@@ -68,6 +71,14 @@ public class PersonaFisicaAbstractPayload extends ContactoAbstractPayload{
 
 	public void setFechaNacimiento(LocalDate fechaNacimiento) {
 		this.fechaNacimiento = fechaNacimiento;
+		if (fechaNacimiento != null)
+            edad = Period.between(fechaNacimiento, LocalDate.now()).getYears();
+		else
+			edad = null;
+	}
+	
+	public Integer getEdad() {
+		return edad;
 	}
 	
 }

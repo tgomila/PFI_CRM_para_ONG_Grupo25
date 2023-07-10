@@ -1,8 +1,13 @@
 package com.pfi.crm.multitenant.tenant.persistence.repository;
 
+import java.time.Instant;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.pfi.crm.multitenant.tenant.model.PersonaFisica;
@@ -29,6 +34,10 @@ public interface PersonaFisicaRepository extends JpaRepository<PersonaFisica, Lo
 	//Esto debería ser un chequeo para el alta, si existe no deberia suceder el alta.
 	boolean existsByDni(int dni);
 	Optional<PersonaFisica> findByDni(int dni);
+	
+	@Query("SELECT YEAR(pf.contacto.createdAt) as year, MONTH(pf.contacto.createdAt) as month, COUNT(pf) as count FROM PersonaFisica pf WHERE pf.contacto.createdAt BETWEEN :start AND :end GROUP BY YEAR(pf.contacto.createdAt), MONTH(pf.contacto.createdAt) ORDER BY YEAR(pf.contacto.createdAt) ASC, MONTH(pf.contacto.createdAt) ASC")
+	List<Map<String, Object>> countCreatedLast12MonthsByMonth(@Param("start") Instant start, @Param("end") Instant end);
+
 	
 	
     

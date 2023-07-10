@@ -1,6 +1,9 @@
 package com.pfi.crm.multitenant.tenant.service;
 
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -142,5 +145,18 @@ public class ConsejoAdHonoremService {
 			throw new BadRequestException("Ya existe Consejo Ad Honorem con ID '" + id.toString() + "' cargado. "
 					+ "Es posible que sea otro número o quiera ir a la pantalla de modificar.");
 		return personaFisicaService.buscarPersonaFisicaSiExiste(id);
+	}
+	
+	
+
+	/**
+	 * Info para gráficos de front 
+	 * @return
+	 */
+	public List<Map<String, Object>> countContactosCreadosUltimos12meses() {
+		LocalDateTime start = LocalDateTime.now().minusMonths(11).withDayOfMonth(1).withHour(0).withMinute(0).withSecond(0).withNano(0);
+		LocalDateTime end = LocalDateTime.now().withHour(23).withMinute(59).withSecond(59).withNano(999);
+		List<Map<String, Object>> countContactosCreatedLast12MonthsByMonth = consejoAdHonoremRepository.countContactosCreatedLast12MonthsByMonth(start.toInstant(ZoneOffset.UTC), end.toInstant(ZoneOffset.UTC));
+		return countContactosCreatedLast12MonthsByMonth;
 	}
 }
