@@ -1,6 +1,7 @@
 package com.pfi.crm.multitenant.tenant.persistence.repository;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -33,6 +34,8 @@ public interface BeneficiarioRepository extends JpaRepository<Beneficiario, Long
 	
 	@Query("SELECT YEAR(b.personaFisica.contacto.createdAt) as year, MONTH(b.personaFisica.contacto.createdAt) as month, COUNT(b) as count FROM Beneficiario b WHERE b.personaFisica.contacto.createdAt BETWEEN :start AND :end GROUP BY YEAR(b.personaFisica.contacto.createdAt), MONTH(b.personaFisica.contacto.createdAt) ORDER BY YEAR(b.personaFisica.contacto.createdAt) ASC, MONTH(b.personaFisica.contacto.createdAt) ASC")
 	List<Map<String, Object>> countCreatedLast12MonthsByMonth(@Param("start") Instant start, @Param("end") Instant end);
-    
+
+	@Query("SELECT b.personaFisica.fechaNacimiento FROM Beneficiario b")
+    List<LocalDate> findAllFechaNacimiento();
 	
 }

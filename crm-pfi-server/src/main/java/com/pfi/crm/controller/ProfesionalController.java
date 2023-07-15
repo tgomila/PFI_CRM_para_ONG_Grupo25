@@ -101,6 +101,13 @@ public class ProfesionalController {
 		return profesionalService.countCreadosUltimos12meses();
 	}
 	
+	@GetMapping("/grafico/contar_categoria_edad")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	public List<Map<String, Object>> obtenerConteoPorEtapasEdad(@CurrentUser UserPrincipal currentUser) {
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.PROFESIONAL, "Contar cuántos profesionales hay, por categoría de edad");
+		return profesionalService.obtenerConteoPorEtapasEdad();
+	}
+	
 	
 	
 	

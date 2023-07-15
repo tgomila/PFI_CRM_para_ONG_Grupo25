@@ -3,11 +3,13 @@ package com.pfi.crm.controller;
 import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -76,6 +78,24 @@ public class ActividadController {
 	public LinkedHashMap<String, String> getNombresTabla(@CurrentUser UserPrincipal currentUser) {
 		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.ACTIVIDAD, "Ver nombres de la tabla de actividades");
 		return new ActividadNombreTablaPayload().getNombresActividadTabla();
+	}
+	
+	
+	
+	
+	//Gráficos
+	@GetMapping("/grafico/contar_top_20/beneficiarios")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	public List<Map<String, Object>> countTop20Beneficiarios(@CurrentUser UserPrincipal currentUser) {
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.ACTIVIDAD, "Ver top 20 beneficiarios más suscriptos a actividades");
+		return actividadService.countTop20Beneficiarios();
+	}
+	
+	@GetMapping("/grafico/ultimos_y_proximos_12_meses")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	public List<Map<String, Object>> countUltimosProximos12meses(@CurrentUser UserPrincipal currentUser) {
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.ACTIVIDAD, "Ver actividades en los ultimos 12 meses por mes");
+		return actividadService.countUltimosProximos12meses();
 	}
 	
 	

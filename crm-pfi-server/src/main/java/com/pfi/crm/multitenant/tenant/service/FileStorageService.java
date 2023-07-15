@@ -102,13 +102,17 @@ public class FileStorageService {
 			String tenantName = DBContextHolder.getCurrentDb();
 			Long idContacto = user.getIdContacto();
 			Path fileFotoPerfil_jpg = root.resolve(tenantName).resolve("contacto").resolve("contacto_" + idContacto.toString() + ".jpg");
+			Path fileFotoPerfil_jpeg = root.resolve(tenantName).resolve("contacto").resolve("contacto_" + idContacto.toString() + ".jpeg");
 			Path fileFotoPerfil_png = root.resolve(tenantName).resolve("contacto").resolve("contacto_" + idContacto.toString() + ".png");
 			
 			Resource resource_jpg = new UrlResource(fileFotoPerfil_jpg.toUri());
+			Resource resource_jpeg = new UrlResource(fileFotoPerfil_jpeg.toUri());
 			Resource resource_png = new UrlResource(fileFotoPerfil_png.toUri());
 			
 			//Se prueba si existe en jpg o png
 			if (resource_jpg.exists() || resource_jpg.isReadable()) {
+				return true;
+			} else if(resource_jpeg.exists() || resource_jpeg.isReadable()) {
 				return true;
 			} else if(resource_png.exists() || resource_png.isReadable()) {
 				return true;
@@ -126,14 +130,18 @@ public class FileStorageService {
 			String tenantName = DBContextHolder.getCurrentDb();
 			Long idContacto = user.getIdContacto();
 			Path fileFotoPerfil_jpg = root.resolve(tenantName).resolve("contacto").resolve("contacto_" + idContacto.toString() + ".jpg");
+			Path fileFotoPerfil_jpeg = root.resolve(tenantName).resolve("contacto").resolve("contacto_" + idContacto.toString() + ".jpeg");
 			Path fileFotoPerfil_png = root.resolve(tenantName).resolve("contacto").resolve("contacto_" + idContacto.toString() + ".png");
 			
 			Resource resource_jpg = new UrlResource(fileFotoPerfil_jpg.toUri());
+			Resource resource_jpeg = new UrlResource(fileFotoPerfil_jpeg.toUri());
 			Resource resource_png = new UrlResource(fileFotoPerfil_png.toUri());
 			
 			//Se prueba si existe en jpg o png
 			if (resource_jpg.exists() || resource_jpg.isReadable()) {
 				return resource_jpg;
+			} else if(resource_jpeg.exists() || resource_jpeg.isReadable()) {
+				return resource_jpeg;
 			} else if(resource_png.exists() || resource_png.isReadable()) {
 				return resource_png;
 			} else {
@@ -178,9 +186,11 @@ public class FileStorageService {
 			//Primero busco su foto de perfil (esto en formato "descarga, tomá el archivo").
 			String tenantName = DBContextHolder.getCurrentDb();
 			Path fileFotoPerfil_jpg = root.resolve(tenantName).resolve("contacto").resolve("contacto_" + idContacto.toString() + ".jpg");
+			Path fileFotoPerfil_jpeg = root.resolve(tenantName).resolve("contacto").resolve("contacto_" + idContacto.toString() + ".jpeg");
 			Path fileFotoPerfil_png = root.resolve(tenantName).resolve("contacto").resolve("contacto_" + idContacto.toString() + ".png");
 			
 			Resource resource_jpg = new UrlResource(fileFotoPerfil_jpg.toUri());
+			Resource resource_jpeg = new UrlResource(fileFotoPerfil_jpeg.toUri());
 			Resource resource_png = new UrlResource(fileFotoPerfil_png.toUri());
 			Resource file;//resource
 
@@ -189,6 +199,9 @@ public class FileStorageService {
 			HttpHeaders headers = new HttpHeaders();
 			if (resource_jpg.exists() || resource_jpg.isReadable()) {
 				file =resource_jpg;
+				headers.setContentType(MediaType.IMAGE_JPEG); // Establecer el tipo de contenido a imagen JPEG
+			} else if(resource_jpeg.exists() || resource_jpeg.isReadable()) {
+				file = resource_jpeg;
 				headers.setContentType(MediaType.IMAGE_JPEG); // Establecer el tipo de contenido a imagen JPEG
 			} else if(resource_png.exists() || resource_png.isReadable()) {
 				file = resource_png;
@@ -234,9 +247,11 @@ public class FileStorageService {
 			//Primero busco su foto de perfil (esto en formato "descarga, tomá el archivo").
 			String tenantName = DBContextHolder.getCurrentDb();
 			Path fileFotoPerfil_jpg = root.resolve(tenantName).resolve("contacto").resolve("contacto_" + idContacto.toString() + ".jpg");
+			Path fileFotoPerfil_jpeg = root.resolve(tenantName).resolve("contacto").resolve("contacto_" + idContacto.toString() + ".jpeg");
 			Path fileFotoPerfil_png = root.resolve(tenantName).resolve("contacto").resolve("contacto_" + idContacto.toString() + ".png");
 			
 			Resource resource_jpg = new UrlResource(fileFotoPerfil_jpg.toUri());
+			Resource resource_jpeg = new UrlResource(fileFotoPerfil_jpeg.toUri());
 			Resource resource_png = new UrlResource(fileFotoPerfil_png.toUri());
 			Resource file;//resource
 
@@ -245,6 +260,9 @@ public class FileStorageService {
 			HttpHeaders headers = new HttpHeaders();
 			if (resource_jpg.exists() || resource_jpg.isReadable()) {
 				file =resource_jpg;
+				headers.setContentType(MediaType.IMAGE_JPEG); // Establecer el tipo de contenido a imagen JPEG
+			} else if(resource_jpeg.exists() || resource_jpeg.isReadable()) {
+				file = resource_jpeg;
 				headers.setContentType(MediaType.IMAGE_JPEG); // Establecer el tipo de contenido a imagen JPEG
 			} else if(resource_png.exists() || resource_png.isReadable()) {
 				file = resource_png;
@@ -295,9 +313,11 @@ public class FileStorageService {
 			//Primero busco su foto de perfil (esto en formato "descarga, tomá el archivo").
 			String tenantName = DBContextHolder.getCurrentDb();
 			Path fileFotoPerfil_jpg = root.resolve(tenantName).resolve("contacto").resolve("contacto_" + idContacto.toString() + ".jpg");
+			Path fileFotoPerfil_jpeg = root.resolve(tenantName).resolve("contacto").resolve("contacto_" + idContacto.toString() + ".jpeg");
 			Path fileFotoPerfil_png = root.resolve(tenantName).resolve("contacto").resolve("contacto_" + idContacto.toString() + ".png");
 			
 			Resource resource_jpg = new UrlResource(fileFotoPerfil_jpg.toUri());
+			Resource resource_jpeg = new UrlResource(fileFotoPerfil_jpeg.toUri());
 			Resource resource_png = new UrlResource(fileFotoPerfil_png.toUri());
 
 			//Segundo, lo convierto en URL para front, sino se me descarga la foto y no es lo que quiero.
@@ -305,6 +325,8 @@ public class FileStorageService {
 			LocalDateTime fecha_mas_tardia = null;
 			if (resource_jpg.exists() || resource_jpg.isReadable()) {
 				fecha_mas_tardia = getFechaMasTardia(fileFotoPerfil_jpg);
+			} else if(resource_jpeg.exists() || resource_jpeg.isReadable()) {
+				fecha_mas_tardia = getFechaMasTardia(fileFotoPerfil_jpeg);
 			} else if(resource_png.exists() || resource_png.isReadable()) {
 				fecha_mas_tardia = getFechaMasTardia(fileFotoPerfil_png);
 			} else {
@@ -328,7 +350,7 @@ public class FileStorageService {
 			//Preparo su nombre "miFoto.jpg" a: "contacto_3.jpg"
 			String originalFileName = StringUtils.cleanPath(file.getOriginalFilename());
 		    String extension = StringUtils.getFilenameExtension(originalFileName);
-		    if(!extension.equalsIgnoreCase("jpg") && !extension.equalsIgnoreCase("png")) {
+		    if(!extension.equalsIgnoreCase("png") && !extension.equalsIgnoreCase("jpg") && !extension.equalsIgnoreCase("jpeg")) {
 		    	throw new BadRequestException("Tiene que subir un archivo de tipo foto .jpg o .png");
 		    }
 		    String newFileName = "contacto_" + user.getIdContacto().toString() + "." + extension;
@@ -349,11 +371,122 @@ public class FileStorageService {
 		}
 	}
 	
+	public void saveFotoContacto(MultipartFile file, Long id) {
+		try {
+			//Preparo su nombre "miFoto.jpg" a: "contacto_3.jpg"
+			String originalFileName = StringUtils.cleanPath(file.getOriginalFilename());
+		    String extension = StringUtils.getFilenameExtension(originalFileName);
+		    if(!extension.equalsIgnoreCase("png") && !extension.equalsIgnoreCase("jpg") && !extension.equalsIgnoreCase("jpeg")) {
+		    	throw new BadRequestException("Tiene que subir un archivo de tipo foto .jpg o .png");
+		    }
+		    String newFileName = "contacto_" + id.toString() + "." + extension;
+			
+		    //Preparo su path
+		    String tenantName = DBContextHolder.getCurrentDb();
+			Path fileFoto = root.resolve(tenantName).resolve("contacto").resolve(newFileName);
+			crearCarpeta(fileFoto.getParent());
+			
+			//Guardo el archivo
+			Files.copy(file.getInputStream(), fileFoto, StandardCopyOption.REPLACE_EXISTING);
+			
+		} catch(Exception e) {
+			if(e instanceof FileAlreadyExistsException) {
+				throw new RuntimeException("Un archivo con ese nombre ya existe.");
+			}
+			throw new RuntimeException(e.getMessage());
+		}
+	}
+	
+	public void saveFotoProducto(MultipartFile file, Long id) {
+		try {
+			if(id == null)
+				throw new RuntimeException("Especifique el ID antes de subir.");
+			//Preparo su nombre "miFoto.jpg" a: "contacto_3.jpg"
+			String originalFileName = StringUtils.cleanPath(file.getOriginalFilename());
+		    String extension = StringUtils.getFilenameExtension(originalFileName);
+		    if(!extension.equalsIgnoreCase("png") && !extension.equalsIgnoreCase("jpg") && !extension.equalsIgnoreCase("jpeg")) {
+		    	throw new BadRequestException("Tiene que subir un archivo de tipo foto .jpg o .png");
+		    }
+		    String newFileName = "producto_" + id.toString() + "." + extension;
+			
+		    //Preparo su path
+		    String tenantName = DBContextHolder.getCurrentDb();
+			Path fileFoto = root.resolve(tenantName).resolve("producto").resolve(newFileName);
+			crearCarpeta(fileFoto.getParent());
+			
+			//Guardo el archivo
+			Files.copy(file.getInputStream(), fileFoto, StandardCopyOption.REPLACE_EXISTING);
+			
+		} catch(Exception e) {
+			if(e instanceof FileAlreadyExistsException) {
+				throw new RuntimeException("Un archivo con ese nombre ya existe.");
+			}
+			throw new RuntimeException(e.getMessage());
+		}
+	}
+	
+	public void saveFotoActividad(MultipartFile file, Long id) {
+		try {
+			if(id == null)
+				throw new RuntimeException("Especifique el ID antes de subir.");
+			//Preparo su nombre "miFoto.jpg" a: "contacto_3.jpg"
+			String originalFileName = StringUtils.cleanPath(file.getOriginalFilename());
+		    String extension = StringUtils.getFilenameExtension(originalFileName);
+		    if(!extension.equalsIgnoreCase("png") && !extension.equalsIgnoreCase("jpg") && !extension.equalsIgnoreCase("jpeg")) {
+		    	throw new BadRequestException("Tiene que subir un archivo de tipo foto .jpg o .png");
+		    }
+		    String newFileName = "actividad_" + id.toString() + "." + extension;
+			
+		    //Preparo su path
+		    String tenantName = DBContextHolder.getCurrentDb();
+			Path fileFoto = root.resolve(tenantName).resolve("actividad").resolve(newFileName);
+			crearCarpeta(fileFoto.getParent());
+			
+			//Guardo el archivo
+			Files.copy(file.getInputStream(), fileFoto, StandardCopyOption.REPLACE_EXISTING);
+			
+		} catch(Exception e) {
+			if(e instanceof FileAlreadyExistsException) {
+				throw new RuntimeException("Un archivo con ese nombre ya existe.");
+			}
+			throw new RuntimeException(e.getMessage());
+		}
+	}
+	
+	public void saveFotoProgramaDeActividades(MultipartFile file, Long id) {
+		try {
+			if(id == null)
+				throw new RuntimeException("Especifique el ID antes de subir.");
+			//Preparo su nombre "miFoto.jpg" a: "contacto_3.jpg"
+			String originalFileName = StringUtils.cleanPath(file.getOriginalFilename());
+		    String extension = StringUtils.getFilenameExtension(originalFileName);
+		    if(!extension.equalsIgnoreCase("png") && !extension.equalsIgnoreCase("jpg") && !extension.equalsIgnoreCase("jpeg")) {
+		    	throw new BadRequestException("Tiene que subir un archivo de tipo foto .jpg o .png");
+		    }
+		    String newFileName = "programaDeActividades_" + id.toString() + "." + extension;
+			
+		    //Preparo su path
+		    String tenantName = DBContextHolder.getCurrentDb();
+			Path fileFoto = root.resolve(tenantName).resolve("programaDeActividades").resolve(newFileName);
+			crearCarpeta(fileFoto.getParent());
+			
+			//Guardo el archivo
+			Files.copy(file.getInputStream(), fileFoto, StandardCopyOption.REPLACE_EXISTING);
+			
+		} catch(Exception e) {
+			if(e instanceof FileAlreadyExistsException) {
+				throw new RuntimeException("Un archivo con ese nombre ya existe.");
+			}
+			throw new RuntimeException(e.getMessage());
+		}
+	}
+	
 	public void deleteFotoPerfil(UserPrincipal user) {
 		try {
 			String tenantName = DBContextHolder.getCurrentDb();
 			Long idContacto = user.getIdContacto();
 			Path fileFotoPerfil_jpg = root.resolve(tenantName).resolve("contacto").resolve("contacto_" + idContacto.toString() + ".jpg");
+			Path fileFotoPerfil_jpeg = root.resolve(tenantName).resolve("contacto").resolve("contacto_" + idContacto.toString() + ".jpeg");
 			Path fileFotoPerfil_png = root.resolve(tenantName).resolve("contacto").resolve("contacto_" + idContacto.toString() + ".png");
 			
 			boolean existe_jpg = Files.deleteIfExists(fileFotoPerfil_jpg);

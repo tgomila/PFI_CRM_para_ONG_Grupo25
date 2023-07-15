@@ -101,6 +101,13 @@ public class EmpleadoController {
 		return empleadoService.countCreadosUltimos12meses();
 	}
 	
+	@GetMapping("/grafico/contar_categoria_edad")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	public List<Map<String, Object>> obtenerConteoPorEtapasEdad(@CurrentUser UserPrincipal currentUser) {
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.EMPLEADO, "Contar cuántos empleados hay, por categoría de edad");
+		return empleadoService.obtenerConteoPorEtapasEdad();
+	}
+	
 	
 	
 	

@@ -51,6 +51,66 @@ public class ImageController {
 		return ResponseEntity.ok().body(new ApiResponse(true, message));
 	}
 	
+	@PostMapping("/contacto/{id}")
+	public ResponseEntity<?> uploadImageContacto(@PathVariable Long id, @RequestParam("file") MultipartFile file, @CurrentUser UserPrincipal currentUser) {
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.CONTACTO, "Dar de alta/modificar una foto a contacto");
+		String message = "";
+		try {
+			fileStorageService.saveFotoContacto(file, id);
+			 message = "Uploaded the image successfully: " + file.getOriginalFilename();
+		} catch (Exception e) {
+			message = "No se pudo cargar el archivo: " + file.getOriginalFilename() + ". Error: " + e.getMessage();
+			throw new BadRequestException(message);
+		}
+		//return message;
+		return ResponseEntity.ok().body(new ApiResponse(true, message));
+	}
+	
+	@PostMapping("/producto/{id}")
+	public ResponseEntity<?> uploadImageProducto(@PathVariable Long id, @RequestParam("file") MultipartFile file, @CurrentUser UserPrincipal currentUser) {
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.PRODUCTO, "Dar de alta/modificar una foto a producto");
+		String message = "";
+		try {
+			fileStorageService.saveFotoProducto(file, id);
+			 message = "Uploaded the image successfully: " + file.getOriginalFilename();
+		} catch (Exception e) {
+			message = "No se pudo cargar el archivo: " + file.getOriginalFilename() + ". Error: " + e.getMessage();
+			throw new BadRequestException(message);
+		}
+		//return message;
+		return ResponseEntity.ok().body(new ApiResponse(true, message));
+	}
+	
+	@PostMapping("/actividad/{id}")
+	public ResponseEntity<?> uploadImageActividad(@PathVariable Long id, @RequestParam("file") MultipartFile file, @CurrentUser UserPrincipal currentUser) {
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.ACTIVIDAD, "Dar de alta/modificar una foto a actividad");
+		String message = "";
+		try {
+			fileStorageService.saveFotoActividad(file, id);
+			 message = "Uploaded the image successfully: " + file.getOriginalFilename();
+		} catch (Exception e) {
+			message = "No se pudo cargar el archivo: " + file.getOriginalFilename() + ". Error: " + e.getMessage();
+			throw new BadRequestException(message);
+		}
+		//return message;
+		return ResponseEntity.ok().body(new ApiResponse(true, message));
+	}
+	
+	@PostMapping("/programaDeActividades/{id}")
+	public ResponseEntity<?> uploadImageProgramaDeActividades(@PathVariable Long id, @RequestParam("file") MultipartFile file, @CurrentUser UserPrincipal currentUser) {
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.PROGRAMA_DE_ACTIVIDADES, "Dar de alta/modificar una foto a programa de actividades");
+		String message = "";
+		try {
+			fileStorageService.saveFotoProgramaDeActividades(file, id);
+			 message = "Uploaded the image successfully: " + file.getOriginalFilename();
+		} catch (Exception e) {
+			message = "No se pudo cargar el archivo: " + file.getOriginalFilename() + ". Error: " + e.getMessage();
+			throw new BadRequestException(message);
+		}
+		//return message;
+		return ResponseEntity.ok().body(new ApiResponse(true, message));
+	}
+	
 	@GetMapping("/perfil")
 	public ResponseEntity<Resource> getFotoPerfil(@CurrentUser UserPrincipal currentUser) {
 		//No requiere seguridad para ver su foto de perfil

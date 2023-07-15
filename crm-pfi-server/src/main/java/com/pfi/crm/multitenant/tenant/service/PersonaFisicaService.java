@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -300,6 +301,62 @@ public class PersonaFisicaService {
 		List<Map<String, Object>> countContactosCreatedLast12MonthsByMonth = personaFisicaRepository.countCreatedLast12MonthsByMonth(start.toInstant(ZoneOffset.UTC), end.toInstant(ZoneOffset.UTC));
 		return countContactosCreatedLast12MonthsByMonth;
 	}
+	
+	
+	
+	public List<Map<String, Object>> obtenerConteoPorEtapasEdad() {
+        List<LocalDate> fechasNacimiento = personaFisicaRepository.findAllFechaNacimiento();
+        return clasificarPorEtapasEdad(fechasNacimiento);
+    }
+	
+	public List<Map<String, Object>> clasificarPorEtapasEdad(List<LocalDate> fechasNacimiento) {
+        List<Map<String, Object>> resultado = new ArrayList<>();
+
+        // Obtener la cantidad de personas en cada etapa de edad
+        int primeraInfancia = contarPersonasEnRangoEdad(fechasNacimiento, 0, 5);
+        int infancia = contarPersonasEnRangoEdad(fechasNacimiento, 6, 11);
+        int adolescencia = contarPersonasEnRangoEdad(fechasNacimiento, 12, 18);
+        int juventud = contarPersonasEnRangoEdad(fechasNacimiento, 19, 26);
+        int adultez = contarPersonasEnRangoEdad(fechasNacimiento, 27, 59);
+        int personaMayor = contarPersonasEnRangoEdad(fechasNacimiento, 60, 9999);
+
+        // Agregar la información al resultado
+        resultado.add(crearMapEtapaEdad("Primera Infancia", "0 a 5 años", primeraInfancia));
+        resultado.add(crearMapEtapaEdad("Infancia", "6 a 11 años", infancia));
+        resultado.add(crearMapEtapaEdad("Adolescencia", "12 a 18 años", adolescencia));
+        resultado.add(crearMapEtapaEdad("Juventud", "19 a 26 años", juventud));
+        resultado.add(crearMapEtapaEdad("Adultez", "27 a 59 años", adultez));
+        resultado.add(crearMapEtapaEdad("Persona mayor", "mayor a 60 años", personaMayor));
+
+        return resultado;
+	}
+	
+	private int contarPersonasEnRangoEdad(List<LocalDate> fechasNacimiento, int edadMinima, int edadMaxima) {
+        int conteo = 0;
+        LocalDate fechaActual = LocalDate.now();
+
+        for (LocalDate fechaNacimiento : fechasNacimiento) {
+            int edad = fechaActual.getYear() - fechaNacimiento.getYear();
+            if (fechaNacimiento.plusYears(edad).isAfter(fechaActual)) {
+                edad--;
+            }
+            if (edad >= edadMinima && edad <= edadMaxima) {
+                conteo++;
+            }
+        }
+
+        return conteo;
+    }
+	
+	private Map<String, Object> crearMapEtapaEdad(String etapa, String rangoEdad, int cantidad) {
+        Map<String, Object> mapa = new HashMap<>();
+        mapa.put("etapa", etapa);
+        mapa.put("rangoEdad", rangoEdad);
+        mapa.put("cantidad", cantidad);
+        return mapa;
+    }
+
+
 	
 	
 	

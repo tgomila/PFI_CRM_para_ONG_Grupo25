@@ -1,5 +1,6 @@
 package com.pfi.crm.multitenant.tenant.service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
@@ -159,4 +160,9 @@ public class VoluntarioService {
 		List<Map<String, Object>> countContactosCreatedLast12MonthsByMonth = voluntarioRepository.countCreatedLast12MonthsByMonth(start.toInstant(ZoneOffset.UTC), end.toInstant(ZoneOffset.UTC));
 		return countContactosCreatedLast12MonthsByMonth;
 	}
+	
+	public List<Map<String, Object>> obtenerConteoPorEtapasEdad() {
+        List<LocalDate> fechasNacimiento = voluntarioRepository.findAllFechaNacimiento();
+        return personaFisicaService.clasificarPorEtapasEdad(fechasNacimiento);
+    }
 }

@@ -4,6 +4,7 @@ import org.hibernate.annotations.NaturalId;
 
 import com.pfi.crm.exception.ResourceNotFoundException;
 import com.pfi.crm.multitenant.tenant.model.audit.UserDateAudit;
+import com.pfi.crm.multitenant.tenant.payload.UserPayload;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -62,6 +63,20 @@ public class User extends UserDateAudit{
 
 	public User() {
 
+	}
+	
+	public UserPayload toPayload() {
+
+		UserPayload p = new UserPayload();
+
+		// User
+		p.setId(this.getId());
+		p.setName(this.getName());
+		p.setEmail(this.getEmail());
+		if(contacto!=null)
+			p.setContacto(this.getContacto().toPayload());
+		p.setRoles(roles.stream().map(r -> r.getRoleName()).collect(Collectors.toSet()));
+		return p;
 	}
 
     public User(String nombre, String username, String email, String password) {

@@ -196,6 +196,11 @@ public class BeneficiarioService {
 		return countContactosCreatedLast12MonthsByMonth;
 	}
 	
+	public List<Map<String, Object>> obtenerConteoPorEtapasEdad() {
+        List<LocalDate> fechasNacimiento = beneficiarioRepository.findAllFechaNacimiento();
+        return personaFisicaService.clasificarPorEtapasEdad(fechasNacimiento);
+    }
+	
 	
 	
 	

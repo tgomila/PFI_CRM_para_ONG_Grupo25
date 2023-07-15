@@ -1,7 +1,13 @@
 package com.pfi.crm.multitenant.tenant.service;
 
+import java.time.LocalDateTime;
+import java.time.YearMonth;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -181,6 +187,70 @@ public class ActividadService {
 	
 	public boolean existeActividad(Long id) {
 		return actividadRepository.existsById(id);
+	}
+	
+	/**
+	 * Info para gráficos de front 
+	 * @return
+	 */
+	public List<Map<String, Object>> countTop20Beneficiarios() {
+		List<Map<String, Object>> countTop20Beneficiarios = actividadRepository.findTop20BeneficiariosOrderedByCount();
+		//Esto es solo para que me lo devuelva con orden de propiedades: id, nombre...
+		//Sin esto te devuelve como: cantidad, apellido, nombre..., nombtr, cantidad, apellido...
+		//Orden de propiedades sin orden
+		List<Map<String, Object>> nuevaLista = new ArrayList<>();
+		for (Map<String, Object> item : countTop20Beneficiarios) {
+            Map<String, Object> orderedBeneficiario = new LinkedHashMap<>();
+            orderedBeneficiario.put("id", item.get("id"));
+            orderedBeneficiario.put("nombre", item.get("nombre"));
+            orderedBeneficiario.put("apellido", item.get("apellido"));
+            orderedBeneficiario.put("descripcion", item.get("nombreDescripcion"));
+            orderedBeneficiario.put("cantidad", item.get("cantidad"));
+            item = orderedBeneficiario;
+            nuevaLista.add(orderedBeneficiario);
+        }
+		return nuevaLista;
+	}
+	
+	public List<Map<String, Object>> countUltimosProximos12meses() {
+		LocalDateTime now = LocalDateTime.now();
+		LocalDateTime start = now.minusMonths(12).withDayOfMonth(1).withHour(0).withMinute(0).withSecond(0).withNano(0);
+		LocalDateTime end = now.plusMonths(12).withDayOfMonth(YearMonth.from(LocalDateTime.now().plusMonths(11)).lengthOfMonth())
+				.withHour(23).withMinute(59).withSecond(59).withNano(999);
+		List<Map<String, Object>> countContactosCreatedLast12MonthsByMonth = actividadRepository.findActividadesByFechaBetween(start, end);
+		//return countContactosCreatedLast12MonthsByMonth;//No incluye meses con 0 actividades
+		
+		// Generar meses/años faltantes con cantidad 0
+	    List<Map<String, Object>> result = new ArrayList<>();
+	    LocalDateTime currentMonth = start;
+	    while (currentMonth.isBefore(end)) {
+	        int month = currentMonth.getMonthValue();
+	        int year = currentMonth.getYear();
+	        boolean found = false;
+
+	        for (Map<String, Object> map : countContactosCreatedLast12MonthsByMonth) {
+	            int mapMonth = (int) map.get("month");
+	            int mapYear = (int) map.get("year");
+
+	            if (month == mapMonth && year == mapYear) {
+	                result.add(map);
+	                found = true;
+	                break;
+	            }
+	        }
+
+	        if (!found) {
+	            Map<String, Object> missingMonth = new HashMap<>();
+	            missingMonth.put("month", month);
+	            missingMonth.put("year", year);
+	            missingMonth.put("cantidad", 0);
+	            result.add(missingMonth);
+	        }
+
+	        currentMonth = currentMonth.plusMonths(1);
+	    }
+
+	    return result;
 	}
 	
 }

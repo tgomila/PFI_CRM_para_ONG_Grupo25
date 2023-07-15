@@ -3,6 +3,7 @@ package com.pfi.crm.multitenant.tenant.service;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -169,6 +170,11 @@ public class UserService {
 	
 	public boolean existeUserPorIdContacto(Long id) {
 		return userRepository.existsByContacto_Id(id);
+	}
+	
+	public List<Map<String, Object>> getUsersWithContacto() {
+		return userRepository.getUsersWithContacto();
+		//return userRepository.getUsersWithContactoAndPersona();
 	}
 	
 	

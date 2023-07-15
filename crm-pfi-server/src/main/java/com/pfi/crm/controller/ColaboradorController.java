@@ -102,6 +102,13 @@ public class ColaboradorController  {
 		return colaboradorService.countCreadosUltimos12meses();
 	}
 	
+	@GetMapping("/grafico/contar_categoria_edad")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	public List<Map<String, Object>> obtenerConteoPorEtapasEdad(@CurrentUser UserPrincipal currentUser) {
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.COLABORADOR, "Contar cuántos colaboradores hay, por categoría de edad");
+		return colaboradorService.obtenerConteoPorEtapasEdad();
+	}
+	
 	
 	
 	

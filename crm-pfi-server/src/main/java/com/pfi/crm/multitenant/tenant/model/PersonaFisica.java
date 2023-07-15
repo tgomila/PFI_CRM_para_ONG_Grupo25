@@ -3,6 +3,7 @@ package com.pfi.crm.multitenant.tenant.model;
 import java.time.LocalDate;
 import java.time.Period;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -28,6 +29,8 @@ public class PersonaFisica extends ContactoAbstract{
 	private int dni;
 	private String nombre;
 	private String apellido;
+
+	@Column(columnDefinition = "DATE")
 	private LocalDate fechaNacimiento;
 	private boolean estadoActivoPersonaFisica;
 	//private int edad;	//Necesario sabiendo la fecha de nacimiento?

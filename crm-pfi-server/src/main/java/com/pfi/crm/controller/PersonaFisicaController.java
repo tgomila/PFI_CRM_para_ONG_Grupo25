@@ -104,6 +104,13 @@ public class PersonaFisicaController {
 		return personaFisicaService.countCreadosUltimos12meses();
 	}
 	
+	@GetMapping("/grafico/contar_categoria_edad")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	public List<Map<String, Object>> obtenerConteoPorEtapasEdad(@CurrentUser UserPrincipal currentUser) {
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.PERSONA, "Contar cuántas personas hay, por categoría de edad");
+		return personaFisicaService.obtenerConteoPorEtapasEdad();
+	}
+	
 	
 	
 	
