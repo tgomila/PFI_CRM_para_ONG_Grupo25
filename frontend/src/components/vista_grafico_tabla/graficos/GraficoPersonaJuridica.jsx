@@ -1,18 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { GraficoCreadosUltimoAño } from './Grafico_creadosUltimoAño';
-import { GraficoCategoriaEdades } from './Grafico_rango_edad';
-import PersonaService from "../../../services/PersonaService";
+import PersonaJuridicaService from "../../../services/PersonaJuridicaService";
 
-const GraficoPersona = ({visibilidadInput}) => {
+const GraficoPersonaJuridica = ({visibilidadInput}) => {
   
   //Que cambiar si copias y pegas este código:
-  const Service = PersonaService;//Tambien cambiar el "Service" importado
+  const Service = PersonaJuridicaService;//Tambien cambiar el "Service" importado
   const el_la = "la";
-  const nombreDatoSingular = "persona";
+  const nombreDatoSingular = "persona jurídica";
   const las_los = "las";
-  const nombreDatoPlural = "personas";
+  const nombreDatoPlural = "personas jurídicas";
   //No olvides cambiar luego del return "{showContent && (" agregar o quitar los gráficos que querés
   //   y agregar <br/> al final
+
+  //no se usa useState porque devuelve array de 2 variables, uno para la variable y otro para "set"
 
   const [useDataExample, setUseDataExample] = useState(false);
   const [visibilidad, setVisibilidad] = useState("NO_VISTA");
@@ -31,15 +32,6 @@ const GraficoPersona = ({visibilidadInput}) => {
   const handleToggleContent = () => {
     setShowContent(!showContent);
   };
-
-  const dataExampleEdad = [
-    { rangoEdad: "0 a 5 años", etapa: "Primera Infancia", cantidad: 2 },
-    { rangoEdad: "6 a 11 años", etapa: "Infancia", cantidad: 30 },
-    { rangoEdad: "12 a 18 años", etapa: "Adolescencia", cantidad: 47 },
-    { rangoEdad: "19 a 26 años", etapa: "Juventud", cantidad: 6 },
-    { rangoEdad: "27 a 59 años", etapa: "Adultez", cantidad: 17 },
-    { rangoEdad: "mayor a 60 años", etapa: "Persona mayor", cantidad: 4 },
-  ];
 
   return (
     <div>
@@ -69,17 +61,6 @@ const GraficoPersona = ({visibilidadInput}) => {
               las_los={las_los}
               nombreDatoPlural={nombreDatoPlural}
             />
-            <GraficoCategoriaEdades
-              showContent={showContent}
-              useDataExample={useDataExample}
-              visibilidadInput={visibilidadInput}
-              dataExampleInput={dataExampleEdad}
-              Service={Service}
-              el_la={el_la}
-              nombreDatoSingular={nombreDatoSingular}
-              las_los={las_los}
-              nombreDatoPlural={nombreDatoPlural}
-            />
             <br/>
           </div>
         )}
@@ -91,5 +72,5 @@ const GraficoPersona = ({visibilidadInput}) => {
 };
 
 export {
-  GraficoPersona
+  GraficoPersonaJuridica
 }

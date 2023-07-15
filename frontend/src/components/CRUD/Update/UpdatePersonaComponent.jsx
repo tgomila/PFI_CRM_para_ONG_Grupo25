@@ -100,8 +100,8 @@ function UpdatePersonaComponent() {
         setLoading(true);
 
         form.current.validateAll();
-        
-       let data = {...persona}; //Copio datos a "data" para el json de alta
+
+        let data = {...persona}; //Copio datos a "data" para el json de alta
         if (checkBtn.current.context._errors.length === 0) {
             PersonaService.update(data).then
                 (response => {
@@ -150,13 +150,14 @@ function UpdatePersonaComponent() {
     }
 
     useEffect(() => {
-        if(location.state.id){
+        if(location.state && location.state.id){
             window.scrollTo({ top: 0, behavior: "smooth" });
             //console.log(location.state.id);
             setIdToSearch(location.state.id);
             //console.log(idToSearch);
             handleEntrySearch();
         }
+        window.scrollTo({ top: 0, behavior: "smooth" });
     }, []);
 
     const [isFotoClicked, setIsFotoClicked] = useState(false);
@@ -164,6 +165,37 @@ function UpdatePersonaComponent() {
     const handleFotoClick = () => {
         setIsFotoClicked(!isFotoClicked);
     };
+
+    const [fotoSubida, setFotoSubida] = useState(false);
+    const handleFotoChange = () => {
+        if(fotoSubida && persona.id){
+            console.log("Voy a subirlo");
+            console.log(fotoSubida);
+            console.log("Voy a subirlo");
+            ImageService.uploadImageContacto(persona.id, fotoSubida).then
+                (response => {
+                    console.log("Se subió la foto :D");
+                    console.log(response);
+                },
+                (error) => {
+                    console.log("error:");
+                    console.log(error);
+                }
+            );
+        }
+        else{
+            console.log("No hay foto para subir");
+            console.log("fotoSubida:");
+            console.log(fotoSubida);
+            console.log("persona.id");
+            console.log(persona.id);
+        }
+    }
+
+    useEffect(() => {
+        console.log("Cambió fotoSubida");
+        console.log(fotoSubida);
+    }, [fotoSubida]);
     
     return (
         <div className="submit-form">
@@ -223,7 +255,7 @@ function UpdatePersonaComponent() {
                                 {(forzarRenderizado) && (<div></div>)}
                                 {(!mostrarSearchID) && (
                                     <div className="form-group">
-                                        <FotoPerfil id={persona.id} visibilidad={"EDITAR"} />
+                                        <FotoPerfil id={persona.id} setFotoSubida={setFotoSubida} visibilidad={"EDITAR"} />
                                         <Form onSubmit={handleSubmit} ref={form}>
                                             <PersonaUpdateInput data={persona} handleInputChange={handleInputChange} />
 
@@ -248,6 +280,9 @@ function UpdatePersonaComponent() {
                                             )}
                                             <CheckButton style={{ display: "none" }} ref={checkBtn} />
                                         </Form>
+                                        <button className="btn btn-danger" onClick={handleFotoChange} style={{marginLeft: "00px", marginRight: "10px"}}>
+                                            Subir foto :v
+                                        </button>
                                         <button className="btn btn-danger" onClick={cancel} style={{marginLeft: "00px"}}>
                                             Cancelar
                                         </button>

@@ -34,6 +34,10 @@ class PersonaService {
         return axios.get(BACKEND_API_BASE_URL + 'personafisica/grafico/contar_creados/ultimos_12_meses', { headers: authHeader() });
     }
 
+    categoriaEdades(){
+        return axios.get(BACKEND_API_BASE_URL + 'personafisica/grafico/contar_categoria_edad', { headers: authHeader() });
+    }
+
     //Esto se usa en caso de tabla dinámica, y asignar nombre real de 'headers' de cada columna de la tabla
     getColumnNames(){
         return axios.get(BACKEND_API_BASE_URL + 'personafisica/nombres_tabla', { headers: authHeader() });

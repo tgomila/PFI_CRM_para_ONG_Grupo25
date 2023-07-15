@@ -212,13 +212,9 @@ const getFotoWithInfo = (dtoId, tipoFoto, tamanio, fotoInfoDelBackendActual) => 
     return new Blob([u8arr], { type: mime });
   }
 
-  const getFotoFromBackend = () => {
-    let fechaDeCreacion;
-    return axios.get(BACKEND_API_BASE_URL + direccionInfo, { headers: authHeader() })
-      .then((response) => {
-        return getFotoFromBackendWithInfo(dtoId, tipoFoto, tamanio, response.data);
-      }
-    );
+  const getFotoFromBackend = async () => {
+    const response = await axios.get(BACKEND_API_BASE_URL + direccionInfo, { headers: authHeader() });
+    return getFotoFromBackendWithInfo(dtoId, tipoFoto, tamanio, response.data);
 
   }
 
@@ -289,6 +285,59 @@ const getFotoFromBackendWithInfo = (dtoId, tipoFoto, tamanio, fotoInfoBackend) =
 
 };
 
+async function fetchBlob(url) {
+  const response = await fetch(url);
+  return await response.blob();
+}
+
+async function blobToBase64(blob) {
+  return new Promise((resolve) => {//Para que no me devuelva una foto nula, uso "Promise"
+    const reader = new FileReader();
+    reader.onload = function(event) {
+      const imagenDataURL = event.target.result;
+      resolve(imagenDataURL);
+      //Esto se va a ejecutar 2do en el promise
+    };
+    reader.readAsDataURL(blob);
+    //Esto se va a ejecutar 1ero en el promise
+  });
+}
+
+const uploadImageContacto = async (id, imageUrl) => {
+  const url = BACKEND_API_BASE_URL + 'images/contacto/' + id;
+  console.log("url:");
+  console.log(url);
+  console.log("imageUrl:");
+  console.log(imageUrl);
+  
+  const blob = await fetchBlob(imageUrl);
+  console.log("blob:");
+  console.log(blob);
+
+  // Obtener la extensión del archivo
+  const fileExtension = blob.type.split('/')[1]; // Obtiene la parte después de "image/"
+  const fileName = `image.${fileExtension}`;
+  
+  const base64File = await blobToBase64(blob);
+  console.log("base64File:");
+  console.log(base64File);
+  
+  const formData = new FormData();
+  formData.append('file', blob, fileName);
+  console.log("formData:");
+  console.log(formData);
+
+  const config = {
+    headers: {
+      ...authHeader(),
+      'Content-Type': 'multipart/form-data',
+    },
+  };
+
+  console.log("Inicio axios");
+  return axios.post(url, formData, config);
+};
+
 const ImageService = {
     getAllContactoTablaFotos,
     getAllFotos,
@@ -296,6 +345,7 @@ const ImageService = {
     getFotoPerfil,
     getFotoContactoTabla,
     getFotoContactoCompleta,
+    uploadImageContacto,
 };
 
 export default ImageService;

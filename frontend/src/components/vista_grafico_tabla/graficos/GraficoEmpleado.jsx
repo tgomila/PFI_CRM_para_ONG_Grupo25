@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { GraficoCreadosUltimoAño } from './Grafico_creadosUltimoAño';
 import { GraficoCategoriaEdades } from './Grafico_rango_edad';
-import PersonaService from "../../../services/PersonaService";
+import EmpleadoService from "../../../services/EmpleadoService";
 
-const GraficoPersona = ({visibilidadInput}) => {
+const GraficoEmpleado = ({visibilidadInput}) => {
   
   //Que cambiar si copias y pegas este código:
-  const Service = PersonaService;//Tambien cambiar el "Service" importado
-  const el_la = "la";
-  const nombreDatoSingular = "persona";
-  const las_los = "las";
-  const nombreDatoPlural = "personas";
+  const Service = EmpleadoService;//Tambien cambiar el "Service" importado
+  const el_la = "el";
+  const nombreDatoSingular = "empleado";
+  const las_los = "los";
+  const nombreDatoPlural = "empleados";
   //No olvides cambiar luego del return "{showContent && (" agregar o quitar los gráficos que querés
   //   y agregar <br/> al final
 
@@ -33,12 +33,12 @@ const GraficoPersona = ({visibilidadInput}) => {
   };
 
   const dataExampleEdad = [
-    { rangoEdad: "0 a 5 años", etapa: "Primera Infancia", cantidad: 2 },
-    { rangoEdad: "6 a 11 años", etapa: "Infancia", cantidad: 30 },
-    { rangoEdad: "12 a 18 años", etapa: "Adolescencia", cantidad: 47 },
+    { rangoEdad: "0 a 5 años", etapa: "Primera Infancia", cantidad: 0 },
+    { rangoEdad: "6 a 11 años", etapa: "Infancia", cantidad: 0 },
+    { rangoEdad: "12 a 18 años", etapa: "Adolescencia", cantidad: 0 },
     { rangoEdad: "19 a 26 años", etapa: "Juventud", cantidad: 6 },
     { rangoEdad: "27 a 59 años", etapa: "Adultez", cantidad: 17 },
-    { rangoEdad: "mayor a 60 años", etapa: "Persona mayor", cantidad: 4 },
+    { rangoEdad: "mayor a 60 años", etapa: "Persona mayor", cantidad: 2 },
   ];
 
   return (
@@ -80,7 +80,6 @@ const GraficoPersona = ({visibilidadInput}) => {
               las_los={las_los}
               nombreDatoPlural={nombreDatoPlural}
             />
-            <br/>
           </div>
         )}
       </div>
@@ -91,5 +90,5 @@ const GraficoPersona = ({visibilidadInput}) => {
 };
 
 export {
-  GraficoPersona
+  GraficoEmpleado
 }

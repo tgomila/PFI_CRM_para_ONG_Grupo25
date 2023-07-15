@@ -3,14 +3,14 @@ import { GraficoBeneficiario } from './graficos/GraficoBeneficiario'
 import TablaBeneficiario from "./tables/TablaBeneficiario";
 import modulosService from "../../services/modulosService";
 
-import "../../Styles/TablasDinamicas.scss";
+import "../../Styles/Graficos.scss";
 
 function BeneficiarioVista() {
   const [visibilidad, setVisibilidad] = useState("");
   const [isVisibilidadReady, setIsVisibilidadReady] = useState(false);
 
   useEffect(() => {
-    let modulo = modulosService.getVisibilidadByModulo('PERSONA');
+    let modulo = modulosService.getVisibilidadByModulo('BENEFICIARIO');
     modulo.then((response) => {
       if (response) {
         setVisibilidad(response);
@@ -20,9 +20,9 @@ function BeneficiarioVista() {
   }, []);
 
   return (
-    <div className="Vista">
+    <div className="ComponentePrincipalGraficos">
       {isVisibilidadReady && (
-        <div className="ComponentePrincipal">
+        <div>
 
           <GraficoBeneficiario
             visibilidadInput={visibilidad}

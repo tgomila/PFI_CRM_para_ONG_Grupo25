@@ -163,21 +163,21 @@ const Sidebar = ({ children }) => {
                 case 'Marketplace':
                     commonItems['icon'] = <MdLocalGroceryStore />;break;
 
-                case 'Contacto estático':
-                    commonItems['icon'] = <MdLocalGroceryStore />;break;
+                //case 'Contacto estático':
+                //    commonItems['icon'] = <MdLocalGroceryStore />;break;
             }
             return commonItems;
 
         });
         //TODO luego quitar
-        let commonItemsAux = {
-            order: 21,
-            path: "/contacto_estatico",
-            name: "Contacto estático",
-            tipoVisibilidad: "EDITAR",
-            icon: <AiFillContacts />
-        };
-        menuItem.push(commonItemsAux);
+        // let commonItemsAux = {
+        //     order: 21,
+        //     path: "/contacto_estatico",
+        //     name: "Contacto estático",
+        //     tipoVisibilidad: "EDITAR",
+        //     icon: <AiFillContacts />
+        // };
+        // menuItem.push(commonItemsAux);
         
     }
     else {

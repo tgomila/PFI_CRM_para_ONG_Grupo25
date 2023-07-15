@@ -260,7 +260,7 @@ function TablasDinamicas(redireccionamiento) {
 
   return (
     <div className="TablasDinamicas">
-      <div className="ComponentePrincipal">
+      <div className="componentePrincipal">
         <h2 className="TituloComponentePrincipal">Tablas Dinámicas</h2>
 
         <div className="row">

@@ -11,7 +11,7 @@ import "../../../Styles/CRUD.scss";
  * @param visibilidad es "EDITAR" para mostrar botones de modificar foto, o "SOLO_VISTA" para no mostrar botones
  * @returns 
  */
-const FotoPerfil = ({ id, visibilidad }) => {
+const FotoPerfil = ({ id, setFotoSubida, visibilidad }) => {
     const [foto, setFoto] = useState(null);
     const [isFotoClicked, setIsFotoClicked] = useState(false);
     const handleFotoClick = () => {
@@ -22,7 +22,10 @@ const FotoPerfil = ({ id, visibilidad }) => {
         const file = event.target.files[0];
         if (file) {
           setFoto(URL.createObjectURL(file));
+          setFotoSubida(URL.createObjectURL(file));
           console.log("Se cambió la foto");
+          console.log(file);
+          console.log(URL.createObjectURL(file));
         }
     };
     useEffect(() => {
@@ -58,7 +61,7 @@ const FotoPerfil = ({ id, visibilidad }) => {
                 style={{ display: "none" }}
                 onChange={handleFileChange}
               />
-              <button onClick={() => fileInputRef.current.click()}>
+              <button className="btn btn-info" onClick={() => fileInputRef.current.click()}>
                 Agregar/Modificar foto
               </button>
             </div>
@@ -69,6 +72,5 @@ const FotoPerfil = ({ id, visibilidad }) => {
 
 
 export {
-    //Otros
     FotoPerfil,
 }

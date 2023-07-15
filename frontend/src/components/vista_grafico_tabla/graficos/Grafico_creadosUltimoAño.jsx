@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import Chart from 'chart.js/auto';
 import { Bar } from 'react-chartjs-2';
+import { Card } from "react-bootstrap";
+import "../../../Styles/Graficos.scss";
 
 const monthNames = [
   "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
@@ -69,7 +71,14 @@ const VerticalBarChart = ({ data, el_la, nombreDatoSingular, las_los, nombreDato
     },
   };
 
-  return <Bar data={chartData} options={chartOptions} />;
+  return (
+    <div>
+      <Card className="graficos-card">
+        <Bar data={chartData} options={chartOptions} />
+      </Card>
+    </div>
+    
+  );
 };
 
 /**
@@ -83,7 +92,7 @@ const VerticalBarChart = ({ data, el_la, nombreDatoSingular, las_los, nombreDato
  * @param {string} nombrePlural - Texto recomendado 'contactos'.
  * @returns {JSX.Element} Componente de React que muestra la tabla de los 5 mejores meses.
  */
-const Top5meses = ({data}, las_los, nombreDatoPlural) => {
+const Top5meses = ({data, las_los, nombreDatoPlural}) => {
   const top5Data = data
     .slice()
     .sort((a, b) => b.count - a.count)
@@ -92,27 +101,29 @@ const Top5meses = ({data}, las_los, nombreDatoPlural) => {
   
   return (
     <div>
-      <h4>Top 5 meses</h4>
-      <div className="table-responsive">
-        <table className="table">
-          <thead>
-            <tr>
-              <th scope="col" style={{ color: 'white' }}>Mes</th>
-              <th scope="col" style={{ color: 'white' }}>Año</th>
-              <th scope="col" style={{ color: 'white' }}>{nombreDatoPlural} nuev{las_los === 'las' ? 'a' : 'o'}s</th>
-            </tr>
-          </thead>
-          <tbody>
-            {top5Data.map((item, index) => (
-              <tr key={index}>
-                <td>{item.month}</td>
-                <td>{item.year}</td>
-                <td>{item.count}</td>
+      <Card className="graficos-card">
+        <h4>Top 5 meses</h4>
+        <div className="table-responsive">
+          <table className="table">
+            <thead>
+              <tr>
+                <th scope="col" style={{ color: 'white' }}>Mes</th>
+                <th scope="col" style={{ color: 'white' }}>Año</th>
+                <th scope="col" style={{ color: 'white' }}>{nombreDatoPlural} nuev{las_los === 'las' ? 'a' : 'o'}s</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+            <tbody>
+              {top5Data.map((item, index) => (
+                <tr key={index}>
+                  <td>{item.month}</td>
+                  <td>{item.year}</td>
+                  <td>{item.count}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </Card>
     </div>
   );
 }
@@ -172,22 +183,24 @@ const GraficoCreadosUltimoAño = ({showContent, useDataExample, Service, el_la, 
       <div>
         {(showContent && data) && (
           <div>
-            <h2>Gráficos de {nombreDatoPlural} cread{las_los === 'las' ? 'a' : 'o'}s en el último año</h2>
-            <div className="row">
-              <div className="col-md-8">
-                  {(las_los && nombreDatoPlural) ? (
-                    <h4>Nuev{las_los === 'las' ? 'a' : 'o'}s {nombreDatoPlural} por mes/año</h4>
-                  ) : (
-                  <h4>Nuevos agregados por mes/año</h4>
-                  )}
-                <div style={{ height: '400px', width: '100%' }}>
-                  <VerticalBarChart data={data ? data : []} />
+            <Card className="graficos-card-father">
+              <h2>Gráficos de {nombreDatoPlural} cread{las_los === 'las' ? 'a' : 'o'}s en el último año</h2>
+              <div className="row">
+                <div className="col-md-8">
+                    {(las_los && nombreDatoPlural) ? (
+                      <h4>Nuev{las_los === 'las' ? 'a' : 'o'}s {nombreDatoPlural} por mes/año</h4>
+                    ) : (
+                    <h4>Nuevos agregados por mes/año</h4>
+                    )}
+                  <div style={{ height: '400px', width: '100%' }}>
+                    <VerticalBarChart data={data ? data : []} las_los={las_los} nombreDatoPlural={nombreDatoPlural} />
+                  </div>
+                </div>
+                <div className="col-md-4">
+                  <Top5meses data={data ? data : []} las_los={las_los} nombreDatoPlural={nombreDatoPlural} />
                 </div>
               </div>
-              <div className="col-md-4">
-                <Top5meses data={data ? data : []} las_los={las_los} nombreDatoPlural={nombreDatoPlural} />
-              </div>
-            </div>
+            </Card>
           </div>
         )}
       </div>

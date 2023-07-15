@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { GraficoPersona } from './graficos/GraficoPersona'
-import TablaPersona from "./tables/TablaPersona";
+import { GraficoPersonaJuridica } from './graficos/GraficoPersonaJuridica'
+import TablaPersonaJuridica from "./tables/TablaPersonaJuridica";
 import modulosService from "../../services/modulosService";
 
 import "../../Styles/Graficos.scss";
 
-function PersonaVista() {
+function PersonaJuridicaVista() {
   const [visibilidad, setVisibilidad] = useState("");
   const [isVisibilidadReady, setIsVisibilidadReady] = useState(false);
 
   useEffect(() => {
-    let modulo = modulosService.getVisibilidadByModulo('PERSONA');
+    let modulo = modulosService.getVisibilidadByModulo('PERSONAJURIDICA');
     modulo.then((response) => {
       if (response) {
         setVisibilidad(response);
@@ -24,20 +24,24 @@ function PersonaVista() {
       {isVisibilidadReady && (
         <div>
 
-          <GraficoPersona
+          <GraficoPersonaJuridica
             visibilidadInput={visibilidad}
           />
           <br/>
 
-          <TablaPersona
+          <TablaPersonaJuridica
             visibilidadInput={visibilidad}
           />
 
         </div>
 
       )}
+
+
+
+
     </div>
   );
 }
 
-export default PersonaVista;
+export default PersonaJuridicaVista;

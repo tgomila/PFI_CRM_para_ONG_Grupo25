@@ -11,6 +11,13 @@ import RealizarPago from "./components/RealizarPago";
 import ContactoVista from "./components/vista_grafico_tabla/ContactoVista";
 import PersonaVista from "./components/vista_grafico_tabla/PersonaVista";
 import BeneficiarioVista from "./components/vista_grafico_tabla/BeneficiarioVista";
+import EmpleadoVista from "./components/vista_grafico_tabla/EmpleadoVista";
+import ProfesionalVista from "./components/vista_grafico_tabla/ProfesionalVista";
+import ColaboradorVista from "./components/vista_grafico_tabla/ColaboradorVista";
+import ConsejoAdHonoremVista from "./components/vista_grafico_tabla/ConsejoAdHonoremVista";
+import VoluntarioVista from "./components/vista_grafico_tabla/VoluntarioVista";
+import PersonaJuridicaVista from "./components/vista_grafico_tabla/PersonaJuridicaVista";
+
 import FooterComponent from "./components/FooterComponent";
 
 //Creates
@@ -227,20 +234,20 @@ const App = () => {
           {/**<br></br><br></br> */}
           <Routes>
 
+            {/* Lista dinámica */}
+            {/*<Route path="/personafisica" element={<TablasDinamicas redireccionamiento='personafisica' />} />*/}
+
             {/* Lista estática con gráficos */}
             <Route path="/contacto" element={<ContactoVista/>} />
-
-            {/* Lista dinámica */}
             <Route path="/personafisica" element={<PersonaVista/>} />
-            {/*<Route path="/personafisica" element={<TablasDinamicas redireccionamiento='personafisica' />} />*/}
             <Route path="/beneficiario" element={<BeneficiarioVista/>} />
-            {/*<Route path="/beneficiario" element={<TablasDinamicas redireccionamiento='beneficiario'/>} />*/}
-            <Route path="/voluntario" element={<TablasDinamicas redireccionamiento='voluntario' />} />
-            <Route path="/empleado" element={<TablasDinamicas redireccionamiento='empleado' />} />
-            <Route path="/colaborador" element={<TablasDinamicas redireccionamiento='colaborador' />} />
-            <Route path="/consejoadhonorem" element={<TablasDinamicas redireccionamiento='consejoadhonorem' />} />
-            <Route path="/personajuridica" element={<TablasDinamicas redireccionamiento='personajuridica' />} />
-            <Route path="/profesional" element={<TablasDinamicas redireccionamiento='profesional' />} />
+            <Route path="/voluntario" element={<VoluntarioVista/>} />
+            <Route path="/empleado" element={<EmpleadoVista/>} />
+            <Route path="/colaborador" element={<ColaboradorVista/>} />
+            <Route path="/consejoadhonorem" element={<ConsejoAdHonoremVista/>} />
+            <Route path="/personajuridica" element={<PersonaJuridicaVista/>} />
+            <Route path="/profesional" element={<ProfesionalVista/>} />
+            
             <Route path="/users" element={<TablasDinamicas redireccionamiento='users' />} />
             <Route path="/actividad" element={<TablaActividad redireccionamiento='actividad' />} />
             <Route path="/tablaActividadBeneficiario" element={<TablaActividadBeneficiario redireccionamiento='tablaActividadBeneficiario' />} />

@@ -3,7 +3,7 @@ import { GraficoContacto } from './graficos/GraficoContacto'
 import TablaContacto from "./tables/TablaContacto";
 import modulosService from "../../services/modulosService";
 
-import "../../Styles/TablasDinamicas.scss";
+import "../../Styles/Graficos.scss";
 
 function ContactoVista() {
   const [visibilidad, setVisibilidad] = useState("");
@@ -20,9 +20,9 @@ function ContactoVista() {
   }, []);
 
   return (
-    <div className="Vista">
+    <div className="ComponentePrincipalGraficos">
       {isVisibilidadReady && (
-        <div className="ComponentePrincipal">
+        <div>
 
           <GraficoContacto
             visibilidadInput={visibilidad}

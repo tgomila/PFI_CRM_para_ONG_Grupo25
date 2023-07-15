@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { GraficoPersona } from './graficos/GraficoPersona'
-import TablaPersona from "./tables/TablaPersona";
+import { GraficoConsejoAdHonorem } from './graficos/GraficoConsejoAdHonorem'
+import TablaConsejoAdHonorem from "./tables/TablaConsejoAdHonorem";
 import modulosService from "../../services/modulosService";
 
 import "../../Styles/Graficos.scss";
 
-function PersonaVista() {
+function ConsejoAdHonoremVista() {
   const [visibilidad, setVisibilidad] = useState("");
   const [isVisibilidadReady, setIsVisibilidadReady] = useState(false);
 
   useEffect(() => {
-    let modulo = modulosService.getVisibilidadByModulo('PERSONA');
+    let modulo = modulosService.getVisibilidadByModulo('CONSEJOADHONOREM');
     modulo.then((response) => {
       if (response) {
         setVisibilidad(response);
@@ -24,20 +24,24 @@ function PersonaVista() {
       {isVisibilidadReady && (
         <div>
 
-          <GraficoPersona
+          <GraficoConsejoAdHonorem
             visibilidadInput={visibilidad}
           />
           <br/>
 
-          <TablaPersona
+          <TablaConsejoAdHonorem
             visibilidadInput={visibilidad}
           />
 
         </div>
 
       )}
+
+
+
+
     </div>
   );
 }
 
-export default PersonaVista;
+export default ConsejoAdHonoremVista;
