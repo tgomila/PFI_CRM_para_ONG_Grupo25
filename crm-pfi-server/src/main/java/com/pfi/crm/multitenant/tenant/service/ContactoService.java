@@ -80,11 +80,12 @@ public class ContactoService {
 		String cuit = payload.getCuit();
 		if(cuit != null && contactoRepository.existsByCuit(cuit)) {
 			Contacto contactoYaExistente = contactoRepository.findByCuit(cuit).get();
-			throw new BadRequestException("Ha introducido Cuit de contacto: " + contactoYaExistente.getCuit() + " que ya existe "
-					+ "con número de ID: '" + contactoYaExistente.getId() + "', "
-					+ "y nombre/descripción: '" + contactoYaExistente.getNombreDescripcion() != null ? contactoYaExistente.getNombreDescripcion() : "(vacío)" + "'. "
-					+ "y telefono: '" + contactoYaExistente.getTelefono() != null ? contactoYaExistente.getTelefono() : "(vacío)" + "'. "
-					+ "¿No querrá decir modificar en vez de alta? "
+			throw new BadRequestException(
+					"Ha introducido Cuit de contacto: " + contactoYaExistente.getCuit() + " que ya existe "
+					+  (contactoYaExistente.getId() != null ? ("con número de ID: '" + contactoYaExistente.getId()) : "") + "', "
+					+ "y nombre/descripción: '" + (contactoYaExistente.getNombreDescripcion() != null ? contactoYaExistente.getNombreDescripcion() : "(vacío)") + "'. "
+					+ "y telefono: '" + (contactoYaExistente.getTelefono() != null ? contactoYaExistente.getTelefono() : "(vacío)") + "'. "
+					+ "¿No querrá decir modificar o asociar al contacto precargado, en vez de alta? "
 					+ "O quizás verifique si ingresó bien el Cuit");
 		}
 		return contactoRepository.save(new Contacto(payload));
@@ -98,11 +99,15 @@ public class ContactoService {
 	public Contacto altaModificarContactoModel (ContactoAbstractPayload payload) {
 		if(payload == null)
 			throw new BadRequestException("Ha introducido un null como contacto a dar de alta/modificar, por favor ingrese un contacto.");
-		if(  (payload.getId() != null && contactoRepository.existsById(payload.getId())) 
-		  || (payload.getCuit()!=null && contactoRepository.existsByCuit(payload.getCuit())) ) //Si existe ID/Cuit contacto asociado de alta:
+		boolean existePorId = payload.getId() != null ? contactoRepository.existsById(payload.getId()) : false;
+		//boolean existePorCuit = payload.getCuit()!=null ? contactoRepository.existsByCuit(payload.getCuit()) : false;
+		if(existePorId) {
+			//Este caso es cuando se desea asociar el contacto ya existente, principalmente
 			return this.modificarContactoModel(payload);
-		else
+		} else {
+			//Si ingresó un cuit que ya existía previamente (por error y no desea asociarlo por id nulo, no permito darlo de alta y le mando error
 			return this.altaContactoModel(payload);
+		}
 	}
 	
 	public String bajaContacto(Long id) {
@@ -201,7 +206,7 @@ public class ContactoService {
 		if(model == null) {
 			throw new BadRequestException("No se ha podido encontrar el contacto con ID o Cuit");
 		}
-		if(!existeContacto(payload.getId()))
+		if(payload.getId() != null && !existeContacto(payload.getId()))
 			throw new BadRequestException("Ha ingresado un ID '" + payload.getId().toString() + "' a modificar, y no existe. "
 					+ "Es posible que sea otro número o haya sido dado de baja.");
 		

@@ -152,6 +152,10 @@ public class ProductoService {
 		return productoRepository.save(productoModel);
 	}
 	
+	public boolean existeProducto(Long id) {
+		return productoRepository.existsById(id);
+	}
+	
 	
 	
 	

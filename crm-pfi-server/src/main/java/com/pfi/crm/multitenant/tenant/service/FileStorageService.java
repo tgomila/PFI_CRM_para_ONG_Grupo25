@@ -24,6 +24,7 @@ import java.util.stream.Stream;
 
 import javax.imageio.ImageIO;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
@@ -46,6 +47,19 @@ import com.pfi.crm.security.UserPrincipal;
 @Service
 public class FileStorageService {
 	private final Path root = Paths.get("./fileTenantDB");
+	
+	@Autowired
+	private ContactoService contactoService;
+	
+	@Autowired
+	private ProductoService productoService;
+	
+	@Autowired
+	private ActividadService actividadService;
+	
+	@Autowired
+	private ProgramaDeActividadesService programaDeActividadesService;
+
 	
 	//public void init() {
 	//	try {
@@ -330,7 +344,7 @@ public class FileStorageService {
 			} else if(resource_png.exists() || resource_png.isReadable()) {
 				fecha_mas_tardia = getFechaMasTardia(fileFotoPerfil_png);
 			} else {
-				String mensaje = "Foto no encontrada para el contacto con el id: " + idContacto;
+				//String mensaje = "Foto no encontrada para el contacto con el id: " + idContacto;
 		        ImagenPayload imagen = new ImagenPayload(idContacto, "contacto", null);
 				return ResponseEntity.ok().body(imagen);
 				//throw new ResponseStatusException(HttpStatus.NOT_FOUND, mensaje);
@@ -372,102 +386,55 @@ public class FileStorageService {
 	}
 	
 	public void saveFotoContacto(MultipartFile file, Long id) {
-		try {
-			//Preparo su nombre "miFoto.jpg" a: "contacto_3.jpg"
-			String originalFileName = StringUtils.cleanPath(file.getOriginalFilename());
-		    String extension = StringUtils.getFilenameExtension(originalFileName);
-		    if(!extension.equalsIgnoreCase("png") && !extension.equalsIgnoreCase("jpg") && !extension.equalsIgnoreCase("jpeg")) {
-		    	throw new BadRequestException("Tiene que subir un archivo de tipo foto .jpg o .png");
-		    }
-		    String newFileName = "contacto_" + id.toString() + "." + extension;
-			
-		    //Preparo su path
-		    String tenantName = DBContextHolder.getCurrentDb();
-			Path fileFoto = root.resolve(tenantName).resolve("contacto").resolve(newFileName);
-			crearCarpeta(fileFoto.getParent());
-			
-			//Guardo el archivo
-			Files.copy(file.getInputStream(), fileFoto, StandardCopyOption.REPLACE_EXISTING);
-			
-		} catch(Exception e) {
-			if(e instanceof FileAlreadyExistsException) {
-				throw new RuntimeException("Un archivo con ese nombre ya existe.");
-			}
-			throw new RuntimeException(e.getMessage());
-		}
+		if(!contactoService.existeContacto(id))
+			throw new BadRequestException("Error al guardar la imágen, el contacto con ID: '" + id + "' no existe en la base de datos.");
+		saveFotoGeneric(file, id, "contacto");
 	}
 	
 	public void saveFotoProducto(MultipartFile file, Long id) {
-		try {
-			if(id == null)
-				throw new RuntimeException("Especifique el ID antes de subir.");
-			//Preparo su nombre "miFoto.jpg" a: "contacto_3.jpg"
-			String originalFileName = StringUtils.cleanPath(file.getOriginalFilename());
-		    String extension = StringUtils.getFilenameExtension(originalFileName);
-		    if(!extension.equalsIgnoreCase("png") && !extension.equalsIgnoreCase("jpg") && !extension.equalsIgnoreCase("jpeg")) {
-		    	throw new BadRequestException("Tiene que subir un archivo de tipo foto .jpg o .png");
-		    }
-		    String newFileName = "producto_" + id.toString() + "." + extension;
-			
-		    //Preparo su path
-		    String tenantName = DBContextHolder.getCurrentDb();
-			Path fileFoto = root.resolve(tenantName).resolve("producto").resolve(newFileName);
-			crearCarpeta(fileFoto.getParent());
-			
-			//Guardo el archivo
-			Files.copy(file.getInputStream(), fileFoto, StandardCopyOption.REPLACE_EXISTING);
-			
-		} catch(Exception e) {
-			if(e instanceof FileAlreadyExistsException) {
-				throw new RuntimeException("Un archivo con ese nombre ya existe.");
-			}
-			throw new RuntimeException(e.getMessage());
-		}
+		if(!productoService.existeProducto(id))
+			throw new BadRequestException("Error al guardar la imágen, el producto con ID: '" + id + "' no existe en la base de datos.");
+		saveFotoGeneric(file, id, "producto");
 	}
 	
 	public void saveFotoActividad(MultipartFile file, Long id) {
-		try {
-			if(id == null)
-				throw new RuntimeException("Especifique el ID antes de subir.");
-			//Preparo su nombre "miFoto.jpg" a: "contacto_3.jpg"
-			String originalFileName = StringUtils.cleanPath(file.getOriginalFilename());
-		    String extension = StringUtils.getFilenameExtension(originalFileName);
-		    if(!extension.equalsIgnoreCase("png") && !extension.equalsIgnoreCase("jpg") && !extension.equalsIgnoreCase("jpeg")) {
-		    	throw new BadRequestException("Tiene que subir un archivo de tipo foto .jpg o .png");
-		    }
-		    String newFileName = "actividad_" + id.toString() + "." + extension;
-			
-		    //Preparo su path
-		    String tenantName = DBContextHolder.getCurrentDb();
-			Path fileFoto = root.resolve(tenantName).resolve("actividad").resolve(newFileName);
-			crearCarpeta(fileFoto.getParent());
-			
-			//Guardo el archivo
-			Files.copy(file.getInputStream(), fileFoto, StandardCopyOption.REPLACE_EXISTING);
-			
-		} catch(Exception e) {
-			if(e instanceof FileAlreadyExistsException) {
-				throw new RuntimeException("Un archivo con ese nombre ya existe.");
-			}
-			throw new RuntimeException(e.getMessage());
-		}
+		if(!actividadService.existeActividad(id))
+			throw new BadRequestException("Error al guardar la imágen, la avtividad con ID: '" + id + "' no existe en la base de datos.");
+		saveFotoGeneric(file, id, "actividad");
 	}
 	
 	public void saveFotoProgramaDeActividades(MultipartFile file, Long id) {
+		if(!programaDeActividadesService.existeProducto(id))
+			throw new BadRequestException("Error al guardar la imágen, el programa de actividades con ID: '" + id + "' no existe en la base de datos.");
+		saveFotoGeneric(file, id, "programaDeActividades");
+	}
+	
+	/**
+	 * 
+	 * @param file foto a guardar
+	 * @param id id de la foto
+	 * @param el_la se usa para mensajes en caso de error o success
+	 * @param nombreTipoArchivo se usa para nombre archivo 'contacto_3', y mensajes
+	 */
+	private void saveFotoGeneric(MultipartFile file, Long id, String nombreTipoArchivo) {
 		try {
-			if(id == null)
-				throw new RuntimeException("Especifique el ID antes de subir.");
 			//Preparo su nombre "miFoto.jpg" a: "contacto_3.jpg"
 			String originalFileName = StringUtils.cleanPath(file.getOriginalFilename());
 		    String extension = StringUtils.getFilenameExtension(originalFileName);
 		    if(!extension.equalsIgnoreCase("png") && !extension.equalsIgnoreCase("jpg") && !extension.equalsIgnoreCase("jpeg")) {
-		    	throw new BadRequestException("Tiene que subir un archivo de tipo foto .jpg o .png");
+		    	throw new BadRequestException("Tiene que subir un archivo de tipo foto .jpg, .jpeg o .png");
 		    }
-		    String newFileName = "programaDeActividades_" + id.toString() + "." + extension;
+		    if(id == null || id.intValue() < 0) {
+		    	throw new BadRequestException("Error al guardar la foto del " + nombreTipoArchivo + " sin id especificado");
+		    }
+		    if(nombreTipoArchivo == null || nombreTipoArchivo.isEmpty()) {
+		    	throw new BadRequestException("Error interno al guardar el archivo, contacte al administrador. Error: nombreTipoArchivo/el_la == null");
+		    }
+		    String newFileName = nombreTipoArchivo + "_" + id.toString() + "." + extension;
 			
 		    //Preparo su path
 		    String tenantName = DBContextHolder.getCurrentDb();
-			Path fileFoto = root.resolve(tenantName).resolve("programaDeActividades").resolve(newFileName);
+			Path fileFoto = root.resolve(tenantName).resolve(nombreTipoArchivo).resolve(newFileName);
 			crearCarpeta(fileFoto.getParent());
 			
 			//Guardo el archivo
@@ -475,7 +442,7 @@ public class FileStorageService {
 			
 		} catch(Exception e) {
 			if(e instanceof FileAlreadyExistsException) {
-				throw new RuntimeException("Un archivo con ese nombre ya existe.");
+				throw new RuntimeException("Un archivo con ese nombre ya existe en carpeta " + nombreTipoArchivo);
 			}
 			throw new RuntimeException(e.getMessage());
 		}
@@ -490,8 +457,9 @@ public class FileStorageService {
 			Path fileFotoPerfil_png = root.resolve(tenantName).resolve("contacto").resolve("contacto_" + idContacto.toString() + ".png");
 			
 			boolean existe_jpg = Files.deleteIfExists(fileFotoPerfil_jpg);
+			boolean existe_jpeg = Files.deleteIfExists(fileFotoPerfil_jpeg);
 			boolean existe_png = Files.deleteIfExists(fileFotoPerfil_png);
-			if(!existe_jpg && !existe_png) {//Si no pudo borrar ninguno de los 2 tipos de fotos.
+			if(!existe_jpg && !existe_jpeg && !existe_png) {//Si no pudo borrar ninguno de los 2 tipos de fotos.
 				throw new ResponseStatusException(HttpStatus.NOT_FOUND, "La foto de perfil que desea eliminar no existe!");
 			}
 		} catch (MalformedURLException e) {

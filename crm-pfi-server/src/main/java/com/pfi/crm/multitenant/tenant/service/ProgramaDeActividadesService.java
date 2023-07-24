@@ -108,4 +108,8 @@ public class ProgramaDeActividadesService {
 		return programaDeActividadesRepository.save(model);
 	}
 	
+	public boolean existeProducto(Long id) {
+		return programaDeActividadesRepository.existsById(id);
+	}
+	
 }

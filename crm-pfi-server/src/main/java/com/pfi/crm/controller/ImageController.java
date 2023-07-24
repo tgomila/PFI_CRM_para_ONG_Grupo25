@@ -18,7 +18,6 @@ import org.springframework.web.multipart.MultipartFile;
 import com.pfi.crm.exception.BadRequestException;
 import com.pfi.crm.multitenant.tenant.model.ModuloEnum;
 import com.pfi.crm.multitenant.tenant.model.ModuloTipoVisibilidadEnum;
-import com.pfi.crm.multitenant.tenant.payload.FileInfoPayload;
 import com.pfi.crm.multitenant.tenant.payload.ImagenPayload;
 import com.pfi.crm.multitenant.tenant.service.FileStorageService;
 import com.pfi.crm.multitenant.tenant.service.ModuloVisibilidadPorRolService;
@@ -42,7 +41,7 @@ public class ImageController {
 		String message = "";
 		try {
 			fileStorageService.save(file);
-			 message = "Uploaded the image successfully: " + file.getOriginalFilename();
+			 message = "Se ha cargado exitosamente la foto: " + file.getOriginalFilename();
 		} catch (Exception e) {
 			message = "No se pudo cargar el archivo: " + file.getOriginalFilename() + ". Error: " + e.getMessage();
 			throw new BadRequestException(message);
@@ -57,7 +56,7 @@ public class ImageController {
 		String message = "";
 		try {
 			fileStorageService.saveFotoContacto(file, id);
-			 message = "Uploaded the image successfully: " + file.getOriginalFilename();
+			 message = "Se ha cargado exitosamente la foto: " + file.getOriginalFilename();
 		} catch (Exception e) {
 			message = "No se pudo cargar el archivo: " + file.getOriginalFilename() + ". Error: " + e.getMessage();
 			throw new BadRequestException(message);
@@ -72,7 +71,7 @@ public class ImageController {
 		String message = "";
 		try {
 			fileStorageService.saveFotoProducto(file, id);
-			 message = "Uploaded the image successfully: " + file.getOriginalFilename();
+			 message = "Se ha cargado exitosamente la foto: " + file.getOriginalFilename();
 		} catch (Exception e) {
 			message = "No se pudo cargar el archivo: " + file.getOriginalFilename() + ". Error: " + e.getMessage();
 			throw new BadRequestException(message);
@@ -87,7 +86,7 @@ public class ImageController {
 		String message = "";
 		try {
 			fileStorageService.saveFotoActividad(file, id);
-			 message = "Uploaded the image successfully: " + file.getOriginalFilename();
+			 message = "Se ha cargado exitosamente la foto: " + file.getOriginalFilename();
 		} catch (Exception e) {
 			message = "No se pudo cargar el archivo: " + file.getOriginalFilename() + ". Error: " + e.getMessage();
 			throw new BadRequestException(message);
@@ -102,7 +101,7 @@ public class ImageController {
 		String message = "";
 		try {
 			fileStorageService.saveFotoProgramaDeActividades(file, id);
-			 message = "Uploaded the image successfully: " + file.getOriginalFilename();
+			 message = "Se ha cargado exitosamente la foto: " + file.getOriginalFilename();
 		} catch (Exception e) {
 			message = "No se pudo cargar el archivo: " + file.getOriginalFilename() + ". Error: " + e.getMessage();
 			throw new BadRequestException(message);
@@ -129,7 +128,7 @@ public class ImageController {
 		String message = "";
 		try {
 			fileStorageService.saveFotoPerfil(file, currentUser);
-			 message = "Uploaded the image successfully: " + file.getOriginalFilename();
+			 message = "Se ha cargado exitosamente la foto: " + file.getOriginalFilename();
 		} catch (Exception e) {
 			message = "No se pudo cargar el archivo: " + file.getOriginalFilename() + ". Error: " + e.getMessage();
 		}

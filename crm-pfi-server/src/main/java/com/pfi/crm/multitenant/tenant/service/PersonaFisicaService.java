@@ -225,6 +225,19 @@ public class PersonaFisicaService {
 		if (payload != null && payload.getId() != null) {	//Primero busco por ID
 			//Necesito el id de persona Fisica o se crearia uno nuevo
 			PersonaFisica model = this.getPersonaFisicaModelByIdContacto(payload.getId());
+			boolean cambiaElDni = model.getDni() != payload.getDni();
+			if(cambiaElDni) {
+				boolean existeDniModificadoEnBD = personaFisicaRepository.existsByDni(payload.getDni());
+				if(existeDniModificadoEnBD) {
+					PersonaFisica personaYaDeAlta = getPersonaFisicaModelByDni(payload.getDni());
+					throw new BadRequestException("Ya existe Persona con DNI '" + personaYaDeAlta.getDni() + "' cargado "
+							+ "en la Base de Datos, cuyo ID de Persona es: '" + personaYaDeAlta.getId() + "', "
+							+ "nombre: '" + (personaYaDeAlta.getNombre() != null ? personaYaDeAlta.getNombre() : "(vacío)") + "', "
+							+ "apellido: '" + (personaYaDeAlta.getApellido() != null ? personaYaDeAlta.getApellido() : "(vacío)") + "'. "
+							+ "Por lo que no puede haber 2 personas con mismo DNI en la base de datos, "
+							+ "por lo tanto no puede modificar la persona con dicho DNI.");
+				}
+			}
 			model.modificar(payload);
 			return personaFisicaRepository.save(model);
 		}

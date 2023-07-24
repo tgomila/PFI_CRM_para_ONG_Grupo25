@@ -60,7 +60,7 @@ public class PersonaJuridicaService {
 				throw new BadRequestException("Ya existe PersonaJuridica con ID '" + id.toString() + "' cargado. "
 						+ "Es posible que sea otro número o quiera ir a la pantalla de modificar.");
 		}
-		// 2) Buscar/Crear Contacto y asociarlo. Si hay ID Contacto y no existe en BD, se vuelve sin dar de alta.
+		// 2) Crear Contacto y asociarlo. Si hay ID Contacto y no existe en BD, se vuelve sin dar de alta.
 		Contacto contacto = contactoService.altaModificarContactoModel(payload);
 		// 3) Alta PersonaJuridica
 		PersonaJuridica personaJuridica = new PersonaJuridica(payload);
