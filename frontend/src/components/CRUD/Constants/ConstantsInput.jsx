@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react'
 import Input from "react-validation/build/input";
 import Select from "react-validation/build/select";
 import { format, subYears } from 'date-fns';
@@ -50,7 +50,7 @@ const IdInput = ({ data, handleInputChange }) => {
 const IdShowInput = ({ show, data, handleInputChange }) => {
     return(
         <div>
-            {show && (
+            {data.id && show && (
                 <IdInput data={data} handleInputChange={handleInputChange} />
             )}
         </div>
@@ -115,6 +115,51 @@ const TelefonoInput = ({ disabled, data, handleInputChange }) => {
             <label> Telefono: </label>
             <Input disabled={disabled} placeholder="Telefono" id="telefono" name="telefono" type="text" className="form-control" 
                 value={data.telefono} onChange={handleInputChange} validations={[required]}/>
+        </div>
+    );
+};
+
+//Persona jurídica
+const InternoTelefonoInput = ({ disabled, data, handleInputChange }) => {
+    return(
+        <div className = "form-group">
+            <label> Interno de teléfono: </label>
+            <Input disabled={disabled} placeholder="Interno de teléfono" id="internoTelefono" name="internoTelefono" type="text" className="form-control" 
+                value={data.internoTelefono} onChange={handleInputChange} validations={[required]}/>
+        </div>
+    );
+};
+
+//Un quilombo para hacer que Select sea select (minusculas)
+const TipoPersonaJuridicaInput = ({ disabled, data, handleInputChange }) => {
+    const [selectedOption, setSelectedOption] = useState(data.tipoPersonaJuridica);
+
+    const handleChange = (event) => {
+        console.log("Antes selected option: " + selectedOption);
+        const newValue = event.target.value;
+        setSelectedOption(newValue);
+        handleInputChange(event);
+        console.log("Después selected option: " + selectedOption);
+        console.log("Entre aquí 1.5: " + newValue);
+    };
+    
+    return(
+        <div className = "form-group">
+            <label> Tipo de persona jurídica: </label>
+            <select 
+            disabled={disabled} 
+            name="tipoPersonaJuridica" 
+            value={selectedOption} 
+            className="form-control" 
+            onChange={handleChange}
+            //validations={[required]}
+            >
+                <option value="">Seleccione</option>
+                <option value="OSC">OSC</option>
+                <option value="EMPRESA">Empresa</option>
+                <option value="INSTITUCION">Institución</option>
+                <option value="ORGANISMO_DEL_ESTADO">Organismo del estado</option>
+            </select>
         </div>
     );
 };
@@ -199,7 +244,7 @@ const SeRetiraSoloInput = ({ disabled, data, handleInputChange }) => {
             {/*{console.log("ID: " + data.id)}
             {console.log("Se retira solo: " + data.seRetiraSolo)}
             {console.log(data)}
-        */}
+            */}
             <Select disabled={disabled} name="seRetiraSolo" value={data.seRetiraSolo ? "true" : "false"} className="form-control" onChange={handleInputChange} validations={[required]}>
                 <option value="">Seleccione</option>
                 <option value="true">Si</option>
@@ -249,6 +294,71 @@ const TurnoInput = ({ disabled, data, handleInputChange }) => {
     );
 };
 
+//Trabajador
+const DatosBancariosInput = ({ disabled, data, handleInputChange }) => {
+    return(
+        <div className = "form-group">
+            <label> Datos bancarios: </label>
+            <Input disabled={disabled} placeholder="Datos bancarios" name="datosBancarios" type="text" className="form-control" 
+                value={data.datosBancarios} onChange={handleInputChange}/>
+        </div>
+    );
+};
+
+//Empleado
+const FuncionInput = ({ disabled, data, handleInputChange }) => {
+    return(
+        <div className = "form-group">
+            <label> Función: </label>
+            <Input disabled={disabled} placeholder="Función" name="funcion" type="text" className="form-control" 
+                value={data.funcion} onChange={handleInputChange} validations={[required]}/>
+        </div>
+    );
+};
+
+const DescripcionEmpleadoInput = ({ disabled, data, handleInputChange }) => {
+    return(
+        <div className = "form-group">
+            <label> Descripción de su función: </label>
+            <Input disabled={disabled} placeholder="Descripción de su función" name="descripcion" type="text" className="form-control" 
+                value={data.descripcion} onChange={handleInputChange} validations={[required]}/>
+        </div>
+    );
+};
+
+//Profesional
+const ProfesionInput = ({ disabled, data, handleInputChange }) => {
+    return(
+        <div className = "form-group">
+            <label> Profesión: </label>
+            <Input disabled={disabled} placeholder="Profesión" name="profesion" type="text" className="form-control" 
+                value={data.profesion} onChange={handleInputChange} validations={[required]}/>
+        </div>
+    );
+};
+
+//Colaborador
+const AreaInput = ({ disabled, data, handleInputChange }) => {
+    return(
+        <div className = "form-group">
+            <label> Área: </label>
+            <Input disabled={disabled} placeholder="Área" name="area" type="text" className="form-control" 
+                value={data.area} onChange={handleInputChange} validations={[required]}/>
+        </div>
+    );
+};
+
+//Consejo ad honorem
+const FuncionConsejoAdHonoremInput = ({ disabled, data, handleInputChange }) => {
+    return(
+        <div className = "form-group">
+            <label> Función: </label>
+            <Input disabled={disabled} placeholder="Función" name="funcion" type="text" className="form-control" 
+                value={data.funcion} onChange={handleInputChange} validations={[required]}/>
+        </div>
+    );
+};
+
 
 
 export {
@@ -265,6 +375,9 @@ export {
     DomicilioInput,
     EmailInput,
     TelefonoInput,
+    //PersonaJuridica
+    InternoTelefonoInput,
+    TipoPersonaJuridicaInput,
     //Persona
     NombreInput,
     ApellidoInput,
@@ -278,5 +391,18 @@ export {
     CuidadosEspecialesInput,
     EscuelaInput,
     GradoInput,
-    TurnoInput
+    TurnoInput,
+    //Trabajador
+    DatosBancariosInput,
+    //Empleado
+    FuncionInput,
+    DescripcionEmpleadoInput,
+    //Profesional
+    ProfesionInput,
+    //Colaborador
+    AreaInput,
+    //Consejo ad honorem
+    FuncionConsejoAdHonoremInput,
+    //Voluntario
+    //...no tiene items independientes.
 }

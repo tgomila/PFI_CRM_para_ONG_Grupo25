@@ -1,23 +1,23 @@
 import CreateReadUpdateGenericoConFoto from '../Constants/CreateReadUpdate_Generico';
 import { cargarBeneficiarioDefault } from '../Constants/ConstantsCargarDefault';
-import { BeneficiarioUpdateInput } from '../Constants/ConstantsInputModel';
+import { BeneficiarioRead } from '../Constants/ConstantsReadModel';
 import BeneficiarioService from '../../../services/BeneficiarioService';
 
-const UpdateBeneficiarioComponent = () => {
+const ReadBeneficiarioComponent = () => {
   return (
     <div>
     <CreateReadUpdateGenericoConFoto
         cargarDatosDefault = {cargarBeneficiarioDefault}
-        DatoUpdateInput = {BeneficiarioUpdateInput}
+        DatoUpdateInput = {BeneficiarioRead}
         tipoDatoForImageService = {'contacto'}
         Service = {BeneficiarioService}
         urlTablaDato = {'/beneficiario'}
         el_la = {'el'}
         nombreTipoDato = {'beneficiario'}
-        typeCRUD={'UPDATE'}
+        typeCRUD={'READ'}
     />
     </div>
   );
 };
 
-export default UpdateBeneficiarioComponent;
+export default ReadBeneficiarioComponent;

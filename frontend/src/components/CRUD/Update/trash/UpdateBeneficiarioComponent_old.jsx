@@ -2,11 +2,11 @@ import React, { useState, useRef, useEffect } from 'react'
 import Form from "react-validation/build/form";
 import Input from "react-validation/build/input";
 import CheckButton from "react-validation/build/button";
-import BeneficiarioService from '../../../services/BeneficiarioService';
+import BeneficiarioService from '../../../../services/BeneficiarioService';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { cargarBeneficiarioDefault } from '../Constants/ConstantsCargarDefault';
-import { BeneficiarioUpdateInput } from '../Constants/ConstantsInputModel';
-import { required } from '../Constants/ConstantsInput';
+import { cargarBeneficiarioDefault } from '../../Constants/ConstantsCargarDefault';
+import { BeneficiarioUpdateInput } from '../../Constants/ConstantsInputModel';
+import { required } from '../../Constants/ConstantsInput';
 import Select from "react-validation/build/select";
 import { format, subYears } from 'date-fns';
 

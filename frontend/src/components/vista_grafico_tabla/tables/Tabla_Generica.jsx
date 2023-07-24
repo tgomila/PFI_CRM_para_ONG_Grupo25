@@ -192,7 +192,22 @@ const TablaGenerica = ({columnsIn, data, visibilidad, Service, el_la, nombreTipo
       baseColumns.push(
         {
           Header: 'Editar',
-          Cell: ({ row }) => RenderBotonEditar(row.original?.id),
+          Cell: ({ row }) => {
+            const { nombre, apellido, nombreDescripcion, descripcion } = row.original || {};
+            let nombreCompleto = '';//Vacío (solo mostrar "desea borar id: 1" en vez de nombre)
+            if (nombre && apellido) {//Beneficiarios, Empleados, etc
+              nombreCompleto = `${nombre} ${apellido}`;
+            } else if (nombre) {//Una persona sin apellido
+              nombreCompleto = nombre;
+            } else if (apellido) {//Una persona sin nombre
+              nombreCompleto = apellido;
+            } else if (nombreDescripcion) {//Contacto
+              nombreCompleto = nombreDescripcion;
+            } else if (descripcion) {//Facturas, insumos, etc
+              nombreCompleto = descripcion;
+            }
+            return RenderBotonEditar(row.original?.id, nombreCompleto);
+          },
         },
         {
           Header: 'Borrar',
@@ -288,6 +303,12 @@ const TablaGenerica = ({columnsIn, data, visibilidad, Service, el_la, nombreTipo
             <button className="btn btn-primary" onClick={() => navigate( window.location.pathname + "/update")}>
               <span style={{ display: 'flex', alignItems: 'center' }}>
                 <FaRegEdit style={{ marginRight: '5px', fontSize: '20px' }}/> Modificar {nombreTipoDato}
+              </span>
+            </button>
+            &nbsp;&nbsp;&nbsp;
+            <button className="btn btn-primary" onClick={() => navigate( window.location.pathname + "/read")}>
+              <span style={{ display: 'flex', alignItems: 'center' }}>
+                <FaRegEdit style={{ marginRight: '5px', fontSize: '20px' }}/> Ver {nombreTipoDato}
               </span>
             </button>
           </div>

@@ -11,7 +11,8 @@ const cargarContactoDefault = {
 
 const cargarPersonaJuridicaDefault = {
     ...cargarContactoDefault,
-    internoTelefono: ""
+    internoTelefono: "",
+    tipoPersonaJuridica: ""
 };
 
 const cargarPersonaDefault = {

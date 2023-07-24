@@ -21,25 +21,42 @@ import PersonaJuridicaVista from "./components/vista_grafico_tabla/PersonaJuridi
 import FooterComponent from "./components/FooterComponent";
 
 //Creates
-import CreateBeneficiarioComponent from "./components/CRUD/Create/CreateBeneficiarioComponent";
-import CreateColaboradorComponent from "./components/CRUD/Create/CreateColaboradorComponent";
-import CreateConsejoAdHonoremComponent from "./components/CRUD/Create/CreateConsejoAdHonoremComponent";
 import CreateContactoComponent from "./components/CRUD/Create/CreateContactoComponent";
-import CreateEmpleadoComponent from "./components/CRUD/Create/CreateEmpleadoComponent";
 import CreatePersonaComponent from "./components/CRUD/Create/CreatePersonaComponent";
 import CreatePersonaJuridicaComponent from "./components/CRUD/Create/CreatePersonaJuridicaComponent";
+import CreateBeneficiarioComponent from "./components/CRUD/Create/CreateBeneficiarioComponent";
+import CreateEmpleadoComponent from "./components/CRUD/Create/CreateEmpleadoComponent";
 import CreateProfesionalComponent from "./components/CRUD/Create/CreateProfesionalComponent";
+import CreateColaboradorComponent from "./components/CRUD/Create/CreateColaboradorComponent";
+import CreateConsejoAdHonoremComponent from "./components/CRUD/Create/CreateConsejoAdHonoremComponent";
 import CreateVoluntarioComponent from "./components/CRUD/Create/CreateVoluntarioComponent";
 import CreateEmployeeComponent from "./trash-can/CreateEmployeeComponent";//Testing
 
+//Read
+import ReadContactoComponent from "./components/CRUD/Read/ReadContactoComponent";
+import ReadPersonaComponent from "./components/CRUD/Read/ReadPersonaComponent";
+import ReadBeneficiarioComponent from "./components/CRUD/Read/ReadBeneficiarioComponent";
+import ReadEmpleadoComponent from "./components/CRUD/Read/ReadEmpleadoComponent";
+import ReadProfesionalComponent from "./components/CRUD/Read/ReadProfesionalComponent";
+import ReadColaboradorComponent from "./components/CRUD/Read/ReadColaboradorComponent";
+import ReadConsejoAdHonoremComponent from "./components/CRUD/Read/ReadConsejoAdHonoremComponent";
+import ReadVoluntarioComponent from "./components/CRUD/Read/ReadVoluntarioComponent";
+import ReadPersonaJuridicaComponent from "./components/CRUD/Read/ReadPersonaJuridicaComponent";
+
 //Updates
+import UpdateContactoComponent from "./components/CRUD/Update/UpdatePersonaComponent";
+import UpdatePersonaJuridicaComponent from "./components/CRUD/Update/UpdatePersonaJuridicaComponent";
 import UpdatePersonaComponent from "./components/CRUD/Update/UpdatePersonaComponent";
 import UpdateBeneficiarioComponent from "./components/CRUD/Update/UpdateBeneficiarioComponent";
+import UpdateEmpleadoComponent from "./components/CRUD/Update/UpdateEmpleadoComponent";
+import UpdateProfesionalComponent from "./components/CRUD/Update/UpdateProfesionalComponent";
+import UpdateColaboradorComponent from "./components/CRUD/Update/UpdateColaboradorComponent";
+import UpdateConsejoAdHonoremComponent from "./components/CRUD/Update/UpdateConsejoAdHonoremComponent";
+import UpdateVoluntarioComponent from "./components/CRUD/Update/UpdateVoluntarioComponent";
 
-//Updates
+//Updates testing
 import UpdateEmployeeComponent from "./components/UpdateEmployeeComponent";
 import ViewEmployeeComponent from "./components/ViewEmployeeComponent";
-
 
 //test
 import Testing from "./components/Testing";
@@ -269,12 +286,12 @@ const App = () => {
             <Route path="/contacto/create" element={<CreateContactoComponent />} />
             <Route path="/personafisica/create" element={<CreatePersonaComponent />} />
             <Route path="/beneficiario/create" element={<CreateBeneficiarioComponent />} />
-            <Route path="/voluntario/create" element={<CreateVoluntarioComponent />} />
             <Route path="/empleado/create" element={<CreateEmpleadoComponent />} />
+            <Route path="/profesional/create" element={<CreateProfesionalComponent />} />
             <Route path="/colaborador/create" element={<CreateColaboradorComponent />} />
             <Route path="/consejoadhonorem/create" element={<CreateConsejoAdHonoremComponent />} />
+            <Route path="/voluntario/create" element={<CreateVoluntarioComponent />} />
             <Route path="/personajuridica/create" element={<CreatePersonaJuridicaComponent />} />
-            <Route path="/profesional/create" element={<CreateProfesionalComponent />} />
 
             <Route path="/users/create" element={<CreateEmployeeComponent />} />
             <Route path="/actividad/create" element={<CreateEmployeeComponent />} />
@@ -294,8 +311,26 @@ const App = () => {
 
 
             {/* Update item */}
+            <Route path="/contacto/update" element={<UpdateContactoComponent />} />
             <Route path="/personafisica/update" element={<UpdatePersonaComponent />} />
             <Route path="/beneficiario/update" element={<UpdateBeneficiarioComponent />} />
+            <Route path="/empleado/update" element={<UpdateEmpleadoComponent />} />
+            <Route path="/profesional/update" element={<UpdateProfesionalComponent />} />
+            <Route path="/colaborador/update" element={<UpdateColaboradorComponent />} />
+            <Route path="/consejoadhonorem/update" element={<UpdateConsejoAdHonoremComponent />} />
+            <Route path="/voluntario/update" element={<UpdateVoluntarioComponent />} />
+            <Route path="/personajuridica/update" element={<UpdatePersonaJuridicaComponent />} />
+
+            {/* Read item */}
+            <Route path="/contacto/read" element={<ReadContactoComponent />} />
+            <Route path="/personafisica/read" element={<ReadPersonaComponent />} />
+            <Route path="/beneficiario/read" element={<ReadBeneficiarioComponent />} />
+            <Route path="/empleado/read" element={<ReadEmpleadoComponent />} />
+            <Route path="/profesional/read" element={<ReadProfesionalComponent />} />
+            <Route path="/colaborador/read" element={<ReadColaboradorComponent />} />
+            <Route path="/consejoadhonorem/read" element={<ReadConsejoAdHonoremComponent />} />
+            <Route path="/voluntario/read" element={<ReadVoluntarioComponent />} />
+            <Route path="/personajuridica/read" element={<ReadPersonaJuridicaComponent />} />
 
 
 

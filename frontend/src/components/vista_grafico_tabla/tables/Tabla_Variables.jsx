@@ -1,6 +1,6 @@
 import React, { forwardRef, useEffect, useState, useRef } from "react";
 //Para que funcione el tooptip (Button a la derecha)
-import { Modal, Button, OverlayTrigger, Tooltip } from "react-bootstrap";
+import { Modal, Button, OverlayTrigger, Tooltip, Image } from "react-bootstrap";
 import ImageService from "../../../services/ImageService";
 import { useNavigate } from 'react-router-dom';
 import { FaTrashAlt, FaRegEdit } from "react-icons/fa";
@@ -32,12 +32,30 @@ const IndeterminateCheckbox = forwardRef(({ indeterminate, ...rest }, ref) => {
 const RenderFotoPerfilRow = (row, tipo) => {
   if(!row.original || !row.original.imagen_tabla)
     return(<div></div>);//Esto sucede si se agrupa la tabla
-  return RenderFotoPerfil(row.original.id, "contacto", row.original.imagen_tabla, row.original.nombrePerfil);
+  const { nombre, apellido, nombreDescripcion } = row.original || {};
+  let nombreCompleto = '';
+  if (nombre && apellido) {
+    nombreCompleto = `${nombre} ${apellido}`;
+  } else if (nombre) {
+    nombreCompleto = nombre;
+  } else if (apellido) {
+    nombreCompleto = apellido;
+  } else if (nombreDescripcion) {
+    nombreCompleto = nombreDescripcion;
+  }
+  return RenderFotoPerfil(row.original.id, "contacto", row.original.imagen_tabla, nombreCompleto);
 };
 
 const RenderFotoPerfil = (id, tipo, imagen, nombrePerfil) => {
   const [showModal, setShowModal] = useState(false);
   const [loadedImage, setLoadedImage] = useState(null);
+
+  useEffect(() => {
+    if(id === 1){
+      console.log("Mi nombre perfil:");
+      console.log(nombrePerfil);
+    }
+  }, []);
 
   useEffect(() => {
     if (showModal) {
@@ -82,7 +100,7 @@ const RenderFotoPerfil = (id, tipo, imagen, nombrePerfil) => {
                   </Tooltip>
                 }
               >
-                <img 
+                <Image 
                 src={imagen} 
                 alt="Foto de perfil" 
                 className="contacto-img-card"
@@ -140,7 +158,7 @@ const RenderFotoPerfil = (id, tipo, imagen, nombrePerfil) => {
  * @param {string} idInput si es row declararlo como row.original?.id
  * @returns 
  */
-const RenderBotonEditar = (idInput) => {
+const RenderBotonEditar = (idInput, nombreAEditar) => {
   const navigate = useNavigate();
   if(!idInput)
     return(<div/>);//En caso de que se agrupe la tabla, no mostrar
@@ -149,7 +167,7 @@ const RenderBotonEditar = (idInput) => {
       placement="top"
       overlay={
         <Tooltip id="tooltip-top">
-          Editar ID: {idInput}
+          Editar {nombreAEditar && 'a ' + nombreAEditar + ', '}ID: {idInput}
         </Tooltip>
       }
     >
@@ -235,7 +253,7 @@ const RenderBotonBorrar = (idInput, nombreABorrar, Service) => {
         placement="top"
         overlay={
           <Tooltip id="tooltip-top">
-            ¿Seguro desea <strong>borrar</strong> ID: {idInput} ?
+            ¿Seguro desea <strong>borrar</strong> {nombreABorrar && 'a ' + nombreABorrar + ', '}ID: {idInput} ?
           </Tooltip>
         }
       >

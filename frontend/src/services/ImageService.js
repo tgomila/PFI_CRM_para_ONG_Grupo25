@@ -232,6 +232,10 @@ const getFotoWithInfo = (dtoId, tipoFoto, tamanio, fotoInfoDelBackendActual) => 
 };
 
 const getFotoFromBackendWithInfo = (dtoId, tipoFoto, tamanio, fotoInfoBackend) => {
+  if(!dtoId){
+    console.log("Entre a !dto")
+    return defaultImage;
+  }
   const fotoInfoFrontend = getStorageFotoInfo(dtoId, tipoFoto, tamanio);
   //Si existe foto entonces hacer todo
   if (fotoInfoBackend.fechaDeCreacion) {
@@ -304,7 +308,14 @@ async function blobToBase64(blob) {
 }
 
 const uploadImageContacto = async (id, imageUrl) => {
-  const url = BACKEND_API_BASE_URL + 'images/contacto/' + id;
+  return uploadImage(id, 'contacto', imageUrl);
+}
+
+const uploadImage = async (id, tipoDato, imageUrl) => {
+  if(!id || !tipoDato || !imageUrl){
+    return null;//error si no recibo nada.
+  }
+  const url = BACKEND_API_BASE_URL + 'images/' + tipoDato +'/' + id;
   console.log("url:");
   console.log(url);
   console.log("imageUrl:");
@@ -345,6 +356,7 @@ const ImageService = {
     getFotoPerfil,
     getFotoContactoTabla,
     getFotoContactoCompleta,
+    uploadImage,
     uploadImageContacto,
 };
 

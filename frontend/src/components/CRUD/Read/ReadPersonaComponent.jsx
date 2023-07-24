@@ -1,23 +1,23 @@
 import CreateReadUpdateGenericoConFoto from '../Constants/CreateReadUpdate_Generico';
 import { cargarPersonaDefault } from '../Constants/ConstantsCargarDefault';
-import { PersonaUpdateInput } from '../Constants/ConstantsInputModel';
+import { PersonaRead } from '../Constants/ConstantsReadModel';
 import PersonaService from '../../../services/PersonaService';
 
-const UpdatePersonaComponent = () => {
+const ReadPersonaComponent = () => {
   return (
     <div>
     <CreateReadUpdateGenericoConFoto
         cargarDatosDefault = {cargarPersonaDefault}
-        DatoUpdateInput = {PersonaUpdateInput}
+        DatoUpdateInput = {PersonaRead}
         tipoDatoForImageService = {'contacto'}
         Service = {PersonaService}
         urlTablaDato = {'/personafisica'}
         el_la = {'la'}
         nombreTipoDato = {'persona'}
-        typeCRUD={'UPDATE'}
+        typeCRUD={'READ'}
     />
     </div>
   );
 };
 
-export default UpdatePersonaComponent;
+export default ReadPersonaComponent;
