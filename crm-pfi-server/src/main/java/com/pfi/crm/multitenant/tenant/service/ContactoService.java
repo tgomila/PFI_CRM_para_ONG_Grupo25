@@ -41,6 +41,9 @@ public class ContactoService {
 	@Autowired
 	private FacturaService facturaService;
 	
+	@Autowired
+	private FileStorageService fileStorageService;
+	
 	public ContactoPayload getContactoById(@PathVariable Long id) {
 		return this.getContactoModelById(id).toPayload();
     }
@@ -142,9 +145,13 @@ public class ContactoService {
 		
 		m = contactoRepository.save(m);
 		contactoRepository.delete(m);		//Temporalmente se elimina de la BD
-		//return ResponseEntity.ok().body(new ApiResponse(true, message));
-		
 		message += " de id: " + id.toString() + "";
+		
+		//Una vez eliminado el contacto, se elimina su foto si es que poseia 
+		boolean existeFoto = fileStorageService.deleteFotoGeneric(id, "contacto");
+		message += existeFoto ? ". Se ha dado de baja la foto del contacto también" : "";
+		
+		//return ResponseEntity.ok().body(new ApiResponse(true, message));
 		return message;
 	}
 	

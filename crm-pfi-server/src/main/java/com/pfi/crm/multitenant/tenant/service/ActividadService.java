@@ -39,6 +39,9 @@ public class ActividadService {
 	@Autowired
 	private ProfesionalService profesionalService;
 	
+	@Autowired
+	private FileStorageService fileStorageService;
+	
 	@SuppressWarnings("unused")
 	private static final Logger logger = LoggerFactory.getLogger(ActividadService.class);
 	
@@ -102,7 +105,13 @@ public class ActividadService {
 		m = actividadRepository.save(m);
 		actividadRepository.delete(m);
 		
-		return "Se ha dado de baja a la actividad id: " + id;
+		String message = "Se ha dado de baja a la actividad id: '" + id +"'";
+		
+		//Una vez eliminada la actividad, se elimina su foto si es que poseia
+		boolean existeFoto = fileStorageService.deleteFotoGeneric(id, "actividad");
+		message += existeFoto ? " junto a su foto de actividad" : "";
+		
+		return message;
 	}
 	
 	public ActividadPayload modificarActividad(ActividadPayload payload) {

@@ -473,7 +473,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		ProfesionalPayload m = new ProfesionalPayload();
 
 		// Contacto
-		m.setNombreDescripcion("Profesional psicologo");
+		m.setNombreDescripcion("Profesional psicólogo");
 		m.setCuit("20-34325930-9");
 		m.setDomicilio("Avenida Las Heras 4578, piso 4, depto B");
 		m.setEmail("estebangarcia@gmail.com");
@@ -487,7 +487,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 
 		// Profesional
 		m.setDatosBancarios("CBU: 001234");
-		m.setProfesion("Psicologo");
+		m.setProfesion("Psicólogo");
 		// Fin Profesional
 		profesionalService.altaProfesional(m);
 		
@@ -495,7 +495,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		m = new ProfesionalPayload();
 
 		// Contacto
-		m.setNombreDescripcion("Tecnico electricista");
+		m.setNombreDescripcion("Técnico electricista");
 		m.setCuit("20-34324973-9");
 		m.setDomicilio("Buhos 6518, piso 2, depto C");
 		m.setEmail("ricardofrachia@gmail.com");
@@ -1073,10 +1073,10 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		ContactoPayload contactoPayload = new ContactoPayload();
 
 		// Contacto
-		contactoPayload.setNombreDescripcion("Súper Contacto como Voluntario y Empleado");
+		contactoPayload.setNombreDescripcion("Es Voluntario y Empleado");
 		contactoPayload.setCuit("20-41360548-9");
 		contactoPayload.setDomicilio("Avenida siempre falsa 123, piso 8, depto B");
-		contactoPayload.setEmail("voluntario_y_empleado@gmail.com");
+		contactoPayload.setEmail("rauldominguez@gmail.com");
 		contactoPayload.setTelefono("1234-4567");
 		
 		contactoPayload = contactoService.altaContacto(contactoPayload);
@@ -1139,9 +1139,9 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		BeneficiarioPayload m = new BeneficiarioPayload();
 
 		// Contacto
-		m.setNombreDescripcion("Piba tenant 2");
+		m.setNombreDescripcion("Beneficiario");
 		m.setCuit("27-48040971-9");
-		m.setDomicilio("Avenida siempre falsa 123, piso 8, depto B");
+		m.setDomicilio("Av. Hipólito Yrigoyen 2772, piso 2, depto B");
 		m.setEmail("felicitasbarbosa@gmail.com");
 		m.setTelefono("1234-4567");
 
@@ -1168,9 +1168,9 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		m = new BeneficiarioPayload();
 
 		// Contacto
-		m.setNombreDescripcion("Pibe tenant 2");
+		m.setNombreDescripcion("Beneficiario");
 		m.setCuit("20-49687819-9");
-		m.setDomicilio("Avenida siempre falsa 123, piso 8, depto C");
+		m.setDomicilio("Sarmiento 2057, piso 3, depto A");
 		m.setEmail("ricardosojo@gmail.com");
 		m.setTelefono("1234-4567");
 
@@ -1198,7 +1198,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		m = new BeneficiarioPayload();
 
 		// Contacto
-		m.setNombreDescripcion("Piba tenant 2");
+		m.setNombreDescripcion("Beneficiario");
 		m.setCuit("27-48474517-9");
 		m.setDomicilio("Uruguay 782, piso 1, depto B");
 		m.setEmail("josefinaruiz@gmail.com");
@@ -1229,9 +1229,9 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		m = new BeneficiarioPayload();
 
 		// Contacto
-		m.setNombreDescripcion("Pibe tenant 2");
+		m.setNombreDescripcion("Beneficiario");
 		m.setCuit("20-48097554-9");
-		m.setDomicilio("Sancez reta 174");
+		m.setDomicilio("Av. Raúl Scalabrini Ortiz 751, piso 7, depto C");
 		m.setEmail("agustinpeña@gmail.com");
 		m.setTelefono("4970-1876");
 
@@ -1262,9 +1262,9 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 
 		// Contacto
 		m = new VoluntarioPayload();
-		m.setNombreDescripcion("Voluntario muy duro tenant 2");
+		m.setNombreDescripcion("Voluntario");
 		m.setCuit("20-34541251-9");
-		m.setDomicilio("Dominguez 457, piso 3, depto B");
+		m.setDomicilio("Alberti 243, piso 3, depto B");
 		m.setEmail("martinlopez@gmail.com");
 		m.setTelefono("1234-4567");
 
@@ -1283,9 +1283,9 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		
 		// Contacto
 		m = new VoluntarioPayload();
-		m.setNombreDescripcion("Voluntario muy blando");
+		m.setNombreDescripcion("Voluntario");
 		m.setCuit("20-34420171-9");
-		m.setDomicilio("Dominguez 568, piso 4, depto C");
+		m.setDomicilio("Sarmiento 3472, piso 4, depto C");
 		m.setEmail("francowellington@gmail.com");
 		m.setTelefono("9466-7813");
 
@@ -1304,7 +1304,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		m = new VoluntarioPayload();
 		m.setNombreDescripcion("Voluntaria");
 		m.setCuit("27-821894-9");
-		m.setDomicilio("Pimento 789, piso 18, depto D");
+		m.setDomicilio("Jorge Luis Borges 1854, piso 18, depto D");
 		m.setEmail("camilacampos@gmail.com");
 		m.setTelefono("7818-3617");
 
@@ -1350,7 +1350,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		m = new ProfesionalPayload();
 
 		// Contacto
-		m.setNombreDescripcion("Pintor");
+		m.setNombreDescripcion("Profesional");
 		m.setCuit("20-27808290-9");
 		m.setDomicilio("Ñandues 5470, piso 1, depto A");
 		m.setEmail("alejandrogris@gmail.com");
@@ -1375,7 +1375,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		m = new ProfesionalPayload();		
 		
 		// Contacto
-		m.setNombreDescripcion("Administradora");
+		m.setNombreDescripcion("Profesional");
 		m.setCuit("27-34326122-9");
 		m.setDomicilio("Cecelia 2818, piso 11, depto D");
 		m.setEmail("fernandaarevalo@gmail.com");
@@ -1389,7 +1389,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 
 		// Profesional
 		m.setDatosBancarios("CBU: 001234");
-		m.setProfesion("Administrador de eventos");
+		m.setProfesion("Administradora de eventos");
 		// Fin Profesional
 		profesionalService.altaProfesional(m);
 		
@@ -1398,7 +1398,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		m = new ProfesionalPayload();		
 		
 		// Contacto
-		m.setNombreDescripcion("Medica clinica");
+		m.setNombreDescripcion("Profesional");
 		m.setCuit("27-34325366-9");
 		m.setDomicilio("Uruguay 741, piso 1, depto A");
 		m.setEmail("susanasiones@gmail.com");
@@ -1412,7 +1412,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 
 		// Profesional
 		m.setDatosBancarios("CBU: 001234");
-		m.setProfesion("Medica");
+		m.setProfesion("Medica clinica");
 		// Fin Profesional
 		profesionalService.altaProfesional(m);	
 	}
@@ -1424,7 +1424,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		m = new EmpleadoPayload();
 
 		// Contacto
-		m.setNombreDescripcion("Jefa Gral");
+		m.setNombreDescripcion("Empleada");
 		m.setCuit("27-30863688-9");
 		m.setDomicilio("Quintana 237, piso 1, depto F");
 		m.setEmail("patriciacastro@gmail.com");
@@ -1474,7 +1474,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		m = new EmpleadoPayload();
 
 		// Contacto
-		m.setNombreDescripcion("Soporte telefónico");
+		m.setNombreDescripcion("Empleado");
 		m.setCuit("20-30862571-9");
 		m.setDomicilio("Avenida siempre falsa 123, piso 3, depto A");
 		m.setEmail("emiliopaz@gmail.com");
@@ -1488,7 +1488,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 
 		// Empleado
 		m.setDatosBancarios("CBU: 001234");
-		m.setFuncion("Soporte");
+		m.setFuncion("Soporte telefónico");
 		m.setDescripcion("Atiende llamadas de beneficiarios");
 		// Fin Empleado
 		
@@ -1501,7 +1501,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		ColaboradorPayload m = new ColaboradorPayload();
 
 		// Contacto
-		m.setNombreDescripcion("Colaboradora tenant 2");
+		m.setNombreDescripcion("Colaboradora");
 		m.setCuit("27-29155744-9");
 		m.setDomicilio("Cantillan 456, piso x, depto A");
 		m.setEmail("josefinamarruecos@gmail.com");
@@ -1526,7 +1526,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		m = new ColaboradorPayload();
 
 		// Contacto
-		m.setNombreDescripcion("Colaboradora tenant 2");
+		m.setNombreDescripcion("Colaboradora");
 		m.setCuit("27-32484760-9");
 		m.setDomicilio("Suiza 6543, piso 3, depto A");
 		m.setEmail("karinarekini@gmail.com");
@@ -1549,7 +1549,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		m = new ColaboradorPayload();
 
 		// Contacto
-		m.setNombreDescripcion("Colaborador tenant 2");
+		m.setNombreDescripcion("Colaborador");
 		m.setCuit("20-32484836-9");
 		m.setDomicilio("Dentri 631, piso 12, depto C");
 		m.setEmail("jorgegomez@gmail.com");
@@ -1581,7 +1581,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		ConsejoAdHonoremPayload m = new ConsejoAdHonoremPayload();
 
 		// Contacto
-		m.setNombreDescripcion("ConsejeroAdHonorem tenant 2");
+		m.setNombreDescripcion("ConsejeroAdHonorem");
 		m.setCuit("20-39326825-9");
 		m.setDomicilio("Paraguay 803, piso 6, depto A");
 		m.setEmail("matiaspelorroso@gmail.com");
@@ -1604,7 +1604,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		m = new ConsejoAdHonoremPayload();
 
 		// Contacto
-		m.setNombreDescripcion("ConsejeraAdHonorem tenant 2");
+		m.setNombreDescripcion("Consejera Ad Honorem");
 		m.setCuit("27-30558524-9");
 		m.setDomicilio("Arenales 123, piso 4, depto A");
 		m.setEmail("julietanamias@gmail.com");
@@ -1628,7 +1628,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		m = new ConsejoAdHonoremPayload();
 
 		// Contacto
-		m.setNombreDescripcion("ConsejeroAdHonorem Mario tenant 2");
+		m.setNombreDescripcion("Consejero Ad Honorem");
 		m.setCuit("20-40095971-9");
 		m.setDomicilio("Perez 456, piso 1, depto C");
 		m.setEmail("marioperez@gmail.com");
@@ -1689,7 +1689,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		m = new PersonaJuridicaPayload();
 				
 		// Contacto
-		m.setNombreDescripcion("Ente gobernamental tenant 2");
+		m.setNombreDescripcion("Ente gobernamental");
 		m.setCuit("20-345-9");
 		m.setDomicilio("Avenida de mayo 100");
 		m.setEmail("entegobernamental@lanacion.gov.ar");
@@ -1706,7 +1706,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		m = new PersonaJuridicaPayload();
 
 		// Contacto
-		m.setNombreDescripcion("Fundacion caritas felices tenant 2");
+		m.setNombreDescripcion("Fundacion caritas felices");
 		m.setCuit("20-456-9");
 		m.setDomicilio("Avenida corrientes 7642");
 		m.setEmail("caritasfelices@caritasfelices.org.ar");

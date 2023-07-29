@@ -26,6 +26,9 @@ public class ProgramaDeActividadesService {
 	@Autowired
 	private ActividadService actividadService;
 	
+	@Autowired
+	private FileStorageService fileStorageService;
+	
 	
 	
 	@SuppressWarnings("unused")
@@ -69,6 +72,11 @@ public class ProgramaDeActividadesService {
 		}
 		programaDeActividadesRepository.save(model);
 		programaDeActividadesRepository.delete(model);
+		
+		//Una vez eliminado el programa de actividades, se elimina su foto si es que poseia 
+		boolean existeFoto = fileStorageService.deleteFotoGeneric(id, "programaDeActividades");
+		message += existeFoto ? ". También se ha dado de baja a la foto del programa de actividades" : "";
+		
 		return message;
 	}
 	
@@ -108,7 +116,7 @@ public class ProgramaDeActividadesService {
 		return programaDeActividadesRepository.save(model);
 	}
 	
-	public boolean existeProducto(Long id) {
+	public boolean existeProgramaDeActividades(Long id) {
 		return programaDeActividadesRepository.existsById(id);
 	}
 	

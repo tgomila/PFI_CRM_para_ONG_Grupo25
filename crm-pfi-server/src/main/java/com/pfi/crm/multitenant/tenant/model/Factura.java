@@ -141,10 +141,8 @@ public class Factura extends UserDateAudit {
 		
 		p.setId(id);
 		p.setFecha(fecha);
-		if(p.getCliente() != null)
-			p.setCliente(cliente.toPayload());
-		if(p.getEmisorFactura() != null)
-			p.setEmisorFactura(emisorFactura.toPayload());
+		p.setCliente((this.cliente != null) ? this.cliente.toPayload() : null);
+		p.setEmisorFactura((this.emisorFactura != null) ? this.emisorFactura.toPayload() : null);
 		itemsFactura.forEach((item) -> p.agregarItemFactura(item.toPayload()));
 		
 		return p;

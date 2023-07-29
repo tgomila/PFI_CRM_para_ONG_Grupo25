@@ -31,6 +31,9 @@ public class ProductoService {
 	@Autowired
 	private ContactoService contactoService;
 	
+	@Autowired
+	private FileStorageService fileStorageService;
+	
 	@SuppressWarnings("unused")
 	private static final Logger logger = LoggerFactory.getLogger(ProductoService.class);
 	
@@ -110,6 +113,13 @@ public class ProductoService {
 		}
 		m = productoRepository.save(m);
 		productoRepository.delete(m);
+		
+		//Una vez eliminado el producto, se elimina su foto si es que poseia
+		boolean existeFoto = fileStorageService.deleteFotoGeneric(id, "producto");
+		message += existeFoto ? ". Se ha dado de baja la foto del producto también" : "";
+		
+		//Una vez eliminado el contacto, se elimina su foto si es que poseia 
+		fileStorageService.deleteFotoContacto(id);
 		return message;
 	}
 	
@@ -139,8 +149,10 @@ public class ProductoService {
 			if(payload.getProveedor().getId() != null) {//Agrego su proveedor
 				proveedor = contactoService.getContactoModelById(payload.getProveedor().getId());
 			}
-			else {//Doy de alta su proveedor (Contacto)
-				proveedor = contactoService.altaContactoModel(payload.getProveedor());
+			else {
+				//Doy de alta su proveedor (Contacto)
+				//proveedor = contactoService.altaContactoModel(payload.getProveedor());
+				proveedor = null;//No doy de alta el 
 			}
 		}
 		else {

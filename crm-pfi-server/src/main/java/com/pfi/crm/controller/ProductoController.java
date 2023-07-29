@@ -50,31 +50,31 @@ public class ProductoController {
 		return productoService.getProductos();
 	}
 	
-	@GetMapping({ "/sin_stock" })
+	@GetMapping({ "/all/sin_stock" })
 	public List<ProductoPayload> getProductosSinStock(@CurrentUser UserPrincipal currentUser) {
 		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.PRODUCTO, "Ver productos sin stock");
 		return productoService.getProductosSinStock();
 	}
 	
-	@GetMapping({ "/con_stock" })
+	@GetMapping({ "/all/con_stock" })
 	public List<ProductoPayload> getProductosConStock(@CurrentUser UserPrincipal currentUser) {
 		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.PRODUCTO, "Ver productos con stock");
 		return productoService.getProductosConStock();
 	}
 	
-	@GetMapping({ "/con_bajo_stock" })
+	@GetMapping({ "/all/con_bajo_stock" })
 	public List<ProductoPayload> getProductosConBajoStock(@CurrentUser UserPrincipal currentUser) {
 		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.PRODUCTO, "Ver productos con bajo stock");
 		return productoService.getProductosConBajoStock();
 	}
 	
-	@GetMapping({ "/con_suficiente_stock" })
+	@GetMapping({ "/all/con_suficiente_stock" })
 	public List<ProductoPayload> getProductosConSuficienteStock(@CurrentUser UserPrincipal currentUser) {
 		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.PRODUCTO, "Ver productos con suficiente stock");
 		return productoService.getProductosConSuficienteStock();
 	}
 	
-	@GetMapping({ "/calcular_precio_reposicion_stock" })
+	@GetMapping({ "/all/calcular_precio_reposicion_stock" })
 	public String calcularPrecioReposicion(@CurrentUser UserPrincipal currentUser) {
 		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.PRODUCTO, "Calcular precio de reposición de stock");
 		return productoService.calcularPrecioReposicion();

@@ -40,6 +40,8 @@ import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBui
 import com.pfi.crm.controller.ImageController;
 import com.pfi.crm.exception.BadRequestException;
 import com.pfi.crm.mastertenant.config.DBContextHolder;
+import com.pfi.crm.multitenant.tenant.model.Actividad;
+import com.pfi.crm.multitenant.tenant.model.ProgramaDeActividades;
 import com.pfi.crm.multitenant.tenant.payload.FileInfoPayload;
 import com.pfi.crm.multitenant.tenant.payload.ImagenPayload;
 import com.pfi.crm.security.UserPrincipal;
@@ -111,7 +113,7 @@ public class FileStorageService {
 		return destino;
 	}
 	
-	public boolean existeFotoPerfil(UserPrincipal user) {
+	/*public boolean existeFotoPerfil(UserPrincipal user) {
 		try {
 			String tenantName = DBContextHolder.getCurrentDb();
 			Long idContacto = user.getIdContacto();
@@ -136,7 +138,7 @@ public class FileStorageService {
 		} catch (MalformedURLException e) {
 			throw new RuntimeException("Error: " + e.getMessage());
 		}
-	}
+	}*/
 	
 	//No creo que se use
 	public Resource getFotoPerfilDescargar(UserPrincipal user) {
@@ -191,11 +193,7 @@ public class FileStorageService {
 		
 	}
 	
-	public ResponseEntity<byte[]> getFotoPerfil(UserPrincipal user) {
-		return getFotoContacto(user.getIdContacto());
-	}
-	
-	public ResponseEntity<byte[]> getFotoContacto(Long idContacto) {
+	/*public ResponseEntity<byte[]> getFotoContacto(Long idContacto) {
 		try {
 			//Primero busco su foto de perfil (esto en formato "descarga, tomá el archivo").
 			String tenantName = DBContextHolder.getCurrentDb();
@@ -203,6 +201,11 @@ public class FileStorageService {
 			Path fileFotoPerfil_jpeg = root.resolve(tenantName).resolve("contacto").resolve("contacto_" + idContacto.toString() + ".jpeg");
 			Path fileFotoPerfil_png = root.resolve(tenantName).resolve("contacto").resolve("contacto_" + idContacto.toString() + ".png");
 			
+			System.out.println("----------------------------------------------------------------------");
+			System.out.println(fileFotoPerfil_jpg);
+			System.out.println(fileFotoPerfil_jpeg);
+			System.out.println(fileFotoPerfil_png);
+			System.out.println("----------------------------------------------------------------------");
 			Resource resource_jpg = new UrlResource(fileFotoPerfil_jpg.toUri());
 			Resource resource_jpeg = new UrlResource(fileFotoPerfil_jpeg.toUri());
 			Resource resource_png = new UrlResource(fileFotoPerfil_png.toUri());
@@ -254,9 +257,9 @@ public class FileStorageService {
 		} catch (IOException e) {
 			throw new RuntimeException("Error: " + e.getMessage());
 		}
-	}
+	}*/
 	
-	public ResponseEntity<byte[]> getFotoTablaContacto(Long idContacto) {
+	/*public ResponseEntity<byte[]> getFotoTablaContacto(Long idContacto) {
 		try {
 			//Primero busco su foto de perfil (esto en formato "descarga, tomá el archivo").
 			String tenantName = DBContextHolder.getCurrentDb();
@@ -315,14 +318,108 @@ public class FileStorageService {
 		} catch (IOException e) {
 			throw new RuntimeException("Error: " + e.getMessage());
 		}
+	}*/
+	
+	public ResponseEntity<byte[]> getFotoPerfil(UserPrincipal user) {
+		return getFotoContacto(user.getIdContacto());
 	}
 	
-	//Mismo de arriba pero info
-	public ResponseEntity<ImagenPayload> getInfoFotoPerfil(UserPrincipal user) {
-		return getInfoFotoContacto(user.getIdContacto());
+	public ResponseEntity<byte[]> getFotoContacto(Long idContacto) {
+		return getFotoGeneric(idContacto, "contacto", false);
 	}
 	
-	public ResponseEntity<ImagenPayload> getInfoFotoContacto(Long idContacto) {
+	public ResponseEntity<byte[]> getFotoTablaContacto(Long idContacto) {
+		return getFotoGeneric(idContacto, "contacto", true);
+	}
+	
+	public ResponseEntity<byte[]> getFotoProducto(Long idProducto) {
+		return getFotoGeneric(idProducto, "producto", false);
+	}
+	
+	public ResponseEntity<byte[]> getFotoTablaProducto(Long idProducto) {
+		return getFotoGeneric(idProducto, "producto", true);
+	}
+	
+	public ResponseEntity<byte[]> getFotoActividad(Long idActividad) {
+		return getFotoGeneric(idActividad, "actividad", false);
+	}
+	
+	public ResponseEntity<byte[]> getFotoTablaActividad(Long idActividad) {
+		return getFotoGeneric(idActividad, "actividad", true);
+	}
+	
+	public ResponseEntity<byte[]> getFotoProgramaDeActividades(Long idProgramaDeActividades) {
+		return getFotoGeneric(idProgramaDeActividades, "programaDeActividades", false);
+	}
+	
+	public ResponseEntity<byte[]> getFotoTablaProgramaDeActividades(Long idProgramaDeActividades) {
+		return getFotoGeneric(idProgramaDeActividades, "programaDeActividades", true);
+	}
+	
+	public ResponseEntity<byte[]> getFotoGeneric(Long id, String nombreTipoArchivo, boolean isFotoForTable) {
+		try {
+			//Primero busco su foto de perfil (esto en formato "descarga, tomá el archivo").
+			String tenantName = DBContextHolder.getCurrentDb();
+			Path fileFoto_jpg = root.resolve(tenantName).resolve(nombreTipoArchivo).resolve(nombreTipoArchivo + "_" + id.toString() + ".jpg");
+			Path fileFoto_jpeg = root.resolve(tenantName).resolve(nombreTipoArchivo).resolve(nombreTipoArchivo + "_" + id.toString() + ".jpeg");
+			Path fileFoto_png = root.resolve(tenantName).resolve(nombreTipoArchivo).resolve(nombreTipoArchivo + "_" + id.toString() + ".png");
+			
+			Resource resource_jpg = new UrlResource(fileFoto_jpg.toUri());
+			Resource resource_jpeg = new UrlResource(fileFoto_jpeg.toUri());
+			Resource resource_png = new UrlResource(fileFoto_png.toUri());
+			Resource file;//resource
+
+			//Segundo, lo convierto en URL para front, sino se me descarga la foto y no es lo que quiero.
+			//Se prueba si existe en jpg o png
+			HttpHeaders headers = new HttpHeaders();
+			if (resource_jpg.exists() || resource_jpg.isReadable()) {
+				file =resource_jpg;
+				headers.setContentType(MediaType.IMAGE_JPEG); // Establecer el tipo de contenido a imagen JPEG
+			} else if(resource_jpeg.exists() || resource_jpeg.isReadable()) {
+				file = resource_jpeg;
+				headers.setContentType(MediaType.IMAGE_JPEG); // Establecer el tipo de contenido a imagen JPEG
+			} else if(resource_png.exists() || resource_png.isReadable()) {
+				file = resource_png;
+				headers.setContentType(MediaType.IMAGE_PNG); // Establecer el tipo de contenido a imagen JPEG
+			} else {
+				String mensaje = "Foto no encontrada para " + nombreTipoArchivo + " con el id: " + id;
+		        //return ResponseEntity.status(HttpStatus.NOT_FOUND).body(mensaje.getBytes());
+				throw new ResponseStatusException(HttpStatus.NOT_FOUND, mensaje);
+			}
+			
+			//Lo convierto a 96x96px
+			// Leer la imagen original
+			BufferedImage originalImage = ImageIO.read(file.getFile());
+			
+			if(isFotoForTable) {// Redimensionar la imagen a 96x96 píxeles
+			    Image resizedImage = originalImage.getScaledInstance(96, 96, Image.SCALE_DEFAULT);
+			    BufferedImage resizedBufferedImage = new BufferedImage(96, 96, BufferedImage.TYPE_INT_RGB);
+			    resizedBufferedImage.getGraphics().drawImage(resizedImage, 0, 0, null);
+			    originalImage = resizedBufferedImage;
+			}
+		    
+		    // Convertir la imagen redimensionada a un arreglo de bytes
+		    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		    ImageIO.write(originalImage, "jpeg", baos);
+		    byte[] imageBytes = baos.toByteArray();
+			
+		    // Configurar las cabeceras de la respuesta
+		    headers.setContentLength(imageBytes.length);
+			String filename = file.getFilename();
+			String contentDispositionValue;
+			contentDispositionValue = String.format("inline; filename=\"%s\"; filename*=UTF-8''%s", 
+			        filename, URLEncoder.encode(filename, StandardCharsets.UTF_8.toString()).replace("+", "%20"));
+			headers.set(HttpHeaders.CONTENT_DISPOSITION, contentDispositionValue); // Establecer el encabezado de contenido en línea
+			return ResponseEntity.ok().headers(headers).body(imageBytes);
+			
+		} catch (MalformedURLException e) {
+			throw new RuntimeException("Error: " + e.getMessage());
+		} catch (IOException e) {
+			throw new RuntimeException("Error: " + e.getMessage());
+		}
+	}
+	
+	/*public ResponseEntity<ImagenPayload> getInfoFotoContacto(Long idContacto) {
 		try {
 			//Primero busco su foto de perfil (esto en formato "descarga, tomá el archivo").
 			String tenantName = DBContextHolder.getCurrentDb();
@@ -357,32 +454,70 @@ public class FileStorageService {
 		} catch (MalformedURLException e) {
 			throw new RuntimeException("Error: " + e.getMessage());
 		}
+	}*/
+
+	
+	public ResponseEntity<ImagenPayload> getInfoFotoPerfil(UserPrincipal user) {
+		return getInfoFotoGeneric(user.getIdContacto(), "contacto");
+	}
+	
+	public ResponseEntity<ImagenPayload> getInfoFotoContacto(Long id) {
+		return getInfoFotoGeneric(id, "contacto");
+	}
+	
+	public ResponseEntity<ImagenPayload> getInfoFotoProducto(Long id) {
+		return getInfoFotoGeneric(id, "producto");
+	}
+	
+	public ResponseEntity<ImagenPayload> getInfoFotoActividad(Long id) {
+		return getInfoFotoGeneric(id, "actividad");
+	}
+	
+	public ResponseEntity<ImagenPayload> getInfoFotoProgramaDeActividades(Long id) {
+		return getInfoFotoGeneric(id, "programaDeActividades");
+	}
+	
+	public ResponseEntity<ImagenPayload> getInfoFotoGeneric(Long id, String nombreTipoArchivo) {
+		try {
+			//Primero busco su foto de perfil (esto en formato "descarga, tomá el archivo").
+			String tenantName = DBContextHolder.getCurrentDb();
+			Path fileFoto_jpg = root.resolve(tenantName).resolve(nombreTipoArchivo).resolve(nombreTipoArchivo + "_" + id.toString() + ".jpg");
+			Path fileFoto_jpeg = root.resolve(tenantName).resolve(nombreTipoArchivo).resolve(nombreTipoArchivo + "_" + id.toString() + ".jpeg");
+			Path fileFoto_png = root.resolve(tenantName).resolve(nombreTipoArchivo).resolve(nombreTipoArchivo + "_" + id.toString() + ".png");
+			
+			Resource resource_jpg = new UrlResource(fileFoto_jpg.toUri());
+			Resource resource_jpeg = new UrlResource(fileFoto_jpeg.toUri());
+			Resource resource_png = new UrlResource(fileFoto_png.toUri());
+
+			//Segundo, lo convierto en URL para front, sino se me descarga la foto y no es lo que quiero.
+			//Se prueba si existe en jpg o png
+			LocalDateTime fecha_mas_tardia = null;
+			if (resource_jpg.exists() || resource_jpg.isReadable()) {
+				fecha_mas_tardia = getFechaMasTardia(fileFoto_jpg);
+			} else if(resource_jpeg.exists() || resource_jpeg.isReadable()) {
+				fecha_mas_tardia = getFechaMasTardia(fileFoto_jpeg);
+			} else if(resource_png.exists() || resource_png.isReadable()) {
+				fecha_mas_tardia = getFechaMasTardia(fileFoto_png);
+			} else {
+				//String mensaje = "Foto no encontrada para el " + nombreTipoArchivo + " con el id: " + id;
+		        ImagenPayload imagen = new ImagenPayload(id, nombreTipoArchivo, null);
+				return ResponseEntity.ok().body(imagen);
+				//throw new ResponseStatusException(HttpStatus.NOT_FOUND, mensaje);
+			}
+			
+		    // Configurar las cabeceras de la respuesta
+			ImagenPayload imagen = new ImagenPayload(id, nombreTipoArchivo, fecha_mas_tardia);
+			return ResponseEntity.ok().body(imagen);
+			
+		} catch (MalformedURLException e) {
+			throw new RuntimeException("Error: " + e.getMessage());
+		}
 	}
 	
 	public void saveFotoPerfil(MultipartFile file, UserPrincipal user) {
-		try {
-			//Preparo su nombre "miFoto.jpg" a: "contacto_3.jpg"
-			String originalFileName = StringUtils.cleanPath(file.getOriginalFilename());
-		    String extension = StringUtils.getFilenameExtension(originalFileName);
-		    if(!extension.equalsIgnoreCase("png") && !extension.equalsIgnoreCase("jpg") && !extension.equalsIgnoreCase("jpeg")) {
-		    	throw new BadRequestException("Tiene que subir un archivo de tipo foto .jpg o .png");
-		    }
-		    String newFileName = "contacto_" + user.getIdContacto().toString() + "." + extension;
-			
-		    //Preparo su path
-		    String tenantName = DBContextHolder.getCurrentDb();
-			Path fileFotoPerfil = root.resolve(tenantName).resolve("contacto").resolve(newFileName);
-			crearCarpeta(fileFotoPerfil.getParent());
-			
-			//Guardo el archivo
-			Files.copy(file.getInputStream(), fileFotoPerfil, StandardCopyOption.REPLACE_EXISTING);
-			
-		} catch(Exception e) {
-			if(e instanceof FileAlreadyExistsException) {
-				throw new RuntimeException("Un archivo con ese nombre ya existe.");
-			}
-			throw new RuntimeException(e.getMessage());
-		}
+		if(!contactoService.existeContacto(user.getIdContacto()))
+			throw new BadRequestException("Error al guardar la imágen, el contacto con ID: '" + user.getIdContacto() + "' no existe en la base de datos.");
+		saveFotoGeneric(file, user.getIdContacto(), "contacto");
 	}
 	
 	public void saveFotoContacto(MultipartFile file, Long id) {
@@ -404,9 +539,18 @@ public class FileStorageService {
 	}
 	
 	public void saveFotoProgramaDeActividades(MultipartFile file, Long id) {
-		if(!programaDeActividadesService.existeProducto(id))
+		if(!programaDeActividadesService.existeProgramaDeActividades(id))
 			throw new BadRequestException("Error al guardar la imágen, el programa de actividades con ID: '" + id + "' no existe en la base de datos.");
 		saveFotoGeneric(file, id, "programaDeActividades");
+		//Este va a ser particular, va a dar de alta la misma foto a todas sus actividades que no posean foto
+		ProgramaDeActividades programa = programaDeActividadesService.getProgramaDeActividadesModelById(id);
+		List<Actividad> actividadesDelPrograma = programa.getActividades();
+		for(Actividad actividad: actividadesDelPrograma) {
+			boolean noExisteFoto = getFotoPathGeneric(actividad.getId(), "programaDeActividades") == null;
+			if(noExisteFoto) {
+				saveFotoActividad(file, actividad.getId());
+			}
+		}
 	}
 	
 	/**
@@ -437,6 +581,10 @@ public class FileStorageService {
 			Path fileFoto = root.resolve(tenantName).resolve(nombreTipoArchivo).resolve(newFileName);
 			crearCarpeta(fileFoto.getParent());
 			
+			
+			//borro si existe anteriormente otra foto, se usa esto porque si se da de alta png y ya existe jpg, no va a reemplazar existemte y va a haber 2 fotos
+			deleteFotoGeneric(id, nombreTipoArchivo);
+			
 			//Guardo el archivo
 			Files.copy(file.getInputStream(), fileFoto, StandardCopyOption.REPLACE_EXISTING);
 			
@@ -449,22 +597,82 @@ public class FileStorageService {
 	}
 	
 	public void deleteFotoPerfil(UserPrincipal user) {
+		deleteFotoGeneric(user.getIdContacto(), "contacto");
+	}
+	
+	public void deleteFotoContacto(Long id) {
+		deleteFotoGenericWithResponse(id, "contacto");
+	}
+	
+	public void deleteFotoProducto(Long id) {
+		deleteFotoGenericWithResponse(id, "producto");
+	}
+	
+	public void deleteFotoActividad(Long id) {
+		deleteFotoGenericWithResponse(id, "actividad");
+	}
+	
+	public void deleteFotoProgramaDeActividades(Long id) {
+		deleteFotoGenericWithResponse(id, "programaDeActividades");
+	}
+	
+	private void deleteFotoGenericWithResponse(Long id, String nombreTipoArchivo) {
+		boolean existe_foto = deleteFotoGeneric(id, nombreTipoArchivo);
+		if(!existe_foto) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "La foto de " + nombreTipoArchivo + ", ID:'" + id + "', que desea eliminar no existe!");
+		}
+	}
+	
+	public boolean deleteFotoGeneric(Long id, String nombreTipoArchivo) {
 		try {
-			String tenantName = DBContextHolder.getCurrentDb();
-			Long idContacto = user.getIdContacto();
-			Path fileFotoPerfil_jpg = root.resolve(tenantName).resolve("contacto").resolve("contacto_" + idContacto.toString() + ".jpg");
-			Path fileFotoPerfil_jpeg = root.resolve(tenantName).resolve("contacto").resolve("contacto_" + idContacto.toString() + ".jpeg");
-			Path fileFotoPerfil_png = root.resolve(tenantName).resolve("contacto").resolve("contacto_" + idContacto.toString() + ".png");
+			Path fileFoto = getFotoPathGeneric(id, nombreTipoArchivo);//puede ser jpg, png, jpeg
 			
-			boolean existe_jpg = Files.deleteIfExists(fileFotoPerfil_jpg);
-			boolean existe_jpeg = Files.deleteIfExists(fileFotoPerfil_jpeg);
-			boolean existe_png = Files.deleteIfExists(fileFotoPerfil_png);
-			if(!existe_jpg && !existe_jpeg && !existe_png) {//Si no pudo borrar ninguno de los 2 tipos de fotos.
-				throw new ResponseStatusException(HttpStatus.NOT_FOUND, "La foto de perfil que desea eliminar no existe!");
-			}
+			boolean existe_foto = fileFoto != null ? Files.deleteIfExists(fileFoto) : false;
+			return existe_foto;
 		} catch (MalformedURLException e) {
 			throw new RuntimeException("Error: " + e.getMessage());
 		} catch (IOException e) {
+			throw new RuntimeException("Error: " + e.getMessage());
+		}
+	}
+	
+	private Path getFotoPathGeneric(Long id, String nombreTipoArchivo) {
+		try {
+			if(id == null || id.intValue() < 0) {
+				throw new BadRequestException("Error al obtener la foto del " + nombreTipoArchivo + " sin id especificado");
+			}
+			if(nombreTipoArchivo == null || nombreTipoArchivo.isEmpty()) {
+				throw new BadRequestException("Error interno al obtener el archivo, contacte al administrador. Error: nombreTipoArchivo == null");
+			}
+			//Primero busco su foto de perfil (esto en formato "descarga, tomá el archivo").
+			String tenantName = DBContextHolder.getCurrentDb();
+			Path fileFoto_jpg = root.resolve(tenantName).resolve(nombreTipoArchivo).resolve(nombreTipoArchivo + "_" + id.toString() + ".jpg");
+			Path fileFoto_jpeg = root.resolve(tenantName).resolve(nombreTipoArchivo).resolve(nombreTipoArchivo + "_" + id.toString() + ".jpeg");
+			Path fileFoto_png = root.resolve(tenantName).resolve(nombreTipoArchivo).resolve(nombreTipoArchivo + "_" + id.toString() + ".png");
+			
+			Resource resource_jpg = new UrlResource(fileFoto_jpg.toUri());
+			Resource resource_jpeg = new UrlResource(fileFoto_jpeg.toUri());
+			Resource resource_png = new UrlResource(fileFoto_png.toUri());
+			
+			System.out.println("----------------------------------------------------------------------");
+			System.out.println(resource_jpg);
+			System.out.println(resource_jpeg);
+			System.out.println(resource_png);
+			System.out.println("----------------------------------------------------------------------");
+			
+			//Se prueba si existe en jpg o png
+			if (resource_jpg.exists() || resource_jpg.isReadable()) {
+				System.out.println(resource_jpg);
+				return fileFoto_jpg;
+			} else if(resource_jpeg.exists() || resource_jpeg.isReadable()) {
+				System.out.println(fileFoto_jpeg);
+				return fileFoto_jpeg;
+			} else if(resource_png.exists() || resource_png.isReadable()) {
+				System.out.println(fileFoto_png);
+				return fileFoto_png;
+			}
+			return null;
+		} catch (MalformedURLException e) {
 			throw new RuntimeException("Error: " + e.getMessage());
 		}
 	}
@@ -544,7 +752,7 @@ public class FileStorageService {
 	 * @param model_folder ejemplo "contacto"
 	 * @return lista
 	 */
-	public List<ImagenPayload> loadAllWithFecha(String model_folder) {
+	public List<ImagenPayload> getInfoFotosGeneric(String model_folder) {
 		try {
 			String tenant_folder = DBContextHolder.getCurrentDb();
 			Path pathContacto = root.resolve(tenant_folder).resolve(model_folder);
