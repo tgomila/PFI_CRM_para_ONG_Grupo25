@@ -1,2 +1,5 @@
-Fuente de imagen default:
+Fuente de imagen default contacto:
 http://ssl.gstatic.com/accounts/ui/avatar_2x.png
+
+Fuente de imagen default no image:
+https://www.freepik.com/free-icon/photo_14101618.htm#query=no%20image&position=17&from_view=search&track=ais

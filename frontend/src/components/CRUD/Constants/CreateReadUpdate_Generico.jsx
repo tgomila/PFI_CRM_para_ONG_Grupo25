@@ -15,13 +15,15 @@ import "../../../Styles/CRUD.scss";
  * @param {string} DatoUpdateInput traelo mediante ejemplo: import { PersonaUpdateInput } from '../Constants/ConstantsInputModel';
  * @param {string} tipoDatoForImageService si es tipos de personas (empleado, beneficiario, etc) es 'contacto', sinó else, si es producto es 'producto'. Si no hay foto ejemplo 'factura', poner "" para no mostrar
  * @param {Object} Service ejemplo EmpleadoService
+ * @param {Array} dataIn si por ejemplo un Producto ya tiene cargado su proveedor contacto, no es necesario llamarlo.
  * @param {string} urlTablaDato ejemplo '/empleado', es para cuando presiona el botón cancelar
+ * @param {boolean} isVentanaEmergente true o false
  * @param {string} el_la 'el' o 'la'
  * @param {string} nombreTipoDato ejemplo 'empleado', 'beneficiario'
  * @param {string} typeCRUD ingresar 'CREATE' ó 'UPDATE' para saber que mostrar
  * @returns 
  */
-const CreateReadUpdateGenericoConFoto = ({cargarDatosDefault, DatoUpdateInput, tipoDatoForImageService, Service, urlTablaDato, el_la, nombreTipoDato, typeCRUD}) => {
+const CreateReadUpdateGenericoConFoto = ({cargarDatosDefault, DatoUpdateInput, tipoDatoForImageService, Service, dataIn, urlTablaDato, isVentanaEmergente, el_la, nombreTipoDato, typeCRUD}) => {
     let navigate = useNavigate();
     const location = useLocation();
 
@@ -69,10 +71,13 @@ const CreateReadUpdateGenericoConFoto = ({cargarDatosDefault, DatoUpdateInput, t
         setSearchEncontrado(false);
         setContactoSearchEncontrado(false);
         setPersonaSearchEncontrada(false);
-        formSearch.current.validateAll();
+        formSearch.current?.validateAll();
         //console.log("Llegue aquí, id: " + idToSearch);
         //console.log("location.state.id: " + location.state.id);
-        if (checkBtnSearch.current.context._errors.length === 0) {
+        let isNoErrorSearch = !(checkBtnSearch.current?.context?._errors.length > 0);
+        console.log("no error: " + isNoErrorSearch);
+
+        if (isNoErrorSearch) {
             
             const methodToCall = typeCRUD === 'CREATE' ? "search" : "getById";
             //anteriormente era Service.getByid o Service.search
@@ -234,10 +239,13 @@ const CreateReadUpdateGenericoConFoto = ({cargarDatosDefault, DatoUpdateInput, t
     const [nombreTipoDatoPrimeraLetraMayuscula, setNombreTipoDatoPrimeraLetraMayuscula] = useState("");
     const [el_la_aux, setElLa_aux] = useState("");
     useEffect(() => {
-        if(location.state && location.state.id){//En caso de que diste en tabla a botón "Editar ID: 1" aquí se obtiene su ID.
+        if(location?.state?.id){//En caso de que diste en tabla a botón "Editar ID: 1" aquí se obtiene su ID.
             window.scrollTo({ top: 0, behavior: "smooth" });
             setIdToSearch(location.state.id);
             handleEntrySearch();
+        } else if(dataIn) {
+            setDatos(dataIn);
+            setMostrarSearchID(false);//typeCRUD === 'CREATE' ? false : true);
         }
         else{
             setMostrarSearchID(typeCRUD === 'CREATE' ? false : true);//Para casos de UPDATE, mostrar el search
@@ -399,15 +407,22 @@ const CreateReadUpdateGenericoConFoto = ({cargarDatosDefault, DatoUpdateInput, t
     return (
         <div className="submit-form">
             <div className = "row">
-                <div className = "card col-md-6 offset-md-3 offset-md-3">
+                <div className = {isVentanaEmergente ? "" : "card col-md-6 offset-md-3 offset-md-3"}>
                     {!submitted ? (
                         <div className = "card-body">
-                            {typeCRUD === 'CREATE' ? <CreateSearch/> : <UpdateReadSearch/>}
+                            {typeCRUD === 'CREATE' && tipoDatoForImageService === 'contacto' ? <CreateSearch/> : <UpdateReadSearch/>}
                             {(forzarRenderizado) && (<div></div>)}
-                            {!mostrarSearchID && (
+                            {(!mostrarSearchID) && (
                                 <div>
                                     {/* Si hay foto (ejemplo persona, producto) mostrar, si no hay foto ejemplo factura, no mostrar */}
-                                    {tipoDatoForImageService && <FotoPerfil id={datos.id} setFotoSubida={setFotoSubida} visibilidad={(typeCRUD === 'CREATE' || typeCRUD === 'UPDATE') ? "EDITAR" : "SOLO_VISTA"} />}
+                                    {tipoDatoForImageService && 
+                                        <FotoPerfil
+                                            id = {datos.id}
+                                            setFotoSubida = {setFotoSubida}
+                                            visibilidad = {(typeCRUD === 'CREATE' || typeCRUD === 'UPDATE') ? "EDITAR" : "SOLO_VISTA"}
+                                            tipoFoto = {tipoDatoForImageService}
+                                        />
+                                    }
                                 
                                     {(typeCRUD === 'CREATE' || typeCRUD === 'UPDATE') && (
                                         <div className="form-group">
@@ -450,9 +465,11 @@ const CreateReadUpdateGenericoConFoto = ({cargarDatosDefault, DatoUpdateInput, t
                                             />
                                         </div>
                                     )}
-                                    <button className="btn btn-info" onClick={cancel} style={{marginLeft: "00px"}}>
-                                        {typeCRUD === 'READ' ? 'Regresar a la lista' : 'Cancelar'}
-                                    </button>
+                                    {!isVentanaEmergente && (
+                                        <button className="btn btn-info" onClick={cancel} style={{marginLeft: "00px"}}>
+                                            {typeCRUD === 'READ' ? 'Regresar a la lista' : 'Cancelar'}
+                                        </button>
+                                    )}
                                 </div>
                             )}
                         </div>

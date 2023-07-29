@@ -1,7 +1,8 @@
 import axios from "axios";
 import authHeader from "./auth-header";
 import * as constantsURL from "../components/constants/ConstantsURL";
-import defaultImage from './constantsPictures/default.png';
+import defaultContactoImage from './constantsPictures/defaultContacto.png';
+import defaultNoImage from './constantsPictures/defaultNoImage.png';
 const BACKEND_API_BASE_URL = constantsURL.API_BASE_URL;
 
 //
@@ -38,7 +39,7 @@ const getAllFotos = async (lista, tipoFoto, tamanio) => {
         }
         else{//No existe foto en bd
           //console.log("no hay item")
-          fotoUrl = defaultImage;
+          fotoUrl = getDefaultImage(tipoFoto);
           removeFotoFromStorage(item.id, tipoFoto);
         }
         //console.log("fotoUrl:");
@@ -50,7 +51,7 @@ const getAllFotos = async (lista, tipoFoto, tamanio) => {
     }
     else{//Asumo que no existe ni 1 foto en BD
       for (const item of lista) {//contacto
-        const itemConFoto = { ...item, imagen_tabla: defaultImage };
+        const itemConFoto = { ...item, imagen_tabla: getDefaultImage(tipoFoto) };
         newLista.push(itemConFoto);
       }
       //console.log("me fui 12");
@@ -58,7 +59,7 @@ const getAllFotos = async (lista, tipoFoto, tamanio) => {
     }
   } catch(error) {//Asumo not found error.response.status === 404
     for (const item of lista) {//contacto
-      const itemConFoto = { ...item, imagen_tabla: defaultImage };
+      const itemConFoto = { ...item, imagen_tabla: getDefaultImage(tipoFoto) };
       newLista.push(itemConFoto);
     }
     return newLista;
@@ -178,7 +179,7 @@ const removeFotoFromStorage = (dtoId, tipoFoto) => {
     localStorage.removeItem(infoFotoCompleta.nombreFotoAGuardar);//foto completa
     localStorage.removeItem(infoFotoCompleta.nombreFotoInfoAGuardar);//foto info
   }
-  return defaultImage;
+  return getDefaultImage(tipoFoto);
 }
 
 /**
@@ -225,7 +226,7 @@ const getFotoWithInfo = (dtoId, tipoFoto, tamanio, fotoInfoDelBackendActual) => 
   else{
     fotito = getFotoFromBackend();
     //removeFotoFromStorage(dtoId, tipoFoto);
-    //fotito = defaultImage;
+    //fotito = getDefaultImage(tipoFoto);
   }
   //console.log("me fui");
   return fotito;
@@ -234,7 +235,7 @@ const getFotoWithInfo = (dtoId, tipoFoto, tamanio, fotoInfoDelBackendActual) => 
 const getFotoFromBackendWithInfo = (dtoId, tipoFoto, tamanio, fotoInfoBackend) => {
   if(!dtoId){
     console.log("Entre a !dto")
-    return defaultImage;
+    return getDefaultImage(tipoFoto);
   }
   const fotoInfoFrontend = getStorageFotoInfo(dtoId, tipoFoto, tamanio);
   //Si existe foto entonces hacer todo
@@ -275,7 +276,7 @@ const getFotoFromBackendWithInfo = (dtoId, tipoFoto, tamanio, fotoInfoBackend) =
     })
     .catch(error => {//Asumo not found error.response.status === 404
       removeFotoFromStorage(dtoId, tipoFoto);
-      return defaultImage;
+      return getDefaultImage(tipoFoto);
     });
     //
 
@@ -284,7 +285,7 @@ const getFotoFromBackendWithInfo = (dtoId, tipoFoto, tamanio, fotoInfoBackend) =
   }
   else{//Si no existe foto entonces devuelvo default.
     removeFotoFromStorage(dtoId, tipoFoto);//Por si se borró la foto en BD.
-    return defaultImage;
+    return getDefaultImage(tipoFoto);
   }
 
 };
@@ -349,6 +350,16 @@ const uploadImage = async (id, tipoDato, imageUrl) => {
   return axios.post(url, formData, config);
 };
 
+const getDefaultImage = (tipoFoto) => {
+  if(tipoFoto === 'contacto')
+    return defaultContactoImage;
+  if(tipoFoto === 'producto')
+    return defaultNoImage;
+
+  return defaultNoImage;
+  
+}
+
 const ImageService = {
     getAllContactoTablaFotos,
     getAllFotos,
@@ -358,6 +369,7 @@ const ImageService = {
     getFotoContactoCompleta,
     uploadImage,
     uploadImageContacto,
+    getDefaultImage,
 };
 
 export default ImageService;

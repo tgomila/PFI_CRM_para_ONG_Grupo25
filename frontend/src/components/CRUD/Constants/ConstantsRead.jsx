@@ -1,5 +1,4 @@
 import React from 'react';
-import Input from "react-validation/build/input";
 
 //Este .js es para "Read" en gran parte.
 

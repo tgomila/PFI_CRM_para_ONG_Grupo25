@@ -237,22 +237,58 @@ const LugarDeNacimientoInput = ({ disabled, data, handleInputChange }) => {
     );
 };
 
+// const SeRetiraSoloInput = ({ disabled, data, handleInputChange }) => {
+//     const isBoolean = (value) => typeof value === "boolean";
+//     const [selectedOption, setSelectedOption] = useState("");
+//     const booleanToText = (value) => {
+//         console.log("value");
+//         console.log(value);
+//         if(typeof value === "boolean"){
+//             setSelectedOption(data.seRetiraSolo ? "true" : "false");
+//             console.log("boolean: " + data.seRetiraSolo ? "true" : "false");
+//         } else {
+//             setSelectedOption(data.seRetiraSolo);//es texto
+//             console.log("text: " + data.seRetiraSolo);
+//         }
+//     }
+//     useEffect(() => {//transformo boolean a string, total springboot me lo convierte string a boolean.
+//         booleanToText(data.seRetiraSolo);
+//     }, []);
+
+    
+
+//     const handleChange = (event) => {
+//         console.log("Antes selected option: " + selectedOption);
+//         const newValue = event.target.value;
+//         setSelectedOption(newValue);
+//         handleInputChange(event);
+//         console.log("Después selected option: " + selectedOption);
+//         console.log("Entre aquí 1.5: " + newValue);
+//     };
+
+//     return(
+//         <div className = "form-group">
+//             <label> Se retira solo: </label>
+//             <select disabled={disabled} name="seRetiraSolo" value={selectedOption} className="form-control" onChange={handleChange} validations={[required]}>
+//                 <option value="">Seleccione</option>
+//                 <option value={"true"}>Si</option>
+//                 <option value={"false"}>No</option>
+//             </select>
+//         </div>
+//     );
+// };
+
 const SeRetiraSoloInput = ({ disabled, data, handleInputChange }) => {
     return(
         <div className = "form-group">
             <label> Se retira solo: </label>
-            {/*{console.log("ID: " + data.id)}
-            {console.log("Se retira solo: " + data.seRetiraSolo)}
-            {console.log(data)}
-            */}
-            <Select disabled={disabled} name="seRetiraSolo" value={data.seRetiraSolo ? "true" : "false"} className="form-control" onChange={handleInputChange} validations={[required]}>
-                <option value="">Seleccione</option>
-                <option value="true">Si</option>
-                <option value="false">No</option>
-            </Select>
+            <select disabled={disabled} name="seRetiraSolo" value={data.seRetiraSolo} className="form-control" onChange={handleInputChange} validations={[required]}>
+                <option value={true}>Si</option>
+                <option value={false}>No</option>
+            </select>
         </div>
     );
-};
+}
 
 const CuidadosEspecialesInput = ({ disabled, data, handleInputChange }) => {
     return(

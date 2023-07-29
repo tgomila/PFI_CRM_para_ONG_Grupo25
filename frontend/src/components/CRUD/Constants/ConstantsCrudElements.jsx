@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import ImageService from '../../../services/ImageService';
 import { OverlayTrigger, Tooltip, Image } from "react-bootstrap";
-import defaultImage from '../../../services/constantsPictures/default.png';
 
 import "../../../Styles/CRUD.scss";
 
@@ -13,7 +12,7 @@ import "../../../Styles/CRUD.scss";
  * @param visibilidad es "EDITAR" para mostrar botones de modificar foto, o "SOLO_VISTA" para no mostrar botones
  * @returns 
  */
-const FotoPerfil = ({ id, setFotoSubida, visibilidad }) => {
+const FotoPerfil = ({ id, setFotoSubida, visibilidad, tipoFoto }) => {
     const [foto, setFoto] = useState(null);
     const [isFotoClicked, setIsFotoClicked] = useState(false);
     const [isFotoDefault, setIsFotoDefault] = useState(true);//Solo sirve para mostrar foto chica (default) si no existe foto, o grande (si existe foto).
@@ -34,13 +33,13 @@ const FotoPerfil = ({ id, setFotoSubida, visibilidad }) => {
     };
     useEffect(() => {
         if(id){
-            ImageService.getFoto(id, "contacto", 'completa').then((res) => {
+            ImageService.getFoto(id, tipoFoto, 'completa').then((res) => {
                 setFoto(res);
                 setIsFotoDefault(false);
             });
         }
         else{
-            setFoto(defaultImage);
+            setFoto(ImageService.getDefaultImage(tipoFoto));
             setIsFotoDefault(true);
         }
     }, [id]);

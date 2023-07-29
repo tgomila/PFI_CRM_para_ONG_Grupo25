@@ -18,6 +18,9 @@ import ConsejoAdHonoremVista from "./components/vista_grafico_tabla/ConsejoAdHon
 import VoluntarioVista from "./components/vista_grafico_tabla/VoluntarioVista";
 import PersonaJuridicaVista from "./components/vista_grafico_tabla/PersonaJuridicaVista";
 
+import UserVista from "./components/vista_grafico_tabla/UserVista";
+import ProductoVista from "./components/vista_grafico_tabla/ProductoVista";
+
 import FooterComponent from "./components/FooterComponent";
 
 //Creates
@@ -32,6 +35,8 @@ import CreateConsejoAdHonoremComponent from "./components/CRUD/Create/CreateCons
 import CreateVoluntarioComponent from "./components/CRUD/Create/CreateVoluntarioComponent";
 import CreateEmployeeComponent from "./trash-can/CreateEmployeeComponent";//Testing
 
+import CreateProductoComponent from "./components/CRUD/Create/CreateProductoComponent";
+
 //Read
 import ReadContactoComponent from "./components/CRUD/Read/ReadContactoComponent";
 import ReadPersonaComponent from "./components/CRUD/Read/ReadPersonaComponent";
@@ -43,6 +48,8 @@ import ReadConsejoAdHonoremComponent from "./components/CRUD/Read/ReadConsejoAdH
 import ReadVoluntarioComponent from "./components/CRUD/Read/ReadVoluntarioComponent";
 import ReadPersonaJuridicaComponent from "./components/CRUD/Read/ReadPersonaJuridicaComponent";
 
+import ReadProductoComponent from "./components/CRUD/Read/ReadProductoComponent";
+
 //Updates
 import UpdateContactoComponent from "./components/CRUD/Update/UpdatePersonaComponent";
 import UpdatePersonaJuridicaComponent from "./components/CRUD/Update/UpdatePersonaJuridicaComponent";
@@ -53,6 +60,8 @@ import UpdateProfesionalComponent from "./components/CRUD/Update/UpdateProfesion
 import UpdateColaboradorComponent from "./components/CRUD/Update/UpdateColaboradorComponent";
 import UpdateConsejoAdHonoremComponent from "./components/CRUD/Update/UpdateConsejoAdHonoremComponent";
 import UpdateVoluntarioComponent from "./components/CRUD/Update/UpdateVoluntarioComponent";
+
+import UpdateProductoComponent from "./components/CRUD/Update/UpdateProductoComponent";
 
 //Updates testing
 import UpdateEmployeeComponent from "./components/UpdateEmployeeComponent";
@@ -265,11 +274,11 @@ const App = () => {
             <Route path="/personajuridica" element={<PersonaJuridicaVista/>} />
             <Route path="/profesional" element={<ProfesionalVista/>} />
             
-            <Route path="/users" element={<TablasDinamicas redireccionamiento='users' />} />
+            <Route path="/users" element={<UserVista />} />
             <Route path="/actividad" element={<TablaActividad redireccionamiento='actividad' />} />
             <Route path="/tablaActividadBeneficiario" element={<TablaActividadBeneficiario redireccionamiento='tablaActividadBeneficiario' />} />
             <Route path="/programadeactividades" element={<TablasDinamicas redireccionamiento='programadeactividades' />} />
-            <Route path="/producto" element={<TablasDinamicas redireccionamiento='producto' />} />
+            <Route path="/producto" element={<ProductoVista />} />
             <Route path="/donacion" element={<TablasDinamicas redireccionamiento='donacion' />} />
             <Route path="/factura" element={<TablasDinamicas redireccionamiento='factura' />} />
             <Route path="/insumo" element={<TablasDinamicas redireccionamiento='insumo' />} />
@@ -296,7 +305,7 @@ const App = () => {
             <Route path="/users/create" element={<CreateEmployeeComponent />} />
             <Route path="/actividad/create" element={<CreateEmployeeComponent />} />
             <Route path="/programadeactividades/create" element={<CreateEmployeeComponent />} />
-            <Route path="/producto/create" element={<CreateEmployeeComponent />} />
+            <Route path="/producto/create" element={<CreateProductoComponent />} />
             <Route path="/donacion/create" element={<CreateEmployeeComponent />} />
             <Route path="/factura/create" element={<CreateEmployeeComponent />} />
             <Route path="/insumo/create" element={<CreateEmployeeComponent />} />
@@ -321,6 +330,8 @@ const App = () => {
             <Route path="/voluntario/update" element={<UpdateVoluntarioComponent />} />
             <Route path="/personajuridica/update" element={<UpdatePersonaJuridicaComponent />} />
 
+            <Route path="/producto/update" element={<UpdateProductoComponent />} />
+
             {/* Read item */}
             <Route path="/contacto/read" element={<ReadContactoComponent />} />
             <Route path="/personafisica/read" element={<ReadPersonaComponent />} />
@@ -331,6 +342,8 @@ const App = () => {
             <Route path="/consejoadhonorem/read" element={<ReadConsejoAdHonoremComponent />} />
             <Route path="/voluntario/read" element={<ReadVoluntarioComponent />} />
             <Route path="/personajuridica/read" element={<ReadPersonaJuridicaComponent />} />
+            
+            <Route path="/producto/read" element={<ReadProductoComponent />} />
 
 
 

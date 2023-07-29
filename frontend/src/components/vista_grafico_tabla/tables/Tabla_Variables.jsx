@@ -3,7 +3,15 @@ import React, { forwardRef, useEffect, useState, useRef } from "react";
 import { Modal, Button, OverlayTrigger, Tooltip, Image } from "react-bootstrap";
 import ImageService from "../../../services/ImageService";
 import { useNavigate } from 'react-router-dom';
-import { FaTrashAlt, FaRegEdit } from "react-icons/fa";
+import { FaTrashAlt, FaRegEye, FaRegEdit } from "react-icons/fa";
+
+import ReadContactoComponent from "../../CRUD/Read/ReadContactoComponent";
+import ReadPersonaComponent from "../../CRUD/Read/ReadPersonaComponent";
+import CreateReadUpdateGenericoConFoto from "../../CRUD/Constants/CreateReadUpdate_Generico";
+import { cargarContactoDefault, cargarPersonaDefault } from "../../CRUD/Constants/ConstantsCargarDefault";
+import { ContactoRead, PersonaRead } from "../../CRUD/Constants/ConstantsReadModel";
+import ContactoService from "../../../services/ContactoService";
+import PersonaService from "../../../services/PersonaService";
 
 const IndeterminateCheckbox = forwardRef(({ indeterminate, ...rest }, ref) => {
   const defaultRef = useRef();
@@ -29,7 +37,7 @@ const IndeterminateCheckbox = forwardRef(({ indeterminate, ...rest }, ref) => {
  * @param {*} tipo ejemplo "contacto"
  * @returns 
  */
-const RenderFotoPerfilRow = (row, tipo) => {
+const RenderFotoPerfilRow = (row, tipoDatoParaFoto) => {
   if(!row.original || !row.original.imagen_tabla)
     return(<div></div>);//Esto sucede si se agrupa la tabla
   const { nombre, apellido, nombreDescripcion } = row.original || {};
@@ -43,7 +51,7 @@ const RenderFotoPerfilRow = (row, tipo) => {
   } else if (nombreDescripcion) {
     nombreCompleto = nombreDescripcion;
   }
-  return RenderFotoPerfil(row.original.id, "contacto", row.original.imagen_tabla, nombreCompleto);
+  return RenderFotoPerfil(row.original.id, tipoDatoParaFoto, row.original.imagen_tabla, nombreCompleto);
 };
 
 const RenderFotoPerfil = (id, tipo, imagen, nombrePerfil) => {
@@ -51,23 +59,10 @@ const RenderFotoPerfil = (id, tipo, imagen, nombrePerfil) => {
   const [loadedImage, setLoadedImage] = useState(null);
 
   useEffect(() => {
-    if(id === 1){
-      console.log("Mi nombre perfil:");
-      console.log(nombrePerfil);
-    }
-  }, []);
-
-  useEffect(() => {
     if (showModal) {
-      console.log("Se realiza consulta de pantalla completa:");
-      console.log("id: " + id);
-      console.log("tipo: " + tipo);
       ImageService.getFoto(id, tipo, 'completa')
         .then(response => {
-          console.log('foto completa');
-          console.log(response);
           setLoadedImage(response); // Actualiza el estado con la imagen devuelta por el servicio
-          console.log("Fin consulta")
         })
         .catch(error => {
           console.error('Error al obtener la imagen:', error);
@@ -119,8 +114,11 @@ const RenderFotoPerfil = (id, tipo, imagen, nombrePerfil) => {
           )}
         
           <Modal show={showModal} onHide={handleCloseModal}>
-            <Modal.Header closeButton>
+            <Modal.Header>
               <Modal.Title>{nombrePerfil}</Modal.Title>
+              <button className="close" onClick={handleCloseModal}>
+                <span aria-hidden="true">&times;</span>
+              </button>
             </Modal.Header>
             <Modal.Body>
               {loadedImage ? (
@@ -150,6 +148,35 @@ const RenderFotoPerfil = (id, tipo, imagen, nombrePerfil) => {
       )}
     </div>
 
+  );
+};
+
+/**
+ * 
+ * @param {string} idInput si es row declararlo como row.original?.id
+ * @returns 
+ */
+const RenderBotonVer = (idInput, nombreAVer) => {
+  const navigate = useNavigate();
+  if(!idInput)
+    return(<div/>);//En caso de que se agrupe la tabla, no mostrar
+  return (
+    <OverlayTrigger
+      placement="top"
+      overlay={
+        <Tooltip id="tooltip-top">
+          Ver {nombreAVer && 'a ' + nombreAVer + ', '}ID: {idInput}
+        </Tooltip>
+      }
+    >
+      <Button
+        className="buttonAnimadoVerde"
+        onClick={() => navigate( window.location.pathname + "/read", {state:{id:idInput}})}
+      >
+        {" "}
+        <FaRegEye/>{/**Ver*/}
+      </Button>
+    </OverlayTrigger>
   );
 };
 
@@ -267,12 +294,15 @@ const RenderBotonBorrar = (idInput, nombreABorrar, Service) => {
       {/** Este es el cartel que aparece delante "desea borrar?" */}
       <div>
         <Modal show={showModal} onHide={handleCloseModal}>
-          <Modal.Header closeButton>
+          <Modal.Header>
             {!deleteMessage ? (
               <Modal.Title>Deseas borrar al ID {idInput ? idInput : ""}?</Modal.Title>
             ) : (
               <Modal.Title>¡Borrado exitoso!</Modal.Title>
             )}
+            <button className="close" onClick={handleCloseModal}>
+              <span aria-hidden="true">&times;</span>
+            </button>
             
           </Modal.Header>
 
@@ -322,6 +352,165 @@ const RenderBotonBorrar = (idInput, nombreABorrar, Service) => {
   );
 };
 
+const RenderFotoIntegranteRow = (row, datoContactoIntegrante, tipoIntegrante) => {
+  if(!row.original)
+    return(<div></div>);//Esto sucede si se agrupa la tabla
+  const { nombre, apellido, nombreDescripcion } = row.original || {};
+  let nombreCompleto = '';
+  if (nombre && apellido) {
+    nombreCompleto = `${nombre} ${apellido}`;
+  } else if (nombre) {
+    nombreCompleto = nombre;
+  } else if (apellido) {
+    nombreCompleto = apellido;
+  } else if (nombreDescripcion) {
+    nombreCompleto = nombreDescripcion;
+  }
+  return RenderMostrarContacto(datoContactoIntegrante, "contacto", nombreCompleto);
+};
+
+const getNombreDelDato = (dato) => {
+  const { nombre, apellido, nombreDescripcion } = dato || {};
+  let nombreCompleto = '';
+  if (nombre && apellido) {
+    nombreCompleto = `${nombre} ${apellido}`;
+  } else if (nombre) {
+    nombreCompleto = nombre;
+  } else if (apellido) {
+    nombreCompleto = apellido;
+  } else if (nombreDescripcion) {
+    nombreCompleto = nombreDescripcion;
+  }
+  return nombreCompleto;
+}
+
+const RenderMostrarContacto = (datoContactoIntegrante, tipoImagen, nombrePerfil) => {
+  const [showModal, setShowModal] = useState(false);
+  const [loadedImage, setLoadedImage] = useState(null);
+  const [persona, setPersona] = useState(null);
+  const [loadingSearch, setLoadingSearch] = useState(true);
+  const [nombreModal, setNombreModal] = useState("");
+  useEffect(() => {
+    ImageService.getFoto(datoContactoIntegrante.id, tipoImagen, 'tabla')
+      .then(response => {
+        setLoadedImage(response); // Actualiza el estado con la imagen devuelta por el servicio
+      })
+      .catch(error => {
+        console.error('Error al obtener la imagen:', error);
+      }
+    );
+  }, [showModal, datoContactoIntegrante.id, tipoImagen]);
+
+  useEffect(() => {
+    setNombreModal(getNombreDelDato(datoContactoIntegrante));
+    console.log("Nombre nuevo: " + nombreModal);
+    if(showModal){
+      setPersona(null);
+      setLoadingSearch(true);
+      PersonaService.getById(datoContactoIntegrante.id).then
+        (response => {
+          setPersona(response.data);
+          setNombreModal(getNombreDelDato(response.data));
+          setLoadingSearch(false);
+        },
+        (error) => {
+          setLoadingSearch(false);
+        }
+      );
+    }
+  }, [showModal]);
+
+  const handleOpenModal = () => {
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+  };
+  
+  return(
+    <div>
+      {loadedImage ? (
+        <div>
+          {nombreModal ? (
+            <div>
+              <OverlayTrigger
+                placement="top"
+                overlay={
+                  <Tooltip id="tooltip-top">
+                    {nombreModal}
+                  </Tooltip>
+                }
+              >
+                <Image 
+                src={loadedImage} 
+                alt="Foto de perfil" 
+                className="contacto-img-card"
+                onClick={handleOpenModal}
+                />
+              </OverlayTrigger>
+            </div>
+          ) : (
+            <img 
+            src={loadedImage} 
+            alt="Foto del integrante" 
+            className="contacto-img-card"
+            onClick={handleOpenModal}
+            />
+
+          )}
+        
+          <Modal show={showModal} onHide={handleCloseModal}>
+            <Modal.Header>
+              <Modal.Title>{nombreModal}</Modal.Title>
+              <button className="close" onClick={handleCloseModal}>
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </Modal.Header>
+            <Modal.Body>
+              <div>
+                {loadingSearch ? (
+                  <div>
+                    <span className="spinner-border spinner-border-sm"></span>
+                    <p>Cargando datos de contacto o persona...</p>
+                  </div>
+                ) : (
+                  <div>
+                    <CreateReadUpdateGenericoConFoto
+                      cargarDatosDefault = {persona ? cargarPersonaDefault : cargarContactoDefault}
+                      DatoUpdateInput = {persona ? PersonaRead : ContactoRead}
+                      tipoDatoForImageService = {'contacto'}
+                      dataIn = {persona ? persona : datoContactoIntegrante}
+                      Service = {persona ? PersonaService : ContactoService}
+                      urlTablaDato = {persona ? '/personafisica' : '/contacto'}
+                      isVentanaEmergente = {true}
+                      el_la = {persona ? 'la' : 'el'}
+                      nombreTipoDato = {persona ? 'persona' : 'contacto'}
+                      typeCRUD={'READ'}
+                    />
+                  </div>
+                )}
+              </div>
+            </Modal.Body>
+            <Modal.Footer>
+              <Button variant="secondary" onClick={handleCloseModal}>
+                Cerrar
+              </Button>
+            </Modal.Footer>
+          </Modal>
+          
+        </div>
+      ) : (
+        <div>
+        <span className="spinner-border spinner-border-sm"></span>
+        <p>Cargando foto<br />de integrante...</p>
+        </div>
+      )}
+    </div>
+
+  );
+};
+
 
 
 
@@ -330,6 +519,8 @@ export {
   IndeterminateCheckbox,
   RenderFotoPerfilRow,
   RenderFotoPerfil,
+  RenderFotoIntegranteRow,
+  RenderBotonVer,
   RenderBotonEditar,
   RenderBotonBorrar,
 }

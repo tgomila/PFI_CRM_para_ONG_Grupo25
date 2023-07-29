@@ -33,6 +33,7 @@ import { MdOutlinePersonAddAlt1 } from "react-icons/md";
 import { 
   IndeterminateCheckbox, 
   RenderFotoPerfilRow,
+  RenderBotonVer,
   RenderBotonEditar,
   RenderBotonBorrar,
 } from"./Tabla_Variables";
@@ -76,6 +77,7 @@ const TablaGenericaPersona = ({ columns, Service, visibilidadInput, nombreTipoDa
  * Se utilizará para ver todo tipo de personas, es la tabla principal
  * 
  * @param {Array} columns - Columnas de la tabla.
+ * @param {Array} dataIn - data precargada, sin foto (esto sirve para actividad, en vez de Service.getAll, usar algun metodo distinto afuera como getMisActividades)
  * @param {Object} Service - Objeto para obtener datos mediante Axios.
  * @param {string} visibilidadInput - Nombre de la visibilidad. Es opcional, ejemplo "" o "EDITAR"
  * @param {string} nombreTipoDatoParaModuloVisibilidad - Nombre del módulo. Ejemplo "PERSONA"
@@ -84,7 +86,7 @@ const TablaGenericaPersona = ({ columns, Service, visibilidadInput, nombreTipoDa
  * @param {string} nombreTipoDato - Nombre del tipo de dato.
  * @returns {JSX.Element} - Componente de la tabla genérica.
  */
-const TablaGenericaConFoto = ({ columns, Service, visibilidadInput, nombreTipoDatoParaModuloVisibilidad, nombreVisibilidad, tipoDatoParaFoto, el_la, nombreTipoDato }) => {
+const TablaGenericaConFoto = ({ columns, dataIn, Service, visibilidadInput, nombreTipoDatoParaModuloVisibilidad, tipoDatoParaFoto, el_la, nombreTipoDato }) => {
   const [data, setData] = useState([]);
   const [columnsData, setColumnsData] = useState([]);
   const [visibilidad, setVisibilidad] = useState("");
@@ -105,13 +107,30 @@ const TablaGenericaConFoto = ({ columns, Service, visibilidadInput, nombreTipoDa
       });
     }
 
-    Service.getAll().then(async (res) => {
-      const { columns: modifiedColumns, data: modifiedData } = await agregarFotoData(columns, res.data, tipoDatoParaFoto);
+    agregarFotos();
+
+  }, []);
+
+  useEffect(() => {
+    //En caso de que cambies de "all actividades" a "mis actividades", poner foto a sus nuevos data's
+    agregarFotos();
+  }, [dataIn]);
+
+  const agregarFotos = () => {
+    if(dataIn){
+      const { columns: modifiedColumns, data: modifiedData } = agregarFotoData(columns, dataIn, tipoDatoParaFoto);
       setData(modifiedData);
       setColumnsData(modifiedColumns);
       setIsDataColumnsReady(true);
-    });
-  }, []);
+    } else {
+      Service.getAll().then(async (res) => {
+        const { columns: modifiedColumns, data: modifiedData } = await agregarFotoData(columns, res.data, tipoDatoParaFoto);
+        setData(modifiedData);
+        setColumnsData(modifiedColumns);
+        setIsDataColumnsReady(true);
+      });
+    }
+  }
 
   if (!isDataColumnsReady || !isVisibilidadReady) {
     return null;//evita la renderización prematura
@@ -121,7 +140,7 @@ const TablaGenericaConFoto = ({ columns, Service, visibilidadInput, nombreTipoDa
     <div>
       <TablaGenerica
         columnsIn={columnsData}
-        data={data}
+        dataIn={data}
         visibilidad={visibilidad}
         Service={Service}
         el_la={el_la}
@@ -145,8 +164,9 @@ const agregarFotoData = async (columns, data, tipoDatoParaFoto) => {
   return { columns: newColumns, data: newData };
 };
 
-const TablaGenerica = ({columnsIn, data, visibilidad, Service, el_la, nombreTipoDato}) => {
+const TablaGenerica = ({columnsIn, dataIn, visibilidad, Service, el_la, nombreTipoDato}) => {
   
+  const [data, setData] = useState([]);
   //Inicio de filtros de búsqueda
   const [mostrarBusqueda, setMostrarBusqueda] = useState(false);
   const clickMostrarBusqueda = () => {
@@ -188,6 +208,30 @@ const TablaGenerica = ({columnsIn, data, visibilidad, Service, el_la, nombreTipo
 
   const columns = useMemo(() => {
     let baseColumns = [...columnsIn];
+    //La vista siempre estaría
+    if (visibilidad === "SOLO_VISTA" || visibilidad === "EDITAR") {
+      baseColumns.push(
+        {
+          Header: 'Ver',
+          Cell: ({ row }) => {
+            const { nombre, apellido, nombreDescripcion, descripcion } = row.original || {};
+            let nombreCompleto = '';//Vacío (solo mostrar "desea borar id: 1" en vez de nombre)
+            if (nombre && apellido) {//Beneficiarios, Empleados, etc
+              nombreCompleto = `${nombre} ${apellido}`;
+            } else if (nombre) {//Una persona sin apellido
+              nombreCompleto = nombre;
+            } else if (apellido) {//Una persona sin nombre
+              nombreCompleto = apellido;
+            } else if (nombreDescripcion) {//Contacto
+              nombreCompleto = nombreDescripcion;
+            } else if (descripcion) {//Facturas, insumos, etc
+              nombreCompleto = descripcion;
+            }
+            return RenderBotonVer(row.original?.id, nombreCompleto);
+          },
+        }
+      );
+    }
     if (visibilidad === "EDITAR") {
       baseColumns.push(
         {
@@ -234,6 +278,16 @@ const TablaGenerica = ({columnsIn, data, visibilidad, Service, el_la, nombreTipo
 
   return baseColumns;
   }, [columnsIn, visibilidad]);
+
+  useEffect(() => {
+    if (dataIn) {
+      setData(dataIn);
+    } else{
+      Service.getAll().then((res) => {
+        setData(res.data);
+      });
+    }
+  }, []);
 
 
   const {

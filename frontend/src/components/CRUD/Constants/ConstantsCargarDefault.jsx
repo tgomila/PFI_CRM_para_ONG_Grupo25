@@ -12,7 +12,7 @@ const cargarContactoDefault = {
 const cargarPersonaJuridicaDefault = {
     ...cargarContactoDefault,
     internoTelefono: "",
-    tipoPersonaJuridica: ""
+    tipoPersonaJuridica: "OSC"
 };
 
 const cargarPersonaDefault = {
@@ -34,7 +34,7 @@ const cargarBeneficiarioDefault = {
     idONG: "",
     legajo: "",
     lugarDeNacimiento: "",
-    seRetiraSolo: "",
+    seRetiraSolo: true,
     cuidadosEspeciales: "",
     escuela: "",
     grado: "",
