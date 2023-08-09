@@ -10,13 +10,16 @@ import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import com.pfi.crm.exception.BadRequestException;
 import com.pfi.crm.multitenant.tenant.model.audit.UserDateAudit;
@@ -41,11 +44,16 @@ public class ProgramaDeActividades extends UserDateAudit {
 	
 	private String descripcion;
 	
+	/*
 	@OneToMany(
 			fetch = FetchType.EAGER, 
 			cascade = {CascadeType.MERGE}, 
 			orphanRemoval = true
 			)
+	@OrderBy("fechaHoraDesde ASC")
+	*/
+	@OneToMany(cascade = CascadeType.DETACH)//fetch = FetchType.EAGER) //Fue reemplazado el fetch por lazyCollection
+	@LazyCollection(LazyCollectionOption.FALSE)
 	@OrderBy("fechaHoraDesde ASC")
 	private List<Actividad> actividades;
 	
@@ -80,6 +88,7 @@ public class ProgramaDeActividades extends UserDateAudit {
 		p.setId(id);
 		p.setFechaDesde(this.getFechaInicio());
 		p.setFechaHasta(this.getFechaFin());
+		p.setDescripcion(this.descripcion);
 		actividades.forEach((m) -> p.agregarActividad(m.toPayload()));
 		return p;
 	}

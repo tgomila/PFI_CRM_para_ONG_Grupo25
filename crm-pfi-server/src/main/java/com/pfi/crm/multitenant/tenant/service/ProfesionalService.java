@@ -100,7 +100,7 @@ public class ProfesionalService {
 		String message = "Se ha dado de baja a profesional";
 		
 		//Eliminar objeto en todo lo que esta asociado Profesional
-		String aux = actividadService.bajaProfesionalEnActividades(m.getId());
+		String aux = actividadService.quitarProfesionalEnActividades(m.getId());
 		if(aux != null && !aux.isEmpty())
 			message += " " + aux;
 		

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import com.pfi.crm.exception.BadRequestException;
 import com.pfi.crm.exception.ResourceNotFoundException;
+import com.pfi.crm.multitenant.tenant.model.Contacto;
 import com.pfi.crm.multitenant.tenant.model.Prestamo;
 import com.pfi.crm.multitenant.tenant.payload.PrestamoPayload;
 import com.pfi.crm.multitenant.tenant.persistence.repository.PrestamoRepository;
@@ -45,8 +46,37 @@ public class PrestamoService {
 			throw new BadRequestException("Ha introducido un null a dar de alta. Verifique el dato introducido.");
 		if(payload != null && payload.getId() != null)
 			throw new BadRequestException("Ha introducido ID de prestamo: " + payload.getId() + ". ¿No querrá decir modificar en vez de alta?");
-		//return altaOModificarPrestamo(payload).toPayload();
-		return prestamoRepository.save(new Prestamo(payload)).toPayload();
+		return altaModificarPrestamo(payload).toPayload();
+	}
+	
+	private Prestamo altaModificarPrestamo(PrestamoPayload payload) {
+		if(payload == null)
+			throw new BadRequestException("Ha introducido un null, no se realizará ninguna acción.");
+		Prestamo prestamoModel = null;
+		if(payload.getId() != null) {//Modificar
+			prestamoModel = this.getPrestamoByIdModel(payload.getId());
+			prestamoModel.modificar(payload);
+		}
+		if(prestamoModel == null){//Alta
+			prestamoModel = new Prestamo(payload);
+		}
+		
+		//Busco su prestamista
+		Contacto prestamista = null;
+		if(payload.getPrestamista() != null && payload.getPrestamista().getId() != null) {
+			prestamista = contactoService.getContactoModelById(payload.getPrestamista().getId());
+		}
+		prestamoModel.setPrestamista(prestamista);
+		
+		//Busco su prestatario
+		Contacto prestatario = null;
+		if(payload.getPrestatario() != null && payload.getPrestatario().getId() != null) {
+			prestatario = contactoService.getContactoModelById(payload.getPrestatario().getId());
+		}
+		prestamoModel.setPrestatario(prestatario);
+		
+		
+		return prestamoRepository.save(prestamoModel);
 	}
 	
 	public String bajaPrestamo(Long id) {
@@ -54,7 +84,7 @@ public class PrestamoService {
 				() -> new ResourceNotFoundException("Prestamo", "id", id));
 		String message = "Se ha dado de baja al prestamo id: " + m.getId();
 		if(m.getPrestamista() != null || m.getPrestatario() != null) {
-			if(m.getPrestamista()!=null) {
+			if(m.getPrestamista() != null) {
 				message += ", y desasociado a su prestamista id: " + m.getPrestamista().getId();
 				m.setPrestamista(null);
 			}
@@ -69,6 +99,8 @@ public class PrestamoService {
 	}
 	
 	public String quitarContactoDeSusPrestamos(Long idContacto) {
+		if(idContacto == null)
+			throw new BadRequestException("Ha introducido un id='null' para buscar, por favor ingrese un número válido.");
 		List<Prestamo> prestamosPrestamista = prestamoRepository.findByPrestamista_Id(idContacto);
 		String  message = "";
 		if(!prestamosPrestamista.isEmpty()) {
@@ -109,28 +141,6 @@ public class PrestamoService {
 	}
 	
 	public PrestamoPayload modificarPrestamo(PrestamoPayload payload) {
-		return this.altaOModificarPrestamo(payload).toPayload();
-	}
-	
-	private Prestamo altaOModificarPrestamo(PrestamoPayload payload) {
-		if(payload == null)
-			throw new BadRequestException("Ha introducido un null, no se realizará ninguna acción.");
-		Prestamo prestamoModel = null;
-		if(payload.getId() != null) {//Modificar
-			prestamoModel = this.getPrestamoByIdModel(payload.getId());
-			prestamoModel.modificar(payload);
-		}
-		if(prestamoModel == null){//Alta
-			prestamoModel = new Prestamo(payload);
-		}
-		
-		//Busco/alta de su prestamista
-		prestamoModel.setPrestamista(contactoService.buscarOAlta(payload.getPrestamista()));
-		
-		//Busco/alta de su prestatario
-		prestamoModel.setPrestatario(contactoService.buscarOAlta(payload.getPrestatario()));
-		
-		
-		return prestamoRepository.save(prestamoModel);
+		return this.altaModificarPrestamo(payload).toPayload();
 	}
 }

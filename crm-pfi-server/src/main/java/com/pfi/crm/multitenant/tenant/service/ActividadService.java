@@ -59,11 +59,47 @@ public class ActividadService {
 		return actividadRepository.findAll().stream().map(e -> e.toPayload()).collect(Collectors.toList());
 	}
 	
-	public ActividadPayload altaActividad(ActividadPayload p) {
-		return this.altaActividadModel(p).toPayload();
+	public ActividadPayload altaActividad(ActividadPayload payload) {
+		return this.altaActividadModel(payload).toPayload();
 	}
 	
 	public Actividad altaActividadModel(ActividadPayload payload) {
+		if(payload == null)
+			throw new BadRequestException("Ha introducido un null como actividad a dar de alta, por favor ingrese datos de una actividad.");
+		if(payload.getId() != null) { //Si existe ID actividad:
+			// 1) No permito modificar, solo alta si no existe.
+			Long id = payload.getId();
+			boolean existeActividad = this.existeActividad(id);
+			if(existeActividad) {
+				throw new BadRequestException("Ya existe Actividad con ID '" + id.toString() + "' cargado. "
+						+ "Es posible que quiera ir a la pantalla de modificar.");
+			} else {
+				throw new BadRequestException("Ha ingresado un ID de actividad, por favor que el ID de actividad sea null"
+						+ " si desea dar de alta.");
+			}
+		}
+		return this.altaModificarActividadModel(payload);
+	}
+	
+	public ActividadPayload modificarActividad(ActividadPayload payload) {
+		return this.modificarActividadModel(payload).toPayload();
+	}
+	
+	public Actividad modificarActividadModel(ActividadPayload payload) {
+		
+		if (payload != null && payload.getId() != null) {
+			//Necesito el id de actividad o se crearia uno nuevo
+			return this.altaModificarActividadModel(payload);
+		}
+		throw new BadRequestException("No se puede modificar Actividad sin ID");
+	}
+	
+	public Actividad altaModificarActividadModel(ActividadPayload payload) {
+		Actividad actividadModel = null;
+		if(payload.getId() != null) {//Modificar
+			actividadModel = actividadRepository.findById(payload.getId()).orElseThrow(
+					() -> new ResourceNotFoundException("Actividad", "id", payload.getId()));
+		}
 		
 		//Esto evita que puedan modificar models beneficiarios y profesional
 		Set<Beneficiario> beneficiarios = new HashSet<Beneficiario>();
@@ -71,7 +107,9 @@ public class ActividadService {
 			for(BeneficiarioPayload b: payload.getBeneficiarios()) {
 				if(b.getId() != null) {
 					Beneficiario item = beneficiarioService.getBeneficiarioModelByIdContacto(b.getId());
-					beneficiarios.add(item);
+					if(item != null) {
+						beneficiarios.add(item);
+					}
 				}
 				else {
 					throw new BadRequestException("Ha introducido un ID='null' en un beneficiario para asociar en actividad, por favor ingrese un ID válido.");
@@ -85,15 +123,21 @@ public class ActividadService {
 			for(ProfesionalPayload p: payload.getProfesionales()) {
 				if(p.getId() != null) {
 					Profesional item = profesionalService.getProfesionalModelByIdContacto(p.getId());
-					profesionales.add(item);
+					if(item != null) {
+						profesionales.add(item);
+					}
 				}
 				
 			}
 		}
 		
-		Actividad m = new Actividad(payload, beneficiarios, profesionales);
-		m.setId(null);
-		return actividadRepository.save(m);
+		if(actividadModel == null) {//Alta
+			actividadModel = new Actividad(payload, beneficiarios, profesionales);
+		} else {
+			actividadModel.modificar(payload, profesionales, beneficiarios);
+		}
+		
+		return actividadRepository.save(actividadModel);
 	}
 	
 	public String bajaActividad(Long id) {
@@ -114,50 +158,30 @@ public class ActividadService {
 		return message;
 	}
 	
-	public ActividadPayload modificarActividad(ActividadPayload payload) {
-		return this.modificarActividadReturnModel(payload).toPayload();
+	public String quitarContactoEnActividades(Long idContacto) {
+		if(idContacto == null)
+			throw new BadRequestException("Ha introducido un id='null' para buscar, por favor ingrese un número válido.");
+		String message = "";
+		message += quitarBeneficiarioEnActividades(idContacto);
+		message += quitarProfesionalEnActividades(idContacto);
+		return message;
 	}
 	
-	public Actividad modificarActividadReturnModel(ActividadPayload payload) {
-		Actividad model = getActividadModelById(payload.getId());
-		
-		//Esto evita que puedan modificar models beneficiarios y profesional
-		Set<Beneficiario> beneficiarios = new HashSet<Beneficiario>();
-		if(payload.getBeneficiarios() != null) {
-			for(BeneficiarioPayload b: payload.getBeneficiarios()) {
-				if(b.getId() != null) {
-					Beneficiario item = beneficiarioService.getBeneficiarioModelByIdContacto(b.getId());
-					beneficiarios.add(item);
-				}
-				
-			}
+	public String quitarBeneficiarioEnActividades(Long idContacto) {
+		if(idContacto == null)
+			throw new BadRequestException("Ha introducido un id='null' para buscar, por favor ingrese un número válido.");
+		boolean existeBeneficiario = beneficiarioService.existeBeneficiarioPorIdContacto(idContacto);
+		if(!existeBeneficiario) {
+			return "";
 		}
-		
-
-		Set<Profesional> profesionales = new HashSet<Profesional>();
-		if(payload.getProfesionales() != null) {
-			for(ProfesionalPayload p: payload.getProfesionales()) {
-				if(p.getId() != null) {
-					Profesional item = profesionalService.getProfesionalModelByIdContacto(p.getId());
-					profesionales.add(item);
-				}
-				
-			}
-		}
-		
-		model.modificar(payload, profesionales, beneficiarios);
-		return actividadRepository.save(model);
-	}
-	
-	public String bajaBeneficiarioEnActividades(Long idContacto) {
 		Beneficiario beneficiario = beneficiarioService.getBeneficiarioModelByIdContacto(idContacto);
 		Long idBeneficiario = beneficiario.getIdBeneficiario();
 		List<Actividad> actividadesBeneficiario = actividadRepository.findByBeneficiariosIdBeneficiario(idBeneficiario);
 		String message = "";
 		if(actividadesBeneficiario.size()>1)
-			message += "Se lo ha desasociado de las actividades id's: ";
+			message += "Se lo ha desasociado como beneficiario de las actividades id's: ";
 		else if(actividadesBeneficiario.size()==1)
-			message += "Se lo ha desasociado de la actividad id: ";
+			message += "Se lo ha desasociado como beneficiario de la actividad id: ";
 		else//size ==0
 			return "";
 		for(int i=0; i<actividadesBeneficiario.size(); i++) {
@@ -170,17 +194,21 @@ public class ActividadService {
 		return message;
 	}
 	
-
-	
-	public String bajaProfesionalEnActividades(Long idContacto) {
+	public String quitarProfesionalEnActividades(Long idContacto) {
+		if(idContacto == null)
+			throw new BadRequestException("Ha introducido un id='null' para buscar, por favor ingrese un número válido.");
+		boolean existeProfesional = profesionalService.existeProfesionalPorIdContacto(idContacto);
+		if(!existeProfesional) {
+			return "";
+		}
 		Profesional profesional = profesionalService.getProfesionalModelByIdContacto(idContacto);
 		Long idProfesional = profesional.getIdProfesional();
 		List<Actividad> actividadesProfesional = actividadRepository.findByProfesionalesIdProfesional(idProfesional);
 		String message = "";
 		if(actividadesProfesional.size()>1)
-			message += "Se lo ha desasociado de las actividades id's: ";
+			message += "Se lo ha desasociado como profesional de las actividades id's: ";
 		else if(actividadesProfesional.size()==1)
-			message += "Se lo ha desasociado de la actividad id: ";
+			message += "Se lo ha desasociado como profesional de la actividad id: ";
 		else//size ==0
 			return "";
 		for(int i=0; i<actividadesProfesional.size(); i++) {
@@ -261,5 +289,55 @@ public class ActividadService {
 
 	    return result;
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+	
+	/*public ActividadPayload modificarActividad(ActividadPayload payload) {
+		return this.modificarActividadReturnModel(payload).toPayload();
+	}
+	
+	public Actividad modificarActividadReturnModel(ActividadPayload payload) {
+		Actividad model = getActividadModelById(payload.getId());
+		
+		//Esto evita que puedan modificar models beneficiarios y profesional
+		Set<Beneficiario> beneficiarios = new HashSet<Beneficiario>();
+		if(payload.getBeneficiarios() != null) {
+			for(BeneficiarioPayload b: payload.getBeneficiarios()) {
+				if(b.getId() != null) {
+					Beneficiario item = beneficiarioService.getBeneficiarioModelByIdContacto(b.getId());
+					if(item != null) {
+						beneficiarios.add(item);
+					}
+				}
+				
+			}
+		}
+		
+
+		Set<Profesional> profesionales = new HashSet<Profesional>();
+		if(payload.getProfesionales() != null) {
+			for(ProfesionalPayload p: payload.getProfesionales()) {
+				if(p.getId() != null) {
+					Profesional item = profesionalService.getProfesionalModelByIdContacto(p.getId());
+					if(item != null) {
+						profesionales.add(item);
+					}
+				}
+				
+			}
+		}
+		
+		model.modificar(payload, profesionales, beneficiarios);
+		return actividadRepository.save(model);
+	}*/
 	
 }

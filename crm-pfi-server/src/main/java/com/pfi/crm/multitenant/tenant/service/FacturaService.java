@@ -134,19 +134,46 @@ public class FacturaService {
 		
 	}
 	
-	public void quitarContactoDeSusFacturas(Long idContacto) {
+	public String quitarContactoDeSusFacturas(Long idContacto) {
 		if(idContacto == null)
 			throw new BadRequestException("Ha introducido un id='null' para buscar, por favor ingrese un número válido.");
+		String message = "";
 		List<Factura> facturasCliente = facturaRepository.findByCliente_Id(idContacto);
 		if(!facturasCliente.isEmpty()) {
-			facturasCliente.forEach((factura) -> factura.setCliente(null));
+			message += "Se ha desasociado al contacto id '" +  idContacto + "' como cliente de";
+			if(facturasCliente.size()>1)
+				message += " sus facturas id's: ";
+			else
+				message += " su factura id: ";
+			for(int i=0; i<facturasCliente.size();i++) {
+				message += facturasCliente.get(i).getId();
+				if(i<facturasCliente.size()-1)//no sea ultimo
+					message += ", ";
+				facturasCliente.get(i).setCliente(null);
+			}
 			facturaRepository.saveAll(facturasCliente);
 		}
+		
 		List<Factura> facturasEmisor = facturaRepository.findByEmisorFactura_Id(idContacto);
 		if(!facturasEmisor.isEmpty()) {
-			facturasEmisor.forEach((factura) -> factura.setEmisorFactura(null));
+			if(!message.isEmpty())
+				message += ". También se";
+			else
+				message += "Se";
+			message += " ha desasociado al contacto id '" + idContacto + "' como emisor de";
+			if(facturasEmisor.size()>1)
+				message += " sus facturas id's: ";
+			else
+				message += " su factura id: ";
+			for(int i=0; i<facturasEmisor.size(); i++) {
+				message += facturasEmisor.get(i).getId();
+				if(i<facturasEmisor.size()-1)//no sea ultimo
+					message += ", ";
+				facturasEmisor.get(i).setEmisorFactura(null);
+			}
 			facturaRepository.saveAll(facturasEmisor);
 		}
+		return message;
 	}
 	
 	public boolean existeFacturaPorIdContacto(Long id) {

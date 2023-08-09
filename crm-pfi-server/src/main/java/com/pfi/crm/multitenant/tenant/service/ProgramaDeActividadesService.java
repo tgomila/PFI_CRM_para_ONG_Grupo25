@@ -2,6 +2,7 @@ package com.pfi.crm.multitenant.tenant.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,6 +44,10 @@ public class ProgramaDeActividadesService {
 				() -> new ResourceNotFoundException("ProgramaDeActividades", "id", id));
 	}
 	
+	public List<ProgramaDeActividadesPayload> getProgramasDeActividades() {
+		return programaDeActividadesRepository.findAll().stream().map(e -> e.toPayload()).collect(Collectors.toList());
+	}
+	
 	public ProgramaDeActividadesPayload altaProgramaDeActividades(ProgramaDeActividadesPayload payload) {
 		if(payload == null)
 			throw new BadRequestException("Ha introducido un null como Programa de actividades a dar de alta, por favor ingrese un Programa de actividades válido.");
@@ -56,7 +61,12 @@ public class ProgramaDeActividadesService {
 		ProgramaDeActividades model = this.getProgramaDeActividadesModelById(id);
 		String message = "Se ha dado de baja al programa de actividades id: '" + id + "'";
 		model.setEstadoActivoPrograma(false);
+		
+		// Desvincular las actividades del programa de actividades y eliminar las conexiones en la tabla intermedia
 		List<Actividad> actividades = model.getActividades();
+		model.setActividades(new ArrayList<Actividad>());
+		programaDeActividadesRepository.save(model);
+		
 		if(actividades != null) {
 			if(actividades.size()>=2)
 				message += ", junto a sus actividades id's: ";
@@ -70,7 +80,6 @@ public class ProgramaDeActividadesService {
 			}
 			model.setActividades(null);
 		}
-		programaDeActividadesRepository.save(model);
 		programaDeActividadesRepository.delete(model);
 		
 		//Una vez eliminado el programa de actividades, se elimina su foto si es que poseia 
@@ -90,6 +99,8 @@ public class ProgramaDeActividadesService {
 		if(payload == null)
 			throw new BadRequestException("Ha introducido un null como Programa de actividades, por favor ingrese un Programa de actividades válido.");
 		
+		List<ActividadPayload> todasLasActividadesPayload = payload.getActividades() != null ? new ArrayList<ActividadPayload>(payload.getActividades()) : new ArrayList<ActividadPayload>();
+		
 		//Dar de alta a actividades que no tengan id (nuevas actividades)
 		List<Actividad> actividadesDelPrograma = new ArrayList<Actividad>();
 		if(payload.getActividades() != null) {
@@ -98,7 +109,8 @@ public class ProgramaDeActividadesService {
 				if(actividadPayload.getId() == null) //Si la actividad no existe en la BD.
 					actividadModel = actividadService.altaActividadModel(actividadPayload);
 				else
-					actividadModel = actividadService.modificarActividadReturnModel(actividadPayload);
+					actividadModel = actividadService.modificarActividadModel(actividadPayload);
+				todasLasActividadesPayload.remove(actividadPayload);
 				actividadesDelPrograma.add(actividadModel);
 			}
 		}
@@ -113,7 +125,18 @@ public class ProgramaDeActividadesService {
 			model.setEstadoActivoPrograma(true);
 		}
 		
-		return programaDeActividadesRepository.save(model);
+		ProgramaDeActividades nuevoPrograma = programaDeActividadesRepository.save(model);
+		
+		//Eliminar actividades que antes estaban y ahora no.
+		for(ActividadPayload eliminarActividadPayload: todasLasActividadesPayload) {
+			Long idActividadEliminar = eliminarActividadPayload.getId();
+			boolean existeActividad = idActividadEliminar != null ? actividadService.existeActividad(idActividadEliminar) : false;
+			if(existeActividad) {//Si la actividad existe
+				actividadService.bajaActividad(idActividadEliminar);
+			}
+		}
+		
+		return nuevoPrograma;
 	}
 	
 	public boolean existeProgramaDeActividades(Long id) {

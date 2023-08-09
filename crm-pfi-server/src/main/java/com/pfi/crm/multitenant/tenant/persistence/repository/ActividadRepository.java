@@ -20,9 +20,9 @@ public interface ActividadRepository extends JpaRepository<Actividad, Long> {
 	//@Query("SELECT e FROM  Actividad e WHERE e.estadoActivoActividad=?1")
 	//List<Actividad> findAll();
 	
-	List<Actividad> findByBeneficiariosPersonaFisicaContactoId(Long personaId);
+	List<Actividad> findByBeneficiariosPersonaFisicaContactoId(Long idContacto);
 	
-	List<Actividad> findByProfesionalesPersonaFisicaContactoId(Long personaId);
+	List<Actividad> findByProfesionalesPersonaFisicaContactoId(Long idContacto);
 	
 	List<Actividad> findByBeneficiariosIdBeneficiario(Long personaId);
 	

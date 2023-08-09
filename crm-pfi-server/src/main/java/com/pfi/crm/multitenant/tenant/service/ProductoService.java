@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import com.pfi.crm.exception.BadRequestException;
 import com.pfi.crm.exception.ResourceNotFoundException;
 import com.pfi.crm.multitenant.tenant.model.Contacto;
 import com.pfi.crm.multitenant.tenant.model.Producto;
@@ -118,8 +119,6 @@ public class ProductoService {
 		boolean existeFoto = fileStorageService.deleteFotoGeneric(id, "producto");
 		message += existeFoto ? ". Se ha dado de baja la foto del producto también" : "";
 		
-		//Una vez eliminado el contacto, se elimina su foto si es que poseia 
-		fileStorageService.deleteFotoContacto(id);
 		return message;
 	}
 	
@@ -162,6 +161,28 @@ public class ProductoService {
 		
 		
 		return productoRepository.save(productoModel);
+	}
+	
+	public String quitarProveedorDeSusProductos(Long idContacto) {
+		if(idContacto == null)
+			throw new BadRequestException("Ha introducido un id='null' para buscar, por favor ingrese un número válido.");
+		String message = "";
+		List<Producto> productosDelProveedor = productoRepository.findByProveedor_Id(idContacto);
+		if(!productosDelProveedor.isEmpty()) {
+			message += "Se ha desasociado al contacto id '" +  idContacto + "' como proveedor de";
+			if(productosDelProveedor.size()>1)
+				message += " sus facturas id's: ";
+			else
+				message += " su factura id: ";
+			for(int i=0; i<productosDelProveedor.size();i++) {
+				message += productosDelProveedor.get(i).getId();
+				if(i<productosDelProveedor.size()-1)//no sea ultimo
+					message += ", ";
+				productosDelProveedor.get(i).setProveedor(null);
+			}
+			productoRepository.saveAll(productosDelProveedor);
+		}
+		return message;
 	}
 	
 	public boolean existeProducto(Long id) {

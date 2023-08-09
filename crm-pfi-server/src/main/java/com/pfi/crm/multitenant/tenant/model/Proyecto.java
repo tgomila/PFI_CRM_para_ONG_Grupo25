@@ -1,8 +1,8 @@
 package com.pfi.crm.multitenant.tenant.model;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -16,6 +16,7 @@ import javax.persistence.Table;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
+import com.pfi.crm.exception.ResourceNotFoundException;
 import com.pfi.crm.multitenant.tenant.model.audit.UserDateAudit;
 import com.pfi.crm.multitenant.tenant.payload.ProyectoPayload;
 
@@ -39,22 +40,35 @@ public class Proyecto extends UserDateAudit {
 	@OneToMany(cascade = {CascadeType.MERGE}, orphanRemoval=false)
 	@LazyCollection(LazyCollectionOption.FALSE)
 	@OrderBy("idPersonaFisica ASC")
-	private List<PersonaFisica> involucrados;
+	private Set<PersonaFisica> involucrados;
 	
 	public Proyecto() {
 		super();
 		fechaInicio = LocalDate.now();
-		involucrados = new ArrayList<PersonaFisica>();
+		involucrados = new HashSet<PersonaFisica>();
 	}
 	
-	public Proyecto(ProyectoPayload p) {
+	public Proyecto(ProyectoPayload p, Set<PersonaFisica> involucrados) {
 		super();
 		this.id = p.getId();
-		this.descripcion = p.getDescripcion();
-		this.fechaInicio = p.getFechaInicio();
-		this.fechaFin = p.getFechaFin();
-		involucrados = new ArrayList<PersonaFisica>();
-		p.getInvolucrados().forEach((i) -> involucrados.add(new PersonaFisica(i)));
+		this.modificar(p, involucrados);
+	}
+	
+	public void modificar(ProyectoPayload payload, Set<PersonaFisica> involucrados) {
+		if(payload.getFechaInicio() == null)
+			new ResourceNotFoundException("Proyecto", "fechaInicio", payload.getFechaInicio());
+		if(payload.getFechaFin() == null)
+			new ResourceNotFoundException("Proyecto", "fechaFin", payload.getFechaFin());
+		if(payload.getDescripcion() == null)
+			new ResourceNotFoundException("Proyecto", "descripción", payload.getDescripcion());
+		if(payload.getInvolucrados() == null)
+			new ResourceNotFoundException("Proyecto", "involucrados", payload.getInvolucrados());
+		
+		this.descripcion = payload.getDescripcion();
+		this.fechaInicio = payload.getFechaInicio();
+		this.fechaFin = payload.getFechaFin();
+		
+		this.involucrados = involucrados != null ? involucrados : new HashSet<PersonaFisica>();
 	}
 	
 	public Long getId() {
@@ -89,11 +103,11 @@ public class Proyecto extends UserDateAudit {
 		this.fechaFin = fechaFin;
 	}
 
-	public List<PersonaFisica> getInvolucrados() {
+	public Set<PersonaFisica> getInvolucrados() {
 		return involucrados;
 	}
 
-	public void setInvolucrados(List<PersonaFisica> involucrados) {
+	public void setInvolucrados(Set<PersonaFisica> involucrados) {
 		this.involucrados = involucrados;
 	}
 

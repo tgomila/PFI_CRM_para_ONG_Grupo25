@@ -53,6 +53,8 @@ public class DonacionService  {
 	}
 	
 	private Donacion altaModificarDonacion(DonacionPayload payload) {
+		if(payload == null)
+			throw new BadRequestException("Ha introducido un null, no se realizará ninguna acción.");
 		Donacion donacionModel = null;
 		if(payload.getId() != null) { //Modificar
 			donacionModel = this.getDonacionModelById(payload.getId());
@@ -68,8 +70,9 @@ public class DonacionService  {
 			if(payload.getDonante().getId() != null) {//Agrego su donante
 				donante = contactoService.getContactoModelById(payload.getDonante().getId());
 			}
-			else {//Doy de alta su donante (Contacto)
-				donante = contactoService.altaContactoModel(payload.getDonante());
+			else {//Tiene que ser un donante precargado, no permito ABM de contactos.
+				//donante = contactoService.altaContactoModel(payload.getDonante());////Doy de alta su donante (Contacto)
+				donante = null;
 			}
 		}
 		else {
@@ -80,14 +83,37 @@ public class DonacionService  {
 		return donacionRepository.save(donacionModel);
 	}
 	
+	//Hacer donaciones anónimas.
+	public String quitarContactoDeSusDonaciones(Long idContacto) {
+		if(idContacto == null)
+			throw new BadRequestException("Ha introducido un id='null' para buscar, por favor ingrese un número válido.");
+		String message = "";
+		List<Donacion> donacionesDelContacto = donacionRepository.findByDonante_Id(idContacto);
+		if(!donacionesDelContacto.isEmpty()) {
+			message += "Se ha desasociado al contacto id '" +  idContacto + "' como donante de ";
+			if(donacionesDelContacto.size()>1)
+				message += " sus donaciones id's: ";
+			else
+				message += " su donación id: ";
+			for(int i=0; i<donacionesDelContacto.size();i++) {
+				message += donacionesDelContacto.get(i).getId();
+				if(i<donacionesDelContacto.size()-1)//no sea ultimo
+					message += ", ";
+				donacionesDelContacto.get(i).setDonante(null);
+			}
+			donacionRepository.saveAll(donacionesDelContacto);
+		}
+		return message;
+	}
+	
 	public String bajaDonacion(Long id) {
 		
 		//Si Optional es null o no, lo conocemos con ".isPresent()".		
 		Donacion m = this.getDonacionModelById(id);
-		String message = "Se ha dado de baja a la donación id: " + id;
+		String message = "Se ha dado de baja a la donación ID: '" + id + "'";
 		if(m.getDonante() != null) {
 			if(m.getDonante().getEmail()!=null)
-				message += ", y desasociado su donante cuyo mail fue " + m.getDonante().getEmail();
+				message += ", y desasociado su donante cuyo email fue: '" + m.getDonante().getEmail() + "'";
 			m.setDonante(null);
 			m = donacionRepository.save(m);
 		}
@@ -96,17 +122,20 @@ public class DonacionService  {
 		return message;
 	}
 	
-	public void bajaDonacionesPorContacto(Long id) {
+	public String bajaDonacionesPorContacto(Long id) {
 		List<Donacion> donacionesAModificar = donacionRepository.findByDonante_Id(id);
+		String message = "";
 		if(!donacionesAModificar.isEmpty()) {
 			donacionesAModificar.forEach((donacion) -> donacion.setDonante(null));
 			donacionesAModificar = donacionRepository.saveAll(donacionesAModificar);
 			donacionRepository.deleteAll(donacionesAModificar);
+			message = "Se ha dado de baja a las donaciones por contacto ID: '" + id + "'";
 		}
 		else {
+			message = "No existen donantes con Contacto ID: '" + id + "' para dar de baja";
 			throw new AppException("No existen donantes con Contacto ID: " + id + " para dar de baja.");
 		}
-		
+		return message;
 	}
 	
 	public DonacionPayload modificarDonacion(DonacionPayload payload) {

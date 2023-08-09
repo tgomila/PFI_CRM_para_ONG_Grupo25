@@ -1,5 +1,6 @@
 package com.pfi.crm.multitenant.tenant.payload;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import com.pfi.crm.multitenant.tenant.model.DonacionTipo;
@@ -11,6 +12,7 @@ public class DonacionPayload {
 	private ContactoPayload donante;
 	private DonacionTipo tipoDonacion;
 	private String descripcion;
+	private BigDecimal valorAproximadoDeLaDonacion;
 	
 	
 	//Getters and Setters
@@ -43,6 +45,12 @@ public class DonacionPayload {
 	}
 	public void setDescripcion(String descripcion) {
 		this.descripcion = descripcion;
+	}
+	public BigDecimal getValorAproximadoDeLaDonacion() {
+		return valorAproximadoDeLaDonacion;
+	}
+	public void setValorAproximadoDeLaDonacion(BigDecimal valorAproximadoDeLaDonacion) {
+		this.valorAproximadoDeLaDonacion = valorAproximadoDeLaDonacion;
 	}
 	
 	

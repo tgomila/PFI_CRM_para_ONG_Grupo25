@@ -1,5 +1,6 @@
 package com.pfi.crm.multitenant.tenant.model;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import javax.persistence.CascadeType;
@@ -39,6 +40,7 @@ public class Donacion extends UserDateAudit{
 	private DonacionTipo tipoDonacion;
 	
 	private String descripcion;
+	private BigDecimal valorAproximadoDeLaDonacion;
 	
 	
 	public Donacion() {
@@ -59,9 +61,10 @@ public class Donacion extends UserDateAudit{
 	
 	public void modificar(DonacionPayload p) {
 		this.fecha = p.getFecha();
-		this.donante = ((p.getDonante() != null) ? new Contacto(p.getDonante()) : null); 
+		this.donante = ((p.getDonante() != null) ? new Contacto(p.getDonante()) : null);
 		this.tipoDonacion = p.getTipoDonacion();
 		this.descripcion = p.getDescripcion();
+		this.valorAproximadoDeLaDonacion = p.getValorAproximadoDeLaDonacion();
 	}
 
 
@@ -108,6 +111,14 @@ public class Donacion extends UserDateAudit{
 		this.descripcion = descripcion;
 	}
 	
+	public BigDecimal getValorAproximadoDeLaDonacion() {
+		return valorAproximadoDeLaDonacion;
+	}
+
+	public void setValorAproximadoDeLaDonacion(BigDecimal valorAproximadoDeLaDonacion) {
+		this.valorAproximadoDeLaDonacion = valorAproximadoDeLaDonacion;
+	}
+	
 	
 	
 	
@@ -121,6 +132,7 @@ public class Donacion extends UserDateAudit{
 		p.setDonante((this.donante != null) ? this.donante.toPayload() : null);
 		p.setTipoDonacion(tipoDonacion);
 		p.setDescripcion(descripcion);
+		p.setValorAproximadoDeLaDonacion(valorAproximadoDeLaDonacion);
 		
 		return p;
 	}

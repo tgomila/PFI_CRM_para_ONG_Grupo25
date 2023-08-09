@@ -42,6 +42,21 @@ public class ContactoService {
 	private FacturaService facturaService;
 	
 	@Autowired
+	private DonacionService donacionService;
+	
+	@Autowired
+	private PrestamoService prestamoService;
+	
+	@Autowired
+	private ProductoService productoService;
+	
+	@Autowired
+	private ActividadService actividadService;
+	
+	@Autowired
+	private ProyectoService proyectoService;
+	
+	@Autowired
 	private FileStorageService fileStorageService;
 	
 	public ContactoPayload getContactoById(@PathVariable Long id) {
@@ -140,8 +155,25 @@ public class ContactoService {
 		aux = userService.desasociarContactoDeUsers(id);
 		message += !aux.isEmpty() ? (". "+aux) : "";
 		
-		//Mantener facturas pero quitar su contacto
-		facturaService.quitarContactoDeSusFacturas(id);
+		//Mantener facturas/donación, etc pero quitar su contacto asociado.
+		
+		aux = donacionService.quitarContactoDeSusDonaciones(id);
+		message += !aux.isEmpty() ? (". "+aux) : "";
+		
+		aux = facturaService.quitarContactoDeSusFacturas(id);
+		message += !aux.isEmpty() ? (". "+aux) : "";
+		
+		aux = prestamoService.quitarContactoDeSusPrestamos(id);
+		message += !aux.isEmpty() ? (". "+aux) : "";
+		
+		aux = productoService.quitarProveedorDeSusProductos(id);
+		message += !aux.isEmpty() ? (". "+aux) : "";
+		
+		aux = actividadService.quitarContactoEnActividades(id);
+		message += !aux.isEmpty() ? (". "+aux) : "";
+		
+		aux = proyectoService.quitarIntegranteDeSusProyectos(id);
+		message += !aux.isEmpty() ? (". "+aux) : "";
 		
 		m = contactoRepository.save(m);
 		contactoRepository.delete(m);		//Temporalmente se elimina de la BD

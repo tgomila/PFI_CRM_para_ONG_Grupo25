@@ -113,7 +113,7 @@ public class BeneficiarioService {
 		String message = "Se ha dado de baja a beneficiario";
 		
 		//Eliminar objeto en todo lo que esta asociado Beneficiario
-		String aux = actividadService.bajaBeneficiarioEnActividades(m.getId());
+		String aux = actividadService.quitarBeneficiarioEnActividades(m.getId());
 		if(aux != null && !aux.isEmpty())
 			message += ". " + aux;
 		m.setEstadoActivoBeneficiario(false);

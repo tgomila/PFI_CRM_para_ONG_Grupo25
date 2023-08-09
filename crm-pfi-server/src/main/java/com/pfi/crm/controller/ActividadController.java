@@ -9,7 +9,6 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -42,7 +41,7 @@ public class ActividadController {
 
 	@GetMapping("/{id}")
 	public ActividadPayload getActividadById(@PathVariable Long id, @CurrentUser UserPrincipal currentUser) {
-		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.ACTIVIDAD, "Ver una actividad con id: "+id);
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.ACTIVIDAD, "Ver una actividad con id: '"+id+"'");
 		return actividadService.getActividadById(id);
 	}
 
@@ -60,7 +59,7 @@ public class ActividadController {
 
 	@DeleteMapping({ "/{id}", "/baja/{id}" })
 	public ResponseEntity<?> bajaActividad(@PathVariable Long id, @CurrentUser UserPrincipal currentUser) {
-		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.ACTIVIDAD, "Dar de baja la actividad" + id!=null ? ("con id"+id):"");
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.ACTIVIDAD, "Dar de baja la actividad" + id!=null ? (" con id "+id+"'"):"");
 		String message = actividadService.bajaActividad(id);
     	if(!message.isEmpty())
     		return ResponseEntity.ok().body(new ApiResponse(true, message));
@@ -70,7 +69,7 @@ public class ActividadController {
 
 	@PutMapping({ "/", "/modificar" })
 	public ActividadPayload modificarActividad(@Valid @RequestBody ActividadPayload payload, @CurrentUser UserPrincipal currentUser) {
-		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.ACTIVIDAD, "Modificar una actividad" + payload!=null && payload.getId()!=null ? "con id"+payload.getId() :"");
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.ACTIVIDAD, "Modificar una actividad" + payload!=null && payload.getId()!=null ? " con id: '"+payload.getId()+"'" :"");
 		return actividadService.modificarActividad(payload);
 	}
 
@@ -85,14 +84,12 @@ public class ActividadController {
 	
 	//Gráficos
 	@GetMapping("/grafico/contar_top_20/beneficiarios")
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public List<Map<String, Object>> countTop20Beneficiarios(@CurrentUser UserPrincipal currentUser) {
 		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.ACTIVIDAD, "Ver top 20 beneficiarios más suscriptos a actividades");
 		return actividadService.countTop20Beneficiarios();
 	}
 	
 	@GetMapping("/grafico/ultimos_y_proximos_12_meses")
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public List<Map<String, Object>> countUltimosProximos12meses(@CurrentUser UserPrincipal currentUser) {
 		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.ACTIVIDAD, "Ver actividades en los ultimos 12 meses por mes");
 		return actividadService.countUltimosProximos12meses();

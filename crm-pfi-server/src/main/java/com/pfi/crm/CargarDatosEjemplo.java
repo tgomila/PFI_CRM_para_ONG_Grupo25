@@ -1054,6 +1054,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		donacion.setDonante(donante);
 		donacion.setTipoDonacion(DonacionTipo.DINERO);
 		donacion.setDescripcion("$100.000");
+		donacion.setValorAproximadoDeLaDonacion(BigDecimal.valueOf(100000.00));
 		donacion = donacionService.altaDonacion(donacion);
 		
 		//Donacion anónima
@@ -1063,6 +1064,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		donacion2.setDonante(null);
 		donacion2.setTipoDonacion(DonacionTipo.INSUMO);
 		donacion2.setDescripcion("Juguete ladrillitos");
+		donacion.setValorAproximadoDeLaDonacion(BigDecimal.valueOf(15000.00));
 		donacion2 = donacionService.altaDonacion(donacion2);
 	}
 	
@@ -1894,7 +1896,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		actividad.setDescripcion("Prácticas de cocina a beneficiarios por el profesor: " + actividad.getProfesionales().get(0).getNombre()+" "+actividad.getProfesionales().get(0).getApellido());
 		programa.agregarActividadesPorSemana(10, actividad);
 		programa.setDescripcion(actividad.getDescripcion());
-		programaDeActividadesService.altaProgramaDeActividades(programa);
+		//programaDeActividadesService.altaProgramaDeActividades(programa);
 	}
 	
 	public void cargarDonacionesTenant2() {
@@ -1913,6 +1915,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		donacion.setDonante(donante);
 		donacion.setTipoDonacion(DonacionTipo.DINERO);
 		donacion.setDescripcion("$100.000");
+		donacion.setValorAproximadoDeLaDonacion(BigDecimal.valueOf(100000.00));
 		donacion = donacionService.altaDonacion(donacion);
 		
 		//Donacion anónima
@@ -1922,6 +1925,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		donacion2.setDonante(null);
 		donacion2.setTipoDonacion(DonacionTipo.INSUMO);
 		donacion2.setDescripcion("Galletitas variadas");
+		donacion.setValorAproximadoDeLaDonacion(BigDecimal.valueOf(15000.00));
 		donacion2 = donacionService.altaDonacion(donacion2);
 	}
 	

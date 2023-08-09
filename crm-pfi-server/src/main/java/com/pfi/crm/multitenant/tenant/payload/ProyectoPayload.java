@@ -1,8 +1,8 @@
 package com.pfi.crm.multitenant.tenant.payload;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 public class ProyectoPayload {
 	
@@ -10,12 +10,12 @@ public class ProyectoPayload {
 	private String descripcion;
 	private LocalDate fechaInicio;
 	private LocalDate fechaFin;
-	private List<PersonaFisicaPayload> involucrados;
+	private Set<PersonaFisicaPayload> involucrados;
 	
 	public ProyectoPayload() {
 		super();
 		fechaInicio = LocalDate.now();
-		involucrados = new ArrayList<PersonaFisicaPayload>();
+		involucrados = new HashSet<PersonaFisicaPayload>();
 	}
 	
 	public void agregarInvolucrado(PersonaFisicaPayload p) {
@@ -54,11 +54,11 @@ public class ProyectoPayload {
 		this.fechaFin = fechaFin;
 	}
 
-	public List<PersonaFisicaPayload> getInvolucrados() {
+	public Set<PersonaFisicaPayload> getInvolucrados() {
 		return involucrados;
 	}
 
-	public void setInvolucrados(List<PersonaFisicaPayload> involucrados) {
+	public void setInvolucrados(Set<PersonaFisicaPayload> involucrados) {
 		this.involucrados = involucrados;
 	}
 	
