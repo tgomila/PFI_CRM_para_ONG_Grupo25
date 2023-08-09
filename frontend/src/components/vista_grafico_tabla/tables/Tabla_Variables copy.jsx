@@ -456,24 +456,19 @@ const RenderMostrarContacto = (datoContactoIntegrante, tipoImagen) => {
     console.log("tipoImagen");
     console.log(tipoImagen);
     
-    if(datoContactoIntegrante?.id){
+    if(datoContactoIntegrante?.id && !datoContactoIntegrante?.imagen_tabla){
       {console.log("Hola12")}
-      if(!datoContactoIntegrante?.imagen_tabla){
-        ImageService.getFoto(datoContactoIntegrante.id, tipoImagen, 'tabla')
-          .then(response => {
-            {console.log("response")};
-            {console.log(response)};
-            setLoadedImage(response); // Actualiza el estado con la imagen devuelta por el servicio
-            {console.log("Hola23")}
-          })
-          .catch(error => {
-            console.error('Error al obtener la imagen:', error);
-          }
-        );
-      }
-      else{
-        setLoadedImage(datoContactoIntegrante.imagen_tabla);
-      }
+      ImageService.getFoto(datoContactoIntegrante.id, tipoImagen, 'tabla')
+        .then(response => {
+          {console.log("response")};
+          {console.log(response)};
+          setLoadedImage(response); // Actualiza el estado con la imagen devuelta por el servicio
+          {console.log("Hola23")}
+        })
+        .catch(error => {
+          console.error('Error al obtener la imagen:', error);
+        }
+      );
     }
   }, [showModal, datoContactoIntegrante?.id, tipoImagen]);
 

@@ -13,6 +13,7 @@ const ReadProductoComponent = ({dataIn, isVentanaEmergente}) => {
         Service = {ProductoService}
         urlTablaDato = {'/producto'}
         isVentanaEmergente = {isVentanaEmergente}
+        isPantallaCompleta = {true}
         el_la = {'el'}
         nombreTipoDato = {'producto'}
         typeCRUD={'READ'}

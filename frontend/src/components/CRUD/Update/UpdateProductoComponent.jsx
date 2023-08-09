@@ -11,6 +11,7 @@ const UpdateProductoComponent = () => {
         tipoDatoForImageService = {'producto'}
         Service = {ProductoService}
         urlTablaDato = {'/producto'}
+        isPantallaCompleta = {true}
         el_la = {'el'}
         nombreTipoDato = {'producto'}
         typeCRUD={'UPDATE'}

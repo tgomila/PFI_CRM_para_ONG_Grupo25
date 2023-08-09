@@ -18,12 +18,13 @@ import "../../../Styles/CRUD.scss";
  * @param {Array} dataIn si por ejemplo un Producto ya tiene cargado su proveedor contacto, no es necesario llamarlo.
  * @param {string} urlTablaDato ejemplo '/empleado', es para cuando presiona el botón cancelar
  * @param {boolean} isVentanaEmergente true o false
+ * @param {boolean} isPantallaCompleta true o false, grande o chica la pantalla de carga
  * @param {string} el_la 'el' o 'la'
  * @param {string} nombreTipoDato ejemplo 'empleado', 'beneficiario'
  * @param {string} typeCRUD ingresar 'CREATE' ó 'UPDATE' para saber que mostrar
  * @returns 
  */
-const CreateReadUpdateGenericoConFoto = ({cargarDatosDefault, DatoUpdateInput, tipoDatoForImageService, Service, dataIn, urlTablaDato, isVentanaEmergente, el_la, nombreTipoDato, typeCRUD}) => {
+const CreateReadUpdateGenericoConFoto = ({cargarDatosDefault, DatoUpdateInput, tipoDatoForImageService, Service, dataIn, urlTablaDato, isVentanaEmergente, isPantallaCompleta, el_la, nombreTipoDato, typeCRUD}) => {
     let navigate = useNavigate();
     const location = useLocation();
 
@@ -239,7 +240,7 @@ const CreateReadUpdateGenericoConFoto = ({cargarDatosDefault, DatoUpdateInput, t
     const [nombreTipoDatoPrimeraLetraMayuscula, setNombreTipoDatoPrimeraLetraMayuscula] = useState("");
     const [el_la_aux, setElLa_aux] = useState("");
     useEffect(() => {
-        if(location?.state?.id){//En caso de que diste en tabla a botón "Editar ID: 1" aquí se obtiene su ID.
+        if(!dataIn && location?.state?.id){//En caso de que diste en tabla a botón "Editar ID: 1" aquí se obtiene su ID.
             window.scrollTo({ top: 0, behavior: "smooth" });
             setIdToSearch(location.state.id);
             handleEntrySearch();
@@ -258,7 +259,9 @@ const CreateReadUpdateGenericoConFoto = ({cargarDatosDefault, DatoUpdateInput, t
             setNombreTipoDato_aux("dato");
             setNombreTipoDatoPrimeraLetraMayuscula("Dato");
         }
-        window.scrollTo({ top: 0, behavior: "smooth" });
+        if(!isVentanaEmergente) {
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        }
     }, []);
 
     //Esto es porque si pones setMostrarSearchID(true) directamente en action de botón, hace muchos renders y se rompe xd
@@ -407,7 +410,7 @@ const CreateReadUpdateGenericoConFoto = ({cargarDatosDefault, DatoUpdateInput, t
     return (
         <div className="submit-form">
             <div className = "row">
-                <div className = {isVentanaEmergente ? "" : "card col-md-6 offset-md-3 offset-md-3"}>
+                <div className = {isVentanaEmergente ? "" : isPantallaCompleta ? "card col-md-10 offset-md-1 offset-md-1" : "card col-md-6 offset-md-3 offset-md-3"}>
                     {!submitted ? (
                         <div className = "card-body">
                             {typeCRUD === 'CREATE' && tipoDatoForImageService === 'contacto' ? <CreateSearch/> : <UpdateReadSearch/>}

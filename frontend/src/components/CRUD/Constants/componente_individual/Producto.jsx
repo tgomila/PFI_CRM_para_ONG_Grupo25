@@ -5,6 +5,12 @@ import Select from "react-validation/build/select";
 import { required, IdInput, IdShowInput } from '../ConstantsInput';
 import { IdRead } from '../ConstantsRead';
 
+//import { ModalSeleccionarIntegrantes } from '../../../vista_grafico_tabla/tables/Tabla_Variables';
+import { ModalSeleccionarIntegrantesContacto, ModalSeleccionarIntegrantes } from './Elegir_integrantes';
+
+import { RenderMostrarContacto } from '../../../vista_grafico_tabla/tables/Tabla_Variables';
+import ContactoService from '../../../../services/ContactoService';
+
 //Cambia el nombre del label nomás
 const TipoInput = ({ disabled, data, handleInputChange }) => {
     return(
@@ -118,6 +124,27 @@ const StockActualInput = ({ disabled, data, handleInputChange }) => {
             <label> Stock actual: </label>
             <Input disabled={disabled} placeholder="Stock actual" name="stockActual" type="number" className="form-control" 
                 value={data.stockActual} onChange={handleInputChange} validations={[required]}/>
+        </div>
+    );
+};
+
+const ProveedorInput = ({ disabled, data, handleInputChange }) => {
+    return(
+        <div className = "form-group">
+            {/* <label> {data.proveedor ? "Proveedor:" : "No hay proveedor asociado"}</label>
+            {data.proveedor ? RenderMostrarContacto(data.proveedor, "contacto", "") : ""} */}
+            <br/>
+            <ModalSeleccionarIntegrantes
+                integrantesActuales = {data.proveedor}
+                ServiceDeIntegrantes = {ContactoService}
+                handleInputChange = {handleInputChange}
+                nombreHandleInputChange = {"proveedor"}
+                maxIntegrantesSelected = {1}
+                isEditable = {true}
+                el_la = {"el"}
+                nombreTipoIntegrante = {"proveedor"}
+                nombreTipoIntegrantePrural = {"proveedores"}
+            />
         </div>
     );
 };
@@ -251,6 +278,7 @@ const ProductoCreateInput = ({ searchEncontrado, data, handleInputChange }) => {
             <CantFijaCompraInput disabled={searchEncontrado} data={data} handleInputChange={handleInputChange} />
             <CantMinimaStockInput disabled={searchEncontrado} data={data} handleInputChange={handleInputChange} />
             <StockActualInput disabled={searchEncontrado} data={data} handleInputChange={handleInputChange} />
+            <ProveedorInput disabled={false} data={data} handleInputChange={handleInputChange} />
             <FragilInput disabled={searchEncontrado} data={data} handleInputChange={handleInputChange} />
         </div>
     );
@@ -268,6 +296,7 @@ const ProductoUpdateInput = ({ data, handleInputChange }) => {
                     <CantFijaCompraInput disabled={false} data={data} handleInputChange={handleInputChange} />
                     <CantMinimaStockInput disabled={false} data={data} handleInputChange={handleInputChange} />
                     <StockActualInput disabled={false} data={data} handleInputChange={handleInputChange} />
+                    <ProveedorInput disabled={false} data={data} handleInputChange={handleInputChange} />
                     <FragilInput disabled={false} data={data} handleInputChange={handleInputChange} />
                 </div>
             )}
@@ -297,7 +326,7 @@ const ProductoRead = ({ data }) => {
 
 
 export {
-    //Create
+    //Create, Update
     IdInput,
     IdShowInput,
     TipoInput,

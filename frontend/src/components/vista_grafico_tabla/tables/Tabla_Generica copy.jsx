@@ -462,18 +462,11 @@ const TablaGenerica = ({columnsIn, dataIn, visibilidad, Service, el_la, nombreTi
 
 
       if (maxIntegrantesSelected === 1 && selectedIds.length > 0) {
-        console.log("Entre aquí 1");
         selectedIds = selectedIds[0];//Es guardar como objeto
-      } else if (maxIntegrantesSelected >= 2 && selectedIds.length > maxIntegrantesSelected) {
-        //Caso "finitos" integrantes (max >= 2), entonces lista
+      } else if (maxIntegrantesSelected > 0 && selectedIds.length > maxIntegrantesSelected) {
         selectedIds = selectedIds.slice(0, maxIntegrantesSelected);//Es guardar como lista
-        console.log("Entre aquí 2");
-      } else if ((!maxIntegrantesSelected || maxIntegrantesSelected <= 0) && selectedIds.length > maxIntegrantesSelected) {
-        //Caso "infinitos" integrantes, no hago nada
-        console.log("Entre aquí 2");
       } else if (selectedIds.length === 0) {
         selectedIds = null;
-        console.log("Entre aquí 3");
       }
       //en caso de maxIntegrantesSelected = nulo, entonces infinito
       //console.log("selectedIds");

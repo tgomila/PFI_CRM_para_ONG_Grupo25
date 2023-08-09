@@ -169,7 +169,10 @@ const Sidebar = ({ children }) => {
             return commonItems;
 
         });
-        //TODO luego quitar
+        //Quito chat de la vista, esto es por su había un chat propio
+        menuItem = menuItem.filter(item => item.name !== 'Chat');
+
+        //Agregado extra de item para pruebas
         // let commonItemsAux = {
         //     order: 21,
         //     path: "/contacto_estatico",
@@ -178,7 +181,6 @@ const Sidebar = ({ children }) => {
         //     icon: <AiFillContacts />
         // };
         // menuItem.push(commonItemsAux);
-        
     }
     else {
 
