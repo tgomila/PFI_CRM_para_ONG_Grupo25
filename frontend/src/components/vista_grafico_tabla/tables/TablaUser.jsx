@@ -44,7 +44,7 @@ const TablaUser = ({visibilidadInput}) => {
       },
     ];
     console.log("visibilidad: " + visibilidadInput);
-    if (visibilidadInput === "EDITAR") {
+    /*if (visibilidadInput === "EDITAR") {
       baseColumns.push(
         {
           Header: 'Editar',
@@ -68,7 +68,7 @@ const TablaUser = ({visibilidadInput}) => {
           },
         }
       );
-    }
+    }*/
 
   return baseColumns;
   }, [visibilidadInput]);

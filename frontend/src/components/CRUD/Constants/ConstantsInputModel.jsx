@@ -60,12 +60,12 @@ const ContactoUpdateInput = ({ data, handleInputChange }) => {
         <div>
             {data.id && (
                 <div>
-                    <IdShowInput show={"false"} data={data} handleInputChange={handleInputChange} />
-                    <NombreDescripcionForContactoInput disabled={"false"} data={data} handleInputChange={handleInputChange} />
-                    <CuitInput disabled={"false"} data={data} handleInputChange={handleInputChange} />
-                    <DomicilioInput disabled={"false"} data={data} handleInputChange={handleInputChange} />
-                    <EmailInput disabled={"false"} data={data} handleInputChange={handleInputChange} />
-                    <TelefonoInput disabled={"false"} data={data} handleInputChange={handleInputChange} />
+                    <IdShowInput show={true} data={data} handleInputChange={handleInputChange} />
+                    <NombreDescripcionForContactoInput disabled={false} data={data} handleInputChange={handleInputChange} />
+                    <CuitInput disabled={false} data={data} handleInputChange={handleInputChange} />
+                    <DomicilioInput disabled={false} data={data} handleInputChange={handleInputChange} />
+                    <EmailInput disabled={false} data={data} handleInputChange={handleInputChange} />
+                    <TelefonoInput disabled={false} data={data} handleInputChange={handleInputChange} />
                 </div>
             )}
         </div>

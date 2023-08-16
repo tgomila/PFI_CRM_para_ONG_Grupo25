@@ -82,7 +82,7 @@ import ReadProyectoComponent from "./components/CRUD/Read/ReadProyectoComponent"
 // import ReadChatComponent from "./components/CRUD/Read/ReadChatComponent";
 
 //Updates
-import UpdateContactoComponent from "./components/CRUD/Update/UpdatePersonaComponent";
+import UpdateContactoComponent from "./components/CRUD/Update/UpdateContactoComponent";
 import UpdatePersonaJuridicaComponent from "./components/CRUD/Update/UpdatePersonaJuridicaComponent";
 import UpdatePersonaComponent from "./components/CRUD/Update/UpdatePersonaComponent";
 import UpdateBeneficiarioComponent from "./components/CRUD/Update/UpdateBeneficiarioComponent";
