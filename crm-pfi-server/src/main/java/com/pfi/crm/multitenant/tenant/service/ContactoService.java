@@ -511,7 +511,7 @@ public class ContactoService {
 		contactoGenerado.setEmail("testing@testing.com");
 		
 		//Telefono
-		contactoGenerado.setTelefono("15-"+random.nextInt(9999)+"-"+random.nextInt(9999));
+		contactoGenerado.setTelefono("+54 11-"+String.format("%04d", random.nextInt(9999))+"-"+String.format("%04d", random.nextInt(9999)));
 		
 		return contactoGenerado;
 	}
