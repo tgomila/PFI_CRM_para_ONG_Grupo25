@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react'
 
 //Este .js es para "Read" en gran parte.
 
@@ -58,6 +58,47 @@ const TelefonoRead = ({ data }) => {
     return(
         <div className = "form-group">
             <label> Telefono: <br/>{data.telefono}</label>
+        </div>
+    );
+};
+
+//Persona Jurídica
+const InternoTelefonoRead = ({ data }) => {
+    return(
+        <div className = "form-group">
+            <label> Interno telefono: <br/>{data.internoTelefono}</label>
+        </div>
+    );
+};
+
+const TipoPersonaJuridicaRead = ({ data }) => {
+    let tipoPersonaJuridica = "";
+
+    useEffect(() => {
+        tipoPersonaJuridica = data.tipoPersonaJuridica ? data.tipoPersonaJuridica : "";
+        if(tipoPersonaJuridica === "INSTITUCION") {
+            tipoPersonaJuridica = "Institución";
+        } else if(tipoPersonaJuridica === "EMPRESA") {
+            tipoPersonaJuridica = "Empresa";
+        } else if(tipoPersonaJuridica === "ORGANISMO_DEL_ESTADO") {
+            tipoPersonaJuridica = "Organismo del estado";
+        } else if(tipoPersonaJuridica === "OSC") {
+            tipoPersonaJuridica = "OSC";
+        } else {
+            const formattedValue = tipoPersonaJuridica
+                .toLowerCase()
+                .replace(/_/g, " ")
+                .replace(/\b\w/g, (match) => match.toUpperCase());
+            
+            tipoPersonaJuridica = formattedValue;
+        }
+    }, [data]);
+
+    
+    
+    return(
+        <div className = "form-group">
+            <label> Tipo de persona juridica: <br/>{tipoPersonaJuridica}</label>
         </div>
     );
 };
@@ -244,6 +285,9 @@ export {
     DomicilioRead,
     EmailRead,
     TelefonoRead,
+    //Persona Jurídica
+    InternoTelefonoRead,
+    TipoPersonaJuridicaRead,
     //Persona
     NombreRead,
     ApellidoRead,

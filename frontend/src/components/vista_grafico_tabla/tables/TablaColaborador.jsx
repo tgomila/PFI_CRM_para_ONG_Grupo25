@@ -7,6 +7,8 @@ import {
   SliderColumnFilter,
   fuzzyTextFilterFn,
   NumberRangeColumnFilter,
+  dateBetweenFilterFn,
+  DateRangeColumnFilter,
 } from"./Tabla_Filters";
 
 const TablaColaborador = ({visibilidadInput}) => {
@@ -44,6 +46,8 @@ const TablaColaborador = ({visibilidadInput}) => {
       Header: "Fecha de nacimiento",
       accessor: "fechaNacimiento",
       type: "date",
+      Filter: DateRangeColumnFilter,
+      filter: dateBetweenFilterFn,
     },
     {
       Header: "Edad",
@@ -85,7 +89,7 @@ const TablaColaborador = ({visibilidadInput}) => {
   return(
     <div>
       <TablaGenericaPersona
-        columns={columns}
+        columnsIn={columns}
         Service={ColaboradorService}
         visibilidadInput={visibilidadInput}
         nombreTipoDatoParaModuloVisibilidad={"COLABORADOR"}

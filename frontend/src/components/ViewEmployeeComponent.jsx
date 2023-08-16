@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import BaseService from '../services/BaseService'
+import OldBaseService from '../services/trash-can/OldBaseService';
 
 class ViewEmployeeComponent extends Component {
     constructor(props) {
@@ -12,7 +12,7 @@ class ViewEmployeeComponent extends Component {
     }
 
     componentDidMount(){
-        BaseService.getById(this.state.id).then( res => {
+        OldBaseService.getById(this.state.id).then( res => {
             this.setState({employee: res.data});
         })
     }

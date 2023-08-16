@@ -62,7 +62,7 @@ const TablaGenericaPersona = ({ columns, Service, visibilidadInput, nombreTipoDa
   return (
     <div>
       <TablaGenericaConFoto
-        columns={columns}
+        columnsIn={columns}
         Service={Service}
         visibilidadInput={visibilidadInput}
         nombreTipoDatoParaModuloVisibilidad={nombreTipoDatoParaModuloVisibilidad}

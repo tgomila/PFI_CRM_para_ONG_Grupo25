@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react'
 import Form from "react-validation/build/form";
 import Input from "react-validation/build/input";
 import CheckButton from "react-validation/build/button";
-//import BaseService from '../../../services/BaseService';
+//import OldBaseService from '../../../services/trash-can/OldBaseService';
 import { useNavigate } from 'react-router-dom';
 //import { cargarPersonaDefault } from '../Constants/ConstantsCargarDefault';
 //import { PersonaCreateInput } from '../Constants/ConstantsInputModel';

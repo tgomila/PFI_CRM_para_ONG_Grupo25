@@ -76,7 +76,7 @@ const TablaContacto = () => {
         columns={columns}
         Service={ContactoService}
         moduloName={"CONTACTO"}
-        visibilidad={"EDITAR"}//Cambiar luego
+        visibilidadInput={"EDITAR"}//Cambiar luego
         tipoDatoParaFoto={"contacto"}
         el_la={"el"}
         nombreTipoDato={"contacto"}

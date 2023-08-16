@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import BaseService from '../services/BaseService';
+import OldBaseService from '../services/trash-can/OldBaseService';
 
 class UpdateEmployeeComponent extends Component {
     constructor(props) {
@@ -17,7 +17,7 @@ class UpdateEmployeeComponent extends Component {
     }
 
     componentDidMount(){
-        BaseService.getById(this.state.id).then( (res) =>{
+        OldBaseService.getById(this.state.id).then( (res) =>{
             let employee = res.data;
             this.setState({firstName: employee.firstName,
                 lastName: employee.lastName,
@@ -31,7 +31,7 @@ class UpdateEmployeeComponent extends Component {
         let employee = {firstName: this.state.firstName, lastName: this.state.lastName, emailId: this.state.emailId};
         console.log('employee => ' + JSON.stringify(employee));
         console.log('id => ' + JSON.stringify(this.state.id));
-        BaseService.update(employee, this.state.id).then( res => {
+        OldBaseService.update(employee, this.state.id).then( res => {
             this.props.history.push('/employees');
         });
     }

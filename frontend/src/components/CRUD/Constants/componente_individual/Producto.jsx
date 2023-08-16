@@ -5,13 +5,10 @@ import Select from "react-validation/build/select";
 import { required, IdInput, IdShowInput } from '../ConstantsInput';
 import { IdRead } from '../ConstantsRead';
 
-//import { ModalSeleccionarIntegrantes } from '../../../vista_grafico_tabla/tables/Tabla_Variables';
 import { ModalSeleccionarIntegrantesContacto, ModalSeleccionarIntegrantes } from './Elegir_integrantes';
 
-import { RenderMostrarContacto } from '../../../vista_grafico_tabla/tables/Tabla_Variables';
 import ContactoService from '../../../../services/ContactoService';
 
-//Cambia el nombre del label nomás
 const TipoInput = ({ disabled, data, handleInputChange }) => {
     return(
         <div className = "form-group">
@@ -128,33 +125,30 @@ const StockActualInput = ({ disabled, data, handleInputChange }) => {
     );
 };
 
-const ProveedorInput = ({ disabled, data, handleInputChange }) => {
-    return(
-        <div className = "form-group">
-            {/* <label> {data.proveedor ? "Proveedor:" : "No hay proveedor asociado"}</label>
-            {data.proveedor ? RenderMostrarContacto(data.proveedor, "contacto", "") : ""} */}
-            <br/>
-            <ModalSeleccionarIntegrantes
-                integrantesActuales = {data.proveedor}
-                ServiceDeIntegrantes = {ContactoService}
-                handleInputChange = {handleInputChange}
-                nombreHandleInputChange = {"proveedor"}
-                maxIntegrantesSelected = {1}
-                isEditable = {true}
-                el_la = {"el"}
-                nombreTipoIntegrante = {"proveedor"}
-                nombreTipoIntegrantePrural = {"proveedores"}
-            />
-        </div>
-    );
-};
-
 const StockActualRead = ({data}) => {
     return(
         <div className = "form-group">
             <label> Stock actual:
                 <br />
             {data.stockActual}</label>
+        </div>
+    );
+};
+
+const ProveedorInput = ({ disabled, data, handleInputChange }) => {
+    return(
+        <div className = "form-group">
+            <ModalSeleccionarIntegrantesContacto
+                integrantesActuales = {data.proveedor}
+                ServiceDeIntegrantes = {ContactoService}
+                handleInputChange = {handleInputChange}
+                nombreHandleInputChange = {"proveedor"}
+                maxIntegrantesSelected = {1}
+                isEditable = {!disabled}
+                el_la = {"el"}
+                nombreTipoIntegrante = {"proveedor"}
+                nombreTipoIntegrantePrural = {"proveedores"}
+            />
         </div>
     );
 };
@@ -170,83 +164,6 @@ const FragilInput = ({ disabled, data, handleInputChange }) => {
         </div>
     );
 }
-
-// const FragilInput = ({ disabled, data, handleInputChange }) => {
-//     const [selectedOption, setSelectedOption] = useState("");
-//     const booleanToText = (value) => {
-//         console.log("value");
-//         console.log(value);
-//         if(typeof value === "boolean"){
-//             setSelectedOption(data.fragil ? "true" : "false");
-//             console.log("boolean: " + data.fragil ? "true" : "false");
-//         } else {
-//             setSelectedOption(data.fragil);//es texto
-//             console.log("text: " + data.fragil);
-//         }
-//     }
-//     useEffect(() => {//transformo boolean a string, total springboot me lo convierte string a boolean.
-//         booleanToText(data.fragil);
-//     }, []);
-
-    
-
-//     const handleChange = (event) => {
-//         console.log("Antes selected option: " + selectedOption);
-//         const newValue = event.target.value;
-//         setSelectedOption(newValue);
-//         handleInputChange(event);
-//         console.log("Después selected option: " + selectedOption);
-//         console.log("Entre aquí 1.5: " + newValue);
-//     };
-
-//     return(
-//         <div className = "form-group">
-//             <label> Fragil: </label>
-//             <select disabled={disabled} name="fragil" value={selectedOption} className="form-control" onChange={handleChange} validations={[required]}>
-//                 <option value="">Seleccione</option>
-//                 <option value={"true"}>Si</option>
-//                 <option value={"false"}>No</option>
-//             </select>
-//         </div>
-//     );
-// };
-
-// const FragilInput = ({ disabled, data, handleInputChange }) => {
-//     const [selectedValue, setSelectedValue] = useState(data.fragil === true ? "true" : "false");
-  
-//     useEffect(() => {
-//       setSelectedValue(data.fragil === true ? "true" : "false");
-//     }, [data.fragil]);
-  
-//     const handleSelectChange = (event) => {
-//       const value = event.target.value;
-//       setSelectedValue(value);
-//       handleInputChange({
-//         target: {
-//           name: "fragil",
-//           value: value === "true" ? true : false,
-//         },
-//       });
-//     };
-  
-//     return (
-//       <div className="form-group">
-//         <label> Fragil: </label>
-//         <select
-//           disabled={disabled}
-//           name="fragil"
-//           value={selectedValue}
-//           className="form-control"
-//           onChange={handleSelectChange}
-//           validations={[required]}
-//         >
-//           <option value="">Seleccione</option>
-//           <option value="true">Si</option>
-//           <option value="false">No</option>
-//         </select>
-//       </div>
-//     );
-//   };
 
 const FragilRead = ({ data }) => {
     return(
@@ -278,7 +195,7 @@ const ProductoCreateInput = ({ searchEncontrado, data, handleInputChange }) => {
             <CantFijaCompraInput disabled={searchEncontrado} data={data} handleInputChange={handleInputChange} />
             <CantMinimaStockInput disabled={searchEncontrado} data={data} handleInputChange={handleInputChange} />
             <StockActualInput disabled={searchEncontrado} data={data} handleInputChange={handleInputChange} />
-            <ProveedorInput disabled={false} data={data} handleInputChange={handleInputChange} />
+            <ProveedorInput disabled={searchEncontrado} data={data} handleInputChange={handleInputChange} />
             <FragilInput disabled={searchEncontrado} data={data} handleInputChange={handleInputChange} />
         </div>
     );
@@ -316,6 +233,7 @@ const ProductoRead = ({ data }) => {
                     <CantFijaCompraRead data={data} />
                     <CantMinimaStockRead data={data} />
                     <StockActualRead data={data} />
+                    <ProveedorInput disabled={true} data={data}/>
                     <FragilRead data={data} />
                 </div>
             )}

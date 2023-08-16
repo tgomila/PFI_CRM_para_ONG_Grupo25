@@ -109,7 +109,7 @@ const TablaPersona = () => {
         columns={columns}
         Service={PersonaService}
         moduloName={"PERSONA"}
-        visibilidad={"EDITAR"}//Cambiar luego
+        visibilidadInput={"EDITAR"}//Cambiar luego
         tipoDatoParaFoto={"contacto"}
         el_la={"el"}
         nombreTipoDato={"persona"}

@@ -58,7 +58,7 @@ const TablaContacto = ({visibilidadInput}) => {
   return(
     <div>
       <TablaGenericaPersona
-        columns={columns}
+        columnsIn={columns}
         Service={ContactoService}
         visibilidadInput={visibilidadInput}
         nombreTipoDatoParaModuloVisibilidad={"CONTACTO"}

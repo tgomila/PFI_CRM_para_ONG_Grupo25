@@ -19,8 +19,6 @@ import {
 
 const TablaUser = ({visibilidadInput}) => {
 
-  const [visibilidad, setVisibilidad] = useState("");
-
   const columns = useMemo(() => {
     let baseColumns = [
       {
@@ -30,7 +28,7 @@ const TablaUser = ({visibilidadInput}) => {
       },
       {
         Header: "Contacto",
-        Cell: ({ row }) => RenderFotoIntegranteRow(row, row.original.contacto, "contacto"),
+        Cell: ({ row }) => RenderFotoIntegranteRow(row, row.original?.contacto, "contacto"),
       },
       {
         Header: "Nombre",
@@ -79,7 +77,7 @@ const TablaUser = ({visibilidadInput}) => {
     <div>
       <TablaGenerica
         columnsIn={columns}
-        dataIn={""}
+        dataIn={null}
         Service={UserService}
         visibilidadInput={visibilidadInput}
         nombreTipoDatoParaModuloVisibilidad={"USERS"}

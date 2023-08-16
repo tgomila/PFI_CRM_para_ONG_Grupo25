@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { GraficoBeneficiario } from './graficos/GraficoBeneficiario'
-import TablaBeneficiario from "./tables/TablaBeneficiario";
+import { TablaBeneficiario } from "./tables/TablaBeneficiario";
 import modulosService from "../../services/modulosService";
 
 import "../../Styles/Graficos.scss";

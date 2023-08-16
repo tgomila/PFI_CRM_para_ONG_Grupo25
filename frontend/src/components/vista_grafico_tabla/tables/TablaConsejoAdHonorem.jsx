@@ -7,6 +7,8 @@ import {
   SliderColumnFilter,
   fuzzyTextFilterFn,
   NumberRangeColumnFilter,
+  dateBetweenFilterFn,
+  DateRangeColumnFilter,
 } from"./Tabla_Filters";
 
 const TablaConsejoAdHonorem = ({visibilidadInput}) => {
@@ -44,6 +46,8 @@ const TablaConsejoAdHonorem = ({visibilidadInput}) => {
       Header: "Fecha de nacimiento",
       accessor: "fechaNacimiento",
       type: "date",
+      Filter: DateRangeColumnFilter,
+      filter: dateBetweenFilterFn,
     },
     {
       Header: "Edad",
@@ -79,7 +83,7 @@ const TablaConsejoAdHonorem = ({visibilidadInput}) => {
   return(
     <div>
       <TablaGenericaPersona
-        columns={columns}
+        columnsIn={columns}
         Service={ConsejoAdHonoremService}
         visibilidadInput={visibilidadInput}
         nombreTipoDatoParaModuloVisibilidad={"CONSEJOADHONOREM"}

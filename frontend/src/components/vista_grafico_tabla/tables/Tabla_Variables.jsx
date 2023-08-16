@@ -23,7 +23,7 @@ const IndeterminateCheckbox = forwardRef(({ indeterminate, ...rest }, ref) => {
     <div className="cb action">
       <label>
         <input type="checkbox" ref={resolvedRef} {...rest} />
-        <span>All</span>
+        <span>Todo</span>
       </label>
     </div>
   );
@@ -413,19 +413,8 @@ const RenderBotonBorrar = (idInput, nombreABorrar, Service) => {
 };
 
 const RenderFotoIntegranteRow = (row, datoContactoIntegrante, tipoIntegrante) => {
-  if(!row.original)
-    return(<div></div>);//Esto sucede si se agrupa la tabla
-  /*const { nombre, apellido, nombreDescripcion } = row.original || {};
-  let nombreCompleto = '';
-  if (nombre && apellido) {
-    nombreCompleto = `${nombre} ${apellido}`;
-  } else if (nombre) {
-    nombreCompleto = nombre;
-  } else if (apellido) {
-    nombreCompleto = apellido;
-  } else if (nombreDescripcion) {
-    nombreCompleto = nombreDescripcion;
-  }*/
+  if(!datoContactoIntegrante)
+    return(<div/>);//Esto sucede si se agrupa la tabla
   return RenderMostrarContacto(datoContactoIntegrante, "contacto");
 };
 
@@ -450,6 +439,26 @@ const RenderMostrarContacto = (datoContactoIntegrante, tipoImagen) => {
   const [persona, setPersona] = useState(null);
   const [loadingSearch, setLoadingSearch] = useState(true);
   const [nombreModal, setNombreModal] = useState("");
+
+  useEffect(() => {
+    setNombreModal(getNombreDelDato(datoContactoIntegrante));
+    setPersona(null);
+    setLoadingSearch(true);
+    if(datoContactoIntegrante?.id){
+      PersonaService.getById(datoContactoIntegrante.id).then
+        (response => {
+          setPersona(response.data);
+          setNombreModal(getNombreDelDato(response.data));
+          setLoadingSearch(false);
+        },
+        (error) => {
+          setLoadingSearch(false);
+        }
+      );
+    }
+
+  }, [datoContactoIntegrante]);
+
   useEffect(() => {
     console.log("datoContactoIntegrante");
     console.log(datoContactoIntegrante);
@@ -475,9 +484,9 @@ const RenderMostrarContacto = (datoContactoIntegrante, tipoImagen) => {
         setLoadedImage(datoContactoIntegrante.imagen_tabla);
       }
     }
-  }, [showModal, datoContactoIntegrante?.id, tipoImagen]);
+  }, [datoContactoIntegrante?.id, tipoImagen]);
 
-  useEffect(() => {
+  /*useEffect(() => {
     setNombreModal(getNombreDelDato(datoContactoIntegrante));
     if(showModal){
       setPersona(null);
@@ -493,7 +502,7 @@ const RenderMostrarContacto = (datoContactoIntegrante, tipoImagen) => {
         }
       );
     }
-  }, [showModal]);
+  }, [showModal]);*/
 
   useEffect(() => {
     setNombreModal(getNombreDelDato(datoContactoIntegrante));

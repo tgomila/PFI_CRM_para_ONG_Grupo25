@@ -166,14 +166,14 @@ const ModalSeleccionarIntegrantes = ({integrantesActuales, columnsIn, ServiceDeI
   return(
     <div className = "form-group">
       <label> {integrantesActuales ? nombreTipoIntegrante.charAt(0).toUpperCase() + nombreTipoIntegrante.slice(1) + ":" : "No hay " + nombreTipoIntegrante + " asociad"+ (el_la === "el" ? "o" : "a")}</label>
-      {RenderMostrarContacto(integrantesActualesAux, "contacto", "")}
+      {maxIntegrantesSelected === 1 && RenderMostrarContacto(integrantesActualesAux, "contacto")}
       {integrantesActuales && !forzarRenderizado && (!maxIntegrantesSelected || maxIntegrantesSelected > 1) && (
         //TODO Debería haber una tabla
           <div style={{ overflowY: 'auto' }}>
           {console.log("integrantesActuales")}
           {console.log(integrantesActuales)}
           <TablaGenericaConFoto
-            columns={columns}
+            columnsIn={columns}
             Service={ServiceDeIntegrantes}
             dataIn={integrantesActuales}
             visibilidadInput={"SIN_BOTONES"}
@@ -232,7 +232,7 @@ const ModalSeleccionarIntegrantes = ({integrantesActuales, columnsIn, ServiceDeI
                   </>
                 )}
                 <TablaGenericaConFoto
-                  columns={columns}
+                  columnsIn={columns}
                   Service={ServiceDeIntegrantes}
                   dataIn={candidatosAIntegrantes}
                   visibilidadInput={"SOLO_VISTA"}
@@ -395,7 +395,7 @@ const ModalSeleccionarIntegrantesBeneficiario = ({integrantesActuales, ServiceDe
     {
       Header: "Se retira solo",
       accessor: "seRetiraSolo",
-      Cell: ({ value }) => (value ? "✅" : "❌")
+      Cell: ({ row, value }) => (row.original?.id ? (value ? "✅" : "❌") : "")
     },
     {
       Header: "Cuidados especiales",

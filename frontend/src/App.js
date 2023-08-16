@@ -18,8 +18,21 @@ import ConsejoAdHonoremVista from "./components/vista_grafico_tabla/ConsejoAdHon
 import VoluntarioVista from "./components/vista_grafico_tabla/VoluntarioVista";
 import PersonaJuridicaVista from "./components/vista_grafico_tabla/PersonaJuridicaVista";
 
+
+
+
+
+
 import UserVista from "./components/vista_grafico_tabla/UserVista";
+// import ActividadVista from "./components/vista_grafico_tabla/ActividadVista";
+// import ProgramaDeActividadesVista from "./components/vista_grafico_tabla/ProgramaDeActividadesVista";
 import ProductoVista from "./components/vista_grafico_tabla/ProductoVista";
+import DonacionVista from "./components/vista_grafico_tabla/DonacionVista";
+import FacturaVista from "./components/vista_grafico_tabla/FacturaVista";
+import InsumoVista from "./components/vista_grafico_tabla/InsumoVista";
+import PrestamoVista from "./components/vista_grafico_tabla/PrestamoVista";
+import ProyectoVista from "./components/vista_grafico_tabla/ProyectoVista";
+// import ChatVista from "./components/vista_grafico_tabla/ChatVista";
 
 import FooterComponent from "./components/FooterComponent";
 
@@ -35,7 +48,16 @@ import CreateConsejoAdHonoremComponent from "./components/CRUD/Create/CreateCons
 import CreateVoluntarioComponent from "./components/CRUD/Create/CreateVoluntarioComponent";
 import CreateEmployeeComponent from "./trash-can/CreateEmployeeComponent";//Testing
 
+// import CreateUserComponent from "./components/CRUD/Create/CreateUserComponent";
+// import CreateActividadComponent from "./components/CRUD/Create/CreateActividadComponent";
+// import CreateProgramaDeActividadesComponent from "./components/CRUD/Create/CreateProgramaDeActividadesComponent";
 import CreateProductoComponent from "./components/CRUD/Create/CreateProductoComponent";
+import CreateDonacionComponent from "./components/CRUD/Create/CreateDonacionComponent";
+import CreateFacturaComponent from "./components/CRUD/Create/CreateFacturaComponent";
+import CreateInsumoComponent from "./components/CRUD/Create/CreateInsumoComponent";
+import CreatePrestamoComponent from "./components/CRUD/Create/CreatePrestamoComponent";
+import CreateProyectoComponent from "./components/CRUD/Create/CreateProyectoComponent";
+// import CreateChatComponent from "./components/CRUD/Create/CreateChatComponent";
 
 //Read
 import ReadContactoComponent from "./components/CRUD/Read/ReadContactoComponent";
@@ -48,7 +70,16 @@ import ReadConsejoAdHonoremComponent from "./components/CRUD/Read/ReadConsejoAdH
 import ReadVoluntarioComponent from "./components/CRUD/Read/ReadVoluntarioComponent";
 import ReadPersonaJuridicaComponent from "./components/CRUD/Read/ReadPersonaJuridicaComponent";
 
+// import ReadUserComponent from "./components/CRUD/Read/ReadUserComponent";
+// import ReadActividadComponent from "./components/CRUD/Read/ReadActividadComponent";
+// import ReadProgramaDeActividadesComponent from "./components/CRUD/Read/ReadProgramaDeActividadesComponent";
 import ReadProductoComponent from "./components/CRUD/Read/ReadProductoComponent";
+import ReadDonacionComponent from "./components/CRUD/Read/ReadDonacionComponent";
+import ReadFacturaComponent from "./components/CRUD/Read/ReadFacturaComponent";
+import ReadInsumoComponent from "./components/CRUD/Read/ReadInsumoComponent";
+import ReadPrestamoComponent from "./components/CRUD/Read/ReadPrestamoComponent";
+import ReadProyectoComponent from "./components/CRUD/Read/ReadProyectoComponent";
+// import ReadChatComponent from "./components/CRUD/Read/ReadChatComponent";
 
 //Updates
 import UpdateContactoComponent from "./components/CRUD/Update/UpdatePersonaComponent";
@@ -61,7 +92,16 @@ import UpdateColaboradorComponent from "./components/CRUD/Update/UpdateColaborad
 import UpdateConsejoAdHonoremComponent from "./components/CRUD/Update/UpdateConsejoAdHonoremComponent";
 import UpdateVoluntarioComponent from "./components/CRUD/Update/UpdateVoluntarioComponent";
 
+// import UpdateUserComponent from "./components/CRUD/Update/UpdateUserComponent";
+// import UpdateActividadComponent from "./components/CRUD/Update/UpdateActividadComponent";
+// import UpdateProgramaDeActividadesComponent from "./components/CRUD/Update/UpdateProgramaDeActividadesComponent";
 import UpdateProductoComponent from "./components/CRUD/Update/UpdateProductoComponent";
+import UpdateDonacionComponent from "./components/CRUD/Update/UpdateDonacionComponent";
+import UpdateFacturaComponent from "./components/CRUD/Update/UpdateFacturaComponent";
+import UpdateInsumoComponent from "./components/CRUD/Update/UpdateInsumoComponent";
+import UpdatePrestamoComponent from "./components/CRUD/Update/UpdatePrestamoComponent";
+import UpdateProyectoComponent from "./components/CRUD/Update/UpdateProyectoComponent";
+// import UpdateChatComponent from "./components/CRUD/Update/UpdateChatComponent";
 
 //Updates testing
 import UpdateEmployeeComponent from "./components/UpdateEmployeeComponent";
@@ -274,15 +314,24 @@ const App = () => {
             <Route path="/personajuridica" element={<PersonaJuridicaVista/>} />
             <Route path="/profesional" element={<ProfesionalVista/>} />
             
-            <Route path="/users" element={<UserVista />} />
-            <Route path="/actividad" element={<TablaActividad redireccionamiento='actividad' />} />
+            
+            {/* <Route path="/actividad" element={<TablaActividad redireccionamiento='actividad' />} />
             <Route path="/tablaActividadBeneficiario" element={<TablaActividadBeneficiario redireccionamiento='tablaActividadBeneficiario' />} />
             <Route path="/programadeactividades" element={<TablasDinamicas redireccionamiento='programadeactividades' />} />
+            <Route path="/factura" element={<TablasDinamicas redireccionamiento='factura' />} /> */}
+            
+
+            <Route path="/users" element={<UserVista />} />
+            {/* <Route path="/actividad" element={<ActividadVista />} /> */}
+            {/* <Route path="/programadeactividades" element={<ProgramaDeActividadesVista />} /> */}
             <Route path="/producto" element={<ProductoVista />} />
-            <Route path="/donacion" element={<TablasDinamicas redireccionamiento='donacion' />} />
-            <Route path="/factura" element={<TablasDinamicas redireccionamiento='factura' />} />
-            <Route path="/insumo" element={<TablasDinamicas redireccionamiento='insumo' />} />
-            <Route path="/prestamo" element={<TablasDinamicas redireccionamiento='prestamo' />} />
+            <Route path="/donacion" element={<DonacionVista />} />
+            <Route path="/factura" element={<FacturaVista />} />
+            <Route path="/insumo" element={<InsumoVista />} />
+            <Route path="/prestamo" element={<PrestamoVista/>} />
+            <Route path="/proyecto" element={<ProyectoVista/>} />
+            {/* <Route path="/chat" element={<eChatVista/>} /> */}
+
             <Route path="/proyecto" element={<TablasDinamicas redireccionamiento='proyecto' />} />
             <Route path="/chat" element={<TablasDinamicas redireccionamiento='chat' />} />
             <Route path="/marketplace" element={<Marketplace  />} />
@@ -302,16 +351,16 @@ const App = () => {
             <Route path="/voluntario/create" element={<CreateVoluntarioComponent />} />
             <Route path="/personajuridica/create" element={<CreatePersonaJuridicaComponent />} />
 
-            <Route path="/users/create" element={<CreateEmployeeComponent />} />
-            <Route path="/actividad/create" element={<CreateEmployeeComponent />} />
-            <Route path="/programadeactividades/create" element={<CreateEmployeeComponent />} />
+            {/* <Route path="/users/create" element={<CreateUserComponent />} /> */}
+            {/* <Route path="/actividad/create" element={<CreateActividadComponent />} /> */}
+            {/* <Route path="/programadeactividades/create" element={<CreateProgramaDeActividadesComponent />} /> */}
             <Route path="/producto/create" element={<CreateProductoComponent />} />
-            <Route path="/donacion/create" element={<CreateEmployeeComponent />} />
-            <Route path="/factura/create" element={<CreateEmployeeComponent />} />
-            <Route path="/insumo/create" element={<CreateEmployeeComponent />} />
-            <Route path="/prestamo/create" element={<CreateEmployeeComponent />} />
-            <Route path="/proyecto/create" element={<CreateEmployeeComponent />} />
-            <Route path="/chat/create" element={<CreateEmployeeComponent />} />
+            <Route path="/donacion/create" element={<CreateDonacionComponent />} />
+            <Route path="/factura/create" element={<CreateFacturaComponent />} />
+            <Route path="/insumo/create" element={<CreateInsumoComponent />} />
+            <Route path="/prestamo/create" element={<CreatePrestamoComponent />} />
+            <Route path="/proyecto/create" element={<CreateProyectoComponent />} />
+            {/* <Route path="/chat/create" element={<CreateChatComponent />} /> */}
             <Route path="/realizarpago/mes/actividad" element={<RealizarPago   moduloAPagar='mes/ACTIVIDAD' />} />
             <Route path="/realizarpago/año/actividad" element={<RealizarPago  moduloAPagar='ACTIVIDAD' tiempoContratado='anio'/>} />
             <Route path="/realizarpago/mes/factura" element={<RealizarPago moduloAPagar='FACTURA' tiempoContratado='mes'/>} />
@@ -330,7 +379,16 @@ const App = () => {
             <Route path="/voluntario/update" element={<UpdateVoluntarioComponent />} />
             <Route path="/personajuridica/update" element={<UpdatePersonaJuridicaComponent />} />
 
+            {/* <Route path="/users/update" element={<UpdateUserComponent />} /> */}
+            {/* <Route path="/actividad/update" element={<UpdateActividadComponent />} /> */}
+            {/* <Route path="/programadeactividades/update" element={<UpdateProgramaDeActividadesComponent />} /> */}
             <Route path="/producto/update" element={<UpdateProductoComponent />} />
+            <Route path="/donacion/update" element={<UpdateDonacionComponent />} />
+            <Route path="/factura/update" element={<UpdateFacturaComponent />} />
+            <Route path="/insumo/update" element={<UpdateInsumoComponent />} />
+            <Route path="/prestamo/update" element={<UpdatePrestamoComponent />} />
+            <Route path="/proyecto/update" element={<UpdateProyectoComponent />} />
+            {/* <Route path="/chat/update" element={<UpdateChatComponent />} /> */}
 
             {/* Read item */}
             <Route path="/contacto/read" element={<ReadContactoComponent />} />
@@ -342,8 +400,17 @@ const App = () => {
             <Route path="/consejoadhonorem/read" element={<ReadConsejoAdHonoremComponent />} />
             <Route path="/voluntario/read" element={<ReadVoluntarioComponent />} />
             <Route path="/personajuridica/read" element={<ReadPersonaJuridicaComponent />} />
-            
+
+            {/* <Route path="/users/read" element={<ReadUserComponent />} /> */}
+            {/* <Route path="/actividad/read" element={<ReadActividadComponent />} /> */}
+            {/* <Route path="/programadeactividades/read" element={<ReadProgramaDeActividadesComponent />} /> */}
             <Route path="/producto/read" element={<ReadProductoComponent />} />
+            <Route path="/donacion/read" element={<ReadDonacionComponent />} />
+            <Route path="/factura/read" element={<ReadFacturaComponent />} />
+            <Route path="/insumo/read" element={<ReadInsumoComponent />} />
+            <Route path="/prestamo/read" element={<ReadPrestamoComponent />} />
+            <Route path="/proyecto/read" element={<CreateEmployeeComponent />} />
+            {/* <Route path="/chat/read" element={<ReadChatComponent />} /> */}
 
 
 

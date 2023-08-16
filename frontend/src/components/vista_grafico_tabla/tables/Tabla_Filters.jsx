@@ -147,44 +147,176 @@ function NumberRangeColumnFilter({
   }, [id, preFilteredRows])
 
   return (
-    <div
-      style={{
-        display: 'flex',
-      }}
-    >
-      <input
-        value={filterValue[0] || ''}
-        type="number"
-        onChange={e => {
-          const val = e.target.value
-          setFilter((old = []) => [val ? parseInt(val, 10) : undefined, old[1]])
-        }}
-        placeholder={`Min (${min})`}
+    <div>
+      <div
         style={{
-          width: '70px',
-          marginRight: '0.5rem',
+          display: 'flex',
         }}
-      />
-      to
-      <input
-        value={filterValue[1] || ''}
-        type="number"
-        onChange={e => {
-          const val = e.target.value
-          setFilter((old = []) => [old[0], val ? parseInt(val, 10) : undefined])
-        }}
-        placeholder={`Max (${max})`}
-        style={{
-          width: '70px',
-          marginLeft: '0.5rem',
-        }}
-      />
+      >
+        <input
+          value={filterValue[0] || ''}
+          type="number"
+          onChange={e => {
+            const val = e.target.value
+            setFilter((old = []) => [val ? parseInt(val, 10) : undefined, old[1]])
+          }}
+          placeholder={`Min (${min})`}
+          style={{
+            width: '70px',
+            marginRight: '0.5rem',
+          }}
+        />
+        a
+        <input
+          value={filterValue[1] || ''}
+          type="number"
+          onChange={e => {
+            const val = e.target.value
+            setFilter((old = []) => [old[0], val ? parseInt(val, 10) : undefined])
+          }}
+          placeholder={`Max (${max})`}
+          style={{
+            width: '70px',
+            marginLeft: '0.5rem',
+          }}
+        />
+        
+      </div>
+      <button className="btn btn-primary btn-sm mt-2" onClick={() => setFilter([])}>Limpiar</button>
     </div>
   )
 }
 
 const fuzzyTextFilterFn = (rows, id, filterValue) => {
   return matchSorter(rows, filterValue, { keys: [row => row.values[id]] })
+};
+
+const DateRangeFilter = ({ column }) => {
+  const { filterValue = [], setFilter } = column;
+
+  const handleStartDateChange = (e) => {
+    const newFilterValue = [...filterValue];
+    newFilterValue[0] = e.target.value;
+    setFilter(newFilterValue);
+  };
+
+  const handleEndDateChange = (e) => {
+    const newFilterValue = [...filterValue];
+    newFilterValue[1] = e.target.value;
+    setFilter(newFilterValue);
+  };
+
+  return (
+    <div>
+      Desde:{' '}
+      <input
+        value={filterValue[0] || ''}
+        onChange={handleStartDateChange}
+        placeholder="YYYY-MM-DD"
+      />
+      <br />
+      Hasta:{' '}
+      <input
+        value={filterValue[1] || ''}
+        onChange={handleEndDateChange}
+        placeholder="YYYY-MM-DD"
+      />
+    </div>
+  );
+};
+
+const dateBetweenFilterFn = (rows, id, filterValues) => {
+  const sd = filterValues[0] ? new Date(filterValues[0]) : undefined;
+  const ed = filterValues[1] ? new Date(filterValues[1]) : undefined;
+
+  if (ed || sd) {
+    return rows.filter((r) => {
+      const cellDate = new Date(r.values[id]);
+
+      if (ed && sd) {
+        return cellDate >= sd && cellDate <= ed;
+      } else if (sd) {
+        return cellDate >= sd;
+      } else {
+        return cellDate <= ed;
+      }
+    });
+  } else {
+    return rows;
+  }
+};
+
+const DateHourRangeColumnFilter = ({
+  column,
+}) => {
+  return (
+    <DateGenericRangeColumnFilter
+      column={column}
+      typeDate="datetime-local"
+    />
+  );
+};
+
+const DateRangeColumnFilter = ({
+  column,
+}) => {
+  return (
+    <DateGenericRangeColumnFilter
+      column={column}
+      typeDate="date"
+    />
+  );
+};
+
+
+//privado
+const DateGenericRangeColumnFilter = ({
+  column: { filterValue = [], preFilteredRows, setFilter, id }, typeDate
+}) => {
+  const [min, max] = React.useMemo(() => {
+    let min = preFilteredRows.length
+      ? new Date(preFilteredRows[0].values[id])
+      : new Date(0);
+    let max = preFilteredRows.length
+      ? new Date(preFilteredRows[0].values[id])
+      : new Date(0);
+
+    preFilteredRows.forEach((row) => {
+      const rowDate = new Date(row.values[id]);
+
+      min = rowDate <= min ? rowDate : min;
+      max = rowDate >= max ? rowDate : max;
+    });
+
+    return [min, max];
+  }, [id, preFilteredRows]);
+
+  return (
+    <div>
+      Desde:{' '}
+      <input
+        onChange={(e) => {
+          const val = e.target.value;
+          setFilter((old = []) => [val ? val : undefined, old[1]]);
+        }}
+        type={typeDate}
+        value={filterValue[0] || ''}
+      />
+      {" hasta "}
+      <input
+        onChange={(e) => {
+          const val = e.target.value;
+          setFilter((old = []) => [
+            old[0],
+            val ? val : undefined,
+          ]);
+        }}
+        type={typeDate}
+        value={filterValue[1] || ''}
+      />
+      <button className="btn btn-primary btn-sm mt-2" onClick={() => setFilter([])}>Limpiar</button>
+    </div>
+  );
 };
 
 
@@ -198,5 +330,8 @@ export {
   SliderColumnFilter,
   fuzzyTextFilterFn,
   NumberRangeColumnFilter,
+  dateBetweenFilterFn,
+  DateRangeColumnFilter,
+  DateHourRangeColumnFilter,
 }
 //export default IndeterminateCheckbox;

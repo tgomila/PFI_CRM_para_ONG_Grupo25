@@ -79,7 +79,7 @@ const TablaPersonaJuridica = ({visibilidadInput}) => {
   return(
     <div>
       <TablaGenericaPersona
-        columns={columns}
+        columnsIn={columns}
         Service={PersonaJuridicaService}
         visibilidadInput={visibilidadInput}
         nombreTipoDatoParaModuloVisibilidad={"PERSONAJURIDICA"}

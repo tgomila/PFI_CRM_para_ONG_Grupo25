@@ -1,10 +1,10 @@
 import axios from "axios";
-import authHeader from "./auth-header";
-import * as constantsURL from "../components/constants/ConstantsURL";
+import authHeader from "../auth-header";
+import * as constantsURL from "../../components/constants/ConstantsURL";
 const BACKEND_API_BASE_URL = constantsURL.API_BASE_URL;
 
 
-class BaseService {
+class OldBaseService {
 
     getById(redireccionamiento, dtoId){
         return axios.get(BACKEND_API_BASE_URL + redireccionamiento.redireccionamiento + '/' + dtoId), { headers: authHeader() };
@@ -39,4 +39,4 @@ class BaseService {
     
 }
 
-export default new BaseService( )
+export default new OldBaseService( )

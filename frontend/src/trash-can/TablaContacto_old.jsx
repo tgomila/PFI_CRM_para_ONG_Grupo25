@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import BaseService from "../services/BaseService";
+import OldBaseService from '../services/trash-can/OldBaseService';
 
 import { useTable, usePagination } from "react-table";
 
@@ -16,7 +16,7 @@ import {
 
 /*
 Para reciclar esta tabla:
- - Tener en cuenta import BaseService.
+ - Tener en cuenta import OldBaseService.
  - Cambiar import Create...Component
  - 
 
@@ -235,11 +235,11 @@ function TablaContacto(redireccionamiento) {
     // Fetch data
     // Update the document title using the browser API
 
-    BaseService.getAll(redireccionamiento).then((res) => {
+    OldBaseService.getAll(redireccionamiento).then((res) => {
       setData(res.data);
     });
 
-    BaseService.getColumnNames(redireccionamiento).then((res) => {
+    OldBaseService.getColumnNames(redireccionamiento).then((res) => {
       setColumnNames(res.data);
     });
 
@@ -266,7 +266,7 @@ function TablaContacto(redireccionamiento) {
   //this.state.showMiContacto = true;
 
   const deleteEmployee = (id) => {
-    BaseService.delete(id).then((res) => {
+    OldBaseService.delete(id).then((res) => {
       this.setState({
         employees: this.state.employees.filter(
           (employee) => employee.id !== id

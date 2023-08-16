@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { GraficoProfesional } from './graficos/GraficoProfesional'
-import TablaProfesional from "./tables/TablaProfesional";
+import { TablaProfesional } from "./tables/TablaProfesional";
 import modulosService from "../../services/modulosService";
 
 import "../../Styles/Graficos.scss";

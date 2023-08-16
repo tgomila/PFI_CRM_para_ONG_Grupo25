@@ -207,11 +207,10 @@ const EmpleadoCreateInput = ({ contactoSearchEncontrado, personaSearchEncontrada
 const EmpleadoUpdateInput = ({ data, handleInputChange }) => {
     return(
         <div>
-            <PersonaUpdateInput data={data} handleInputChange={handleInputChange}/>
             {data.id && (
                 <div>
+                    <TrabajadorAbstractUpdateInput disabled={""} data={data} handleInputChange={handleInputChange} />
                     <FuncionInput disabled={""} data={data} handleInputChange={handleInputChange} />
-                    <LegajoInput disabled={""} data={data} handleInputChange={handleInputChange} />
                     <DescripcionEmpleadoInput disabled={""} data={data} handleInputChange={handleInputChange} />
                 </div>
             )}
@@ -231,10 +230,9 @@ const ProfesionalCreateInput = ({ contactoSearchEncontrado, personaSearchEncontr
 const ProfesionalUpdateInput = ({ data, handleInputChange }) => {
     return(
         <div>
-            <PersonaUpdateInput data={data} handleInputChange={handleInputChange}/>
             {data.id && (
                 <div>
-                    <FuncionInput disabled={""} data={data} handleInputChange={handleInputChange} />
+                    <TrabajadorAbstractUpdateInput disabled={""} data={data} handleInputChange={handleInputChange} />
                     <ProfesionInput disabled={""} data={data} handleInputChange={handleInputChange} />
                 </div>
             )}
@@ -254,9 +252,9 @@ const ColaboradorCreateInput = ({ contactoSearchEncontrado, personaSearchEncontr
 const ColaboradorUpdateInput = ({ data, handleInputChange }) => {
     return(
         <div>
-            <PersonaUpdateInput data={data} handleInputChange={handleInputChange}/>
             {data.id && (
                 <div>
+                    <TrabajadorAbstractUpdateInput disabled={""} data={data} handleInputChange={handleInputChange} />
                     <AreaInput disabled={""} data={data} handleInputChange={handleInputChange} />
                 </div>
             )}
@@ -267,8 +265,8 @@ const ColaboradorUpdateInput = ({ data, handleInputChange }) => {
 const ConsejoAdHonoremCreateInput = ({ contactoSearchEncontrado, personaSearchEncontrada, data, handleInputChange }) => {
     return(
         <div>
-            <TrabajadorAbstractCreateInput contactoSearchEncontrado={contactoSearchEncontrado} personaSearchEncontrada={personaSearchEncontrada} data={data} handleInputChange={handleInputChange} />
-            <AreaInput disabled={""} data={data} handleInputChange={handleInputChange} />
+            <PersonaCreateInput contactoSearchEncontrado={contactoSearchEncontrado} personaSearchEncontrada={personaSearchEncontrada} data={data} handleInputChange={handleInputChange} />
+            <FuncionConsejoAdHonoremInput disabled={""} data={data} handleInputChange={handleInputChange} />
         </div>
     );
 }
@@ -276,10 +274,10 @@ const ConsejoAdHonoremCreateInput = ({ contactoSearchEncontrado, personaSearchEn
 const ConsejoAdHonoremUpdateInput = ({ data, handleInputChange }) => {
     return(
         <div>
-            <PersonaUpdateInput data={data} handleInputChange={handleInputChange}/>
             {data.id && (
                 <div>
-                    <AreaInput disabled={""} data={data} handleInputChange={handleInputChange} />
+                    <PersonaUpdateInput disabled={""} data={data} handleInputChange={handleInputChange} />
+                    <FuncionConsejoAdHonoremInput disabled={""} data={data} handleInputChange={handleInputChange} />
                 </div>
             )}
         </div>

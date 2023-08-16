@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import BaseService from "../../../services/BaseService";
+import OldBaseService from '../../../services/trash-can/OldBaseService';
 
 import { useTable, usePagination } from "react-table";
 
@@ -282,7 +282,7 @@ function TablaActividad(redireccionamiento) {
     // Fetch data
     // Update the document title using the browser API
 
-    BaseService.getAll(redireccionamiento).then((res) => {
+    OldBaseService.getAll(redireccionamiento).then((res) => {
       
       let listaActividadData = [];
       for (let i=0; i < res.data.length ; i++){
@@ -319,7 +319,7 @@ function TablaActividad(redireccionamiento) {
       setData(copiaListaActividadData);
     });
 
-    BaseService.getColumnNames(redireccionamiento).then((res) => {
+    OldBaseService.getColumnNames(redireccionamiento).then((res) => {
       let     actividadData = [{
         id: "",
         fechaHoraDesde: "",
@@ -352,7 +352,7 @@ function TablaActividad(redireccionamiento) {
   //this.state.showMiContacto = true;
 
   const deleteEmployee = (id) => {
-    BaseService.delete(id).then((res) => {
+    OldBaseService.delete(id).then((res) => {
       this.setState({
         employees: this.state.employees.filter(
           (employee) => employee.id !== id

@@ -1,5 +1,6 @@
 import ProductoService from "../../../services/ProductoService";
 import { TablaGenericaConFoto } from "./Tabla_Generica";
+import { RenderFotoIntegranteRow } from "./Tabla_Variables";
 import {
   GlobalFilter,
   DefaultColumnFilter,
@@ -10,7 +11,7 @@ import {
 } from"./Tabla_Filters";
 //import moment from "moment";
 
-const TablaProducto = ({visibilidadInput}) => {
+const TablaProducto = ({visibilidadInput, dataIn}) => {
 
   const columns = [
     {
@@ -64,14 +65,19 @@ const TablaProducto = ({visibilidadInput}) => {
     {
       Header: "Fragil",
       accessor: "fragil",
-      Cell: ({ value }) => (value ? "✅" : "❌")
+      Cell: ({ row, value }) => (row.original?.id ? (value ? "✅" : "❌") : "")
+    },
+    {
+      Header: "Proveedor",
+      Cell: ({ row }) => RenderFotoIntegranteRow(row, row.original?.proveedor, "contacto"),
     },
   ];
   
   return(
     <div>
       <TablaGenericaConFoto
-        columns={columns}
+        columnsIn={columns}
+        dataIn={dataIn ? dataIn : null}
         Service={ProductoService}
         visibilidadInput={visibilidadInput}
         nombreTipoDatoParaModuloVisibilidad={"PRODUCTO"}

@@ -9,6 +9,9 @@ import {
     DomicilioRead,
     EmailRead,
     TelefonoRead,
+    //Persona Jurídica
+    InternoTelefonoRead,
+    TipoPersonaJuridicaRead,
     //Persona
     NombreRead,
     ApellidoRead,
@@ -64,6 +67,8 @@ const PersonaJuridicaRead = ({ data }) => {
             {data.id && (
                 <div>
                     <ContactoRead data={data} />
+                    <InternoTelefonoRead data={data} />
+                    <TipoPersonaJuridicaRead data={data} />
                 </div>
             )}
         </div>

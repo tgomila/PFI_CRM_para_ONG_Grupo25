@@ -51,6 +51,7 @@ import {
  * Se utilizará para ver todo tipo de personas, es la tabla principal
  * 
  * @param {Array} columns - Columnas de la tabla.
+ * @param {Array} dataIn - data precargada, sin foto (esto sirve para actividad, en vez de Service.getAll, usar algun metodo distinto afuera como getMisActividades)
  * @param {Object} Service - Objeto para obtener datos mediante Axios.
  * @param {string} visibilidadInput - Ejemplo "EDITAR" permite editar tabla, "SOLO_VISTA" solo ver tabla.
  * @param {string} nombreTipoDatoParaModuloVisibilidad - Nombre del módulo. Ejemplo "PERSONA"
@@ -58,11 +59,12 @@ import {
  * @param {string} nombreTipoDato - Nombre del tipo de dato.
  * @returns {JSX.Element} - Componente de la tabla genérica.
  */
-const TablaGenericaPersona = ({ columns, Service, visibilidadInput, nombreTipoDatoParaModuloVisibilidad, el_la, nombreTipoDato, handleInputChange, nombreHandleInputChange, integrantesActuales, maxIntegrantesSelected }) => {
+const TablaGenericaPersona = ({ columnsIn, dataIn, Service, visibilidadInput, nombreTipoDatoParaModuloVisibilidad, el_la, nombreTipoDato, handleInputChange, nombreHandleInputChange, integrantesActuales, maxIntegrantesSelected }) => {
   return (
     <div>
       <TablaGenericaConFoto
-        columns={columns}
+        columnsIn={columnsIn}
+        dataIn={dataIn}
         Service={Service}
         visibilidadInput={visibilidadInput}
         nombreTipoDatoParaModuloVisibilidad={nombreTipoDatoParaModuloVisibilidad}
@@ -82,7 +84,7 @@ const TablaGenericaPersona = ({ columns, Service, visibilidadInput, nombreTipoDa
  * @description
  * Se utilizará para ver todo tipo de personas, es la tabla principal
  * 
- * @param {Array} columns - Columnas de la tabla.
+ * @param {Array} columnsIn - Columnas de la tabla.
  * @param {Array} dataIn - data precargada, sin foto (esto sirve para actividad, en vez de Service.getAll, usar algun metodo distinto afuera como getMisActividades)
  * @param {Object} Service - Objeto para obtener datos mediante Axios.
  * @param {string} visibilidadInput - Nombre de la visibilidad. Es opcional, ejemplo "" o "EDITAR"
@@ -92,7 +94,7 @@ const TablaGenericaPersona = ({ columns, Service, visibilidadInput, nombreTipoDa
  * @param {string} nombreTipoDato - Nombre del tipo de dato.
  * @returns {JSX.Element} - Componente de la tabla genérica.
  */
-const TablaGenericaConFoto = ({ columns, dataIn, Service, visibilidadInput, nombreTipoDatoParaModuloVisibilidad, tipoDatoParaFoto, el_la, nombreTipoDato, handleInputChange, nombreHandleInputChange, integrantesActuales, maxIntegrantesSelected }) => {
+const TablaGenericaConFoto = ({ columnsIn, dataIn, Service, visibilidadInput, nombreTipoDatoParaModuloVisibilidad, tipoDatoParaFoto, el_la, nombreTipoDato, handleInputChange, nombreHandleInputChange, integrantesActuales, maxIntegrantesSelected }) => {
   const [data, setData] = useState([]);
   const [columnsData, setColumnsData] = useState([]);
   const [visibilidad, setVisibilidad] = useState("");
@@ -124,13 +126,13 @@ const TablaGenericaConFoto = ({ columns, dataIn, Service, visibilidadInput, nomb
 
   const agregarFotos = async () => {
     if(dataIn){
-      const { columns: modifiedColumns, data: modifiedData } = await agregarFotoData(columns, dataIn, tipoDatoParaFoto);
+      const { columns: modifiedColumns, data: modifiedData } = await agregarFotoData(columnsIn, dataIn, tipoDatoParaFoto);
       setData(modifiedData);
       setColumnsData(modifiedColumns);
       setIsDataColumnsReady(true);
     } else {
       Service.getAll().then(async (res) => {
-        const { columns: modifiedColumns, data: modifiedData } = await agregarFotoData(columns, res.data, tipoDatoParaFoto);
+        const { columns: modifiedColumns, data: modifiedData } = await agregarFotoData(columnsIn, res.data, tipoDatoParaFoto);
         setData(modifiedData);
         setColumnsData(modifiedColumns);
         setIsDataColumnsReady(true);
@@ -148,7 +150,7 @@ const TablaGenericaConFoto = ({ columns, dataIn, Service, visibilidadInput, nomb
         <TablaGenerica
           columnsIn={columnsData}
           dataIn={data}
-          visibilidad={visibilidad}
+          visibilidadInput={visibilidad}
           Service={Service}
           el_la={el_la}
           nombreTipoDato={nombreTipoDato}
@@ -167,6 +169,9 @@ const agregarFotoData = async (columns, data, tipoDatoParaFoto) => {
 
   //Si ya tiene fotos, entonces no agrego fotos a data
   const dataInTieneImagenTable = data.every((item) => item.hasOwnProperty("imagen_tabla"));
+  if(!dataInTieneImagenTable && !tipoDatoParaFoto){
+    return { columns: columns, data: data };//Es tabla genérica sin foto.
+  }
   const newData = !dataInTieneImagenTable ? await ImageService.getAllFotos(data, tipoDatoParaFoto, "tabla"): data;
   
   const newColumns = [...columns]; // Clonar las columnas existentes
@@ -185,7 +190,7 @@ const agregarFotoData = async (columns, data, tipoDatoParaFoto) => {
  * @param {String} nombreHandleInputChange - se usa para seleccionar, es "beneficiarios" de una actividad, "proveedor" de un producto (es como se llame en el json del objeto).
  * @returns 
  */
-const TablaGenerica = ({columnsIn, dataIn, visibilidad, Service, el_la, nombreTipoDato, handleInputChange, nombreHandleInputChange, integrantesActuales, maxIntegrantesSelected}) => {
+const TablaGenerica = ({columnsIn, dataIn, visibilidadInput, Service, el_la, nombreTipoDato, handleInputChange, nombreHandleInputChange, integrantesActuales, maxIntegrantesSelected}) => {
 
   const isTablaParaSeleccionarIntegrantes = handleInputChange ? true : false;
   
@@ -257,7 +262,11 @@ const TablaGenerica = ({columnsIn, dataIn, visibilidad, Service, el_la, nombreTi
     baseColumns = [...baseColumns, ...columnsIn];
     //let baseColumns = [...columnsIn];
     //La vista siempre estaría
-    if ((visibilidad === "SOLO_VISTA" || visibilidad === "EDITAR") && !handleInputChange) {
+    console.log("visibilidadInput");
+    console.log(visibilidadInput);
+    console.log("handleInputChange");
+    console.log(handleInputChange);
+    if ((visibilidadInput === "SOLO_VISTA" || visibilidadInput === "EDITAR") && !handleInputChange) {
       baseColumns.push(
         {
           Header: 'Ver',
@@ -280,7 +289,7 @@ const TablaGenerica = ({columnsIn, dataIn, visibilidad, Service, el_la, nombreTi
         }
       );
     }
-    if (visibilidad === "EDITAR") {
+    if (visibilidadInput === "EDITAR") {
       baseColumns.push(
         {
           Header: 'Editar',
@@ -325,7 +334,7 @@ const TablaGenerica = ({columnsIn, dataIn, visibilidad, Service, el_la, nombreTi
     }
 
   return baseColumns;
-  }, [columnsIn, visibilidad]);
+  }, [columnsIn, visibilidadInput]);
 
   useEffect(() => {
     if (dataIn) {
@@ -500,13 +509,15 @@ const TablaGenerica = ({columnsIn, dataIn, visibilidad, Service, el_la, nombreTi
             <button className="btn btn-secondary" type="button" onClick={() => toggleAllRowsSelected(false)}>
               Borrar seleccionados
             </button>
+            &nbsp;&nbsp;&nbsp;
           </div>
         )}
         
         <button className="btn btn-info" onClick={clickMostrarBusqueda} style={{marginLeft: "00px"}}>
           <FaSistrix /> {mostrarBusqueda ? "Ocultar" : "Mostrar"} barra de búsqueda
         </button>
-        {visibilidad === "EDITAR" && (
+        {console.log("visibilidadInput: " + visibilidadInput)}
+        {visibilidadInput === "EDITAR" && (
           <div>
             &nbsp;&nbsp;&nbsp;
             <button className="btn btn-primary" onClick={() => navigate( window.location.pathname + "/create")}>

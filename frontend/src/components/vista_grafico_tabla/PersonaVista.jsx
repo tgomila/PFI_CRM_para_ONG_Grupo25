@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { GraficoPersona } from './graficos/GraficoPersona'
-import TablaPersona from "./tables/TablaPersona";
+import { TablaPersona } from "./tables/TablaPersona";
 import modulosService from "../../services/modulosService";
 
 import "../../Styles/Graficos.scss";
