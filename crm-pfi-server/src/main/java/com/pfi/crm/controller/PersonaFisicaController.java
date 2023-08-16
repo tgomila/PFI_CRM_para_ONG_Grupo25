@@ -154,4 +154,11 @@ public class PersonaFisicaController {
 		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.PERSONA, "Testing ver un ejemplo de persona aleatoria");
 		return personaFisicaService.personaFisicaGenerator();
 	}
+	
+	@GetMapping("/test/aleatorio/{edad}")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	public PersonaFisicaPayload personaFisicaAleatoriaTest(@PathVariable Integer edad, @CurrentUser UserPrincipal currentUser) {
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.PERSONA, "Testing ver un ejemplo de persona aleatoria");
+		return personaFisicaService.personaFisicaGenerator(edad, edad, null);
+	}
 }

@@ -14,9 +14,11 @@ public class Person extends DateAudit{
 	 */
 	private static final long serialVersionUID = 351444627902533075L;
 
-	@Id @GeneratedValue(strategy= GenerationType.IDENTITY)
-
-    private long id;
+	@Id
+	//@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "person_seq")
+	@SequenceGenerator(name = "person_seq", sequenceName = "person_sequence", allocationSize = 1)
+	private long id;
 
     private String firstName;
 

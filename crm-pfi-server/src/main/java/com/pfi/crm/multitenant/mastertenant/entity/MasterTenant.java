@@ -42,12 +42,16 @@ public class MasterTenant implements Serializable {
 	@Column(name = "status", nullable = false)
 	private String status;
 
+	@Size(max = 50)
+	@Column(name = "tenant_phone_number", nullable = false)
+	private String tenantPhoneNumber;
+
 	public MasterTenant() {
 	}
 
 	public MasterTenant(@Size(max = 50) String dbName, @Size(max = 50) String tenantName, @Size(max = 100) String url,
 			@Size(max = 50) String userName, @Size(max = 100) String password, @Size(max = 100) String driverClass,
-			@Size(max = 10) String status) {
+			@Size(max = 10) String status, String tenantPhoneNumber) {
 		this.dbName = dbName;
 		this.tenantName = tenantName;
 		this.url = url;
@@ -55,6 +59,7 @@ public class MasterTenant implements Serializable {
 		this.password = password;
 		this.driverClass = driverClass;
 		this.status = status;
+		this.tenantPhoneNumber = tenantPhoneNumber;
 	}
 
 	public MasterTenant(TenantPayload p) {
@@ -63,11 +68,11 @@ public class MasterTenant implements Serializable {
 		this.tenantName = p.getTenantName();
 		this.url = "jdbc:mysql://localhost:3306/" + p.getDbName()
 				+ "?useSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false";
-		this.tenantName = p.getTenantName();
 		this.userName = "root";
 		this.password = "1234";
 		this.driverClass = "com.mysql.cj.jdbc.Driver";
 		this.status = "Active";
+		this.tenantPhoneNumber = "+541131105305";
 	}
 
 	public Integer getTenantClientId() {
@@ -141,11 +146,20 @@ public class MasterTenant implements Serializable {
 		return this;
 	}
 
+	public String getTenantPhoneNumber() {
+		return tenantPhoneNumber;
+	}
+
+	public void setTenantPhoneNumber(String tenantPhoneNumber) {
+		this.tenantPhoneNumber = tenantPhoneNumber;
+	}
+
 	public TenantPayload toPayload() {
 		TenantPayload p = new TenantPayload();
 		p.setTenantClientId(tenantClientId);
 		p.setDbName(dbName);
 		p.setTenantName(tenantName);
+		p.setTenantPhoneNumber(tenantPhoneNumber);
 		return p;
 	}
 }

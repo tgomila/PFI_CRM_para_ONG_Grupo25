@@ -34,7 +34,7 @@ public class InsumoService {
 	
 	public InsumoPayload altaInsumo(InsumoPayload p) {
 		p.setId(null);
-		Insumo m = new Insumo();
+		Insumo m = new Insumo(p);
 		m.setEstadoActivo(true);
 		return insumoRepository.save(m).toPayload();
 	}

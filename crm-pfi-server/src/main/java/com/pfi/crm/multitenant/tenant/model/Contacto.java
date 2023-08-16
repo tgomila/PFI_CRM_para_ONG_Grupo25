@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.pfi.crm.multitenant.tenant.model.audit.UserDateAudit;
@@ -22,7 +23,9 @@ public class Contacto extends UserDateAudit{
 	private static final long serialVersionUID = 218392515575775555L;
 
 	@Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    //@GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "contacto_seq")
+    @SequenceGenerator(name = "contacto_seq", sequenceName = "contacto_sequence", allocationSize = 1)
 	private Long id;
 	
 	private boolean estadoActivoContacto;

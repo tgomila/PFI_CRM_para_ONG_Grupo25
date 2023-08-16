@@ -49,6 +49,18 @@ public class MasterTenantService {
 		return null;
 	}
 	
+	public TenantPayload altaTenant(MasterTenant masterTenantpayload) {
+		if(masterTenantpayload.getTenantClientId() == null || masterTenantpayload.getTenantClientId() < 1) {
+			//Busco un id adecuado
+			Integer newTenantId = 100;
+			while(existsTenantById(newTenantId))
+				newTenantId+=100;
+			masterTenantpayload.setTenantClientId(newTenantId);
+			masterTenantpayload.setDbName("tenant" + newTenantId.intValue()/100);
+		}
+		return masterTenantRepository.save(masterTenantpayload).toPayload();
+	}
+	
 	public TenantPayload altaTenant(TenantPayload payload) {
 		if(payload.getTenantClientId() == null || payload.getTenantClientId() < 1) {
 			//Busco un id adecuado

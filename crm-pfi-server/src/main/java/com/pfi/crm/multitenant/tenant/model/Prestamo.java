@@ -8,6 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.pfi.crm.multitenant.tenant.model.audit.UserDateAudit;
@@ -18,9 +19,13 @@ import com.pfi.crm.multitenant.tenant.payload.PrestamoPayload;
 public class Prestamo extends UserDateAudit {
 
 	private static final long serialVersionUID = 1L;
+	
 	@Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+	//@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "prestamo_seq")
+	@SequenceGenerator(name = "prestamo_seq", sequenceName = "prestamo_sequence", allocationSize = 1)
 	private Long id;
+	
 	private String descripcion;
 	private int cantidad;
 	private LocalDateTime fechaPrestamoInicio;
@@ -79,6 +84,7 @@ public class Prestamo extends UserDateAudit {
 		p.setCantidad(cantidad);
 		p.setFechaPrestamoInicio(fechaPrestamoInicio);
 		p.setFechaPrestamoFin(fechaPrestamoFin);
+		p.setHaSidoDevuelto(haSidoDevuelto);
 		p.setPrestamista((this.prestamista != null) ? this.prestamista.toPayload() : null);
 		p.setPrestatario((this.prestatario != null) ? this.prestatario.toPayload() : null);
 		return p;

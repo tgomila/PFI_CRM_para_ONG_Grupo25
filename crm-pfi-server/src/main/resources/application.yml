@@ -5,10 +5,13 @@ multitenancy:
   cosmosmtapp:
     master:
       datasource:
-        url: jdbc:mysql://localhost:3306/master_db?useSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false
-        username: root
+        #url: jdbc:mysql://localhost:3306/master_db?useSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false
+        #driverClassName: com.mysql.cj.jdbc.Driver
+        #username: root
+        url: jdbc:postgresql://localhost:5432/master_db?useSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false
+        driverClassName: org.hibernate.dialect.PostgreSQLDialect
+        username: postgres
         password: 1234
-        driverClassName: com.mysql.cj.jdbc.Driver
         connectionTimeout: 20000
         maxPoolSize: 250
         idleTimeout: 300000

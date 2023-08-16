@@ -46,7 +46,7 @@ public class DataSourceBasedMultiTenantConnectionProviderImpl extends AbstractDa
         if (dataSourcesMtApp.isEmpty()) {
         	//TODO quitar este if más adelante
         	if(masterTenantRepository.count() == 0) {
-        		masterTenantService.altaTenant(new TenantPayload(300, "tenant3", "ONG Sapito"));
+        		masterTenantService.altaTenant(new TenantPayload(300, "tenant3", "ONG Sapito", "+541131105305"));
     			System.out.println("\n\n***Ante la duda asegure antes que TenantDatabaseConfig.java esté en 'create' en casi final de la línea***\n\n");
         		
         	}

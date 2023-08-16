@@ -92,7 +92,11 @@ public class TenantDatabaseConfig {
         properties.put(Environment.MULTI_TENANT, MultiTenancyStrategy.DATABASE);
         properties.put(Environment.MULTI_TENANT_CONNECTION_PROVIDER, connectionProvider);
         properties.put(Environment.MULTI_TENANT_IDENTIFIER_RESOLVER, tenantResolver);
+        
+        //Solo se puede usar 1 DB para schemas.
+        //properties.put(Environment.DIALECT, "org.hibernate.dialect.PostgreSQLDialect");
         properties.put(Environment.DIALECT, "org.hibernate.dialect.MySQL5Dialect");
+        
         properties.put(Environment.SHOW_SQL, true);
         properties.put(Environment.FORMAT_SQL, true);
         properties.put(Environment.HBM2DDL_AUTO, "none");//"none", "create"); //cambiar cuando creas tablas

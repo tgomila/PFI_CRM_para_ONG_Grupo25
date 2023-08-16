@@ -1,0 +1,84 @@
+/*
+Créditos a imágenes:
+
+=========================================================
+* Unsplash
+=========================================================
+
+* Product Page: https://unsplash.com/es
+
+ * Imágenes de uso libre obtenidas bajo licencia de:
+ * https://unsplash.com/es/licencia
+ * para uso de ejemplo de usuarios del proyecto.
+
+ =========================================================
+
+*/
+
+
+
+==========================================================
+Source imágenes Unsplash:
+Tenant 1:
+	Contacto
+		* contacto_1: https://unsplash.com/es/fotos/iEEBWgY_6lA
+		* contacto_2: https://unsplash.com/es/fotos/ZHvM3XIOHoE
+		* contacto_3: 
+
+==========================================================
+Source imágenes Unsplash: (Los cuits son generados aleatoriamente)
+Tenant 2:
+	Empleados
+		* empleado_1 27-33230401-2: https://www.freepik.es/foto-gratis/chica_4490822.htm
+		* empleado_2 27-30863688-9: https://www.freepik.es/foto-gratis/elegante-empresaria-segura-sonriendo_9696410.htm
+		* empleado_3 20-30862571-9: https://unsplash.com/es/fotos/un-hombre-con-gafas-y-una-camisa-negra-iEEBWgY_6lA
+		* empleado_4 27-30863688-9: https://www.freepik.es/foto-gratis/terapeuta-mujer-tiro-medio-portapapeles_11241754.htm
+		* empleado_5 20-41007965-9: https://unsplash.com/es/fotos/ZHvM3XIOHoE
+		
+	Profesionales
+		* profesional_6 27-30088948-9: https://www.freepik.es/foto-gratis/mujer-haciendo-ensalada-cocina_8380285.htm
+		* profesional_7 27-32215193-8: https://www.freepik.es/foto-gratis/mujer-morena-cortando-zanahorias_4540308.htm
+		* profesional_8 20-27808290-9: https://www.freepik.es/foto-gratis/trabajador-pintando-pared-pistola-color-blanco_7712649.htm
+		* profesional_9 27-34326122-9: https://www.freepik.es/foto-gratis/mujer-joven-hermosa-sueter-rosa-calido-aspecto-natural-sonriente-retrato-aislado-cabello-largo_9631091.htm
+		* profesional_10 27-34325366-9: https://www.freepik.es/psd-gratis/doctor-preparandose-chequeo-medico-rutina_44990014.htm
+		
+	voluntarios
+		* voluntario_11 27-41025384-9: https://www.freepik.es/foto-gratis/sonriente-mujer-moderna-pie-tableta-digital-riendo-luciendo-feliz-trabajando-posando-contra-fondo-blanco-estudio_22299508.htm
+		* voluntario_12 20-39086152-9: https://www.freepik.es/foto-gratis/apuesto-joven-deportista-alegre-tiene-cuerpo-deportivo-brazos-musculosos-viste-camiseta-blanca-simulada-tiene-pelo-corto-oscuro-sonrisa-atractiva-dientes-sobre-pared-purpura-espacio-copia-blanco-lado_11579056.htm
+		* voluntario_13 20-34420171-9: https://www.freepik.es/foto-gratis/voluntariado-ayudando-caja-donacion_21535391.htm
+		* voluntario_14 27-6492594-8: https://www.freepik.es/foto-gratis/trabajar-tableta-digital-es-mas-facil-rapido_10978916.htm
+	
+	colaboradores
+		* colaborador_15 27-29155744-9: https://www.freepik.es/foto-gratis/hermosa-mujer-joven-mirando-camara-aislado-blanco_1139160.htm
+		* colaborador_16 27-32484760-9: https://www.freepik.es/foto-gratis/mujer-alegre-feliz-brazos-cruzados-mirando_6628697.htm
+		* colaborador_17 20-32484836-9: https://www.freepik.es/foto-gratis/fuerza-barba-auricular-poder-atleta_1152667.htm
+		
+	consejo ad honorem
+		* consejoAdHonorem_18 20-4862239-9: https://www.freepik.es/foto-gratis/anciano-moderno-al-aire-libre_13920597.htm
+		* consejoAdHonorem_19 27-30558524-9: https://www.freepik.es/foto-gratis/retrato-mujer-casual-sonriente_6812784.htm
+		* consejoAdHonorem_20 20 20-40095971-9: https://www.freepik.es/foto-gratis/hombre-moreno-positiva-brazos-cruzados_1027734.htm
+		
+	persona jurídica
+		* personaJuridica_21 30-52876213-8: https://www.freepik.com/free-vector/lovely-school-badge_807954.htm
+		* personaJuridica_22 30-62719317-4	: Logo de jumbo
+		* personaJuridica_23 20-53917506-9: https://www.freepik.es/foto-gratis/detalles-columna-marmol-gris-edificio_1175241.htm
+		* personaJuridica_24 30-59470647-9: https://www.freepik.es/vector-gratis/burbujas-discurso-caras-sonrientes_794196.htm
+		
+	beneficiarios
+		* beneficiario_25 27-46919073-9: https://www.freepik.es/psd-gratis/primer-plano-retrato-expresion-nino_38311834.htm
+		* beneficiario_26 20-45222208-9: https://www.freepik.es/foto-gratis/adolescente-hispano-mochila-estudiante-sosteniendo-libros-sonriendo-mirando-lado-mirando-otro-lado-pensando_38868492.htm
+		* beneficiario_27 27-46475954-9: https://www.freepik.es/foto-gratis/primer-tiro-mujer-malaya-guapa-entusiasta-divertida-que-sonrie-sintiendose-positiva_21404160.htm
+		* beneficiario_28 20-46396063-9: https://www.freepik.es/foto-gratis/chico-estilo-posando-frente-pizarra_1213960.htm
+		
+	donante
+		* donante_31 27-27106172-9: https://www.freepik.es/foto-gratis/retrato-mujer-adulta-ambiciosa-segura-30-anos-brazos-cruzados-sonriendo-feliz-al-frente-mirando-adelante-pie-contra-pared-blanca_19846708.htm
+
+
+
+
+
+
+
+
+
+

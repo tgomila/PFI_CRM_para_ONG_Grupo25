@@ -6,6 +6,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.pfi.crm.multitenant.tenant.payload.PersonaJuridicaPayload;
@@ -20,7 +21,9 @@ public class PersonaJuridica extends ContactoAbstract{
 	private static final long serialVersionUID = -7847670806500841485L;
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	//@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "persona_juridica_seq")
+	@SequenceGenerator(name = "persona_juridica_seq", sequenceName = "persona_juridica_sequence", allocationSize = 1)
 	private Long idPersonaJuridica;
 	
 	private String internoTelefono;

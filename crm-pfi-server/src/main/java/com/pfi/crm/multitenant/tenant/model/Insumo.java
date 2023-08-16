@@ -4,6 +4,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.pfi.crm.multitenant.tenant.model.audit.UserDateAudit;
@@ -19,7 +20,9 @@ public class Insumo extends UserDateAudit {
 	private static final long serialVersionUID = -2953441460328381036L;
 	
 	@Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+	//@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "insumo_seq")
+	@SequenceGenerator(name = "insumo_seq", sequenceName = "insumo_sequence", allocationSize = 1)
 	private Long id;
 	private String tipo;
 	private String descripcion;

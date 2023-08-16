@@ -12,6 +12,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.OrderBy;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.LazyCollection;
@@ -28,7 +29,9 @@ public class Actividad extends UserDateAudit implements Comparable < Actividad >
 	private static final long serialVersionUID = 1L;
 
 	@Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+	//@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "actividad_seq")
+	@SequenceGenerator(name = "actividad_seq", sequenceName = "actividad_sequence", allocationSize = 1)
 	private Long id;
 	
 	private boolean estadoActivoActividad;

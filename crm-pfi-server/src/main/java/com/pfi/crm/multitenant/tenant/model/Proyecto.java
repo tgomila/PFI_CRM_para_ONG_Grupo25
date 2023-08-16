@@ -9,8 +9,9 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.ManyToMany;
 import javax.persistence.OrderBy;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.LazyCollection;
@@ -30,14 +31,17 @@ public class Proyecto extends UserDateAudit {
 	private static final long serialVersionUID = 953565293845694276L;
 	
 	@Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-	
+	//@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "proyecto_seq")
+	@SequenceGenerator(name = "proyecto_seq", sequenceName = "proyecto_sequence", allocationSize = 1)
 	private Long id;
+	
 	private String descripcion;
 	private LocalDate fechaInicio;
 	private LocalDate fechaFin;
 	
-	@OneToMany(cascade = {CascadeType.MERGE}, orphanRemoval=false)
+	//@OneToMany(cascade = {CascadeType.MERGE}, orphanRemoval=false)
+	@ManyToMany(cascade = CascadeType.MERGE)
 	@LazyCollection(LazyCollectionOption.FALSE)
 	@OrderBy("idPersonaFisica ASC")
 	private Set<PersonaFisica> involucrados;

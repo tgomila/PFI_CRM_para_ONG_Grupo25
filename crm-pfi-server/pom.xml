@@ -122,6 +122,14 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
+		
+		<!-- Para FileStorageService -->
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.13.0</version>
+		</dependency>
+		<!-- Fin FileStorageService -->
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

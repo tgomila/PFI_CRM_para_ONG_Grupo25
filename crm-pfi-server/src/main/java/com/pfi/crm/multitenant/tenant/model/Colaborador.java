@@ -4,6 +4,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.pfi.crm.multitenant.tenant.payload.ColaboradorPayload;
@@ -18,7 +19,9 @@ public class Colaborador extends TrabajadorAbstract{
 	private static final long serialVersionUID = 6689081239108287905L;
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	//@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "colaborador_seq")
+	@SequenceGenerator(name = "colaborador_seq", sequenceName = "colaborador_sequence", allocationSize = 1)
 	private Long idColaborador;
 	
 	private String area;

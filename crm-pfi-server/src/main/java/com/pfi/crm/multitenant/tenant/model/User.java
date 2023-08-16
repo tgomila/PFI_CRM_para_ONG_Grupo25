@@ -30,7 +30,9 @@ public class User extends UserDateAudit{
 	private static final long serialVersionUID = 8495957082037464071L;
 
 	@Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+	//@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "users_seq")
+	@SequenceGenerator(name = "users_seq", sequenceName = "users_sequence", allocationSize = 1)
     private Long id;
 
     @NotBlank

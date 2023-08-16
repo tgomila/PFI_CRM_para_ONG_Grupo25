@@ -3,6 +3,7 @@ package com.pfi.crm.multitenant.tenant.service;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
@@ -24,6 +25,7 @@ import java.util.stream.Stream;
 
 import javax.imageio.ImageIO;
 
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -42,6 +44,7 @@ import com.pfi.crm.exception.BadRequestException;
 import com.pfi.crm.mastertenant.config.DBContextHolder;
 import com.pfi.crm.multitenant.tenant.model.Actividad;
 import com.pfi.crm.multitenant.tenant.model.ProgramaDeActividades;
+import com.pfi.crm.multitenant.tenant.payload.ContactoPayload;
 import com.pfi.crm.multitenant.tenant.payload.FileInfoPayload;
 import com.pfi.crm.multitenant.tenant.payload.ImagenPayload;
 import com.pfi.crm.security.UserPrincipal;
@@ -811,6 +814,113 @@ public class FileStorageService {
 			e.printStackTrace();
 			return null;
 		}
+	}
+	
+
+	/**
+	 * NO USAR EN PRODUCCIÓN
+	 * Solo para uso de testing en carga de datos ejemplo
+	 * Lo que hace es copiar de fileTenantTest a fileTenantDB
+	 * @param carpeta, por ejemplo "contacto"
+	 */
+	public void moveTestFilesToMainFolder(String carpeta) {
+		String tenant_folder = DBContextHolder.getCurrentDb(); //tenant2
+		//String model_folder = carpeta;		//producto
+		//String model_id_extension = separacion[1];	// 3.jpg
+		String mainDBPath = "fileTenantDB/" + tenant_folder + "/" + carpeta;
+		String testPath = "fileTenantTest/" + tenant_folder + "/" + carpeta;
+		
+		try {
+			deleteFilesInFolder(mainDBPath); // Elimina los archivos
+			copyFilesToFolder(testPath, mainDBPath); // Copia los archivos
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private void deleteFilesInFolder(String folderPath) throws IOException {
+		File folder = new File(folderPath);
+		FileUtils.cleanDirectory(folder);
+	}
+	
+	private void copyFilesToFolder(String sourceFolderPath, String destinationFolderPath) throws IOException {
+		File sourceFolder = new File(sourceFolderPath);
+		File destinationFolder = new File(destinationFolderPath);
+		FileUtils.copyDirectory(sourceFolder, destinationFolder);
+	}
+	
+	/**
+	 * NO USAR EN PRODUCCIÓN
+	 * cargar DB fotos con fotos ejemplo. Una vez cargado los contactos
+	 * @return boolean si fue el archivo copiado o no.
+	 */
+	public void cargarFotosContactoEjemploHaciaDB() {
+		//Borrar fotos anteriores
+		String tenant_folder = DBContextHolder.getCurrentDb(); //tenant2
+		String mainDBPath = "fileTenantDB/" + tenant_folder + "/contacto";
+		try {
+			deleteFilesInFolder(mainDBPath);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		//Cargar nuevas fotos de ejemplo
+		List<ContactoPayload> contactos = contactoService.getContactos();
+		for(ContactoPayload contacto: contactos) {
+			cargarFotosEjemploHaciaDB(contacto.getId(), contacto.getCuit(), "contacto");
+		}
+	}
+	
+	
+	/**
+	 * Busca el archivo en test folder y lo copia a la BD
+	 * @param id del contacto
+	 * @param textoSearch ejemplo cuit, para buscar el archivo de contacto
+	 * @param nombreTipoArchivo
+	 * @return boolean si fue el archivo copiado o no.
+	 */
+	public boolean cargarFotosEjemploHaciaDB(Long id, String textoSearch, String nombreTipoArchivo) {
+		boolean isArchivoCopiado = false;
+		if(id == null || textoSearch == null || nombreTipoArchivo == null
+			|| (textoSearch != null && textoSearch.isEmpty())
+			|| (nombreTipoArchivo != null && nombreTipoArchivo.isEmpty())) {
+			return isArchivoCopiado;
+		}
+		String tenant_folder = DBContextHolder.getCurrentDb(); //tenant2
+		
+		String mainFolderDBPath = "fileTenantDB/" + tenant_folder + "/" + nombreTipoArchivo; //DB a donde mover las fotos de ejemplo
+		String testFolderDBPath = "fileTenantTest/" + tenant_folder + "/" + nombreTipoArchivo;//Las fotos de ejemplo
+		
+		File testFolder = new File(testFolderDBPath);
+		File[] files = testFolder.listFiles();
+		
+		if (files != null) {
+			for (File file : files) {
+				if (file.isFile() && file.getName().contains(textoSearch)) {
+					
+					String extension = getFileExtension(file.getName());
+					String newFileName = nombreTipoArchivo + "_" + id.toString() + "." + extension;
+					try {
+						Path sourcePath = file.toPath();
+						Path destinationPath = new File(mainFolderDBPath, newFileName).toPath();
+						Files.copy(sourcePath, destinationPath, StandardCopyOption.REPLACE_EXISTING);
+						isArchivoCopiado= true;
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+					// Solo copiar el primer archivo encontrado, si existen más, no hacer nada.
+					break;
+				}
+			}
+		}
+		return isArchivoCopiado;
+	}
+
+	private String getFileExtension(String fileName) {
+		int dotIndex = fileName.lastIndexOf(".");
+		if (dotIndex > 0 && dotIndex < fileName.length() - 1) {
+			return fileName.substring(dotIndex + 1);
+		}
+		return "";
 	}
 
 }

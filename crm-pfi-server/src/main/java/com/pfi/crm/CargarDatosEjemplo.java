@@ -45,6 +45,9 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 	private ContactoService contactoService;
 	
 	@Autowired
+	private PersonaFisicaService personaFisicaService;
+	
+	@Autowired
 	private BeneficiarioService beneficiarioService;
 	
 	@Autowired
@@ -84,10 +87,16 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 	private PrestamoService prestamoService;
 	
 	@Autowired
+	private ProyectoService proyectoService;
+	
+	@Autowired
 	private ProgramaDeActividadesService programaDeActividadesService;
 	
 	@Autowired
 	private DonacionService donacionService;
+	
+	@Autowired
+	private FileStorageService fileStorageService;
 	
   /**
    * This event is executed as late as conceivably possible to indicate that 
@@ -111,7 +120,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		List<TenantPayload> tenants = masterTenantService.getTenants();
 		
 		if(tenants.size() == 0) {
-			masterTenantService.altaTenant(new TenantPayload(300, "tenant3", "ONG Sapito"));
+			masterTenantService.altaTenant(new TenantPayload(300, "tenant3", "ONG Sapito", "+541131105305"));
 			System.out.println("\n\n***Reinicie para cargar datos del tenant3.***\n\n");
 			System.out.println("Y asegure antes que TenantDatabaseConfig.java esté en 'create' en casi final de la línea");
 			return;
@@ -123,7 +132,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 			if(tenantDeAlta.equalsIgnoreCase("tenant3")) {
 				cargarTenant3();
 				System.out.println("Datos cargados de tenant3.");
-				masterTenantService.altaTenant(new TenantPayload(200, "tenant2", "ONG Comida para los chicos"));
+				masterTenantService.altaTenant(new TenantPayload(200, "tenant2", "ONG Comida para los chicos", "+541131105305"));
 				masterTenantService.bajaTenant("tenant3");
 				System.out.println("\nHa finalizado la carga de datos de tenant3");
 				System.out.println("\n\n***Reinicie para cargar datos del tenant2.***\n\n");
@@ -134,7 +143,21 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 			else if(tenantDeAlta.equalsIgnoreCase("tenant2")) {
 				cargarTenant2();
 				System.out.println("Datos cargados de tenant2.");
-				masterTenantService.altaTenant(new TenantPayload(100, "tenant1", "ONG Mi Arbolito"));
+				
+				/**Esto es por si quiero usar Postgres. Mi sistema solo permite 1 DB para todos los schemas, por el DIALECT
+				 * Es porque el "engine" solo lo podes configurar para 1 DataBase a la vez, elijo MySQL.
+				 * Si queres saber por que, anda a TenantDatabaseConfig y busca dialect, solo podes elegir 1.
+				 **/
+				//MasterTenant masterTenant = new MasterTenant(new TenantPayload(100, "tenant1", "ONG Mi Arbolito"));
+				//masterTenant.setTenantClientId(100);
+				//masterTenant.setDbName("tenant1");
+				//masterTenant.setDriverClass("org.postgresql.Driver");
+				//masterTenant.setUrl("jdbc:postgresql://localhost:5432/tenant1?useSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false");
+				//masterTenant.setUserName("postgres");
+				//masterTenant.setPassword("1234");
+				//masterTenantService.altaTenant(masterTenant);
+				
+				masterTenantService.altaTenant(new TenantPayload(100, "tenant1", "ONG Mi Arbolito", "+541131105305"));
 				masterTenantService.bajaTenant("tenant2");
 				System.out.println("\nHa finalizado la carga de datos de tenant2");
 				System.out.println("\n\n***Reinicie para cargar datos del tenant1.***\n\n");
@@ -146,8 +169,8 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 				cargarTenant1();
 				System.out.println("Datos cargados de tenant1.");
 				
-				masterTenantService.altaTenant(new TenantPayload(200, "tenant2", "ONG Comida para los chicos"));
-				masterTenantService.altaTenant(new TenantPayload(300, "tenant3", "ONG Sapito"));
+				masterTenantService.altaTenant(new TenantPayload(200, "tenant2", "ONG Comida para los chicos", "+541131105305"));
+				masterTenantService.altaTenant(new TenantPayload(300, "tenant3", "ONG Sapito", "+541131105305"));
 				System.out.println("\n\n***Todos los datos de tenants ya han sido cargados. Por favor realice los pasos.***\n\n");
 				System.out.println("Pasos a realizar:\n"
 						+ "  1) Vaya a TenantDatabaseConfig.java y cambie 'create' a 'none'.\n"
@@ -198,16 +221,17 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 			cargarRolesYModulos();
 			cargarSuscripcionModulosTenant1();
 
-			cargarBeneficiariosTenant1();
-			cargarVoluntariosTenant1();
-			cargarProfesionalesTenant1();
 			cargarEmpleadosTenant1();
+			cargarProfesionalesTenant1();
+			cargarVoluntariosTenant1();
 			cargarColaboradorTenant1();
 			cargarConsejoAdHonoremTenant1();
 			cargarPersonaJuridicaTenant1();
+			cargarBeneficiariosTenant1();
 			cargarUsuariosTenant1();
 			cargarProductosInsumosFacturaPrestamoProgramaDeActividadesTenant1();
 			cargarDonacionesTenant1();
+			//copiarFotosDeTestHaciaDB();
 		}
 	}
 	
@@ -222,16 +246,17 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 			cargarSuscripcionModulosTenant2();
 			
 			cargarContactoComoVoluntarioYEmpleadoTenant2();
-			cargarBeneficiariosTenant2();
-			cargarVoluntariosTenant2();
-			cargarProfesionalesTenant2();
 			cargarEmpleadosTenant2();
+			cargarProfesionalesTenant2();
+			cargarVoluntariosTenant2();
 			cargarColaboradorTenant2();
 			cargarConsejoAdHonoremTenant2();
 			cargarPersonaJuridicaTenant2();
+			cargarBeneficiariosTenant2();
 			cargarUsuariosTenant2();
 			cargarProductosInsumosFacturaPrestamoProgramaDeActividadesTenant2();
 			cargarDonacionesTenant2();
+			copiarFotosDeTestHaciaDB();
 			
 			//generarCienBeneficiariosTenant2();
 			//generar30productosTenant2();
@@ -282,192 +307,81 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		moduloMarketService.desuscribirEn5min();	//Para ver si ya no tiene acceso.
 	}
 	
-	
-	
-	public void cargarBeneficiariosTenant1() {
-		BeneficiarioPayload m = new BeneficiarioPayload();
+	public void cargarEmpleadosTenant1() {
+		EmpleadoPayload m = new EmpleadoPayload();
+		
+		/////////////////////////////////////////////
+		m = new EmpleadoPayload();
 
 		// Contacto
-		m.setNombreDescripcion("Beneficiario");
-		m.setCuit("20-48040461-9");
-		m.setDomicilio("Zapiola 970, piso 4, depto A");
-		m.setEmail("felipeGarcia@gmail.com");
+		m.setNombreDescripcion("Jefe CEO");
+		m.setCuit("20-30864214-9");
+		m.setDomicilio("Avenida Callao 357, piso 4, depto A");
+		m.setEmail("nahuelvacca@gmail.com");
 		m.setTelefono("1234-4567");
 
 		// PersonaFisica
-		m.setDni(48040461);
-		m.setNombre("Felipe");
-		m.setApellido("Garcia");
-		m.setFechaNacimiento(LocalDate.of(2010, 1, 20));
+		m.setDni(30864214);
+		m.setNombre("Nahuel");
+		m.setApellido("Vacca");
+		m.setFechaNacimiento(LocalDate.of(1985, 3, 17));
 
-		// Beneficiario
-		m.setIdONG(Long.parseLong("001234"));
-		m.setLegajo(Long.parseLong("1090555"));
-		m.setLugarDeNacimiento("Lanús");
-		m.setSeRetiraSolo(false);
-		m.setCuidadosEspeciales("Necesita asistencia psicologica");
-		m.setEscuela("Colegio Nº123");
-		m.setGrado("5º grado");
-		m.setTurno("Mañana");
-		//this.setEstadoActivoBeneficiario(true);
-		// Fin Beneficiario
-		beneficiarioService.altaBeneficiario(m);
+		// Empleado
+		m.setDatosBancarios("CBU: 001234");
+		m.setFuncion("Jefe");
+		m.setDescripcion("Da las altas y bajas de empleados");
+		// Fin Empleado
 		
-		////////////////////////////////
-		m = new BeneficiarioPayload();
+		empleadoService.altaEmpleado(m);
+		
+		/////////////////////////////////////////////
 
 		// Contacto
-		m.setNombreDescripcion("Piba");
-		m.setCuit("27-49809327-9");
-		m.setDomicilio("Charcas 4431, piso 4, depto A");
-		m.setEmail("mariajosefinaruiz@gmail.com");
+		m.setNombreDescripcion("Empleado");
+		m.setCuit("20-34325574-9");
+		m.setDomicilio("Gallo 7923, piso 4, depto A");
+		m.setEmail("gabrielluchetti@gmail.com");
 		m.setTelefono("1234-4567");
 
 		// PersonaFisica
-		m.setDni(49809327);
-		m.setNombre("josefina");
-		m.setApellido("Ruiz");
-		m.setFechaNacimiento(LocalDate.of(2012, 9, 14));
-
-		// Beneficiario
-		m.setIdONG(Long.parseLong("007612"));
-		m.setLegajo(Long.parseLong("1015375"));
-		m.setLugarDeNacimiento("Palermo");
-		m.setSeRetiraSolo(false);
-		m.setCuidadosEspeciales("Necesita contensión");
-		m.setEscuela("Colegio Nº46");
-		m.setGrado("3º grado");
-		m.setTurno("Mañana");
-		//this.setEstadoActivoBeneficiario(true);
-		// Fin Beneficiario
-		beneficiarioService.altaBeneficiario(m);
-		
-		
-		////////////////////////////////////////////
-		m = new BeneficiarioPayload();
-
-		// Contacto
-		m.setNombreDescripcion("Piba");
-		m.setCuit("27-48474802-9");
-		m.setDomicilio("Almafuerte 2740, piso 1, depto B");
-		m.setEmail("analiaruiz@gmail.com");
-		m.setTelefono("1234-4567");
-
-		// PersonaFisica
-		m.setDni(48474802);
-		m.setNombre("Analia");
-		m.setApellido("Ruiz");
-		m.setFechaNacimiento(LocalDate.of(2010, 9, 14));
-
-		// Beneficiario
-		m.setIdONG(Long.parseLong("008741"));
-		m.setLegajo(Long.parseLong("1036782"));
-		m.setLugarDeNacimiento("La Matanza");
-		m.setSeRetiraSolo(true);
-		m.setCuidadosEspeciales("Ninguno");
-		m.setEscuela("Colegio Nº3");
-		m.setGrado("7º grado");
-		m.setTurno("Mañana");
-		//this.setEstadoActivoBeneficiario(true);
-		// Fin Beneficiario
-		beneficiarioService.altaBeneficiario(m);
-		
-		
-		
-		////////////////////////////////////////////
-		m = new BeneficiarioPayload();
-
-		// Contacto
-		m.setNombreDescripcion("Piba");
-		m.setCuit("27-48474349-9");
-		m.setDomicilio("Sancez reta 382");
-		m.setEmail("cecilialopez@gmail.com");
-		m.setTelefono("9516-6545");
-
-		// PersonaFisica
-		m.setDni(48474349);
-		m.setNombre("Cecilia");
-		m.setApellido("Lopez");
-		m.setFechaNacimiento(LocalDate.of(2010, 9, 14));
-
-		// Beneficiario
-		m.setIdONG(Long.parseLong("005613"));
-		m.setLegajo(Long.parseLong("1087946"));
-		m.setLugarDeNacimiento("Colegiales");
-		m.setSeRetiraSolo(false);
-		m.setCuidadosEspeciales("Bebe mucha agua");
-		m.setEscuela("Colegio Nº3");
-		m.setGrado("2º grado");
-		m.setTurno("Tarde");
-		//this.setEstadoActivoBeneficiario(true);
-		// Fin Beneficiario
-		beneficiarioService.altaBeneficiario(m);
-	}
-	
-	public void cargarVoluntariosTenant1() {
-		VoluntarioPayload m = new VoluntarioPayload();
-
-		// Contacto
-		m.setNombreDescripcion("Voluntario que ayuda a los chicos");
-		m.setCuit("20-34324401-9");
-		m.setDomicilio("Peralta 457, piso 2, depto A");
-		m.setEmail("julioroque@gmail.com");
-		m.setTelefono("1234-4567");
-
-		// PersonaFisica
-		m.setDni(34324401);
-		m.setNombre("Julio");
-		m.setApellido("Roque");
+		m.setDni(34325574);
+		m.setNombre("Gabriel");
+		m.setApellido("Luchetti");
 		m.setFechaNacimiento(LocalDate.of(1990, 1, 20));
 
-		//Voluntario
-		//No tiene otros atributos
-		voluntarioService.altaVoluntario(m);
+		// Empleado
+		m.setDatosBancarios("CBU: 001234");
+		m.setFuncion("Desktop Helper");
+		m.setDescripcion("Da las altas y bajas de beneficiarios");
+		// Fin Empleado
+		
+		empleadoService.altaEmpleado(m);
 		
 		
-		///////////////////////////////////
-		
+		/////////////////////////////////////////////
+		m = new EmpleadoPayload();
+
 		// Contacto
-		m = new VoluntarioPayload();
-		m.setNombreDescripcion("Voluntario que ayuda a los chicos");
-		m.setCuit("20-34325049-9");
-		m.setDomicilio("Peralta 457, piso 2, depto A");
-		m.setEmail("santiagogomez@gmail.com");
-		m.setTelefono("9466-7813");
+		m.setNombreDescripcion("Asistente CEO");
+		m.setCuit("27-30863276-9");
+		m.setDomicilio("Quintana 237, piso 1, depto F");
+		m.setEmail("zaragimenez@gmail.com");
+		m.setTelefono("6541-5616");
 
 		// PersonaFisica
-		m.setDni(34325049);
-		m.setNombre("Santiago");
-		m.setApellido("Gomez");
-		m.setFechaNacimiento(LocalDate.of(1990, 1, 20));
+		m.setDni(30863276);
+		m.setNombre("Zara");
+		m.setApellido("Gimenez");
+		m.setFechaNacimiento(LocalDate.of(1985, 3, 17));
 
-		// Voluntario
-		// No tiene otros atributos
-		voluntarioService.altaVoluntario(m);
+		// Empleado
+		m.setDatosBancarios("CBU: 001234");
+		m.setFuncion("Asistente del jefe");
+		m.setDescripcion("Da las altas y bajas de beneficiarios");
+		// Fin Empleado
 		
-		
-		// Contacto
-		m = new VoluntarioPayload();
-		m.setNombreDescripcion("Voluntaria");
-		m.setCuit("27-322484-9");
-		m.setDomicilio("Samalia 789, piso 17, depto C");
-		m.setEmail("agustinacampos@gmail.com");
-		m.setTelefono("6516-7896");
-
-		// PersonaFisica
-		m.setDni(322484);
-		m.setNombre("Agustina");
-		m.setApellido("Campos");
-		m.setFechaNacimiento(LocalDate.of(1920, 7, 14));
-
-		// Voluntario
-		// No tiene otros atributos
-		voluntarioService.altaVoluntario(m);
+		empleadoService.altaEmpleado(m);
 	}
-	
-	
-	
-	
 	
 	public void cargarProfesionalesTenant1() {
 		ProfesionalPayload m = new ProfesionalPayload();
@@ -562,82 +476,65 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		profesionalService.altaProfesional(m);	
 	}
 	
-	public void cargarEmpleadosTenant1() {
-		EmpleadoPayload m = new EmpleadoPayload();
-		
-		/////////////////////////////////////////////
-		m = new EmpleadoPayload();
+	public void cargarVoluntariosTenant1() {
+		VoluntarioPayload m = new VoluntarioPayload();
 
 		// Contacto
-		m.setNombreDescripcion("Jefe CEO");
-		m.setCuit("20-30864214-9");
-		m.setDomicilio("Avenida Callao 357, piso 4, depto A");
-		m.setEmail("nahuelvacca@gmail.com");
+		m.setNombreDescripcion("Voluntario que ayuda a los chicos");
+		m.setCuit("20-34324401-9");
+		m.setDomicilio("Peralta 457, piso 2, depto A");
+		m.setEmail("julioroque@gmail.com");
 		m.setTelefono("1234-4567");
 
 		// PersonaFisica
-		m.setDni(30864214);
-		m.setNombre("Nahuel");
-		m.setApellido("Vacca");
-		m.setFechaNacimiento(LocalDate.of(1985, 3, 17));
-
-		// Empleado
-		m.setDatosBancarios("CBU: 001234");
-		m.setFuncion("Jefe");
-		m.setDescripcion("Da las altas y bajas de empleados");
-		// Fin Empleado
-		
-		empleadoService.altaEmpleado(m);
-		
-		/////////////////////////////////////////////
-
-		// Contacto
-		m.setNombreDescripcion("Empleado");
-		m.setCuit("20-34325574-9");
-		m.setDomicilio("Gallo 7923, piso 4, depto A");
-		m.setEmail("gabrielluchetti@gmail.com");
-		m.setTelefono("1234-4567");
-
-		// PersonaFisica
-		m.setDni(34325574);
-		m.setNombre("Gabriel");
-		m.setApellido("Luchetti");
+		m.setDni(34324401);
+		m.setNombre("Julio");
+		m.setApellido("Roque");
 		m.setFechaNacimiento(LocalDate.of(1990, 1, 20));
 
-		// Empleado
-		m.setDatosBancarios("CBU: 001234");
-		m.setFuncion("Desktop Helper");
-		m.setDescripcion("Da las altas y bajas de beneficiarios");
-		// Fin Empleado
-		
-		empleadoService.altaEmpleado(m);
+		//Voluntario
+		//No tiene otros atributos
+		voluntarioService.altaVoluntario(m);
 		
 		
-		/////////////////////////////////////////////
-		m = new EmpleadoPayload();
-
+		///////////////////////////////////
+		
 		// Contacto
-		m.setNombreDescripcion("Asistente CEO");
-		m.setCuit("27-30863276-9");
-		m.setDomicilio("Quintana 237, piso 1, depto F");
-		m.setEmail("zaragimenez@gmail.com");
-		m.setTelefono("6541-5616");
+		m = new VoluntarioPayload();
+		m.setNombreDescripcion("Voluntario que ayuda a los chicos");
+		m.setCuit("20-34325049-9");
+		m.setDomicilio("Peralta 457, piso 2, depto A");
+		m.setEmail("santiagogomez@gmail.com");
+		m.setTelefono("9466-7813");
 
 		// PersonaFisica
-		m.setDni(30863276);
-		m.setNombre("Zara");
-		m.setApellido("Gimenez");
-		m.setFechaNacimiento(LocalDate.of(1985, 3, 17));
+		m.setDni(34325049);
+		m.setNombre("Santiago");
+		m.setApellido("Gomez");
+		m.setFechaNacimiento(LocalDate.of(1990, 1, 20));
 
-		// Empleado
-		m.setDatosBancarios("CBU: 001234");
-		m.setFuncion("Asistente del jefe");
-		m.setDescripcion("Da las altas y bajas de beneficiarios");
-		// Fin Empleado
-		
-		empleadoService.altaEmpleado(m);
+		// Voluntario
+		// No tiene otros atributos
+		voluntarioService.altaVoluntario(m);
 		
 		
+		// Contacto
+		m = new VoluntarioPayload();
+		m.setNombreDescripcion("Voluntaria");
+		m.setCuit("27-322484-9");
+		m.setDomicilio("Samalia 789, piso 17, depto C");
+		m.setEmail("agustinacampos@gmail.com");
+		m.setTelefono("6516-7896");
+
+		// PersonaFisica
+		m.setDni(322484);
+		m.setNombre("Agustina");
+		m.setApellido("Campos");
+		m.setFechaNacimiento(LocalDate.of(1920, 7, 14));
+
+		// Voluntario
+		// No tiene otros atributos
+		voluntarioService.altaVoluntario(m);
 	}
 	
 	public void cargarColaboradorTenant1() {
@@ -711,10 +608,6 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		// Fin Colaborador
 
 		colaboradorService.altaColaborador(m);
-		
-		
-		
-		
 	}
 	
 	
@@ -850,7 +743,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 
 		// Contacto
 		m.setNombreDescripcion("Fundacion caritas felices");
-		m.setCuit("20-345-9");
+		m.setCuit("20-53917506-9");
 		m.setDomicilio("Avenida corrientes 7642");
 		m.setEmail("caritasfelices@caritasfelices.org.ar");
 		m.setTelefono("5614-6546");
@@ -861,8 +754,127 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 
 		personaJuridicaService.altaPersonaJuridica(m);
 		
+	}
+	
+	
+	public void cargarBeneficiariosTenant1() {
+		BeneficiarioPayload m = new BeneficiarioPayload();
+
+		// Contacto
+		m.setNombreDescripcion("Beneficiario");
+		m.setCuit("20-48040461-9");
+		m.setDomicilio("Zapiola 970, piso 4, depto A");
+		m.setEmail("felipeGarcia@gmail.com");
+		m.setTelefono("1234-4567");
+
+		// PersonaFisica
+		m.setDni(48040461);
+		m.setNombre("Felipe");
+		m.setApellido("Garcia");
+		m.setFechaNacimiento(LocalDate.of(2010, 1, 20));
+
+		// Beneficiario
+		m.setIdONG(Long.parseLong("001234"));
+		m.setLegajo(Long.parseLong("1090555"));
+		m.setLugarDeNacimiento("Lanús");
+		m.setSeRetiraSolo(false);
+		m.setCuidadosEspeciales("Necesita asistencia psicologica");
+		m.setEscuela("Colegio Nº123");
+		m.setGrado("5º grado");
+		m.setTurno("Mañana");
+		//this.setEstadoActivoBeneficiario(true);
+		// Fin Beneficiario
+		beneficiarioService.altaBeneficiario(m);
+		
+		////////////////////////////////
+		m = new BeneficiarioPayload();
+
+		// Contacto
+		m.setNombreDescripcion("Piba");
+		m.setCuit("27-49809327-9");
+		m.setDomicilio("Charcas 4431, piso 4, depto A");
+		m.setEmail("mariajosefinaruiz@gmail.com");
+		m.setTelefono("1234-4567");
+
+		// PersonaFisica
+		m.setDni(49809327);
+		m.setNombre("josefina");
+		m.setApellido("Ruiz");
+		m.setFechaNacimiento(LocalDate.of(2012, 9, 14));
+
+		// Beneficiario
+		m.setIdONG(Long.parseLong("007612"));
+		m.setLegajo(Long.parseLong("1015375"));
+		m.setLugarDeNacimiento("Palermo");
+		m.setSeRetiraSolo(false);
+		m.setCuidadosEspeciales("Necesita contensión");
+		m.setEscuela("Colegio Nº46");
+		m.setGrado("3º grado");
+		m.setTurno("Mañana");
+		//this.setEstadoActivoBeneficiario(true);
+		// Fin Beneficiario
+		beneficiarioService.altaBeneficiario(m);
 		
 		
+		////////////////////////////////////////////
+		m = new BeneficiarioPayload();
+
+		// Contacto
+		m.setNombreDescripcion("Piba");
+		m.setCuit("27-48474802-9");
+		m.setDomicilio("Almafuerte 2740, piso 1, depto B");
+		m.setEmail("analiaruiz@gmail.com");
+		m.setTelefono("1234-4567");
+
+		// PersonaFisica
+		m.setDni(48474802);
+		m.setNombre("Analia");
+		m.setApellido("Ruiz");
+		m.setFechaNacimiento(LocalDate.of(2010, 9, 14));
+
+		// Beneficiario
+		m.setIdONG(Long.parseLong("008741"));
+		m.setLegajo(Long.parseLong("1036782"));
+		m.setLugarDeNacimiento("La Matanza");
+		m.setSeRetiraSolo(true);
+		m.setCuidadosEspeciales("Ninguno");
+		m.setEscuela("Colegio Nº3");
+		m.setGrado("7º grado");
+		m.setTurno("Mañana");
+		//this.setEstadoActivoBeneficiario(true);
+		// Fin Beneficiario
+		beneficiarioService.altaBeneficiario(m);
+		
+		
+		
+		////////////////////////////////////////////
+		m = new BeneficiarioPayload();
+
+		// Contacto
+		m.setNombreDescripcion("Piba");
+		m.setCuit("27-48474349-9");
+		m.setDomicilio("Sancez reta 382");
+		m.setEmail("cecilialopez@gmail.com");
+		m.setTelefono("9516-6545");
+
+		// PersonaFisica
+		m.setDni(48474349);
+		m.setNombre("Cecilia");
+		m.setApellido("Lopez");
+		m.setFechaNacimiento(LocalDate.of(2010, 9, 14));
+
+		// Beneficiario
+		m.setIdONG(Long.parseLong("005613"));
+		m.setLegajo(Long.parseLong("1087946"));
+		m.setLugarDeNacimiento("Colegiales");
+		m.setSeRetiraSolo(false);
+		m.setCuidadosEspeciales("Bebe mucha agua");
+		m.setEscuela("Colegio Nº3");
+		m.setGrado("2º grado");
+		m.setTurno("Tarde");
+		//this.setEstadoActivoBeneficiario(true);
+		// Fin Beneficiario
+		beneficiarioService.altaBeneficiario(m);
 	}
 	
 	public void cargarUsuariosTenant1() {
@@ -958,6 +970,20 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		insumo2.setStockActual(50);
 		insumo2.setFragil(true);
 		insumo2 = insumoService.altaInsumo(insumo2);
+
+		InsumoPayload insumo3 = new InsumoPayload();
+		insumo3.setTipo("Agua");
+		insumo3.setDescripcion("Bidones de 5 litros de agua mineral");
+		insumo3.setStockActual(30);
+		insumo3.setFragil(false);
+		insumo3 = insumoService.altaInsumo(insumo3);
+		
+		InsumoPayload insumo4 = new InsumoPayload();
+		insumo4.setTipo("Mesa");
+		insumo4.setDescripcion("Mesa de vidrio");
+		insumo4.setStockActual(5);
+		insumo4.setFragil(true);
+		insumo4 = insumoService.altaInsumo(insumo4);
 		
 		//Factura
 		LocalDateTime today = LocalDateTime.now();
@@ -1007,12 +1033,13 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		factura2 = facturaService.altaFactura(factura2);
 		
 		
-		//Prestamo
+		//Get lista para payloads con personas
 		List<EmpleadoPayload> empleados = empleadoService.getEmpleados();
 		List<BeneficiarioPayload> beneficiarios = beneficiarioService.getBeneficiarios();
+		
+		//Prestamo
 		ContactoPayload empleado1 = contactoService.getContactoById(empleados.get(0).getId());
 		ContactoPayload beneficiario1 = contactoService.getContactoById(beneficiarios.get(0).getId());
-		
 		PrestamoPayload prestamo1 = new PrestamoPayload();
 		prestamo1.setDescripcion("Radio a pilas Panasonic");
 		prestamo1.setCantidad(1);
@@ -1022,6 +1049,19 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		prestamo1.setPrestamista(empleado1);
 		prestamo1.setPrestatario(beneficiario1);
 		prestamo1 = prestamoService.altaPrestamo(prestamo1);
+		
+		//Proyecto
+		PersonaFisicaPayload persona1 = personaFisicaService.getPersonaFisicaByIdContacto(empleados.get(0).getId());
+		PersonaFisicaPayload persona2 = personaFisicaService.getPersonaFisicaByIdContacto(empleados.get(1).getId());
+		PersonaFisicaPayload persona3 = personaFisicaService.getPersonaFisicaByIdContacto(empleados.get(2).getId());
+		ProyectoPayload proyecto1 = new ProyectoPayload();
+		proyecto1.setDescripcion("Organizar calendario del mes siguiente");
+		proyecto1.setFechaInicio(LocalDate.of(todayMinus1month.getYear(), todayMinus1month.getMonth(), 1));
+		proyecto1.setFechaFin(proyecto1.getFechaInicio().plusDays(1));
+		proyecto1.agregarInvolucrado(persona1);
+		proyecto1.agregarInvolucrado(persona2);
+		proyecto1.agregarInvolucrado(persona3);
+		proyectoService.altaProyecto(proyecto1);
 		
 		//Programa de actividades
 		List<ProfesionalPayload> profesionales = profesionalService.getProfesionales();
@@ -1075,11 +1115,11 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		ContactoPayload contactoPayload = new ContactoPayload();
 
 		// Contacto
-		contactoPayload.setNombreDescripcion("Es Voluntario y Empleado");
-		contactoPayload.setCuit("20-41360548-9");
-		contactoPayload.setDomicilio("Avenida siempre falsa 123, piso 8, depto B");
-		contactoPayload.setEmail("rauldominguez@gmail.com");
-		contactoPayload.setTelefono("1234-4567");
+		contactoPayload.setNombreDescripcion("Jefa y voluntaria de la ONG");
+		contactoPayload.setCuit("27-33230401-2");
+		contactoPayload.setDomicilio("Lavalle 1978, piso 3, depto A");
+		contactoPayload.setEmail("julietaalvarez@testing.com");
+		contactoPayload.setTelefono("15-7162-5179");
 		
 		contactoPayload = contactoService.altaContacto(contactoPayload);
 		
@@ -1096,10 +1136,10 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		voluntarioPayload.modificarContacto(getContactoPayloadDB);
 
 		// PersonaFisica
-		voluntarioPayload.setDni(41360548);
-		voluntarioPayload.setNombre("Raúl");
-		voluntarioPayload.setApellido("Dominguez");
-		voluntarioPayload.setFechaNacimiento(LocalDate.of(2000, 1, 15));
+		voluntarioPayload.setDni(33230401);
+		voluntarioPayload.setNombre("Julieta");
+		voluntarioPayload.setApellido("Álvarez");
+		voluntarioPayload.setFechaNacimiento(LocalDate.of(1988, 7, 9));
 
 		//Voluntario
 		//No tiene otros atributos
@@ -1121,160 +1161,281 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		empleadoPayload.modificarContacto(getContactoPayloadDB_2);
 
 		// PersonaFisica
-		empleadoPayload.setDni(41360548);
-		empleadoPayload.setNombre("Raúl");
-		empleadoPayload.setApellido("Dominguez");
-		empleadoPayload.setFechaNacimiento(LocalDate.of(2000, 1, 15));
+		empleadoPayload.setDni(33230401);
+		empleadoPayload.setNombre("Julieta");
+		empleadoPayload.setApellido("Álvarez");
+		empleadoPayload.setFechaNacimiento(LocalDate.of(1977, 5, 16));
 
 		// Empleado
-		empleadoPayload.setDatosBancarios("CBU: 001234");
-		empleadoPayload.setFuncion("Jefe Empleado y Voluntario");
-		empleadoPayload.setDescripcion("Super Jefe y voluntario");
+		empleadoPayload.setDatosBancarios("CBU: 0057813-43583");
+		empleadoPayload.setFuncion("Jefa de la ONG");
+		empleadoPayload.setDescripcion("Da todas las órdenes del establecimiento");
 		// Fin Empleado
 		
 		empleadoService.altaEmpleado(empleadoPayload);
 		//Fin asociar empleado
 	}
 	
-	public void cargarBeneficiariosTenant2() {
-		
-		BeneficiarioPayload m = new BeneficiarioPayload();
+	public void cargarEmpleadosTenant2() {
+		EmpleadoPayload m = new EmpleadoPayload();
 
+		/////////////////////////////////////////////
+		
 		// Contacto
-		m.setNombreDescripcion("Beneficiario");
-		m.setCuit("27-48040971-9");
-		m.setDomicilio("Av. Hipólito Yrigoyen 2772, piso 2, depto B");
-		m.setEmail("felicitasbarbosa@gmail.com");
+		m = new EmpleadoPayload();
+		m.setNombreDescripcion("Empleada");
+		m.setCuit("27-34326093-9");
+		m.setDomicilio("Gallo 7923, piso 4, depto A");
+		m.setEmail("frodriguez@gmail.com");
 		m.setTelefono("1234-4567");
 
 		// PersonaFisica
-		m.setDni(48040971);
-		m.setNombre("Felicitas");
-		m.setApellido("Barbosa");
-		m.setFechaNacimiento(LocalDate.of(2010, 1, 20));
+		m.setDni(34326093);
+		m.setNombre("Florencia");
+		m.setApellido("Rodriguez");
+		m.setFechaNacimiento(LocalDate.of(1990, 1, 20));
 
-		// Beneficiario
-		m.setIdONG(Long.parseLong("000123"));
-		m.setLegajo(Long.parseLong("1070123"));
-		m.setLugarDeNacimiento("Villa Urquiza");
-		m.setSeRetiraSolo(false);
-		m.setCuidadosEspeciales("Le gusta jugar solo con bloquecitos");
-		m.setEscuela("Colegio Nº700");
-		m.setGrado("6º grado");
-		m.setTurno("Tarde");
-		//this.setEstadoActivoBeneficiario(true);
-		// Fin Beneficiario
-		beneficiarioService.altaBeneficiario(m);
+		// Empleado
+		m.setDatosBancarios("CBU: 001234");
+		m.setFuncion("Asistente");
+		m.setDescripcion("Da las altas y bajas de profesionales");
+		// Fin Empleado
 		
-		////////////////////////////////
-		m = new BeneficiarioPayload();
-
+		empleadoService.altaEmpleado(m);
+		
+		/////////////////////////////////////////////
+		
+		m = new EmpleadoPayload();
+		
 		// Contacto
-		m.setNombreDescripcion("Beneficiario");
-		m.setCuit("20-49687819-9");
-		m.setDomicilio("Sarmiento 2057, piso 3, depto A");
-		m.setEmail("ricardosojo@gmail.com");
+		m.setNombreDescripcion("Empleado");
+		m.setCuit("20-30862571-9");
+		m.setDomicilio("Av. Pueyrredón 1719, piso 7, depto A");
+		m.setEmail("gabrieldiaz@gmail.com");
 		m.setTelefono("1234-4567");
-
+		
 		// PersonaFisica
-		m.setDni(49687819);
-		m.setNombre("Ricardo");
-		m.setApellido("Sojo");
-		m.setFechaNacimiento(LocalDate.of(2012, 7, 10));
-
-		// Beneficiario
-		m.setIdONG(Long.parseLong("004270"));
-		m.setLegajo(Long.parseLong("1015375"));
-		m.setLugarDeNacimiento("Belgrano");
-		m.setSeRetiraSolo(false);
-		m.setCuidadosEspeciales("Necesita integración");
-		m.setEscuela("Colegio Nº34");
-		m.setGrado("3º grado");
-		m.setTurno("Tarde");
-		//this.setEstadoActivoBeneficiario(true);
-		// Fin Beneficiario
-		beneficiarioService.altaBeneficiario(m);
+		m.setDni(30862571);
+		m.setNombre("Gabriel");
+		m.setApellido("Diaz");
+		m.setFechaNacimiento(LocalDate.of(1989, 9, 17));
+		
+		// Empleado
+		m.setDatosBancarios("CBU: 001234");
+		m.setFuncion("Chef del establecimiento");
+		m.setDescripcion("Cocina comidas para los chicos");
+		// Fin Empleado
+		
+		empleadoService.altaEmpleado(m);
+		/////////////////////////////////////////////
+		m = new EmpleadoPayload();
+		
+		// Contacto
+		m.setNombreDescripcion("Empleada");
+		m.setCuit("27-30863688-9");
+		m.setDomicilio("Quintana 237, piso 1, depto F");
+		m.setEmail("patriciacastro@gmail.com");
+		m.setTelefono("6541-5616");
+		
+		// PersonaFisica
+		m.setDni(30863688);
+		m.setNombre("Patricia");
+		m.setApellido("Castro");
+		m.setFechaNacimiento(LocalDate.of(1981, 4, 23));
+		
+		// Empleado
+		m.setDatosBancarios("CBU: 001234");
+		m.setFuncion("Nutricionista");
+		m.setDescripcion("Aconseja a los chicos sobre nutrición de los alimentos");
+		// Fin Empleado
+		
+		empleadoService.altaEmpleado(m);
 		
 		
-		////////////////////////////////////////////
-		m = new BeneficiarioPayload();
+		/////////////////////////////////////////////
+		m = new EmpleadoPayload();
 
 		// Contacto
-		m.setNombreDescripcion("Beneficiario");
-		m.setCuit("27-48474517-9");
-		m.setDomicilio("Uruguay 782, piso 1, depto B");
-		m.setEmail("josefinaruiz@gmail.com");
-		m.setTelefono("1234-4567");
+		m.setNombreDescripcion("Empleado");
+		m.setCuit("20-41007965-9");
+		m.setDomicilio("Libertad 2568");
+		m.setEmail("emiliopaz@gmail.com");
+		m.setTelefono("15-8157-3164");
 
 		// PersonaFisica
-		m.setDni(48474517);
-		m.setNombre("josefina");
-		m.setApellido("Ruiz");
-		m.setFechaNacimiento(LocalDate.of(2010, 9, 14));
+		m.setDni(41007965);
+		m.setNombre("Emilio");
+		m.setApellido("Paz");
+		m.setFechaNacimiento(LocalDate.of(1999, 3, 17));
 
-		// Beneficiario
-		m.setIdONG(Long.parseLong("008741"));
-		m.setLegajo(Long.parseLong("1036782"));
-		m.setLugarDeNacimiento("La Matanza");
-		m.setSeRetiraSolo(false);
-		m.setCuidadosEspeciales("Ninguno");
-		m.setEscuela("Colegio Nº3");
-		m.setGrado("7º grado");
-		m.setTurno("Mañana");
-		//this.setEstadoActivoBeneficiario(true);
-		// Fin Beneficiario
-		beneficiarioService.altaBeneficiario(m);
+		// Empleado
+		m.setDatosBancarios("CBU: 001234");
+		m.setFuncion("Soporte telefónico");
+		m.setDescripcion("Atiende llamadas de beneficiarios");
+		// Fin Empleado
 		
-		
-		
-////////////////////////////////////////////
-		m = new BeneficiarioPayload();
+		empleadoService.altaEmpleado(m);
+		/////////////////////////////////////////////
+	}
+	
+	
+	public void cargarProfesionalesTenant2() {
+		ProfesionalPayload m = new ProfesionalPayload();
 
 		// Contacto
-		m.setNombreDescripcion("Beneficiario");
-		m.setCuit("20-48097554-9");
-		m.setDomicilio("Av. Raúl Scalabrini Ortiz 751, piso 7, depto C");
-		m.setEmail("agustinpeña@gmail.com");
-		m.setTelefono("4970-1876");
+		m.setNombreDescripcion("Profesional");
+		m.setCuit("27-30088948-9");
+		m.setDomicilio("Viamonte 1678, piso 2, depto D");
+		m.setEmail("eugeniavarela@gmail.com");
+		m.setTelefono("15-8032-5048");
 
 		// PersonaFisica
-		m.setDni(48097554);
-		m.setNombre("Agustin");
-		m.setApellido("Peña");
-		m.setFechaNacimiento(LocalDate.of(2010, 2, 20));
+		m.setDni(30088948);
+		m.setNombre("Eugenia");
+		m.setApellido("Varela");
+		m.setFechaNacimiento(LocalDate.of(1984, 2, 15));
 
-		// Beneficiario
-		m.setIdONG(Long.parseLong("000349"));
-		m.setLegajo(Long.parseLong("1040937"));
-		m.setLugarDeNacimiento("Caballito");
-		m.setSeRetiraSolo(false);
-		m.setCuidadosEspeciales("Bebe mucho jugo");
-		m.setEscuela("Colegio Nº4");
-		m.setGrado("1º grado");
-		m.setTurno("Noche");
-		//this.setEstadoActivoBeneficiario(true);
-		// Fin Beneficiario
-		beneficiarioService.altaBeneficiario(m);
+		// Profesional
+		m.setDatosBancarios("CBU: 001234");
+		m.setProfesion("Profesora de cocina");
+		// Fin Profesional
+		profesionalService.altaProfesional(m);
+		
+		
+		////////////////////////////////////////
+		m = new ProfesionalPayload();		
+		
+		// Contacto
+		m.setNombreDescripcion("Profesional");
+		m.setCuit("27-32215193-8");
+		m.setDomicilio("Bolivar 294, piso 4E");
+		m.setEmail("belenflores@gmail.com");
+		m.setTelefono("15-2803-9214");
+		
+		// PersonaFisica
+		m.setDni(32215193);
+		m.setNombre("Belen");
+		m.setApellido("Flores");
+		m.setFechaNacimiento(LocalDate.of(1990, 1, 20));
+		
+		// Profesional
+		m.setDatosBancarios("CBU: 001234");
+		m.setProfesion("Chef de eventos");
+		// Fin Profesional
+		profesionalService.altaProfesional(m);
+		
+		
+		////////////////////////////////////////
+		m = new ProfesionalPayload();
+
+		// Contacto
+		m.setNombreDescripcion("Profesional");
+		m.setCuit("20-27808290-9");
+		m.setDomicilio("Ñandues 5470, piso 1, depto A");
+		m.setEmail("alejandrogris@gmail.com");
+		m.setTelefono("15-8992-3083");
+
+		// PersonaFisica
+		m.setDni(27808290);
+		m.setNombre("Alejandro");
+		m.setApellido("Varela");
+		m.setFechaNacimiento(LocalDate.of(1980, 1, 20));
+
+		// Profesional
+		m.setDatosBancarios("CBU: 001234");
+		m.setProfesion("Pintor");
+		// Fin Profesional
+		profesionalService.altaProfesional(m);
+		
+		
+		
+		
+		////////////////////////////////////////
+		m = new ProfesionalPayload();		
+		
+		// Contacto
+		m.setNombreDescripcion("Profesional");
+		m.setCuit("27-34326122-9");
+		m.setDomicilio("Cecelia 2818, piso 11, depto D");
+		m.setEmail("fernandaarevalo@gmail.com");
+		m.setTelefono("15-9469-516");
+
+		// PersonaFisica
+		m.setDni(34326122);
+		m.setNombre("Fernanda");
+		m.setApellido("Arevalo");
+		m.setFechaNacimiento(LocalDate.of(1995, 6, 3));
+
+		// Profesional
+		m.setDatosBancarios("CBU: 001234");
+		m.setProfesion("Administradora de eventos");
+		// Fin Profesional
+		profesionalService.altaProfesional(m);
+		
+		
+		////////////////////////////////////////
+		m = new ProfesionalPayload();		
+		
+		// Contacto
+		m.setNombreDescripcion("Profesional");
+		m.setCuit("27-34325366-9");
+		m.setDomicilio("Uruguay 741, piso 1, depto A");
+		m.setEmail("camilarodriguez@gmail.com");
+		m.setTelefono("15-9114-9716");
+
+		// PersonaFisica
+		m.setDni(34325366);
+		m.setNombre("Camila");
+		m.setApellido("Rodriguez");
+		m.setFechaNacimiento(LocalDate.of(1990, 1, 20));
+
+		// Profesional
+		m.setDatosBancarios("CBU: 001234");
+		m.setProfesion("Medica clinica");
+		// Fin Profesional
+		profesionalService.altaProfesional(m);
+		
+		////////////////////////////////////////
 	}
 	
 	public void cargarVoluntariosTenant2() {
 		VoluntarioPayload m;
 		
 		///////////////////////////////////
+		
+		// Contacto
+		m = new VoluntarioPayload();
+		m.setNombreDescripcion("Voluntaria");
+		m.setCuit("27-41025384-9");
+		m.setDomicilio("Av. Callao 939, piso 1, depto C");
+		m.setEmail("nataliaramos@gmail.com");
+		m.setTelefono("15-0110-8613");
+
+		// PersonaFisica
+		m.setDni(41025384);
+		m.setNombre("Natalia");
+		m.setApellido("Ramos");
+		m.setFechaNacimiento(LocalDate.of(1999, 1, 27));
+
+		// Voluntario
+		// No tiene otros atributos
+		voluntarioService.altaVoluntario(m);
+		
+		///////////////////////////////////
 
 		// Contacto
 		m = new VoluntarioPayload();
 		m.setNombreDescripcion("Voluntario");
-		m.setCuit("20-34541251-9");
+		m.setCuit("20-39086152-9");
 		m.setDomicilio("Alberti 243, piso 3, depto B");
 		m.setEmail("martinlopez@gmail.com");
-		m.setTelefono("1234-4567");
+		m.setTelefono("15-4040-3382");
 
 		// PersonaFisica
-		m.setDni(34541251);
+		m.setDni(39086152);
 		m.setNombre("Martin");
 		m.setApellido("Lopez");
-		m.setFechaNacimiento(LocalDate.of(1990, 5, 10));
+		m.setFechaNacimiento(LocalDate.of(1997, 7, 17));
 
 		//Voluntario
 		//No tiene otros atributos
@@ -1301,201 +1462,27 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		// No tiene otros atributos
 		voluntarioService.altaVoluntario(m);
 		
+		///////////////////////////////////
 		
 		// Contacto
 		m = new VoluntarioPayload();
 		m.setNombreDescripcion("Voluntaria");
-		m.setCuit("27-821894-9");
+		m.setCuit("27-6492594-8");
 		m.setDomicilio("Jorge Luis Borges 1854, piso 18, depto D");
 		m.setEmail("camilacampos@gmail.com");
 		m.setTelefono("7818-3617");
 
 		// PersonaFisica
-		m.setDni(821894);
+		m.setDni(6492594);
 		m.setNombre("Camila");
 		m.setApellido("Campos");
-		m.setFechaNacimiento(LocalDate.of(1920, 7, 17));
+		m.setFechaNacimiento(LocalDate.of(1941, 7, 17));
 
 		// Voluntario
 		// No tiene otros atributos
 		voluntarioService.altaVoluntario(m);
-	}
-	
-	
-	
-	
-	
-	public void cargarProfesionalesTenant2() {
-		ProfesionalPayload m = new ProfesionalPayload();
-
-		// Contacto
-		m.setNombreDescripcion("Profesora");
-		m.setCuit("27-30088948-9");
-		m.setDomicilio("Viamonte 1678, piso 2, depto D");
-		m.setEmail("eugeniavarela@gmail.com");
-		m.setTelefono("1234-4567");
-
-		// PersonaFisica
-		m.setDni(30088948);
-		m.setNombre("Eugenia");
-		m.setApellido("Varela");
-		m.setFechaNacimiento(LocalDate.of(1984, 2, 15));
-
-		// Profesional
-		m.setDatosBancarios("CBU: 001234");
-		m.setProfesion("Profesora");
-		// Fin Profesional
-		profesionalService.altaProfesional(m);
 		
-		
-		////////////////////////////////////////
-		m = new ProfesionalPayload();
-
-		// Contacto
-		m.setNombreDescripcion("Profesional");
-		m.setCuit("20-27808290-9");
-		m.setDomicilio("Ñandues 5470, piso 1, depto A");
-		m.setEmail("alejandrogris@gmail.com");
-		m.setTelefono("1234-4567");
-
-		// PersonaFisica
-		m.setDni(27808290);
-		m.setNombre("Alejandro");
-		m.setApellido("Varela");
-		m.setFechaNacimiento(LocalDate.of(1980, 1, 20));
-
-		// Profesional
-		m.setDatosBancarios("CBU: 001234");
-		m.setProfesion("Pintor");
-		// Fin Profesional
-		profesionalService.altaProfesional(m);
-		
-		
-		
-		
-		////////////////////////////////////////
-		m = new ProfesionalPayload();		
-		
-		// Contacto
-		m.setNombreDescripcion("Profesional");
-		m.setCuit("27-34326122-9");
-		m.setDomicilio("Cecelia 2818, piso 11, depto D");
-		m.setEmail("fernandaarevalo@gmail.com");
-		m.setTelefono("1234-4567");
-
-		// PersonaFisica
-		m.setDni(34326122);
-		m.setNombre("Fernanda");
-		m.setApellido("Arevalo");
-		m.setFechaNacimiento(LocalDate.of(1990, 1, 20));
-
-		// Profesional
-		m.setDatosBancarios("CBU: 001234");
-		m.setProfesion("Administradora de eventos");
-		// Fin Profesional
-		profesionalService.altaProfesional(m);
-		
-		
-		////////////////////////////////////////
-		m = new ProfesionalPayload();		
-		
-		// Contacto
-		m.setNombreDescripcion("Profesional");
-		m.setCuit("27-34325366-9");
-		m.setDomicilio("Uruguay 741, piso 1, depto A");
-		m.setEmail("susanasiones@gmail.com");
-		m.setTelefono("1234-4567");
-
-		// PersonaFisica
-		m.setDni(34325366);
-		m.setNombre("Susana");
-		m.setApellido("Siones");
-		m.setFechaNacimiento(LocalDate.of(1990, 1, 20));
-
-		// Profesional
-		m.setDatosBancarios("CBU: 001234");
-		m.setProfesion("Medica clinica");
-		// Fin Profesional
-		profesionalService.altaProfesional(m);	
-	}
-	
-	public void cargarEmpleadosTenant2() {
-		EmpleadoPayload m = new EmpleadoPayload();
-
-		/////////////////////////////////////////////
-		m = new EmpleadoPayload();
-
-		// Contacto
-		m.setNombreDescripcion("Empleada");
-		m.setCuit("27-30863688-9");
-		m.setDomicilio("Quintana 237, piso 1, depto F");
-		m.setEmail("patriciacastro@gmail.com");
-		m.setTelefono("6541-5616");
-
-		// PersonaFisica
-		m.setDni(30863688);
-		m.setNombre("Patricia");
-		m.setApellido("Castro");
-		m.setFechaNacimiento(LocalDate.of(1985, 3, 17));
-
-		// Empleado
-		m.setDatosBancarios("CBU: 001234");
-		m.setFuncion("Jefa Gral");
-		m.setDescripcion("Da todas las órdenes del establecimiento");
-		// Fin Empleado
-		
-		empleadoService.altaEmpleado(m);
-		
-		/////////////////////////////////////////////
-		
-		// Contacto
-		m = new EmpleadoPayload();
-		m.setNombreDescripcion("Empleada");
-		m.setCuit("27-34326093-9");
-		m.setDomicilio("Gallo 7923, piso 4, depto A");
-		m.setEmail("frodriguez@gmail.com");
-		m.setTelefono("1234-4567");
-
-		// PersonaFisica
-		m.setDni(34326093);
-		m.setNombre("Florencia");
-		m.setApellido("Rodriguez");
-		m.setFechaNacimiento(LocalDate.of(1990, 1, 20));
-
-		// Empleado
-		m.setDatosBancarios("CBU: 001234");
-		m.setFuncion("Asistente");
-		m.setDescripcion("Da las altas y bajas de profesionales");
-		// Fin Empleado
-		
-		empleadoService.altaEmpleado(m);
-		
-		
-		
-		/////////////////////////////////////////////
-		m = new EmpleadoPayload();
-
-		// Contacto
-		m.setNombreDescripcion("Empleado");
-		m.setCuit("20-30862571-9");
-		m.setDomicilio("Avenida siempre falsa 123, piso 3, depto A");
-		m.setEmail("emiliopaz@gmail.com");
-		m.setTelefono("1234-4567");
-
-		// PersonaFisica
-		m.setDni(30862571);
-		m.setNombre("Emilio");
-		m.setApellido("Paz");
-		m.setFechaNacimiento(LocalDate.of(1985, 3, 17));
-
-		// Empleado
-		m.setDatosBancarios("CBU: 001234");
-		m.setFuncion("Soporte telefónico");
-		m.setDescripcion("Atiende llamadas de beneficiarios");
-		// Fin Empleado
-		
-		empleadoService.altaEmpleado(m);
-		/////////////////////////////////////////////
+		///////////////////////////////////
 	}
 	
 	public void cargarColaboradorTenant2() {
@@ -1505,9 +1492,9 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		// Contacto
 		m.setNombreDescripcion("Colaboradora");
 		m.setCuit("27-29155744-9");
-		m.setDomicilio("Cantillan 456, piso x, depto A");
+		m.setDomicilio("Cantillan 456, piso 8, depto A");
 		m.setEmail("josefinamarruecos@gmail.com");
-		m.setTelefono("1234-4567");
+		m.setTelefono("15-1434-1133");
 
 		// PersonaFisica
 		m.setDni(29155744);
@@ -1518,31 +1505,6 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		// Colaborador
 		m.setDatosBancarios("CBU: 001234");
 		m.setArea("Area de diversiones");
-		// Fin Colaborador
-
-		colaboradorService.altaColaborador(m);
-		
-		
-		
-		///////////////////////
-		m = new ColaboradorPayload();
-
-		// Contacto
-		m.setNombreDescripcion("Colaboradora");
-		m.setCuit("27-32484760-9");
-		m.setDomicilio("Suiza 6543, piso 3, depto A");
-		m.setEmail("karinarekini@gmail.com");
-		m.setTelefono("1234-4567");
-
-		// PersonaFisica
-		m.setDni(32484760);
-		m.setNombre("Karina");
-		m.setApellido("Rekini");
-		m.setFechaNacimiento(LocalDate.of(1987, 6, 24));
-
-		// Colaborador
-		m.setDatosBancarios("CBU: 001234");
-		m.setArea("Area social");
 		// Fin Colaborador
 
 		colaboradorService.altaColaborador(m);
@@ -1570,12 +1532,33 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 
 		colaboradorService.altaColaborador(m);
 		
+		///////////////////////
 		
+		m = new ColaboradorPayload();
+
+		// Contacto
+		m.setNombreDescripcion("Colaboradora");
+		m.setCuit("27-32484760-9");
+		m.setDomicilio("Suiza 6543, piso 3, depto A");
+		m.setEmail("karinarekini@gmail.com");
+		m.setTelefono("1234-4567");
+
+		// PersonaFisica
+		m.setDni(32484760);
+		m.setNombre("Karina");
+		m.setApellido("Rekini");
+		m.setFechaNacimiento(LocalDate.of(1987, 6, 24));
+
+		// Colaborador
+		m.setDatosBancarios("CBU: 001234");
+		m.setArea("Area social");
+		// Fin Colaborador
+
+		colaboradorService.altaColaborador(m);
 		
+		///////////////////////
 		
 	}
-	
-	
 	
 	
 	public void cargarConsejoAdHonoremTenant2() {
@@ -1583,20 +1566,20 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		ConsejoAdHonoremPayload m = new ConsejoAdHonoremPayload();
 
 		// Contacto
-		m.setNombreDescripcion("ConsejeroAdHonorem");
-		m.setCuit("20-39326825-9");
+		m.setNombreDescripcion("Consejero Ad Honorem");
+		m.setCuit("20-4862239-9");
 		m.setDomicilio("Paraguay 803, piso 6, depto A");
-		m.setEmail("matiaspelorroso@gmail.com");
+		m.setEmail("pedroperez@yahoo.com.ar");
 		m.setTelefono("4436-9567");
 
 		// PersonaFisica
-		m.setDni(39326825);
-		m.setNombre("Matias");
-		m.setApellido("Pelorroso");
-		m.setFechaNacimiento(LocalDate.of(1997, 1, 20));
+		m.setDni(12026279);
+		m.setNombre("Pedro");
+		m.setApellido("Perez");
+		m.setFechaNacimiento(LocalDate.of(1936, 10, 3));
 
 		// ConsejoAdHonorem
-		m.setFuncion("Da muy buenos consejos");
+		m.setFuncion("Ex jefe jubilado de la ONG, aconseja a la nueva jefa");
 		
 		consejoAdHonoremService.altaConsejoAdHonorem(m);
 		
@@ -1647,7 +1630,6 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		
 		consejoAdHonoremService.altaConsejoAdHonorem(m);
 		
-		
 	}
 	
 	public void cargarPersonaJuridicaTenant2() {
@@ -1656,10 +1638,10 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 
 		// Contacto
 		m.setNombreDescripcion("Colegio santa fe");
-		m.setCuit("20-123-9");
+		m.setCuit("30-52876213-8");
 		m.setDomicilio("Av Santa Fe 534");
 		m.setEmail("colegiosantafe@gmail.com");
-		m.setTelefono("4570-31967");
+		m.setTelefono("4570-3197");
 
 		// Persona Juridica
 		m.setInternoTelefono("05");
@@ -1674,7 +1656,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		
 		// Contacto
 		m.setNombreDescripcion("Jumbo");
-		m.setCuit("20-234-9");
+		m.setCuit("30-62719317-4");
 		m.setDomicilio("Las Heras 9872");
 		m.setEmail("jumbo@gmail.com");
 		m.setTelefono("0800-9000-8080");
@@ -1692,7 +1674,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 				
 		// Contacto
 		m.setNombreDescripcion("Ente gobernamental");
-		m.setCuit("20-345-9");
+		m.setCuit("20-53917506-9");
 		m.setDomicilio("Avenida de mayo 100");
 		m.setEmail("entegobernamental@lanacion.gov.ar");
 		m.setTelefono("5614-6546");
@@ -1709,7 +1691,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 
 		// Contacto
 		m.setNombreDescripcion("Fundacion caritas felices");
-		m.setCuit("20-456-9");
+		m.setCuit("30-59470647-9");
 		m.setDomicilio("Avenida corrientes 7642");
 		m.setEmail("caritasfelices@caritasfelices.org.ar");
 		m.setTelefono("5614-6546");
@@ -1719,9 +1701,127 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		m.setTipoPersonaJuridica(TipoPersonaJuridica.OSC);
 
 		personaJuridicaService.altaPersonaJuridica(m);
+	}
+	
+	public void cargarBeneficiariosTenant2() {
+		
+		BeneficiarioPayload m = new BeneficiarioPayload();
+
+		// Contacto
+		m.setNombreDescripcion("Beneficiaria");
+		m.setCuit("27-46919073-9");
+		m.setDomicilio("Av. Hipólito Yrigoyen 2772, piso 2, depto B");
+		m.setEmail("felicitasbarbosa@gmail.com");
+		m.setTelefono("15-3963-1386");
+
+		// PersonaFisica
+		m.setDni(46919073);
+		m.setNombre("Felicitas");
+		m.setApellido("Barbosa");
+		m.setFechaNacimiento(LocalDate.of(2008, 1, 20));
+
+		// Beneficiario
+		m.setIdONG(Long.parseLong("000123"));
+		m.setLegajo(Long.parseLong("1070123"));
+		m.setLugarDeNacimiento("Villa Urquiza");
+		m.setSeRetiraSolo(false);
+		m.setCuidadosEspeciales("No puede comer maní");
+		m.setEscuela("Colegio Nº700");
+		m.setGrado("3º año");
+		m.setTurno("Tarde");
+		//this.setEstadoActivoBeneficiario(true);
+		// Fin Beneficiario
+		beneficiarioService.altaBeneficiario(m);
+		
+		////////////////////////////////
+		m = new BeneficiarioPayload();
+
+		// Contacto
+		m.setNombreDescripcion("Beneficiario");
+		m.setCuit("20-45222208-9");
+		m.setDomicilio("Sarmiento 2057, piso 3, depto A");
+		m.setEmail("ricardosojo@gmail.com");
+		m.setTelefono("15-5665-3208");
+
+		// PersonaFisica
+		m.setDni(45222208);
+		m.setNombre("Ricardo");
+		m.setApellido("Sojo");
+		m.setFechaNacimiento(LocalDate.of(2005, 10, 22));
+
+		// Beneficiario
+		m.setIdONG(Long.parseLong("004270"));
+		m.setLegajo(Long.parseLong("1015375"));
+		m.setLugarDeNacimiento("Belgrano");
+		m.setSeRetiraSolo(false);
+		m.setCuidadosEspeciales("Dieta sin harinas");
+		m.setEscuela("Colegio Nº34");
+		m.setGrado("5º año");
+		m.setTurno("Tarde");
+		//this.setEstadoActivoBeneficiario(true);
+		// Fin Beneficiario
+		beneficiarioService.altaBeneficiario(m);
+		
+		
+		////////////////////////////////////////////
+		m = new BeneficiarioPayload();
+
+		// Contacto
+		m.setNombreDescripcion("Beneficiaria");
+		m.setCuit("27-46475954-9");
+		m.setDomicilio("Uruguay 782, piso 1, depto B");
+		m.setEmail("josefinaruiz@gmail.com");
+		m.setTelefono("15-9978-3807");
+
+		// PersonaFisica
+		m.setDni(46475954);
+		m.setNombre("josefina");
+		m.setApellido("Ruiz");
+		m.setFechaNacimiento(LocalDate.of(2007, 9, 14));
+
+		// Beneficiario
+		m.setIdONG(Long.parseLong("008741"));
+		m.setLegajo(Long.parseLong("1036782"));
+		m.setLugarDeNacimiento("La Matanza");
+		m.setSeRetiraSolo(false);
+		m.setCuidadosEspeciales("Ninguno");
+		m.setEscuela("Colegio Nº3");
+		m.setGrado("3º año");
+		m.setTurno("Mañana");
+		//this.setEstadoActivoBeneficiario(true);
+		// Fin Beneficiario
+		beneficiarioService.altaBeneficiario(m);
 		
 		
 		
+		////////////////////////////////////////////
+		m = new BeneficiarioPayload();
+
+		// Contacto
+		m.setNombreDescripcion("Beneficiario");
+		m.setCuit("20-46396063-9");
+		m.setDomicilio("Av. Raúl Scalabrini Ortiz 751, piso 7, depto C");
+		m.setEmail("agustinpeña@gmail.com");
+		m.setTelefono("4970-1876");
+
+		// PersonaFisica
+		m.setDni(46396063);
+		m.setNombre("Agustin");
+		m.setApellido("Peña");
+		m.setFechaNacimiento(LocalDate.of(2008, 2, 20));
+
+		// Beneficiario
+		m.setIdONG(Long.parseLong("000349"));
+		m.setLegajo(Long.parseLong("1040937"));
+		m.setLugarDeNacimiento("Caballito");
+		m.setSeRetiraSolo(false);
+		m.setCuidadosEspeciales("Azucar alto");
+		m.setEscuela("Colegio Nº4");
+		m.setGrado("2º año");
+		m.setTurno("Noche");
+		//this.setEstadoActivoBeneficiario(true);
+		// Fin Beneficiario
+		beneficiarioService.altaBeneficiario(m);
 	}
 	
 	public void cargarUsuariosTenant2() {
@@ -1812,6 +1912,17 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		producto3.setProveedor(proveedor2);
 		producto3 = productoService.altaProducto(producto3);
 		
+		ProductoPayload producto4 = new ProductoPayload();
+		producto4.setTipo("Galletita");
+		producto4.setDescripcion("Galletitas cookies con chispas de chocolate");
+		producto4.setPrecioVenta(BigDecimal.valueOf(500.00));
+		producto4.setCantFijaCompra(10);
+		producto4.setCantMinimaStock(100);
+		producto4.setStockActual(80);
+		producto4.setFragil(false);
+		producto4.setProveedor(proveedor1);
+		producto4 = productoService.altaProducto(producto4);
+		
 		//Insumos
 		InsumoPayload insumo1 = new InsumoPayload();
 		insumo1.setTipo("Cubiertos");
@@ -1826,6 +1937,20 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		insumo2.setStockActual(50);
 		insumo2.setFragil(true);
 		insumo2 = insumoService.altaInsumo(insumo2);
+
+		InsumoPayload insumo3 = new InsumoPayload();
+		insumo3.setTipo("Silla");
+		insumo3.setDescripcion("Silla de plástico");
+		insumo3.setStockActual(50);
+		insumo3.setFragil(false);
+		insumo3 = insumoService.altaInsumo(insumo3);
+		
+		InsumoPayload insumo4 = new InsumoPayload();
+		insumo4.setTipo("Mesa");
+		insumo4.setDescripcion("Mesa de madera");
+		insumo4.setStockActual(5);
+		insumo4.setFragil(false);
+		insumo4 = insumoService.altaInsumo(insumo4);
 		
 		//Factura
 		LocalDateTime today = LocalDateTime.now();
@@ -1868,9 +1993,14 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		factura2 = facturaService.altaFactura(factura2);
 		
 		
-		//Prestamo
+		//Get lista para payloads con personas
 		List<EmpleadoPayload> empleados = empleadoService.getEmpleados();
 		List<BeneficiarioPayload> beneficiarios = beneficiarioService.getBeneficiarios();
+		List<ProfesionalPayload> profesionales = profesionalService.getProfesionales();
+		List<VoluntarioPayload> voluntarios = voluntarioService.getVoluntarios();
+		List<ConsejoAdHonoremPayload> consejoAdHonorems = consejoAdHonoremService.getConsejoAdHonorems();
+		
+		//Prestamo
 		ContactoPayload empleado1 = contactoService.getContactoById(empleados.get(0).getId());
 		ContactoPayload beneficiario1 = contactoService.getContactoById(beneficiarios.get(0).getId());
 		
@@ -1884,8 +2014,54 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		prestamo1.setPrestatario(beneficiario1);
 		prestamo1 = prestamoService.altaPrestamo(prestamo1);
 		
+		//Proyecto
+		LocalDateTime todayPlus1month = today.plusMonths(1);
+		
+		PersonaFisicaPayload persona1 = personaFisicaService.getPersonaFisicaByIdContacto(empleados.get(0).getId());
+		PersonaFisicaPayload persona2 = personaFisicaService.getPersonaFisicaByIdContacto(empleados.get(1).getId());
+		PersonaFisicaPayload persona3 = personaFisicaService.getPersonaFisicaByIdContacto(empleados.get(2).getId());
+		ProyectoPayload proyecto1 = new ProyectoPayload();
+		proyecto1.setDescripcion("Organizar calendario del mes siguiente");
+		proyecto1.setFechaInicio(LocalDate.of(todayPlus1month.getYear(), todayPlus1month.getMonth(), 1));
+		proyecto1.setFechaFin(proyecto1.getFechaInicio().plusDays(1));
+		proyecto1.agregarInvolucrado(persona1);
+		proyecto1.agregarInvolucrado(persona2);
+		proyecto1.agregarInvolucrado(persona3);
+		proyectoService.altaProyecto(proyecto1);
+		
+		PersonaFisicaPayload persona4 = personaFisicaService.getPersonaFisicaByIdContacto(profesionales.get(2).getId());
+		ProyectoPayload proyecto2 = new ProyectoPayload();
+		proyecto2.setDescripcion("Colocado de aire acondicionado");
+		proyecto2.setFechaInicio(LocalDate.of(todayPlus1month.getYear(), todayPlus1month.getMonth(), 15));
+		proyecto2.setFechaFin(proyecto2.getFechaInicio().plusDays(5));
+		proyecto2.agregarInvolucrado(persona4);
+		proyectoService.altaProyecto(proyecto2);
+		
+		PersonaFisicaPayload persona5 = personaFisicaService.getPersonaFisicaByIdContacto(voluntarios.get(1).getId());
+		PersonaFisicaPayload persona6 = personaFisicaService.getPersonaFisicaByIdContacto(voluntarios.get(2).getId());
+		PersonaFisicaPayload persona7 = personaFisicaService.getPersonaFisicaByIdContacto(voluntarios.get(3).getId());
+		ProyectoPayload proyecto3 = new ProyectoPayload();
+		proyecto3.setDescripcion("Marketing de recolección de fondos y donaciones");
+		proyecto3.setFechaInicio(LocalDate.of(todayPlus1month.getYear(), todayPlus1month.getMonth(), 15));
+		proyecto3.setFechaFin(proyecto3.getFechaInicio().plusMonths(3));
+		proyecto3.agregarInvolucrado(persona5);
+		proyecto3.agregarInvolucrado(persona6);
+		proyecto3.agregarInvolucrado(persona7);
+		proyectoService.altaProyecto(proyecto3);
+		
+		PersonaFisicaPayload persona8 = personaFisicaService.getPersonaFisicaByIdContacto(consejoAdHonorems.get(0).getId());
+		PersonaFisicaPayload persona9 = personaFisicaService.getPersonaFisicaByIdContacto(consejoAdHonorems.get(1).getId());
+		PersonaFisicaPayload persona10 = personaFisicaService.getPersonaFisicaByIdContacto(consejoAdHonorems.get(2).getId());
+		ProyectoPayload proyecto4 = new ProyectoPayload();
+		proyecto4.setDescripcion("Reunión de brainstorming para sugerencias de eventos de ONG");
+		proyecto4.setFechaInicio(LocalDate.of(todayPlus1month.getYear(), todayPlus1month.getMonth(), 10));
+		proyecto4.setFechaFin(proyecto4.getFechaInicio());
+		proyecto4.agregarInvolucrado(persona8);
+		proyecto4.agregarInvolucrado(persona9);
+		proyecto4.agregarInvolucrado(persona10);
+		proyectoService.altaProyecto(proyecto4);
+		
 		//Programa de actividades
-		List<ProfesionalPayload> profesionales = profesionalService.getProfesionales();
 		ProgramaDeActividadesPayload programa = new ProgramaDeActividadesPayload();
 		ActividadPayload actividad = new ActividadPayload();
 		actividad.setFechaHoraDesde(LocalDateTime.of(todayMinus1month.getYear(), todayMinus1month.getMonth(), 1, 12, 00));
@@ -1896,25 +2072,32 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		actividad.setDescripcion("Prácticas de cocina a beneficiarios por el profesor: " + actividad.getProfesionales().get(0).getNombre()+" "+actividad.getProfesionales().get(0).getApellido());
 		programa.agregarActividadesPorSemana(10, actividad);
 		programa.setDescripcion(actividad.getDescripcion());
-		//programaDeActividadesService.altaProgramaDeActividades(programa);
+		programaDeActividadesService.altaProgramaDeActividades(programa);
 	}
 	
 	public void cargarDonacionesTenant2() {
 		//Donacion 1 con contacto
-		ContactoPayload donante = new ContactoPayload();
-		donante.setNombreDescripcion("Donante Don Roque");
-		donante.setCuit("20-21735803-9");
-		donante.setDomicilio("Av. Don Monte 1000");
-		donante.setEmail("eldonante@donacion.com");
-		donante.setTelefono("1234-5678");
-		donante = contactoService.altaContacto(donante);
+		PersonaFisicaPayload personaDonante = new PersonaFisicaPayload();
+		personaDonante.setNombreDescripcion("Donante Victoria Lopez");
+		personaDonante.setCuit("27-27106172-9");
+		personaDonante.setDomicilio("Av. Corrientes 1351, piso 2D");
+		personaDonante.setEmail("victorialopez@outlook.com");
+		personaDonante.setTelefono("15-1022-3672");
+		
+		// Donante como persona
+		personaDonante.setDni(27106172);
+		personaDonante.setNombre("Victoria");
+		personaDonante.setApellido("Lopez");
+		personaDonante.setFechaNacimiento(LocalDate.of(1980, 1, 25));
+		personaDonante = personaFisicaService.altaPersonaFisica(personaDonante);
+		ContactoPayload contactoDonante = contactoService.getContactoById(personaDonante.getId());
 		
 		DonacionPayload donacion = new DonacionPayload();
 		donacion.setId(null);
 		donacion.setFecha(LocalDateTime.now().minusMonths(1));
-		donacion.setDonante(donante);
+		donacion.setDonante(contactoDonante);
 		donacion.setTipoDonacion(DonacionTipo.DINERO);
-		donacion.setDescripcion("$100.000");
+		donacion.setDescripcion("$100.000 pesos");
 		donacion.setValorAproximadoDeLaDonacion(BigDecimal.valueOf(100000.00));
 		donacion = donacionService.altaDonacion(donacion);
 		
@@ -1924,9 +2107,16 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		donacion2.setFecha(LocalDateTime.now().minusDays(1));
 		donacion2.setDonante(null);
 		donacion2.setTipoDonacion(DonacionTipo.INSUMO);
-		donacion2.setDescripcion("Galletitas variadas");
-		donacion.setValorAproximadoDeLaDonacion(BigDecimal.valueOf(15000.00));
+		donacion2.setDescripcion("Budín horneado caseras");
+		donacion.setValorAproximadoDeLaDonacion(BigDecimal.valueOf(1500.00));
 		donacion2 = donacionService.altaDonacion(donacion2);
+	}
+	
+	public void copiarFotosDeTestHaciaDB() {
+		fileStorageService.cargarFotosContactoEjemploHaciaDB();
+		fileStorageService.moveTestFilesToMainFolder("producto");
+		fileStorageService.moveTestFilesToMainFolder("actividad");
+		fileStorageService.moveTestFilesToMainFolder("programaDeActividades");
 	}
 	
 	public void generarCienBeneficiariosTenant2() {

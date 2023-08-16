@@ -4,6 +4,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.pfi.crm.multitenant.tenant.payload.VoluntarioPayload;
@@ -18,7 +19,9 @@ public class Voluntario extends PersonaFisicaAbstract {
 	private static final long serialVersionUID = 1155059339619966053L;
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	//@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "voluntario_seq")
+	@SequenceGenerator(name = "voluntario_seq", sequenceName = "voluntario_sequence", allocationSize = 1)
 	private Long idVoluntario;
 	private boolean estadoActivoVoluntario = true;
 	

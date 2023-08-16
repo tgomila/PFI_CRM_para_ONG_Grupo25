@@ -7,10 +7,14 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.OrderBy;
+import javax.persistence.SequenceGenerator;
 
 @MappedSuperclass
 public abstract class PersonAbstract{
-	@Id @GeneratedValue(strategy= GenerationType.IDENTITY)
+	@Id
+	//@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "person_abstract_seq")
+	@SequenceGenerator(name = "person_abstract_seq", sequenceName = "person_abstract_sequence", allocationSize = 1)
 	private long id;
 	
 	@ManyToOne(cascade = CascadeType.ALL)

@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.pfi.crm.multitenant.tenant.model.audit.UserDateAudit;
@@ -21,7 +22,9 @@ public class FacturaItem extends UserDateAudit {
 	private static final long serialVersionUID = 330786093890005795L;
 	
 	@Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+	//@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "factura_item_seq")
+	@SequenceGenerator(name = "factura_item_seq", sequenceName = "factura_item_sequence", allocationSize = 1)
 	private Long id;
 	private String descripcion;
 	private int unidades;
