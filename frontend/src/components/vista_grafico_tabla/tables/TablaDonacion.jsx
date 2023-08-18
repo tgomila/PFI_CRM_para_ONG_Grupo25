@@ -1,6 +1,6 @@
 import DonacionService from "../../../services/DonacionService";
 import { TablaGenerica } from "./Tabla_Generica";
-import { RenderFotoIntegranteRow } from "./Tabla_Variables";
+import { columnIntegranteConFotoColumn } from "./Tabla_Variables";
 import {
   GlobalFilter,
   DefaultColumnFilter,
@@ -31,10 +31,7 @@ const TablaDonacion = ({visibilidadInput, dataIn}) => {
       Filter: DateRangeColumnFilter,
       filter: dateBetweenFilterFn
     },
-    {
-      Header: "Donante",
-      Cell: ({ row }) => RenderFotoIntegranteRow(row, row.original?.donante, "contacto"),
-    },
+    columnIntegranteConFotoColumn("Donante", "donante", "contacto"),
     {
       Header: "Tipo de donación",
       accessor: "tipoDonacion",

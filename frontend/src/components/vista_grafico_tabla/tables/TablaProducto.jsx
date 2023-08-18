@@ -1,6 +1,6 @@
 import ProductoService from "../../../services/ProductoService";
 import { TablaGenericaConFoto } from "./Tabla_Generica";
-import { RenderFotoIntegranteRow } from "./Tabla_Variables";
+import { columnIntegranteConFotoColumn } from "./Tabla_Variables";
 import {
   GlobalFilter,
   DefaultColumnFilter,
@@ -67,10 +67,7 @@ const TablaProducto = ({visibilidadInput, dataIn}) => {
       accessor: "fragil",
       Cell: ({ row, value }) => (row.original?.id ? (value ? "✅" : "❌") : "")
     },
-    {
-      Header: "Proveedor",
-      Cell: ({ row }) => RenderFotoIntegranteRow(row, row.original?.proveedor, "contacto"),
-    },
+    columnIntegranteConFotoColumn("Proveedor", "proveedor", "contacto"),
   ];
   
   return(

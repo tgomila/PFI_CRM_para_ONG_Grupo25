@@ -320,6 +320,40 @@ const DateGenericRangeColumnFilter = ({
 };
 
 
+const emisorFacturaFilterFn = (rows, id, filterValue) => {
+  return rows.filter(row => {
+    const emisor = row.original?.emisorFactura;
+    if (emisor) {
+      const fullName = `${emisor.nombre} ${emisor.apellido}`.toLowerCase();
+      return fullName.includes(filterValue.toLowerCase());
+    }
+    return false;
+  });
+}
+
+const CustomTextFilter = ({ column }) => {
+  const {
+    filterValue,
+    setFilter,
+    preFilteredRows
+  } = column;
+
+  const count = preFilteredRows.length;
+
+  return (
+    <input
+      value={filterValue || ''}
+      onChange={(e) => {
+        setFilter(e.target.value || undefined);
+      }}
+      placeholder={`Buscar (${count} resultados)`}
+    />
+  );
+}
+
+
+
+
 
 
 
@@ -333,5 +367,7 @@ export {
   dateBetweenFilterFn,
   DateRangeColumnFilter,
   DateHourRangeColumnFilter,
+  emisorFacturaFilterFn,
+  CustomTextFilter,
 }
 //export default IndeterminateCheckbox;

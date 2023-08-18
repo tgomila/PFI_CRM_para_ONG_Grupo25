@@ -10,6 +10,15 @@ import { ContactoRead, PersonaRead } from "../../CRUD/Constants/ConstantsReadMod
 import ContactoService from "../../../services/ContactoService";
 import PersonaService from "../../../services/PersonaService";
 import { MdOutlinePersonAdd, MdOutlinePersonOff } from "react-icons/md";
+import {
+  RenderMostrarIntegrantesGenericRow,
+  RenderMostrarIntegrantesPersonasRow,
+  RenderMostrarIntegrantesBeneficiarioRow,
+  RenderMostrarIntegrantesProfesionalRow,
+} from "./Tabla_Mostrar_Integrantes_Modal";
+import {
+  NumberRangeColumnFilter,
+} from"./Tabla_Filters";
 
 const IndeterminateCheckbox = forwardRef(({ indeterminate, ...rest }, ref) => {
   const defaultRef = useRef();
@@ -445,11 +454,13 @@ const RenderMostrarContacto = (datoContactoIntegrante, tipoImagen) => {
     setPersona(null);
     setLoadingSearch(true);
     if(datoContactoIntegrante?.id){
-      PersonaService.getById(datoContactoIntegrante.id).then
+      PersonaService.getSiExisteById(datoContactoIntegrante.id).then
         (response => {
-          setPersona(response.data);
-          setNombreModal(getNombreDelDato(response.data));
           setLoadingSearch(false);
+          if(response.data){
+            setPersona(response.data);
+            setNombreModal(getNombreDelDato(response.data));
+          }
         },
         (error) => {
           setLoadingSearch(false);
@@ -460,20 +471,11 @@ const RenderMostrarContacto = (datoContactoIntegrante, tipoImagen) => {
   }, [datoContactoIntegrante]);
 
   useEffect(() => {
-    console.log("datoContactoIntegrante");
-    console.log(datoContactoIntegrante);
-    console.log("tipoImagen");
-    console.log(tipoImagen);
-    
     if(datoContactoIntegrante?.id){
-      {console.log("Hola12")}
       if(!datoContactoIntegrante?.imagen_tabla){
         ImageService.getFoto(datoContactoIntegrante.id, tipoImagen, 'tabla')
           .then(response => {
-            {console.log("response")};
-            {console.log(response)};
-            setLoadedImage(response); // Actualiza el estado con la imagen devuelta por el servicio
-            {console.log("Hola23")}
+            setLoadedImage(response);
           })
           .catch(error => {
             console.error('Error al obtener la imagen:', error);
@@ -518,15 +520,10 @@ const RenderMostrarContacto = (datoContactoIntegrante, tipoImagen) => {
   
   return(
     <div>
-      {console.log("datoContactoIntegrante")}
-      {console.log(datoContactoIntegrante)}
       {datoContactoIntegrante?.id && (
         <>
-        {console.log("loadedImage")}
-        {console.log(loadedImage)}
         {loadedImage ? (
           <div>
-            {console.log("Hay foto")}
             {nombreModal ? (
               <div>
                 <OverlayTrigger
@@ -597,10 +594,8 @@ const RenderMostrarContacto = (datoContactoIntegrante, tipoImagen) => {
           </div>
         ) : (
           <div>
-          {console.log("No hay loadedImage")}
           <span className="spinner-border spinner-border-sm"></span>
           <p>Cargando foto<br />de integrante...</p>
-          {console.log("No hay loadedImage")}
           </div>
         )}
         </>
@@ -609,6 +604,115 @@ const RenderMostrarContacto = (datoContactoIntegrante, tipoImagen) => {
 
   );
 };
+
+function columnIntegranteConFotoColumn(title, property, tipoFoto) {
+  return {
+    Header: title,
+    accessor: (row) => {
+      const data = row?.[property];
+      if (data) {
+        const filteredKeys = Object.keys(data).filter(key => {
+          const value = data[key];
+          return !['imagen', 'imagen_completa'].includes(key) && !Array.isArray(value);
+        });
+        const dataString = filteredKeys.map(key => data[key]).join(' ').toLowerCase();
+        console.log("dataString");
+        console.log(dataString);
+        return dataString;
+      }
+      return null;
+    },
+    Cell: ({ row }) => RenderFotoIntegranteRow(row, row.original?.[property], tipoFoto),
+    //filter: 'fuzzyText',
+    type: "string",
+  };
+}
+
+function columnsIntegrantesPersonas(property) {
+  return columnsIntegrantesGeneric(property, "la", "persona", "personas", RenderMostrarIntegrantesPersonasRow)
+}
+
+function columnsIntegrantesPersonasConNombrePersonalizado(property, el_la, nombreIntegranteSingular, nombreIntegrantePlural) {
+  return columnsIntegrantesGeneric(property, el_la, nombreIntegranteSingular, nombreIntegrantePlural, RenderMostrarIntegrantesPersonasRow)
+}
+
+function columnsIntegrantesBeneficiarios(property) {
+  return columnsIntegrantesGeneric(property, "el", "beneficiario", "beneficiarios", RenderMostrarIntegrantesBeneficiarioRow)
+}
+
+function columnsIntegrantesProfesionales(property) {
+  return columnsIntegrantesGeneric(property, "el", "profesional", "profesionales", RenderMostrarIntegrantesProfesionalRow)
+}
+
+
+function columnsIntegrantesGeneric(property, el_la, nombreIntegranteSingular, nombreIntegrantePlural, RenderMostrarIntegrantesRow) {
+  /*return {
+    Header: `${nombreIntegrantePlural}`,
+    accessor: (row) => {
+      const dataArray = row?.[property];
+      console.log("dataArray");
+      console.log(dataArray);
+      if (dataArray) {
+        const dataArrayString = dataArray
+          .map(item => {
+            const filteredKeys = Object.keys(item).filter(key => {
+              const value = item[key];
+              return !['imagen', 'imagen_completa'].includes(key) && !Array.isArray(value);
+            });
+            return filteredKeys.map(key => item[key]).join(' ').toLowerCase();
+          })
+          .join(' ');
+        return dataArrayString;
+      }
+      return null;
+    },
+    Cell: ({ row }) => RenderMostrarIntegrantesRow(row, row.original?.[property], el_la, nombreIntegranteSingular, nombreIntegrantePlural),
+    filter: 'fuzzyText',
+    type: "string",
+  };*/
+  
+  
+  return [
+    {
+      Header: `Número de ${nombreIntegrantePlural}`,
+      accessor: (row) => {
+        if (row && row[property]) {
+          return row[property].length;
+        } else {
+          return null;
+        }
+      },
+      Filter: NumberRangeColumnFilter,
+      filter: 'between',
+      type: "number",
+    },
+    {
+      Header: `${nombreIntegrantePlural}`,
+      accessor: (row) => {
+        const dataArray = row?.[property];
+        console.log("dataArray");
+        console.log(dataArray);
+        if (dataArray) {
+          const dataArrayString = dataArray
+            .map(item => {
+              const filteredKeys = Object.keys(item).filter(key => {
+                const value = item[key];
+                return !['imagen', 'imagen_completa'].includes(key) && !Array.isArray(value);
+              });
+              return filteredKeys.map(key => item[key]).join(' ').toLowerCase();
+            })
+            .join(' ');
+          return dataArrayString;
+        }
+        return null;
+      },
+      Cell: ({ row }) => RenderMostrarIntegrantesRow(row, row.original?.[property], el_la, nombreIntegranteSingular, nombreIntegrantePlural),
+      type: "string",
+    },
+  ];
+}
+
+
 
 
 
@@ -622,4 +726,9 @@ export {
   RenderBotonVer,
   RenderBotonEditar,
   RenderBotonBorrar,
+  columnIntegranteConFotoColumn,
+  columnsIntegrantesPersonas,
+  columnsIntegrantesPersonasConNombrePersonalizado,
+  columnsIntegrantesBeneficiarios,
+  columnsIntegrantesProfesionales,
 }

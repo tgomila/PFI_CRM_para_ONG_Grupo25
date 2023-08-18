@@ -32,7 +32,15 @@ const FotoPerfil = ({ id, setFotoSubida, visibilidad, tipoFoto }) => {
         }
     };
     useEffect(() => {
-        if(id){
+        console.log("id");
+        console.log(id);
+        console.log("setFotoSubida");
+        console.log(setFotoSubida);
+        console.log("visibilidad");
+        console.log(visibilidad);
+        console.log("tipoFoto");
+        console.log(tipoFoto);
+        if(id && id !== ''){
             ImageService.getFoto(id, tipoFoto, 'completa').then((res) => {
                 setFoto(res);
                 setIsFotoDefault(false);

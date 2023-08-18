@@ -1,6 +1,6 @@
 import PrestamoService from "../../../services/PrestamoService";
 import { TablaGenerica } from "./Tabla_Generica";
-import { RenderFotoIntegranteRow } from "./Tabla_Variables";
+import { columnIntegranteConFotoColumn } from "./Tabla_Variables";
 import {
   GlobalFilter,
   DefaultColumnFilter,
@@ -60,16 +60,8 @@ const TablaPrestamo = ({visibilidadInput, dataIn}) => {
       accessor: "haSidoDevuelto",
       Cell: ({ row, value }) => (row.original?.id ? (value ? "✅" : "❌") : "")
     },
-    {
-      Header: "Prestamista",
-      accessor: "prestamista",
-      Cell: ({ row }) => RenderFotoIntegranteRow(row, row.original?.prestamista, "contacto"),
-    },
-    {
-      Header: "Prestatario",
-      accessor: "prestatario",
-      Cell: ({ row }) => RenderFotoIntegranteRow(row, row.original?.prestatario, "contacto"),
-    },
+    columnIntegranteConFotoColumn("Prestamista", "prestamista", "contacto"),
+    columnIntegranteConFotoColumn("Prestatario", "prestatario", "contacto"),
   ];
   
   return(

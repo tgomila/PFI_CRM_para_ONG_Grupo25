@@ -419,6 +419,7 @@ const CreateReadUpdateGenericoConFoto = ({cargarDatosDefault, DatoUpdateInput, t
                                 <div>
                                     {/* Si hay foto (ejemplo persona, producto) mostrar, si no hay foto ejemplo factura, no mostrar */}
                                     {tipoDatoForImageService && 
+                                    (typeCRUD === 'CREATE' || ((typeCRUD === 'UPDATE' || typeCRUD === 'READ') && datos.id)) &&//Le agregué esto porque en "RenderMostrarContacto" a veces el id se pasaba más tarde
                                         <FotoPerfil
                                             id = {datos.id}
                                             setFotoSubida = {setFotoSubida}

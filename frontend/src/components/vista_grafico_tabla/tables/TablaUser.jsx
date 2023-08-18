@@ -1,7 +1,7 @@
 import React, { useMemo, useState, useEffect, useRef } from "react";
 import UserService from "../../../services/UserService";
 import { TablaGenerica } from "./Tabla_Generica";
-import { RenderFotoIntegranteRow } from "./Tabla_Variables";
+import { columnIntegranteConFotoColumn } from "./Tabla_Variables";
 import { 
   IndeterminateCheckbox, 
   RenderFotoPerfilRow,
@@ -26,10 +26,7 @@ const TablaUser = ({visibilidadInput}) => {
         accessor: "id",
         type: "number",//sirve para mostrar el icono FaSortNumericDown en tabla generica
       },
-      {
-        Header: "Contacto",
-        Cell: ({ row }) => RenderFotoIntegranteRow(row, row.original?.contacto, "contacto"),
-      },
+      columnIntegranteConFotoColumn("Persona asociada", "contacto", "contacto"),
       {
         Header: "Nombre",
         accessor: "name",

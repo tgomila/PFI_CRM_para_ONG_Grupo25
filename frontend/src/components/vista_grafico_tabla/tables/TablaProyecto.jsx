@@ -1,6 +1,7 @@
 import ProyectoService from "../../../services/ProyectoService";
 import { TablaGenericaConFoto } from "./Tabla_Generica";
 import { RenderMostrarIntegrantesPersonasRow } from "./Tabla_Mostrar_Integrantes_Modal";
+import { columnsIntegrantesPersonasConNombrePersonalizado } from "./Tabla_Variables";
 import {
   GlobalFilter,
   DefaultColumnFilter,
@@ -41,16 +42,22 @@ const TablaProyecto = ({visibilidadInput, dataIn}) => {
       Filter: DateRangeColumnFilter,
       filter: dateBetweenFilterFn,
     },
-    {
+    /*{
       Header: "Número de Involucrados",
-      accessor: "numInvolucrados",
-      Cell: ({ row }) => {
-        if (row && row.original && row.original.involucrados) {
-          return row.original.involucrados.length;
+      accessor: (row) => {
+        if (row && row.involucrados) {
+          return row.involucrados.length;
         } else {
-          return null;//Puede ser para el caso que se agrupe
+          return null; // Puede ser para el caso que se agrupe
         }
       },
+      // Cell: ({ row }) => {
+      //   if (row && row.original && row.original.involucrados) {
+      //     return row.original.involucrados.length;
+      //   } else {
+      //     return null;//Puede ser para el caso que se agrupe
+      //   }
+      // },
       Filter: NumberRangeColumnFilter,
       filter: 'between',
       type: "number",
@@ -58,7 +65,8 @@ const TablaProyecto = ({visibilidadInput, dataIn}) => {
     {
       Header: "Involucrados",
       Cell: ({ row }) => RenderMostrarIntegrantesPersonasRow(row, row.original?.involucrados, "el", "involucrado", "involucrados"),
-    },
+    },*/
+    ...columnsIntegrantesPersonasConNombrePersonalizado("involucrados", "el", "involucrado", "involucrados"),
   ];
   
   return(

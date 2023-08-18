@@ -1,6 +1,6 @@
 import FacturaService from "../../../services/FacturaService";
 import { TablaGenerica } from "./Tabla_Generica";
-import { RenderFotoIntegranteRow } from "./Tabla_Variables";
+import { columnIntegranteConFotoColumn } from "./Tabla_Variables";
 import {
   GlobalFilter,
   DefaultColumnFilter,
@@ -10,6 +10,8 @@ import {
   NumberRangeColumnFilter,
   dateBetweenFilterFn,
   DateHourRangeColumnFilter,
+  emisorFacturaFilterFn,
+  CustomTextFilter,
 } from"./Tabla_Filters";
 //import moment from "moment";
 import { format } from 'date-fns';
@@ -34,6 +36,8 @@ const TablaFactura = ({visibilidadInput, dataIn}) => {
   );
 }
 
+const emisorFacturaColumn = columnIntegranteConFotoColumn("Emisor factura", "emisorFactura", "contacto");
+
 const columnsFactura = [
   {
     Header: "ID",
@@ -50,16 +54,8 @@ const columnsFactura = [
     Filter: DateHourRangeColumnFilter,
     filter: dateBetweenFilterFn
   },
-  {
-    Header: "Cliente",
-    accessor: "cliente",
-    Cell: ({ row }) => RenderFotoIntegranteRow(row, row.original?.cliente, "contacto"),
-  },
-  {
-    Header: "Emisor factura",
-    accessor: "emisorFactura",
-    Cell: ({ row }) => RenderFotoIntegranteRow(row, row.original?.emisorFactura, "contacto"),
-  },
+  columnIntegranteConFotoColumn("Cliente", "cliente", "contacto"),
+  columnIntegranteConFotoColumn("Emisor factura", "emisorFactura", "contacto"),
   {
     Header: "Items",
     Cell: ({ row }) => RenderMostrarIntegrantesGenericRow(row, row.original?.itemsFactura, columnsFacturaItems, null, "el", "item", "items"),

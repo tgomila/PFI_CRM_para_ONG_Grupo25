@@ -8,6 +8,11 @@ class PersonaService {
     getById(dtoId){
         return axios.get(BACKEND_API_BASE_URL + 'personafisica/' + dtoId, { headers: authHeader() });
     }
+
+    //devuelve null si persona no existe, pero si existe devuelve persona
+    getSiExisteById(dtoId){
+        return axios.get(BACKEND_API_BASE_URL + 'personafisica/si_existe/' + dtoId, { headers: authHeader() });
+    }
     
     getAll(){
         return axios.get(BACKEND_API_BASE_URL + 'personafisica/all', { headers: authHeader() });

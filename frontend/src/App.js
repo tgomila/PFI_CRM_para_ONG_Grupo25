@@ -3,8 +3,8 @@ import logo from "./logo.svg";
 import "./App.css";
 import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import TablasDinamicas from "./components/vista_grafico_tabla/tables/TablasDinamicas";
-import TablaActividad from "./components/vista_grafico_tabla/tables/TablaActividad";
-import TablaActividadBeneficiario from "./components/vista_grafico_tabla/tables/TablaActividadBeneficiario";
+// import TablaActividad from "./components/vista_grafico_tabla/tables/TablaActividad_old_dinamico";
+// import TablaActividadBeneficiario from "./components/vista_grafico_tabla/tables/TablaActividadBeneficiario_old_dinamico";
 
 import RealizarPago from "./components/RealizarPago";
 
@@ -24,7 +24,7 @@ import PersonaJuridicaVista from "./components/vista_grafico_tabla/PersonaJuridi
 
 
 import UserVista from "./components/vista_grafico_tabla/UserVista";
-// import ActividadVista from "./components/vista_grafico_tabla/ActividadVista";
+import ActividadVista from "./components/vista_grafico_tabla/ActividadVista";
 // import ProgramaDeActividadesVista from "./components/vista_grafico_tabla/ProgramaDeActividadesVista";
 import ProductoVista from "./components/vista_grafico_tabla/ProductoVista";
 import DonacionVista from "./components/vista_grafico_tabla/DonacionVista";
@@ -165,7 +165,7 @@ const App = () => {
   //useEffect(() => {
       // Fetch data
       // Update the document title using the browser API
-  
+
       //Lista de modulos a mostrar
       //modulosService.getModulos().then((res) => {
       //    setMenuitem(res.data);
@@ -176,7 +176,7 @@ const App = () => {
       //if(isPromise(modulos)) {
       //  console.log("Es un promise:");
       //  console.log(modulos);
-      //  
+      //
       //  modulos.then((res) => {
       //      setMenuitem(res.data);
       //  });
@@ -184,12 +184,12 @@ const App = () => {
       //else {//Es un object
       //  console.log("Es un object:");
       //  console.log(modulos);
-      //  
+      //
       //  modulos.map((res) => {
       //    setMenuitem(res.data);
       //  });
       //}
-      
+
   //}, []);
 
   useEffect(() => {
@@ -219,15 +219,15 @@ const App = () => {
 
   return (
 
-    
+
     <div className="principal">
-      
 
 
 
 
 
-      
+
+
       <nav className="navbar navbar-expand navbar-dark bg-dark">
         <Link to={"/"} className="navbar-brand">
           COSMOS
@@ -235,14 +235,14 @@ const App = () => {
         <div className="navbar-nav mr-auto">
           <li className="nav-item">
             <Link to={"/"} className="nav-link">
-              
+
             </Link>
           </li>
 
           {showModeratorBoard && (
             <li className="nav-item">
               <Link to={"/mod"} className="nav-link">
-                Tabla Moderador 
+                Tabla Moderador
               </Link>
             </li>
           )}
@@ -313,16 +313,16 @@ const App = () => {
             <Route path="/consejoadhonorem" element={<ConsejoAdHonoremVista/>} />
             <Route path="/personajuridica" element={<PersonaJuridicaVista/>} />
             <Route path="/profesional" element={<ProfesionalVista/>} />
-            
-            
-            {/* <Route path="/actividad" element={<TablaActividad redireccionamiento='actividad' />} />
-            <Route path="/tablaActividadBeneficiario" element={<TablaActividadBeneficiario redireccionamiento='tablaActividadBeneficiario' />} />
-            <Route path="/programadeactividades" element={<TablasDinamicas redireccionamiento='programadeactividades' />} />
-            <Route path="/factura" element={<TablasDinamicas redireccionamiento='factura' />} /> */}
-            
+
+
+            {/* <Route path="/actividad" element={<TablaActividad redireccionamiento='actividad' />} /> */}
+            {/* <Route path="/tablaActividadBeneficiario" element={<TablaActividadBeneficiario redireccionamiento='tablaActividadBeneficiario' />} /> */}
+            {/* <Route path="/programadeactividades" element={<TablasDinamicas redireccionamiento='programadeactividades' />} /> */}
+            {/* <Route path="/factura" element={<TablasDinamicas redireccionamiento='factura' />} /> */}
+
 
             <Route path="/users" element={<UserVista />} />
-            {/* <Route path="/actividad" element={<ActividadVista />} /> */}
+            <Route path="/actividad" element={<ActividadVista />} />
             {/* <Route path="/programadeactividades" element={<ProgramaDeActividadesVista />} /> */}
             <Route path="/producto" element={<ProductoVista />} />
             <Route path="/donacion" element={<DonacionVista />} />
@@ -337,7 +337,7 @@ const App = () => {
             <Route path="/marketplace" element={<Marketplace  />} />
             <Route path="/marketplace/pagar" element={<RealizarPagoComponent  />} />
             <Route path="/Testing" element={<Testing  />} />
-            
+
 
 
             {/* Create item */}
@@ -365,7 +365,7 @@ const App = () => {
             <Route path="/realizarpago/año/actividad" element={<RealizarPago  moduloAPagar='ACTIVIDAD' tiempoContratado='anio'/>} />
             <Route path="/realizarpago/mes/factura" element={<RealizarPago moduloAPagar='FACTURA' tiempoContratado='mes'/>} />
             <Route path="/realizarpago/año/factura" element={<RealizarPago moduloAPagar='FACTURA' tiempoContratado='anio'/>} />
-            
+
 
 
             {/* Update item */}
@@ -421,9 +421,9 @@ const App = () => {
             <Route path="/register" element={<Register />} />
             <Route path="/profile" element={<Profile />} />
 
-            
+
             <Route path="*" element={<Error404 />} />
-            
+
           </Routes>
           <br/><br/>
         </Sidebar>
