@@ -51,6 +51,13 @@ public class PersonaFisicaController {
         return personaFisicaService.getPersonaFisicaByIdContacto(id);
     }
 	
+	@GetMapping("/si_existe/{id}")
+    public PersonaFisicaPayload getSiExistePersonaFisicaById(@PathVariable Long id, @CurrentUser UserPrincipal currentUser) {
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.PERSONA, "Ver persona con id: '" + id + "'");
+        boolean existe = personaFisicaService.existePersonaFisicaPorIdContacto(id);
+		return existe ? personaFisicaService.getPersonaFisicaByIdContacto(id) : null;
+    }
+	
 	@GetMapping({"/", "/all"})
 	//@PreAuthorize("hasRole('ROLE_EMPLOYEE')")
     public List<PersonaFisicaPayload> getPersonaFisica(@CurrentUser UserPrincipal currentUser) {

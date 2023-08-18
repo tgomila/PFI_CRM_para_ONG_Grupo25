@@ -1118,7 +1118,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		contactoPayload.setNombreDescripcion("Jefa y voluntaria de la ONG");
 		contactoPayload.setCuit("27-33230401-2");
 		contactoPayload.setDomicilio("Lavalle 1978, piso 3, depto A");
-		contactoPayload.setEmail("julietaalvarez@testing.com");
+		contactoPayload.setEmail("julietaalvarez@gmail.com");
 		contactoPayload.setTelefono("+54 11-7162-5179");
 		
 		contactoPayload = contactoService.altaContacto(contactoPayload);
@@ -1972,12 +1972,13 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		insumo4 = insumoService.altaInsumo(insumo4);
 		
 		//Factura
+		ContactoPayload empleada_nutricionista = contactoService.getContactoSiExisteByCuit("27-30863688-9");
 		LocalDateTime today = LocalDateTime.now();
 		LocalDateTime todayMinus1month = today.minusMonths(1);
 		LocalDateTime fechaFactura1 = LocalDateTime.of(todayMinus1month.getYear(), todayMinus1month.getMonth(), 20, 13, 15);
 		FacturaPayload factura1 = new FacturaPayload();
 		factura1.setFecha(fechaFactura1);
-		factura1.setCliente(null);
+		factura1.setCliente(empleada_nutricionista);
 		factura1.setEmisorFactura(proveedor1);
 		//
 		FacturaItemPayload factura1_item1 = new FacturaItemPayload();
@@ -1995,11 +1996,12 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		factura1.agregarItemFactura(factura1_item2);
 		//
 		factura1 = facturaService.altaFactura(factura1);
-		
+
+		ContactoPayload empleado_chef = contactoService.getContactoSiExisteByCuit("20-30862571-9");
 		LocalDateTime fechaFactura2 = LocalDateTime.of(todayMinus1month.getYear(), todayMinus1month.getMonth(), 25, 17, 30);
 		FacturaPayload factura2 = new FacturaPayload();
 		factura2.setFecha(fechaFactura2);
-		factura2.setCliente(null);
+		factura2.setCliente(empleado_chef);
 		factura2.setEmisorFactura(proveedor1);
 		//
 		FacturaItemPayload factura2_item1 = new FacturaItemPayload();

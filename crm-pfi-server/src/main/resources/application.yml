@@ -9,7 +9,7 @@ multitenancy:
         #driverClassName: com.mysql.cj.jdbc.Driver
         #username: root
         url: jdbc:postgresql://localhost:5432/master_db?useSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false
-        driverClassName: org.hibernate.dialect.PostgreSQLDialect
+        driverClassName: org.postgresql.Driver
         username: postgres
         password: 1234
         connectionTimeout: 20000
@@ -17,3 +17,9 @@ multitenancy:
         idleTimeout: 300000
         minIdle: 5
         poolName: masterdb-connection-pool
+      
+      jpa:
+        properties:
+          hibernate:
+            #spring.jpa.properties.hibernate.dialect
+            dialect: org.hibernate.dialect.PostgreSQLDialect

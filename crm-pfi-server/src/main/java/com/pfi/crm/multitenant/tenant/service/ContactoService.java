@@ -293,6 +293,14 @@ public class ContactoService {
 		return contactoRepository.existsById(id);
 	}
 	
+	public boolean existeContactoByCuit(String cuit) {
+		return contactoRepository.existsByCuit(cuit);
+	}
+	
+	public ContactoPayload getContactoSiExisteByCuit(String cuit) {
+		return contactoRepository.existsByCuit(cuit) ? this.getContactoByCuit(cuit) : null;
+	}
+	
 	
 	//Dashboard
 	public List<ContactoPayload> getContactosCreadosEsteMes() {
