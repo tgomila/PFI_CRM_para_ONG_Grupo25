@@ -7,7 +7,6 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
@@ -18,9 +17,9 @@ import com.pfi.crm.multitenant.tenant.payload.ModuloItemPayload;
 public class ModuloVisibilidadPorRolTipo {
 
 	@Id
-	//@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "modulo_visibilidad_por_rol_tipo_seq")
-	@SequenceGenerator(name = "modulo_visibilidad_por_rol_tipo_seq", sequenceName = "modulo_visibilidad_por_rol_tipo_sequence", allocationSize = 1)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	//@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "modulo_visibilidad_por_rol_tipo_seq")
+	//@SequenceGenerator(name = "modulo_visibilidad_por_rol_tipo_seq", sequenceName = "modulo_visibilidad_por_rol_tipo_sequence", allocationSize = 1)
 	private Long id;
 	
 	//private String path;

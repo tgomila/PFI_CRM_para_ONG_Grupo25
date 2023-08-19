@@ -17,7 +17,6 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import org.slf4j.Logger;
@@ -37,9 +36,9 @@ public class ModuloVisibilidadPorRol {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ModuloVisibilidadPorRol.class);
 	
 	@Id
-	//@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "modulo_visibilidad_seq")
-	@SequenceGenerator(name = "modulo_visibilidad_seq", sequenceName = "modulo_visibilidad_sequence", allocationSize = 1)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	//@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "modulo_visibilidad_seq")
+	//@SequenceGenerator(name = "modulo_visibilidad_seq", sequenceName = "modulo_visibilidad_sequence", allocationSize = 1)
     private Long id;
 	
 	@ManyToOne(fetch=FetchType.EAGER, cascade = CascadeType.MERGE)

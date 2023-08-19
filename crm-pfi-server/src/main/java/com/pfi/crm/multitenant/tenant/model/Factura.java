@@ -13,7 +13,6 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.LazyCollection;
@@ -32,9 +31,9 @@ public class Factura extends UserDateAudit {
 	private static final long serialVersionUID = 6022182382691725995L;
 
 	@Id
-	//@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "factura_seq")
-	@SequenceGenerator(name = "factura_seq", sequenceName = "factura_sequence", allocationSize = 1)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	//@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "factura_seq")
+	//@SequenceGenerator(name = "factura_seq", sequenceName = "factura_sequence", allocationSize = 1)
 	private Long id;
 	
 	private LocalDateTime fecha;

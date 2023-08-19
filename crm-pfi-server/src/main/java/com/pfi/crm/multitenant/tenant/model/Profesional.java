@@ -4,7 +4,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.pfi.crm.multitenant.tenant.payload.ProfesionalPayload;
@@ -20,9 +19,9 @@ public class Profesional extends TrabajadorAbstract{
 	private static final long serialVersionUID = -32758458147602560L;
 
 	@Id
-	//@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "profesional_seq")
-	@SequenceGenerator(name = "profesional_seq", sequenceName = "profesional_sequence", allocationSize = 1)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	//@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "profesional_seq")
+	//@SequenceGenerator(name = "profesional_seq", sequenceName = "profesional_sequence", allocationSize = 1)
 	private Long idProfesional;
 	
 	private String profesion;

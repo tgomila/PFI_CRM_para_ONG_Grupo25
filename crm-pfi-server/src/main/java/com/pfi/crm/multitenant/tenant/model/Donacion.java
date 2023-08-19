@@ -12,7 +12,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OrderBy;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.pfi.crm.multitenant.tenant.model.audit.UserDateAudit;
@@ -28,9 +27,9 @@ public class Donacion extends UserDateAudit{
 	private static final long serialVersionUID = -4353814294309655078L;
 
 	@Id
-	//@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "donacion_seq")
-	@SequenceGenerator(name = "donacion_seq", sequenceName = "donacion_sequence", allocationSize = 1)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	//@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "donacion_seq")
+	//@SequenceGenerator(name = "donacion_seq", sequenceName = "donacion_sequence", allocationSize = 1)
 	private Long id;
 	
 	private LocalDateTime fecha;

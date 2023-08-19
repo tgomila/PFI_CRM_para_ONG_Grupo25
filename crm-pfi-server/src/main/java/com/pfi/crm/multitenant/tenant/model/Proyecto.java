@@ -11,7 +11,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.OrderBy;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.LazyCollection;
@@ -31,9 +30,9 @@ public class Proyecto extends UserDateAudit {
 	private static final long serialVersionUID = 953565293845694276L;
 	
 	@Id
-	//@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "proyecto_seq")
-	@SequenceGenerator(name = "proyecto_seq", sequenceName = "proyecto_sequence", allocationSize = 1)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	//@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "proyecto_seq")
+	//@SequenceGenerator(name = "proyecto_seq", sequenceName = "proyecto_sequence", allocationSize = 1)
 	private Long id;
 	
 	private String descripcion;

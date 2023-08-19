@@ -13,10 +13,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.LazyCollection;
@@ -36,9 +34,9 @@ public class ProgramaDeActividades extends UserDateAudit {
 	private static final long serialVersionUID = 8844739142353777444L;
 
 	@Id
-	//@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "programa_de_actividades_seq")
-	@SequenceGenerator(name = "programa_de_actividades_seq", sequenceName = "programa_de_actividades_sequence", allocationSize = 1)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	//@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "programa_de_actividades_seq")
+	//@SequenceGenerator(name = "programa_de_actividades_seq", sequenceName = "programa_de_actividades_sequence", allocationSize = 1)
 	private Long id;
 	
 	private Boolean estadoActivoPrograma;

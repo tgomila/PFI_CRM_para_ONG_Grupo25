@@ -9,7 +9,6 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.pfi.crm.exception.BadRequestException;
@@ -26,9 +25,9 @@ public class ModuloMarket extends UserDateAudit {
 	private static final long serialVersionUID = 8160834696759597980L;
 
 	@Id
-	//@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "modulo_market_seq")
-	@SequenceGenerator(name = "modulo_market_seq", sequenceName = "modulo_market_sequence", allocationSize = 1)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	//@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "modulo_market_seq")
+	//@SequenceGenerator(name = "modulo_market_seq", sequenceName = "modulo_market_sequence", allocationSize = 1)
 	private Long id;
 	
 	@Enumerated(EnumType.STRING)

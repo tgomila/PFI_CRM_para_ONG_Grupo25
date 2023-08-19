@@ -1,15 +1,16 @@
 package com.pfi.crm.multitenant.tenant.model;
 
-import org.hibernate.annotations.NaturalId;
 import javax.persistence.*;
+
+import org.hibernate.annotations.NaturalId;
 
 @Entity
 @Table(name = "roles")
 public class Role {
     @Id
-	//@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "roles_seq")
-	@SequenceGenerator(name = "roles_seq", sequenceName = "roles_sequence", allocationSize = 1)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	//@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "roles_seq")
+	//@SequenceGenerator(name = "roles_seq", sequenceName = "roles_sequence", allocationSize = 1)
     private Long id;
 
     @Enumerated(EnumType.STRING)

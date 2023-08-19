@@ -8,7 +8,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.pfi.crm.multitenant.tenant.payload.PersonaFisicaAbstractPayload;
@@ -24,9 +23,9 @@ public class PersonaFisica extends ContactoAbstract{
 	private static final long serialVersionUID = 7908172363848228156L;
 
 	@Id
-	//@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "persona_fisica_seq")
-	@SequenceGenerator(name = "persona_fisica_seq", sequenceName = "persona_fisica_sequence", allocationSize = 1)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	//@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "persona_fisica_seq")
+	//@SequenceGenerator(name = "persona_fisica_seq", sequenceName = "persona_fisica_sequence", allocationSize = 1)
 	private Long idPersonaFisica;
 	
 	private int dni;
