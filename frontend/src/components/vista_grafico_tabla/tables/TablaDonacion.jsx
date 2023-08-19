@@ -25,7 +25,7 @@ const TablaDonacion = ({visibilidadInput, dataIn}) => {
       Header: "Fecha",
       accessor: "fecha",
       Cell: ({ value }) => {
-        const formattedDate = format(new Date(value), "yyyy-MM-dd HH:mm:ss");
+        const formattedDate = format(new Date(value), "dd/MM/yyyy HH:mm");//"yyyy-MM-dd HH:mm:ss"
         return value ? <span>{formattedDate}</span> : <></>;
       },
       Filter: DateRangeColumnFilter,

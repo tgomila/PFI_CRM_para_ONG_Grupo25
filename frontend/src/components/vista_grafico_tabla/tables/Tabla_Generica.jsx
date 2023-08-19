@@ -168,13 +168,18 @@ const TablaGenericaConFoto = ({ columnsIn, dataIn, Service, visibilidadInput, no
 const agregarFotoData = async (columns, data, tipoDatoParaFoto) => {
 
   //Si ya tiene fotos, entonces no agrego fotos a data
+  console.log("data");
+  console.log(data);
   const dataInTieneImagenTable = data.every((item) => item.hasOwnProperty("imagen_tabla"));
   if(!dataInTieneImagenTable && !tipoDatoParaFoto){
     return { columns: columns, data: data };//Es tabla genérica sin foto.
   }
   const newData = !dataInTieneImagenTable ? await ImageService.getAllFotos(data, tipoDatoParaFoto, "tabla"): data;
   
+  console.log("Entro a columns");
+  console.log(columns);
   const newColumns = [...columns]; // Clonar las columnas existentes
+  console.log("Me fui de columns");
 
   newColumns.splice(1, 0, {
     Header: "Foto",

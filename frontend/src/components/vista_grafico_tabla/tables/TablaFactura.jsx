@@ -1,6 +1,6 @@
 import FacturaService from "../../../services/FacturaService";
 import { TablaGenerica } from "./Tabla_Generica";
-import { columnIntegranteConFotoColumn } from "./Tabla_Variables";
+import { columnIntegranteConFotoColumn, columnsIntegrantesFacturaItems, } from "./Tabla_Variables";
 import {
   GlobalFilter,
   DefaultColumnFilter,
@@ -16,9 +16,39 @@ import {
 //import moment from "moment";
 import { format } from 'date-fns';
 
-import { RenderMostrarIntegrantesGenericRow } from "./Tabla_Mostrar_Integrantes_Modal";
+import { RenderMostrarIntegrantesGenericRow, RenderMostrarItemFacturaRow } from "./Tabla_Mostrar_Integrantes_Modal";
 
 const TablaFactura = ({visibilidadInput, dataIn}) => {
+
+  const columnsFactura = [
+    {
+      Header: "ID",
+      accessor: "id",
+      type: "number",//sirve para mostrar el icono FaSortNumericDown en tabla generica
+    },
+    {
+      Header: "Fecha",
+      accessor: "fecha",
+      Cell: ({ value }) => {
+        const formattedDate = format(new Date(value), "dd/MM/yyyy HH:mm");//"yyyy-MM-dd HH:mm:ss"
+        return value ? <span>{formattedDate}</span> : <></>;
+      },
+      Filter: DateHourRangeColumnFilter,
+      filter: dateBetweenFilterFn
+    },
+    columnIntegranteConFotoColumn("Cliente", "cliente", "contacto"),
+    columnIntegranteConFotoColumn("Emisor factura", "emisorFactura", "contacto"),
+    ...columnsIntegrantesFacturaItems({}),
+    /*{
+      Header: "Items",
+      Cell: ({ row }) => RenderMostrarItemFacturaRow({
+        integrantesActuales: row.original?.itemsFactura,
+        el_la: "el",
+        nombreIntegranteSingular: "item",
+        nombreIntegrantePlural: "items",
+      }),
+    },*/
+  ];
   
   return(
     <div>
@@ -35,32 +65,6 @@ const TablaFactura = ({visibilidadInput, dataIn}) => {
     </div>
   );
 }
-
-const emisorFacturaColumn = columnIntegranteConFotoColumn("Emisor factura", "emisorFactura", "contacto");
-
-const columnsFactura = [
-  {
-    Header: "ID",
-    accessor: "id",
-    type: "number",//sirve para mostrar el icono FaSortNumericDown en tabla generica
-  },
-  {
-    Header: "Fecha",
-    accessor: "fecha",
-    Cell: ({ value }) => {
-      const formattedDate = format(new Date(value), "yyyy-MM-dd HH:mm:ss");
-      return value ? <span>{formattedDate}</span> : <></>;
-    },
-    Filter: DateHourRangeColumnFilter,
-    filter: dateBetweenFilterFn
-  },
-  columnIntegranteConFotoColumn("Cliente", "cliente", "contacto"),
-  columnIntegranteConFotoColumn("Emisor factura", "emisorFactura", "contacto"),
-  {
-    Header: "Items",
-    Cell: ({ row }) => RenderMostrarIntegrantesGenericRow(row, row.original?.itemsFactura, columnsFacturaItems, null, "el", "item", "items"),
-  },
-];
 
 const columnsFacturaItems = [
   {
@@ -104,7 +108,6 @@ const columnsFacturaItems = [
 ];
 
 export {
-  columnsFactura,
   columnsFacturaItems,
   TablaFactura,
 };

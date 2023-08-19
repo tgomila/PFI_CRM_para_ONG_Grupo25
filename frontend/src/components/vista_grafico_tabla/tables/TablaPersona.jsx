@@ -11,6 +11,7 @@ import {
   DateRangeColumnFilter,
 } from"./Tabla_Filters";
 //import moment from "moment";
+import { format } from 'date-fns';
 
 const TablaPersona = ({dataIn, visibilidadInput}) => {
   
@@ -49,10 +50,13 @@ const columnsPersona = [
   {
     Header: "Fecha de nacimiento",
     accessor: "fechaNacimiento",
-    //Cell: ({ value }) => moment(value).format("DD/MM/YYYY"),//Se ve mejor, pero afecta la búsqueda.
     type: "date",
+    Cell: ({ value }) => {
+      const formattedDate = format(new Date(value), "dd/MM/yyyy");
+      return value ? <span>{formattedDate}</span> : <></>;
+    },
     Filter: DateRangeColumnFilter,
-    filter: dateBetweenFilterFn
+    filter: dateBetweenFilterFn,
   },
   {
     Header: "Edad",

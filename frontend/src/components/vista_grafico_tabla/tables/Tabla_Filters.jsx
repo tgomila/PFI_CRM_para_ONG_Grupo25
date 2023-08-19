@@ -51,7 +51,7 @@ const DefaultColumnFilter = ({
 
   return (
     <input
-    className='search-field'
+      className='search-field'
       value={filterValue || ''}
       onChange={e => {
         setFilter(e.target.value || undefined) // Set undefined to remove the filter entirely
@@ -125,7 +125,9 @@ function SliderColumnFilter({
           setFilter(parseInt(e.target.value, 10))
         }}
       />
-      <button onClick={() => setFilter(undefined)}>Off</button>
+      <button className="btn btn-primary btn-sm mt-2 boton-limpiar" onClick={() => setFilter(undefined)}>
+        <span>Limpiar </span>
+      </button>
     </div>
   )
 }
@@ -182,7 +184,9 @@ function NumberRangeColumnFilter({
         />
         
       </div>
-      <button className="btn btn-primary btn-sm mt-2" onClick={() => setFilter([])}>Limpiar</button>
+      <button className="btn btn-primary btn-sm mt-2 boton-limpiar" onClick={() => setFilter([])}>
+        <span>Limpiar </span>
+      </button>
     </div>
   )
 }
@@ -295,6 +299,7 @@ const DateGenericRangeColumnFilter = ({
     <div>
       Desde:{' '}
       <input
+        className='search-field'
         onChange={(e) => {
           const val = e.target.value;
           setFilter((old = []) => [val ? val : undefined, old[1]]);
@@ -302,8 +307,9 @@ const DateGenericRangeColumnFilter = ({
         type={typeDate}
         value={filterValue[0] || ''}
       />
-      {" hasta "}
+      {" Hasta: "}
       <input
+        className='search-field'
         onChange={(e) => {
           const val = e.target.value;
           setFilter((old = []) => [
@@ -314,7 +320,9 @@ const DateGenericRangeColumnFilter = ({
         type={typeDate}
         value={filterValue[1] || ''}
       />
-      <button className="btn btn-primary btn-sm mt-2" onClick={() => setFilter([])}>Limpiar</button>
+      <button className="btn btn-primary btn-sm mt-2 boton-limpiar" onClick={() => setFilter([])}>
+        <span>Limpiar </span>
+      </button>
     </div>
   );
 };

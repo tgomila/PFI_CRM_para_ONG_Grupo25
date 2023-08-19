@@ -25,7 +25,7 @@ import PersonaJuridicaVista from "./components/vista_grafico_tabla/PersonaJuridi
 
 import UserVista from "./components/vista_grafico_tabla/UserVista";
 import ActividadVista from "./components/vista_grafico_tabla/ActividadVista";
-// import ProgramaDeActividadesVista from "./components/vista_grafico_tabla/ProgramaDeActividadesVista";
+import ProgramaDeActividadesVista from "./components/vista_grafico_tabla/ProgramaDeActividadesVista";
 import ProductoVista from "./components/vista_grafico_tabla/ProductoVista";
 import DonacionVista from "./components/vista_grafico_tabla/DonacionVista";
 import FacturaVista from "./components/vista_grafico_tabla/FacturaVista";
@@ -323,7 +323,7 @@ const App = () => {
 
             <Route path="/users" element={<UserVista />} />
             <Route path="/actividad" element={<ActividadVista />} />
-            {/* <Route path="/programadeactividades" element={<ProgramaDeActividadesVista />} /> */}
+            <Route path="/programadeactividades" element={<ProgramaDeActividadesVista />} />
             <Route path="/producto" element={<ProductoVista />} />
             <Route path="/donacion" element={<DonacionVista />} />
             <Route path="/factura" element={<FacturaVista />} />

@@ -10,6 +10,7 @@ import {
   dateBetweenFilterFn,
   DateRangeColumnFilter,
 } from"./Tabla_Filters";
+import { columnFecha } from "./Tabla_Variables";
 
 const TablaVoluntario = ({visibilidadInput}) => {
 
@@ -30,14 +31,7 @@ const TablaVoluntario = ({visibilidadInput}) => {
       filter: 'fuzzyText',
       type: "string",
     },
-    {
-      Header: "Fecha de nacimiento",
-      accessor: "fechaNacimiento",
-      //Cell: ({ value }) => moment(value).format("DD/MM/YYYY"),//Se ve mejor, pero afecta la búsqueda.
-      type: "date",
-      Filter: DateRangeColumnFilter,
-      filter: dateBetweenFilterFn,
-    },
+    columnFecha("Fecha de nacimiento", "fechaNacimiento"),
     {
       Header: "Edad",
       accessor: "edad",

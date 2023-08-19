@@ -4,31 +4,83 @@ import { Modal, Button, OverlayTrigger, Tooltip, Image } from "react-bootstrap";
 import { columnsPersona } from "./TablaPersona";
 import { columnsBeneficiario } from "./TablaBeneficiario";
 import { columnsProfesionalParaVistaComoIntegrante } from "./TablaProfesional";
+import { columnsActividad } from "./TablaActividad";
+import { columnsFacturaItems } from "./TablaFactura";
 import { RenderMostrarContacto } from "./Tabla_Variables";
 import { TablaGenericaConFoto } from "./Tabla_Generica";
 import { MdPeopleAlt } from "react-icons/md";
 
-const RenderMostrarIntegrantesPersonasRow = (row, integrantesActuales, el_la, nombreTipoIntegrante, nombreTipoIntegrantePrural) => {
-  return RenderMostrarIntegrantesGenericRow(row, integrantesActuales, columnsPersona, "contacto", el_la, nombreTipoIntegrante, nombreTipoIntegrantePrural);
+// const RenderMostrarIntegrantesPersonasRow = (row, integrantesActuales, el_la, nombreIntegranteSingular, nombreIntegrantePlural) => {
+//   return RenderMostrarIntegrantesGenericRow(row, integrantesActuales, columnsPersona, "contacto", el_la, nombreIntegranteSingular, nombreIntegrantePlural);
+// }
+
+//Si copias y pegas este método, no olvides de poner llaves, yo lo olvidé en factura y integrantesActuales se pasaba integrantesActuales, el_la, etc todo junto como un row o array de objetos y arrays
+const RenderMostrarIntegrantesPersonasRow = ({integrantesActuales, el_la="la", nombreIntegranteSingular="persona", nombreIntegrantePlural="personas"}) => {
+  return RenderMostrarIntegrantesGenericRow({
+    integrantesActuales,
+    columnsIn: columnsPersona,
+    tipoDatoParaFoto: "contacto",
+    el_la,
+    nombreIntegranteSingular,
+    nombreIntegrantePlural,
+  });
 }
 
-const RenderMostrarIntegrantesBeneficiarioRow = (row, integrantesActuales, el_la, nombreTipoIntegrante, nombreTipoIntegrantePrural) => {
-  return RenderMostrarIntegrantesGenericRow(row, integrantesActuales, columnsBeneficiario, "contacto", el_la, nombreTipoIntegrante, nombreTipoIntegrantePrural);
+const RenderMostrarIntegrantesBeneficiarioRow = ({integrantesActuales, el_la="el", nombreIntegranteSingular="profesional", nombreIntegrantePlural="profesionales"}) => {
+  return RenderMostrarIntegrantesGenericRow({
+    integrantesActuales,
+    columnsIn: columnsBeneficiario,
+    tipoDatoParaFoto: "contacto",
+    el_la,
+    nombreIntegranteSingular,
+    nombreIntegrantePlural,
+  });
 }
 
-const RenderMostrarIntegrantesProfesionalRow = (row, integrantesActuales, el_la, nombreTipoIntegrante, nombreTipoIntegrantePrural) => {
-  return RenderMostrarIntegrantesGenericRow(row, integrantesActuales, columnsProfesionalParaVistaComoIntegrante, "contacto", el_la, nombreTipoIntegrante, nombreTipoIntegrantePrural);
+const RenderMostrarIntegrantesProfesionalRow = ({integrantesActuales, el_la="el", nombreIntegranteSingular="profesional", nombreIntegrantePlural="profesionales"}) => {
+  return RenderMostrarIntegrantesGenericRow({
+    integrantesActuales,
+    columnsIn: columnsProfesionalParaVistaComoIntegrante,
+    tipoDatoParaFoto: "contacto",
+    el_la,
+    nombreIntegranteSingular,
+    nombreIntegrantePlural,
+  });
 }
 
-const RenderMostrarIntegrantesGenericRow = (row, integrantesActuales, columnsIn, tipoDatoParaFoto, el_la, nombreTipoIntegrante, nombreTipoIntegrantePrural) => {
-  if(!integrantesActuales)
-    return(<div/>);//Esto sucede si se agrupa la tabla
-  return RenderMostrarIntegrantes(row, integrantesActuales, columnsIn, tipoDatoParaFoto, el_la, nombreTipoIntegrante, nombreTipoIntegrantePrural);
+const RenderMostrarActividadesRow = ({integrantesActuales, el_la="la", nombreIntegranteSingular="actividad", nombreIntegrantePlural="actividades"}) => {
+  return RenderMostrarIntegrantesGenericRow({
+    integrantesActuales,
+    columnsIn: columnsActividad(),
+    tipoDatoParaFoto: "actividad",
+    el_la,
+    nombreIntegranteSingular,
+    nombreIntegrantePlural,
+  });
 }
 
-const RenderMostrarIntegrantes = (row, integrantesActuales, columnsIn, tipoDatoParaFoto, el_la, nombreTipoIntegrante, nombreTipoIntegrantePrural) => {
+const RenderMostrarItemFacturaRow = ({integrantesActuales, el_la="el", nombreIntegranteSingular="item", nombreIntegrantePlural="items"}) => {
+  console.log("integrantesActuales row");
+  console.log(integrantesActuales);
+  return RenderMostrarIntegrantesGenericRow({
+    integrantesActuales,
+    columnsIn: columnsFacturaItems,
+    tipoDatoParaFoto: null,
+    el_la,
+    nombreIntegranteSingular,
+    nombreIntegrantePlural,
+  });
+}
+
+// const RenderMostrarIntegrantesGenericRow = ({integrantesActuales, columnsIn, tipoDatoParaFoto, el_la, nombreIntegranteSingular, nombreIntegrantePlural}) => {
+//   if(!integrantesActuales)
+//     return(<div/>);//Esto sucede si se agrupa la tabla
+//   return RenderMostrarIntegrantesGeneric ({integrantesActuales, columnsIn, tipoDatoParaFoto, el_la, nombreIntegranteSingular, nombreIntegrantePlural});
+// }
+
+const RenderMostrarIntegrantesGenericRow = ({integrantesActuales, columnsIn, tipoDatoParaFoto, el_la, nombreIntegranteSingular, nombreIntegrantePlural}) => {
   const [showModal, setShowModal] = useState(false);
-  const [integrantesActualesAux, setIntegrantesActualesAux] = useState();
+  const [integrantesActualesAux, setIntegrantesActualesAux] = useState(null);
   useEffect(() => {
     setIntegrantesActualesAux(integrantesActuales);
   }, []);
@@ -51,7 +103,7 @@ const RenderMostrarIntegrantes = (row, integrantesActuales, columnsIn, tipoDatoP
       console.log("Es null o es objeto");
       console.log(integrantesActualesAux);
     }
-  }, [integrantesActualesAux])
+  }, [integrantesActualesAux]);
 
   const handleOpenModal = () => {
     setShowModal(true);
@@ -61,17 +113,20 @@ const RenderMostrarIntegrantes = (row, integrantesActuales, columnsIn, tipoDatoP
     setShowModal(false);
   };
   
+  if(!integrantesActuales){
+    return(<div/>);
+  }
   return(
     <div>
-      {numeroDeIntegrantes === 0 && (<label> {"No hay " + nombreTipoIntegrante + " asociad"+ (el_la === "el" ? "o" : "a")}</label>)}
-      {/* {numeroDeIntegrantes === 1 && RenderMostrarContacto(integrantesActualesAux[0], "contacto")} */}
+      {numeroDeIntegrantes === 0 && (<label> {"No hay " + nombreIntegranteSingular + " asociad"+ (el_la === "el" ? "o" : "a")}</label>)}
+      {/*numeroDeIntegrantes === 1 && RenderMostrarContacto(integrantesActualesAux[0], tipoDatoParaFoto)*/}
       {numeroDeIntegrantes  >= 1 && (
         <div>
           <OverlayTrigger
             placement="top"
             overlay={
               <Tooltip id="tooltip-top">
-                Ver {nombreTipoIntegrantePrural}
+                Ver {nombreIntegrantePlural}
               </Tooltip>
             }
           >
@@ -80,21 +135,21 @@ const RenderMostrarIntegrantes = (row, integrantesActuales, columnsIn, tipoDatoP
             onClick={() => handleOpenModal()}
           >
             <span style={{ display: 'flex', alignItems: 'center' }}>
-              {tipoDatoParaFoto === 'contacto' && <MdPeopleAlt style={{ marginRight: '5px', fontSize: '20px' }}/>}Ver {nombreTipoIntegrantePrural}
+              {tipoDatoParaFoto === 'contacto' && <MdPeopleAlt style={{ marginRight: '5px', fontSize: '20px' }}/>}Ver {nombreIntegrantePlural}
             </span>
           </Button>
           </OverlayTrigger>
         </div>
       )}
 
-      <Modal show={showModal} onHide={handleCloseModal} size="xl">
-        <Modal.Header>
-          <Modal.Title>{nombreTipoIntegrantePrural.charAt(0).toUpperCase() + nombreTipoIntegrantePrural.slice(1) + " asociad"+ (el_la === "el" ? "o" : "a") + "s"}</Modal.Title>
-          <button className="close" onClick={handleCloseModal}>
+      <Modal show={showModal} onHide={handleCloseModal} size="xl" className="modal-custom">
+        <Modal.Header className="modal-header-custom">
+          <Modal.Title>{nombreIntegrantePlural.charAt(0).toUpperCase() + nombreIntegrantePlural.slice(1) + " asociad"+ (el_la === "el" ? "o" : "a") + "s"}</Modal.Title>
+          <button className="close close-button-custom" onClick={handleCloseModal}>
             <span aria-hidden="true">&times;</span>
           </button>
         </Modal.Header>
-        <Modal.Body>
+        <Modal.Body className="modal-body-custom">
           <div style={{ overflowY: 'auto' }}>
             <TablaGenericaConFoto
               columnsIn={columnsIn}
@@ -104,12 +159,12 @@ const RenderMostrarIntegrantes = (row, integrantesActuales, columnsIn, tipoDatoP
               //nombreTipoDatoParaModuloVisibilidad={"CONTACTO"}
               tipoDatoParaFoto={tipoDatoParaFoto}
               el_la={el_la}
-              nombreTipoDato={nombreTipoIntegrante}
+              nombreTipoDato={nombreIntegranteSingular}
               style={{ overflowY: 'auto' }}
             />
           </div>
         </Modal.Body>
-        <Modal.Footer>
+        <Modal.Footer className="modal-footer-custom">
           <Button variant="secondary" onClick={handleCloseModal}>
             Cerrar
           </Button>
@@ -127,4 +182,7 @@ export {
   RenderMostrarIntegrantesPersonasRow,
   RenderMostrarIntegrantesBeneficiarioRow,
   RenderMostrarIntegrantesProfesionalRow,
+
+  RenderMostrarActividadesRow,
+  RenderMostrarItemFacturaRow,
 }

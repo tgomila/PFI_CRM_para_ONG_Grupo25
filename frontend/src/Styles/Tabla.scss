@@ -490,6 +490,7 @@ cursor: pointer;
     position: relative;
     background-color: rgba(255, 255, 255, 0.904);
     transition: 0.3s all;
+    padding: 3px 9px;
 }
 .search-field:hover {
     background-color: rgba(255, 255, 255, 0.45);
@@ -517,4 +518,56 @@ cursor: pointer;
     margin-left: 5px;
     font-size: 20px;
 }
+.boton-limpiar {
+    font-weight: Bold;
+    border-radius: 10px;
+    width: 120px;
+}
+.boton-limpiar span {
+    cursor: pointer;
+    display: inline-block;
+    position: relative;
+    transition: 0.5s;
+}
+  
+.boton-limpiar span:after {
+    content: '🧹';
+    position: absolute;
+    opacity: 0;
+    top: 0;
+    right: -20px;
+    transition: 0.5s;
+}
+  
+.boton-limpiar:hover span {
+    padding-right: 25px;
+}
+  
+.boton-limpiar:hover span:after {
+    opacity: 1;
+    right: 0;
+}
 //Fin Tabla_Filters
+
+
+//Modal
+.modal-custom {
+    color: white;
+}
+.modal-header-custom {
+    color: white;
+    background-color: #2e3e64; 
+}
+.close-button-custom {
+    color: white;
+    background-color: transparent;
+    border: none;
+    font-size: 1.5rem;
+}
+.modal-body-custom {
+    background-color: #2e3e64; 
+}
+.modal-footer-custom {
+    background-color: #2e3e64; 
+}
+//Fin Modal

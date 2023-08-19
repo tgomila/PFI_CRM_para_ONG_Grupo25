@@ -39,7 +39,7 @@ const TablaPrestamo = ({visibilidadInput, dataIn}) => {
       Header: "Fecha préstamo inicio",
       accessor: "fechaPrestamoInicio",
       Cell: ({ value }) => {
-        const formattedDate = format(new Date(value), "yyyy-MM-dd HH:mm:ss");
+        const formattedDate = format(new Date(value), "dd/MM/yyyy HH:mm");//"yyyy-MM-dd HH:mm:ss"
         return value ? <span>{formattedDate}</span> : <></>;
       },
       Filter: DateHourRangeColumnFilter,
@@ -49,7 +49,7 @@ const TablaPrestamo = ({visibilidadInput, dataIn}) => {
       Header: "Fecha préstamo Fin",
       accessor: "fechaPrestamoFin",
       Cell: ({ value }) => {
-        const formattedDate = format(new Date(value), "yyyy-MM-dd HH:mm:ss");
+        const formattedDate = format(new Date(value), "dd/MM/yyyy HH:mm");//"yyyy-MM-dd HH:mm:ss"
         return value ? <span>{formattedDate}</span> : <></>;
       },
       Filter: DateHourRangeColumnFilter,

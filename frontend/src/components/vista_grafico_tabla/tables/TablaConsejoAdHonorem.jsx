@@ -10,6 +10,7 @@ import {
   dateBetweenFilterFn,
   DateRangeColumnFilter,
 } from"./Tabla_Filters";
+import { format } from 'date-fns';
 
 const TablaConsejoAdHonorem = ({visibilidadInput}) => {
 
@@ -46,6 +47,10 @@ const TablaConsejoAdHonorem = ({visibilidadInput}) => {
       Header: "Fecha de nacimiento",
       accessor: "fechaNacimiento",
       type: "date",
+      Cell: ({ value }) => {
+        const formattedDate = format(new Date(value), "dd/MM/yyyy");
+        return value ? <span>{formattedDate}</span> : <></>;
+      },
       Filter: DateRangeColumnFilter,
       filter: dateBetweenFilterFn,
     },

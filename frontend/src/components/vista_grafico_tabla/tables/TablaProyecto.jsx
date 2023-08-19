@@ -1,7 +1,7 @@
 import ProyectoService from "../../../services/ProyectoService";
 import { TablaGenericaConFoto } from "./Tabla_Generica";
 import { RenderMostrarIntegrantesPersonasRow } from "./Tabla_Mostrar_Integrantes_Modal";
-import { columnsIntegrantesPersonasConNombrePersonalizado } from "./Tabla_Variables";
+import { columnsIntegrantesPersonas, columnFecha } from "./Tabla_Variables";
 import {
   GlobalFilter,
   DefaultColumnFilter,
@@ -28,20 +28,30 @@ const TablaProyecto = ({visibilidadInput, dataIn}) => {
       filter: 'fuzzyText',
       type: "string",
     },
-    {
-      Header: "Fecha inicio",
-      accessor: "fechaInicio",
-      type: "date",
-      Filter: DateRangeColumnFilter,
-      filter: dateBetweenFilterFn,
-    },
-    {
-      Header: "Fecha fin",
-      accessor: "fechaFin",
-      type: "date",
-      Filter: DateRangeColumnFilter,
-      filter: dateBetweenFilterFn,
-    },
+    // {
+    //   Header: "Fecha inicio",
+    //   accessor: "fechaInicio",
+    //   type: "date",
+    //   Cell: ({ value }) => {
+    //     const formattedDate = format(new Date(value), "dd/MM/yyyy");
+    //     return value ? <span>{formattedDate}</span> : <></>;
+    //   },
+    //   Filter: DateRangeColumnFilter,
+    //   filter: dateBetweenFilterFn,
+    // },
+    columnFecha("Fecha inicio", "fechaInicio"),
+    // {
+    //   Header: "Fecha fin",
+    //   accessor: "fechaFin",
+    //   type: "date",
+    //   Cell: ({ value }) => {
+    //     const formattedDate = format(new Date(value), "dd/MM/yyyy");
+    //     return value ? <span>{formattedDate}</span> : <></>;
+    //   },
+    //   Filter: DateRangeColumnFilter,
+    //   filter: dateBetweenFilterFn,
+    // },
+    columnFecha("Fecha fin", "fechaFin"),
     /*{
       Header: "Número de Involucrados",
       accessor: (row) => {
@@ -66,7 +76,12 @@ const TablaProyecto = ({visibilidadInput, dataIn}) => {
       Header: "Involucrados",
       Cell: ({ row }) => RenderMostrarIntegrantesPersonasRow(row, row.original?.involucrados, "el", "involucrado", "involucrados"),
     },*/
-    ...columnsIntegrantesPersonasConNombrePersonalizado("involucrados", "el", "involucrado", "involucrados"),
+    ...columnsIntegrantesPersonas({
+      property: "involucrados",
+      el_la: "el",
+      nombreIntegranteSingular: "involucrado",
+      nombreIntegrantePlural: "involucrados"
+    }),
   ];
   
   return(

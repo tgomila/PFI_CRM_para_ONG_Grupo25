@@ -1,7 +1,7 @@
 import ActividadService from "../../../services/ActividadService";
 import { TablaGenericaConFoto } from "./Tabla_Generica";
 import { RenderMostrarIntegrantesPersonasRow } from "./Tabla_Mostrar_Integrantes_Modal";
-import { columnsIntegrantesBeneficiarios, columnsIntegrantesProfesionales } from "./Tabla_Variables";
+import { columnsIntegrantesBeneficiarios, columnsIntegrantesProfesionales, columnFechaHora } from "./Tabla_Variables";
 import {
   GlobalFilter,
   DefaultColumnFilter,
@@ -16,47 +16,11 @@ import {
 import { format } from 'date-fns';
 
 const TablaActividad = ({visibilidadInput, dataIn}) => {
-
-  const columns = [
-    {
-      Header: "ID",
-      accessor: "id",
-      type: "number",//sirve para mostrar el icono FaSortNumericDown en tabla generica
-    },
-    {
-      Header: "Descripción",
-      accessor: "descripcion",
-      filter: 'fuzzyText',
-      type: "string",
-    },
-    {
-      Header: "Fecha y hora desde",
-      accessor: "fechaHoraDesde",
-      Cell: ({ value }) => {
-        const formattedDate = format(new Date(value), "yyyy-MM-dd HH:mm:ss");
-        return value ? <span>{formattedDate}</span> : <></>;
-      },
-      Filter: DateHourRangeColumnFilter,
-      filter: dateBetweenFilterFn,
-    },
-    {
-      Header: "Fecha y hora hasta",
-      accessor: "fechaHoraHasta",
-      Cell: ({ value }) => {
-        const formattedDate = format(new Date(value), "yyyy-MM-dd HH:mm:ss");
-        return value ? <span>{formattedDate}</span> : <></>;
-      },
-      Filter: DateHourRangeColumnFilter,
-      filter: dateBetweenFilterFn,
-    },
-    ...columnsIntegrantesProfesionales("profesionales"),
-    ...columnsIntegrantesBeneficiarios("beneficiarios"),
-  ];
   
   return(
     <div>
       <TablaGenericaConFoto
-        columnsIn={columns}
+        columnsIn={columnsActividad()}
         dataIn={dataIn ? dataIn : null}
         Service={ActividadService}
         visibilidadInput={visibilidadInput}
@@ -69,4 +33,50 @@ const TablaActividad = ({visibilidadInput, dataIn}) => {
   );
 }
 
-export default TablaActividad;
+const columnsActividad = () => [
+  {
+    Header: "ID",
+    accessor: "id",
+    type: "number",//sirve para mostrar el icono FaSortNumericDown en tabla generica
+  },
+  {
+    Header: "Descripción",
+    accessor: "descripcion",
+    filter: 'fuzzyText',
+    type: "string",
+  },
+  // {
+  //   Header: "Fecha y hora desde",
+  //   accessor: "fechaHoraDesde",
+  //   Cell: ({ value }) => {
+  //     const formattedDate = format(new Date(value), "dd/MM/yyyy HH:mm");//"yyyy-MM-dd HH:mm:ss"
+  //     return value ? <span>{formattedDate}</span> : <></>;
+  //   },
+  //   Filter: DateHourRangeColumnFilter,
+  //   filter: dateBetweenFilterFn,
+  // },
+  columnFechaHora("Fecha y hora desde", "fechaHoraDesde"),
+  // {
+  //   Header: "Fecha y hora hasta",
+  //   accessor: "fechaHoraHasta",
+  //   Cell: ({ value }) => {
+  //     const formattedDate = format(new Date(value), "dd/MM/yyyy HH:mm");
+  //     return value ? <span>{formattedDate}</span> : <></>;
+  //   },
+  //   Filter: DateHourRangeColumnFilter,
+  //   filter: dateBetweenFilterFn,
+  // },
+  columnFechaHora("Fecha y hora hasta", "fechaHoraHasta"),
+  ...columnsIntegrantesProfesionales({
+    property: "profesionales",
+    el_la: "el",
+    nombreIntegranteSingular: "profesional",
+    nombreIntegrantePlural: "profesionales"
+  }),
+  ...columnsIntegrantesBeneficiarios({}),
+];
+
+export {
+  TablaActividad,
+  columnsActividad,
+};

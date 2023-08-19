@@ -15,10 +15,18 @@ import {
   RenderMostrarIntegrantesPersonasRow,
   RenderMostrarIntegrantesBeneficiarioRow,
   RenderMostrarIntegrantesProfesionalRow,
+  RenderMostrarActividadesRow,
+  RenderMostrarItemFacturaRow,
 } from "./Tabla_Mostrar_Integrantes_Modal";
 import {
   NumberRangeColumnFilter,
 } from"./Tabla_Filters";
+import {
+  DateHourRangeColumnFilter,
+  DateRangeColumnFilter,
+  dateBetweenFilterFn,
+} from "./Tabla_Filters";
+import { format } from 'date-fns';
 
 const IndeterminateCheckbox = forwardRef(({ indeterminate, ...rest }, ref) => {
   const defaultRef = useRef();
@@ -628,50 +636,62 @@ function columnIntegranteConFotoColumn(title, property, tipoFoto) {
   };
 }
 
-function columnsIntegrantesPersonas(property) {
-  return columnsIntegrantesGeneric(property, "la", "persona", "personas", RenderMostrarIntegrantesPersonasRow)
+function columnsIntegrantesPersonas({property="personas", el_la = "la", nombreIntegranteSingular ="persona", nombreIntegrantePlural="personas"}) {
+  return columnsIntegrantesGeneric({
+    property,
+    el_la,
+    nombreIntegranteSingular,
+    nombreIntegrantePlural,
+    RenderMostrarIntegrantesRow: RenderMostrarIntegrantesPersonasRow,
+  });
 }
 
-function columnsIntegrantesPersonasConNombrePersonalizado(property, el_la, nombreIntegranteSingular, nombreIntegrantePlural) {
-  return columnsIntegrantesGeneric(property, el_la, nombreIntegranteSingular, nombreIntegrantePlural, RenderMostrarIntegrantesPersonasRow)
+function columnsIntegrantesBeneficiarios({property="beneficiarios", el_la = "el", nombreIntegranteSingular ="beneficiario", nombreIntegrantePlural="beneficiarios"}) {
+  return columnsIntegrantesGeneric({
+    property,
+    el_la,
+    nombreIntegranteSingular,
+    nombreIntegrantePlural,
+    RenderMostrarIntegrantesRow: RenderMostrarIntegrantesBeneficiarioRow,
+  });
 }
 
-function columnsIntegrantesBeneficiarios(property) {
-  return columnsIntegrantesGeneric(property, "el", "beneficiario", "beneficiarios", RenderMostrarIntegrantesBeneficiarioRow)
+function columnsIntegrantesProfesionales({property="profesionales", el_la = "el", nombreIntegranteSingular ="profesional", nombreIntegrantePlural="profesionales"}) {
+  return columnsIntegrantesGeneric({
+    property,
+    el_la,
+    nombreIntegranteSingular,
+    nombreIntegrantePlural,
+    RenderMostrarIntegrantesRow: RenderMostrarIntegrantesProfesionalRow,
+  });
 }
 
-function columnsIntegrantesProfesionales(property) {
-  return columnsIntegrantesGeneric(property, "el", "profesional", "profesionales", RenderMostrarIntegrantesProfesionalRow)
+function columnsIntegrantesActividades({property="actividades", el_la = "la", nombreIntegranteSingular ="actividad", nombreIntegrantePlural="actividades"}) {
+  return columnsIntegrantesGeneric({
+    property,
+    el_la,
+    nombreIntegranteSingular,
+    nombreIntegrantePlural,
+    RenderMostrarIntegrantesRow: RenderMostrarActividadesRow,
+  });
+}
+
+function columnsIntegrantesFacturaItems({property="itemsFactura", el_la = "el", nombreIntegranteSingular ="item", nombreIntegrantePlural="items"}) {
+  return columnsIntegrantesGeneric({
+    property,
+    el_la,
+    nombreIntegranteSingular,
+    nombreIntegrantePlural,
+    RenderMostrarIntegrantesRow: RenderMostrarItemFacturaRow,
+  });
 }
 
 
-function columnsIntegrantesGeneric(property, el_la, nombreIntegranteSingular, nombreIntegrantePlural, RenderMostrarIntegrantesRow) {
-  /*return {
-    Header: `${nombreIntegrantePlural}`,
-    accessor: (row) => {
-      const dataArray = row?.[property];
-      console.log("dataArray");
-      console.log(dataArray);
-      if (dataArray) {
-        const dataArrayString = dataArray
-          .map(item => {
-            const filteredKeys = Object.keys(item).filter(key => {
-              const value = item[key];
-              return !['imagen', 'imagen_completa'].includes(key) && !Array.isArray(value);
-            });
-            return filteredKeys.map(key => item[key]).join(' ').toLowerCase();
-          })
-          .join(' ');
-        return dataArrayString;
-      }
-      return null;
-    },
-    Cell: ({ row }) => RenderMostrarIntegrantesRow(row, row.original?.[property], el_la, nombreIntegranteSingular, nombreIntegrantePlural),
-    filter: 'fuzzyText',
-    type: "string",
-  };*/
-  
-  
+function columnsIntegrantesGeneric({property, el_la="el", nombreIntegranteSingular="integrante", nombreIntegrantePlural="integrantes", RenderMostrarIntegrantesRow}) {
+  if(property === null || RenderMostrarIntegrantesRow === null){
+    return null;
+  }
+
   return [
     {
       Header: `Número de ${nombreIntegrantePlural}`,
@@ -706,11 +726,48 @@ function columnsIntegrantesGeneric(property, el_la, nombreIntegranteSingular, no
         }
         return null;
       },
-      Cell: ({ row }) => RenderMostrarIntegrantesRow(row, row.original?.[property], el_la, nombreIntegranteSingular, nombreIntegrantePlural),
+      Cell: ({ row }) =>{
+        console.log("property");
+        console.log(property);
+        console.log("row.original?.[property]");
+        console.log(row);
+        return RenderMostrarIntegrantesRow({
+        integrantesActuales: row.original?.[property],
+        el_la,
+        nombreIntegranteSingular,
+        nombreIntegrantePlural
+      })},
       type: "string",
     },
   ];
 }
+
+const columnFechaHora = (headerName="Fecha", accessorName="fecha") => {
+  return {
+    Header: headerName,
+    accessor: accessorName,
+    Cell: ({ value }) => {
+      const formattedDate = format(new Date(value), "dd/MM/yyyy - HH:mm");
+      return value ? <span>{formattedDate}</span> : <></>;
+    },
+    Filter: DateHourRangeColumnFilter,
+    filter: dateBetweenFilterFn,
+  };
+};
+
+//Diremos que no anda cuando lo metemos en column que no es funcion, porque no puede inicializar este metodo.
+const columnFecha = (headerName="Fecha", accessorName="fecha") => {
+  return {
+    Header: headerName,
+    accessor: accessorName,
+    Cell: ({ value }) => {
+      const formattedDate = format(new Date(value), "dd/MM/yyyy");
+      return value ? <span>{formattedDate}</span> : <></>;
+    },
+    Filter: DateRangeColumnFilter,
+    filter: dateBetweenFilterFn,
+  };
+};
 
 
 
@@ -728,7 +785,10 @@ export {
   RenderBotonBorrar,
   columnIntegranteConFotoColumn,
   columnsIntegrantesPersonas,
-  columnsIntegrantesPersonasConNombrePersonalizado,
   columnsIntegrantesBeneficiarios,
   columnsIntegrantesProfesionales,
+  columnsIntegrantesActividades,
+  columnsIntegrantesFacturaItems,
+  columnFechaHora,
+  columnFecha,
 }
