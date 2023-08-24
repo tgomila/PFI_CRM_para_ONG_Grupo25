@@ -5,7 +5,7 @@ import Select from "react-validation/build/select";
 import { required, IdInput, IdShowInput } from '../ConstantsInput';
 import { IdRead } from '../ConstantsRead';
 
-import { ModalSeleccionarIntegrantesContacto, ModalSeleccionarIntegrantes } from './Elegir_integrantes';
+import { ModalSeleccionarIntegrantesContacto } from './Elegir_integrantes';
 
 import ContactoService from '../../../../services/ContactoService';
 

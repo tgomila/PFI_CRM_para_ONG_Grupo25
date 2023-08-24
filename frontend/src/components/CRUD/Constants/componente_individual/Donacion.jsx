@@ -4,52 +4,11 @@ import Select from "react-validation/build/select";
 
 import { required, IdInput, IdShowInput } from '../ConstantsInput';
 import { IdRead } from '../ConstantsRead';
+import { FechaInput, FechaRead } from './ConstantsInputGeneric';
 
 import { ModalSeleccionarIntegrantesContacto } from './Elegir_integrantes';
 
 import ContactoService from '../../../../services/ContactoService';
-
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
-
-const FechaInput = ({ disabled, data, handleInputChange }) => {
-    return (
-      <div className="form-group">
-        <label> Fecha: </label>
-        <br/>
-        <DatePicker
-          disabled={disabled}
-          selected={data.fecha ? new Date(data.fecha) : null}
-          onChange={(date) =>
-            handleInputChange({
-              target: {
-                name: 'fecha',
-                value: date ? date.toISOString() : '',
-              },
-            })
-          }
-          showTimeSelect
-          timeFormat="HH:mm"
-          timeIntervals={15}
-          timeCaption="Hora"
-          dateFormat="yyyy-MM-dd HH:mm"
-          className="form-control"
-          minDate={data.fecha ? data.fecha : new Date()}
-          maxDate={new Date(3000, 0, 1)}
-          placeholderText="Selecciona una fecha y hora"
-          autoComplete="off"
-        />
-      </div>
-    );
-};
-
-const FechaRead = ({ data }) => {
-    return(
-        <div className = "form-group">
-            <label> Fecha: <br/>{data.fecha}</label>
-        </div>
-    );
-};
 
 const DonanteInput = ({ disabled, data, handleInputChange }) => {
     return(
@@ -159,7 +118,14 @@ const DonacionCreateInput = ({ searchEncontrado, data, handleInputChange }) => {
     return(
         <div>
             <IdShowInput show={searchEncontrado} data={data} handleInputChange={handleInputChange} />
-            <FechaInput disabled={searchEncontrado} data={data} handleInputChange={handleInputChange} />
+            <FechaInput
+                disabled={searchEncontrado}
+                data={data}
+                handleInputChange={handleInputChange}
+                propertyFecha={"fecha"}
+                labelText={"Fecha"}
+                isHour={true}
+            />
             <DonanteInput disabled={searchEncontrado} data={data} handleInputChange={handleInputChange} />
             <TipoDonacionInput disabled={searchEncontrado} data={data} handleInputChange={handleInputChange} />
             <DescripcionInput disabled={searchEncontrado} data={data} handleInputChange={handleInputChange} />
@@ -174,7 +140,14 @@ const DonacionUpdateInput = ({ data, handleInputChange }) => {
             {data.id && (
                 <div>
                     <IdShowInput show={false} data={data} handleInputChange={handleInputChange} />
-                    <FechaInput disabled={false} data={data} handleInputChange={handleInputChange} />
+                    <FechaInput
+                        disabled={false}
+                        data={data}
+                        handleInputChange={handleInputChange}
+                        propertyFecha={"fecha"}
+                        labelText={"Fecha"}
+                        isHour={true}
+                    />
                     <DonanteInput disabled={false} data={data} handleInputChange={handleInputChange} />
                     <TipoDonacionInput disabled={false} data={data} handleInputChange={handleInputChange} />
                     <DescripcionInput disabled={false} data={data} handleInputChange={handleInputChange} />
@@ -191,7 +164,7 @@ const DonacionRead = ({ data }) => {
             {data.id && (
                 <div>
                     <IdRead data={data} />
-                    <FechaRead data={data} />
+                    <FechaRead data={data} propertyFecha="fecha" labelText="Fecha"/>
                     <DonanteInput disabled={true} data={data}/>
                     <TipoDonacionInput disabled={true} data={data} />
                     <DescripcionRead data={data} />

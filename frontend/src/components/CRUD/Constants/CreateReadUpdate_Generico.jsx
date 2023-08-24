@@ -24,7 +24,7 @@ import "../../../Styles/CRUD.scss";
  * @param {string} typeCRUD ingresar 'CREATE' ó 'UPDATE' para saber que mostrar
  * @returns 
  */
-const CreateReadUpdateGenericoConFoto = ({cargarDatosDefault, DatoUpdateInput, tipoDatoForImageService, Service, dataIn, urlTablaDato, isVentanaEmergente, isPantallaCompleta, el_la, nombreTipoDato, typeCRUD}) => {
+const CreateReadUpdateGenericoConFoto = ({cargarDatosDefault, DatoUpdateInput, tipoDatoForImageService, Service, dataIn, urlTablaDato, isVentanaEmergente, isPantallaCompleta, el_la, nombreTipoDato, typeCRUD, setAgregarItem}) => {
     let navigate = useNavigate();
     const location = useLocation();
 
@@ -131,84 +131,99 @@ const CreateReadUpdateGenericoConFoto = ({cargarDatosDefault, DatoUpdateInput, t
 
         let data = {...datos}; //Copio datos a "data" para el json de alta
         if (checkBtn.current.context._errors.length === 0) {
-            const methodToCall = typeCRUD === "CREATE" ? "create" : "update";
-            console.log(data);
-            console.log(methodToCall);
-            //anteriormente era Service.create o Service.update
-            Service[methodToCall](data)
-                .then(response => {
-                //    return new Promise((resolve) => {
-                    setDatos(prevDatos => ({ ...prevDatos, ...response.data }));
-                    setSubmitted(true);//Info subida, aún la foto no subida.
-                    setSubmittedMessage("¡Has "+ (typeCRUD === 'CREATE' ? 'creado ' : 'modificado ') + el_la_aux + " " + nombreTipoDato_aux + "!");
-                    console.log("Datos subidos!");
-                    console.log("response.data:");
-                    console.log(response.data);
-                //    resolve();
-                //    });
-                //})
-                //.then(() => {//Este then es porque "setDatos" es async y cuando llamo a datos.id me lo daba nulo :v
-                    console.log("tipoDatoForImageService:");
-                    console.log(tipoDatoForImageService);
-                    console.log("Datos:");
-                    console.log(datos);
-                    console.log("Datos.id:");
-                    console.log(datos.id);
-                    console.log("Foto subida:");
-                    console.log(fotoSubida);
-                    
-                    //Originalmente era datos.id, pero como es asincrónico, mejor usar response.data.id
-                    if(tipoDatoForImageService && fotoSubida && response.data.id){//Si hay foto en el objeto, si hay una foto archivo que subió el usuario, si hay un ID para asociarlo
-                        console.log("Voy a subir la foto:");
-                        console.log(fotoSubida);
-                        ImageService.uploadImage(response.data.id, tipoDatoForImageService, fotoSubida).then
-                            (response => {
-                                setSubmittedFoto(true);
-                                setSubmittedMessage("¡Has " + (typeCRUD === 'CREATE' ? 'creado ' : 'modificado ') + el_la_aux + " " + nombreTipoDato_aux + " y su foto!");
-                                console.log("Se subió la foto :D");
-                                console.log(response);
-                            },
-                            (error) => {
-                                setSubmittedFoto(false);
-                                setSubmittedMessage("¡Has " + (typeCRUD === 'CREATE' ? 'creado ' : 'modificado ') + el_la_aux + " " + nombreTipoDato_aux + "! Pero su foto por error no ha sido " + (typeCRUD === 'CREATE' ? 'creada' : 'modificada'));
-                                setLoading(false);
-                                console.log("error:");
-                                console.log(error);
-                            }
-                        );
-                    }
-                    else{
-                        setSubmittedFoto(false);
-                        setSubmittedMessage("¡Has " + (typeCRUD === 'CREATE' ? 'creado ' : 'modificado ') + el_la_aux + " " + nombreTipoDato_aux + "!");
-                        console.log("No hay foto para subir");
-                        console.log("fotoSubida:");
-                        console.log(fotoSubida);
-                        console.log("datos.id");
+
+            if(setAgregarItem){//Este caso es un modal que solo devuelve el item creado
+                setAgregarItem(data);
+                setLoading(false);
+            } else {
+                const methodToCall = typeCRUD === "CREATE" ? "create" : "update";
+                console.log(data);
+                console.log(methodToCall);
+                //anteriormente era Service.create o Service.update
+
+                //Este es el clasico Create/Update
+                Service[methodToCall](data)
+                    .then(response => {
+                    //    return new Promise((resolve) => {
+                        setDatos(prevDatos => ({ ...prevDatos, ...response.data }));
+                        setSubmitted(true);//Info subida, aún la foto no subida.
+                        setSubmittedMessage("¡Has "+ (typeCRUD === 'CREATE' ? 'creado ' : 'modificado ') + el_la_aux + " " + nombreTipoDato_aux + "!");
+                        console.log("Datos subidos!");
+                        console.log("response.data:");
+                        console.log(response.data);
+                    //    resolve();
+                    //    });
+                    //})
+                    //.then(() => {//Este then es porque "setDatos" es async y cuando llamo a datos.id me lo daba nulo :v
+                        console.log("tipoDatoForImageService:");
+                        console.log(tipoDatoForImageService);
+                        console.log("Datos:");
+                        console.log(datos);
+                        console.log("Datos.id:");
                         console.log(datos.id);
+                        console.log("Foto subida:");
+                        console.log(fotoSubida);
+                        
+                        //Originalmente era datos.id, pero como es asincrónico, mejor usar response.data.id
+                        if(tipoDatoForImageService && fotoSubida && response.data.id){//Si hay foto en el objeto, si hay una foto archivo que subió el usuario, si hay un ID para asociarlo
+                            console.log("Voy a subir la foto:");
+                            console.log(fotoSubida);
+                            ImageService.uploadImage(response.data.id, tipoDatoForImageService, fotoSubida).then
+                                (response => {
+                                    setSubmittedFoto(true);
+                                    setSubmittedMessage("¡Has " + (typeCRUD === 'CREATE' ? 'creado ' : 'modificado ') + el_la_aux + " " + nombreTipoDato_aux + " y su foto!");
+                                    console.log("Se subió la foto :D");
+                                    console.log(response);
+                                },
+                                (error) => {
+                                    setSubmittedFoto(false);
+                                    setSubmittedMessage("¡Has " + (typeCRUD === 'CREATE' ? 'creado ' : 'modificado ') + el_la_aux + " " + nombreTipoDato_aux + "! Pero su foto por error no ha sido " + (typeCRUD === 'CREATE' ? 'creada' : 'modificada'));
+                                    setLoading(false);
+                                    console.log("error:");
+                                    console.log(error);
+                                }
+                            );
+                        }
+                        else{
+                            setSubmittedFoto(false);
+                            setSubmittedMessage("¡Has " + (typeCRUD === 'CREATE' ? 'creado ' : 'modificado ') + el_la_aux + " " + nombreTipoDato_aux + "!");
+                            console.log("No hay foto para subir");
+                            console.log("fotoSubida:");
+                            console.log(fotoSubida);
+                            console.log("datos.id");
+                            console.log(datos.id);
+                            setLoading(false);
+                        }
                         setLoading(false);
+                        window.scrollTo({ top: 0, behavior: "smooth" }); //Para mostrar cartel "Has cargado X componente!"
+                    },
+                    (error) => {
+                        const resMessage =
+                        (error.response &&
+                            error.response.data &&
+                            error.response.data.message) ||
+                        error.message ||
+                        error.toString();
+                        
+                        setSubmittedFoto(false);
+                        setSubmittedMessage("Error al " + (typeCRUD === 'CREATE' ? 'crear ' : 'modificar ') + (el_la_aux === 'la' ? 'a la ' : 'al ') + nombreTipoDato_aux);
+                        setLoading(false);
+                        setMessage(resMessage);
                     }
-                    setLoading(false);
-                    window.scrollTo({ top: 0, behavior: "smooth" }); //Para mostrar cartel "Has cargado X componente!"
-                },
-                (error) => {
-                    const resMessage =
-                      (error.response &&
-                        error.response.data &&
-                        error.response.data.message) ||
-                      error.message ||
-                      error.toString();
-                    
-                    setSubmittedFoto(false);
-                    setSubmittedMessage("Error al " + (typeCRUD === 'CREATE' ? 'crear ' : 'modificar ') + (el_la_aux === 'la' ? 'a la ' : 'al ') + nombreTipoDato_aux);
-                    setLoading(false);
-                    setMessage(resMessage);
-                }
-            );
+                );
+            }
         } else {
             setSubmittedMessage("No hubo " + (typeCRUD === 'CREATE' ? 'creación' : 'modificación'));
             setLoading(false);
         }
     };
+
+    const handleAgregarItem = () => {
+        let data = {...datos}; //Copio datos a "data" para el json de alta
+        if(setAgregarItem){//Este caso es un modal que solo devuelve el item creado
+            setAgregarItem(data);
+        }
+    }
 
     const newDatos = () => {
         setDatos(cargarDatosDefault);
@@ -428,7 +443,7 @@ const CreateReadUpdateGenericoConFoto = ({cargarDatosDefault, DatoUpdateInput, t
                                         />
                                     }
                                 
-                                    {(typeCRUD === 'CREATE' || typeCRUD === 'UPDATE') && (
+                                    {(typeCRUD === 'CREATE' || typeCRUD === 'UPDATE') && !setAgregarItem && (
                                         <div className="form-group">
                                             <Form onSubmit={handleSubmit} ref={form}>
                                                 <DatoUpdateInput 
@@ -447,7 +462,12 @@ const CreateReadUpdateGenericoConFoto = ({cargarDatosDefault, DatoUpdateInput, t
                                                         {loading && (
                                                             <span className="spinner-border spinner-border-sm"></span>
                                                         )}
-                                                        {typeCRUD === 'CREATE' ? 'Crear' : 'Modificar'} {nombreTipoDatoPrimeraLetraMayuscula}
+                                                        {setAgregarItem ? (
+                                                          "Agregar item"
+                                                        ) : (
+                                                          typeCRUD === 'CREATE' ? ('Crear') : ('Modificar' + nombreTipoDatoPrimeraLetraMayuscula)
+                                                        )}
+                                                        
                                                     </button>
                                                 </div>
                                                 
@@ -460,6 +480,20 @@ const CreateReadUpdateGenericoConFoto = ({cargarDatosDefault, DatoUpdateInput, t
                                                 )}
                                                 <CheckButton style={{ display: "none" }} ref={checkBtn} />
                                             </Form>
+                                        </div>
+                                    )}
+                                    {setAgregarItem && (
+                                        <div>
+                                            <DatoUpdateInput 
+                                                data={datos} 
+                                                handleInputChange={handleInputChange} 
+                                            />
+                                                
+                                            <div className="form-group">
+                                                <button className="btn btn-success" href="#" onClick={handleAgregarItem}>
+                                                    Agregar item
+                                                </button>
+                                            </div>
                                         </div>
                                     )}
                                     {typeCRUD === 'READ' && (//Solo aparece si es solo lectura

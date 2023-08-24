@@ -31,7 +31,10 @@ import {
  * Se utilizará para ver ver o agregar/editar integrantes de un CRUD de tipo dato, como una actividad.
  * 
  * @param {Object/Array} integrantesActuales - puede ser null, 1 o varios integrantes
- * @param {Array} columnsIn - Columnas de la tabla.
+ * @param {Array} columnsIn - Columnas de la tabla.cto) para modificar los integrantes (ejemplo proveedor).
+ * @param {Object} CreateItemComponent - Es si podes crear items (ejemplo CreateActividadComponent para programa de actividades).
+ * @param {string} tipoDatoParaFoto - ejemplo ("contacto").
+ * @param {string} nombreTipoDatoParaModuloVisibilidad - ejemplo ("CONTACTO").
  * @param {Object} ServiceDeIntegrantes - Objeto para obtener datos mediante Axios.
  * @param {Object} handleInputChange - Objeto padre (ejemplo producto) para modificar los integrantes (ejemplo proveedor).
  * @param {string} nombreHandleInputChange - Nombre del integrante en json, ejemplo ("beneficiarios").
@@ -42,61 +45,50 @@ import {
  * @param {string} nombreTipoIntegrantePrural - Nombre del tipo del integrante en prural (ejemplo "actividades").
  * @returns {JSX.Element} - Componente de la tabla de integrantes.
  */
-const ModalSeleccionarIntegrantes = ({integrantesActuales, columnsIn, ServiceDeIntegrantes, handleInputChange, nombreHandleInputChange, maxIntegrantesSelected, isEditable, el_la, nombreTipoIntegrante, nombreTipoIntegrantePrural}) => {
-  const [showModal, setShowModal] = useState(false);
+const ModalSeleccionarIntegrantes = ({integrantesActuales, columnsIn, CreateItemComponent, tipoDatoParaFoto="contacto", nombreTipoDatoParaModuloVisibilidad="CONTACTO", ServiceDeIntegrantes, handleInputChange, nombreHandleInputChange, maxIntegrantesSelected, isEditable, el_la, nombreTipoIntegrante, nombreTipoIntegrantePrural}) => {
+  const [showModalSeleccionar, setShowModalSeleccionar] = useState(false);
+  const [showModalCrearItem, setShowModalCrearItem] = useState(false);
   const [integrantesActualesAux, setIntegrantesActualesAux] = useState(null);
   const [candidatosAIntegrantes, setCandidatosAIntegrantes] = useState(null);
   const [isEditableAux, setIsEditableAux] = useState(false);
+  const [item, setItem] = useState(null);//este es para casos como agregar item factural o item actividad.
 
   useEffect(() => {
     setIsEditableAux(isEditable ? true : false);
   }, []);
 
   useEffect(() => {
-    if(showModal && !candidatosAIntegrantes){
+    if(showModalSeleccionar && !candidatosAIntegrantes){
       ServiceDeIntegrantes.getAll().then((res) => {
         setCandidatosAIntegrantes(res.data);
       });
     }
     setIntegrantesActualesAux(integrantesActuales);
-    if(!showModal){
+    if(!showModalSeleccionar){
       forzarRender();//Fue hecho para forzar actualizar la tabla
     }
-  }, [showModal]);
+  }, [showModalSeleccionar]);
 
   const [numeroDeIntegrantes, setNumeroDeIntegrantes] = useState(0);
   useEffect(() => {
-    console.log("Cambió integrantes actuales");
-    console.log(integrantesActuales);
     
     if (Array.isArray(integrantesActuales)) {//Es lista
       setNumeroDeIntegrantes(integrantesActuales.length);
-      console.log("integrantesActuales.length: " + integrantesActuales.length);
       integrantesActuales.forEach((integranteActual) => {
-        console.log("Cada uno:");
-        console.log(integranteActual)
       });
     } else if (integrantesActuales) {//Es 1 objeto
       setNumeroDeIntegrantes(1);
-      console.log("Es objeto");
-      console.log(integrantesActuales);
     } else {//Esta vacío
       setNumeroDeIntegrantes(0);
-      console.log("Es null o es objeto");
-      console.log(integrantesActuales);
     }
 
-    if(!showModal){
+    if(!showModalSeleccionar){
       setIntegrantesActualesAux(integrantesActuales);
     }
   }, [integrantesActuales])
 
   const selectedRows = useMemo(() => {
     if (candidatosAIntegrantes) {
-      // console.log("dataTable");
-      // console.log(dataTable);
-      // console.log("integrantesActuales");
-      // console.log(integrantesActuales);
       const selectedRowIds = {};
       if (Array.isArray(integrantesActuales)) {
         integrantesActuales.forEach((integranteActual) => {
@@ -111,19 +103,25 @@ const ModalSeleccionarIntegrantes = ({integrantesActuales, columnsIn, ServiceDeI
           selectedRowIds[rowIndex] = true;
         }
       }
-      //console.log("selectedRowIds");
-      //console.log(selectedRowIds);
       return selectedRowIds;
     }
     return {};
   }, [integrantesActuales, candidatosAIntegrantes]);
 
-  const handleOpenModal = () => {
-    setShowModal(true);
+  const handleOpenModalSeleccionar = () => {
+    setShowModalSeleccionar(true);
   };
 
-  const handleCloseModal = () => {
-    setShowModal(false);
+  const handleCloseModalSeleccionar = () => {
+    setShowModalSeleccionar(false);
+  };
+
+  const handleOpenModalCrearItem = () => {
+    setShowModalCrearItem(true);
+  };
+
+  const handleCloseModalCrearItem = () => {
+    setShowModalCrearItem(false);
   };
 
   const columns = columnsIn ? columnsIn : [
@@ -150,11 +148,6 @@ const ModalSeleccionarIntegrantes = ({integrantesActuales, columnsIn, ServiceDeI
     }
 ];
 
-  // useEffect(() => {
-  //   console.log("integrantesActuales");
-  //   console.log(integrantesActuales);
-  // }, [integrantesActuales]);
-
   const [forzarRenderizado, setForzarRenderizado ] = useState(false);
   const forzarRender = () => {
     setForzarRenderizado(true);
@@ -165,54 +158,52 @@ const ModalSeleccionarIntegrantes = ({integrantesActuales, columnsIn, ServiceDeI
   
   return(
     <div className = "form-group">
-      <label> {integrantesActuales ? nombreTipoIntegrante.charAt(0).toUpperCase() + nombreTipoIntegrante.slice(1) + ":" : "No hay " + nombreTipoIntegrante + " asociad"+ (el_la === "el" ? "o" : "a")}</label>
-      {maxIntegrantesSelected === 1 && RenderMostrarContacto(integrantesActualesAux, "contacto")}
+      <label> {integrantesActuales ? 
+        ((maxIntegrantesSelected && maxIntegrantesSelected === 1)
+          ? nombreTipoIntegrante.charAt(0).toUpperCase() + nombreTipoIntegrante.slice(1)
+          : nombreTipoIntegrantePrural.charAt(0).toUpperCase() + nombreTipoIntegrantePrural.slice(1)
+        ) + ":" : "No hay " + nombreTipoIntegrante + " asociad"+ (el_la === "el" ? "o" : "a")}
+      </label>
+      {maxIntegrantesSelected === 1 && RenderMostrarContacto(integrantesActualesAux, tipoDatoParaFoto)}
       {integrantesActuales && !forzarRenderizado && (!maxIntegrantesSelected || maxIntegrantesSelected > 1) && (
-        //TODO Debería haber una tabla
-          <div style={{ overflowY: 'auto' }}>
-          {console.log("integrantesActuales")}
-          {console.log(integrantesActuales)}
+        <div style={{ overflowY: 'auto' }}>
           <TablaGenericaConFoto
             columnsIn={columns}
             Service={ServiceDeIntegrantes}
             dataIn={integrantesActuales}
             visibilidadInput={"SIN_BOTONES"}
-            nombreTipoDatoParaModuloVisibilidad={"CONTACTO"}
-            tipoDatoParaFoto={"contacto"}
+            nombreTipoDatoParaModuloVisibilidad={nombreTipoDatoParaModuloVisibilidad}
+            tipoDatoParaFoto={tipoDatoParaFoto}
             el_la={"el"}
-            nombreTipoDato={"proveedor"}
+            nombreTipoDato={"integrante"}
             style={{ overflowY: 'auto' }}
           />
-          </div>
+        </div>
       )}
       {/*integrantesActuales && !forzarRenderizado && maxIntegrantesSelected === 1 && (
         <div>
-          {console.log("integrantesActuales")}
-          {console.log(integrantesActuales)}
-          {RenderMostrarContacto(integrantesActualesAux, "contacto", "")}
+          {RenderMostrarContacto(integrantesActualesAux, tipoDatoParaFoto, "")}
         </div>
       )*/}
       <br/>
 
       {isEditableAux && (
-        <button type="button" className="btn btn-primary" onClick={handleOpenModal}>
+        <button type="button" className="btn btn-primary" onClick={handleOpenModalSeleccionar}>
           <span style={{ display: 'flex', alignItems: 'center' }}>
           {integrantesActuales ? "Cambiar" : "Agregar"} {maxIntegrantesSelected === 1 ? nombreTipoIntegrante : nombreTipoIntegrantePrural}
           </span>
         </button>
       )}
 
-      <Modal show={showModal} onHide={handleCloseModal} size="xl">
+      <Modal show={showModalSeleccionar} onHide={handleCloseModalSeleccionar} size="xl">
         <Modal.Header>
           <Modal.Title>Seleccione {maxIntegrantesSelected >= 1 && maxIntegrantesSelected + " "}{maxIntegrantesSelected === 1 ? nombreTipoIntegrante : nombreTipoIntegrantePrural}</Modal.Title>
-          <button className="close" onClick={handleCloseModal}>
+          <button className="close" onClick={handleCloseModalSeleccionar}>
             <span aria-hidden="true">&times;</span>
           </button>
         </Modal.Header>
         <Modal.Body>
           <div>
-          {console.log("candidatosAIntegrantes")}
-            {console.log(candidatosAIntegrantes)}
             {!candidatosAIntegrantes ? (
               <div>
                 <span className="spinner-border spinner-border-sm"></span>
@@ -220,8 +211,6 @@ const ModalSeleccionarIntegrantes = ({integrantesActuales, columnsIn, ServiceDeI
               </div>
             ) : (
               <div style={{ overflowY: 'auto' }}>
-                {console.log("candidatosAIntegrantes 2")}
-                {console.log(candidatosAIntegrantes)}
                 {(maxIntegrantesSelected >= 1) && (numeroDeIntegrantes >= maxIntegrantesSelected) && (
                   <>
                     <>Se ha alcanzado el máximo de {maxIntegrantesSelected} {maxIntegrantesSelected != 1 ? nombreTipoIntegrantePrural : nombreTipoIntegrante} seleccionado{maxIntegrantesSelected != 1 && 's'}</>
@@ -236,8 +225,8 @@ const ModalSeleccionarIntegrantes = ({integrantesActuales, columnsIn, ServiceDeI
                   Service={ServiceDeIntegrantes}
                   dataIn={candidatosAIntegrantes}
                   visibilidadInput={"SOLO_VISTA"}
-                  nombreTipoDatoParaModuloVisibilidad={"CONTACTO"}
-                  tipoDatoParaFoto={"contacto"}
+                  nombreTipoDatoParaModuloVisibilidad={nombreTipoDatoParaModuloVisibilidad}
+                  tipoDatoParaFoto={tipoDatoParaFoto}
                   el_la={el_la}
                   nombreTipoDato={nombreTipoIntegrante}
                   handleInputChange = {handleInputChange}
@@ -250,7 +239,39 @@ const ModalSeleccionarIntegrantes = ({integrantesActuales, columnsIn, ServiceDeI
           </div>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseModal}>
+          <Button variant="secondary" onClick={handleCloseModalSeleccionar}>
+            Cerrar
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      {CreateItemComponent && isEditableAux && (
+        <button type="button" className="btn btn-primary" onClick={handleOpenModalCrearItem}>
+          <span style={{ display: 'flex', alignItems: 'center' }}>
+            Crear item de {nombreTipoIntegrante}
+          </span>
+        </button>
+      )}
+
+      <Modal show={showModalCrearItem} onHide={handleCloseModalCrearItem} size="xl">
+        <Modal.Header>
+          <Modal.Title> Agregar item de {nombreTipoIntegrante} </Modal.Title>
+          <button className="close" onClick={handleCloseModalCrearItem}>
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </Modal.Header>
+        <Modal.Body>
+          <div style={{ overflowY: 'auto' }}>
+            {CreateItemComponent && (
+              <CreateItemComponent
+                isPantallaCompleta = {false}
+                setAgregarItem={setItem}
+              />
+            )}
+          </div>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseModalCrearItem}>
             Cerrar
           </Button>
         </Modal.Footer>
@@ -301,6 +322,8 @@ const ModalSeleccionarIntegrantesContacto = ({integrantesActuales, ServiceDeInte
     <ModalSeleccionarIntegrantes
         integrantesActuales = {integrantesActuales}
         columnsIn={columns}
+        tipoDatoParaFoto={"contacto"}
+        nombreTipoDatoParaModuloVisibilidad={"CONTACTO"}
         ServiceDeIntegrantes = {ServiceDeIntegrantes ? ServiceDeIntegrantes : ContactoService}
         handleInputChange = {handleInputChange}
         nombreHandleInputChange = {nombreHandleInputChange}
@@ -355,6 +378,8 @@ const ModalSeleccionarIntegrantesPersona = ({integrantesActuales, ServiceDeInteg
     <ModalSeleccionarIntegrantes
         integrantesActuales = {integrantesActuales}
         columnsIn={columns}
+        tipoDatoParaFoto={"contacto"}
+        nombreTipoDatoParaModuloVisibilidad={"PERSONA"}
         ServiceDeIntegrantes = {ServiceDeIntegrantes ? ServiceDeIntegrantes : PersonaService}
         handleInputChange = {handleInputChange}
         nombreHandleInputChange = {nombreHandleInputChange}
@@ -415,6 +440,8 @@ const ModalSeleccionarIntegrantesBeneficiario = ({integrantesActuales, ServiceDe
     <ModalSeleccionarIntegrantes
         integrantesActuales = {integrantesActuales}
         columnsIn={columns}
+        tipoDatoParaFoto={"contacto"}
+        nombreTipoDatoParaModuloVisibilidad={"BENEFICIARIO"}
         ServiceDeIntegrantes = {ServiceDeIntegrantes ? ServiceDeIntegrantes : BeneficiarioService}
         handleInputChange = {handleInputChange}
         nombreHandleInputChange = {nombreHandleInputChange}
@@ -475,6 +502,8 @@ const ModalSeleccionarIntegrantesProfesional = ({integrantesActuales, ServiceDeI
     <ModalSeleccionarIntegrantes
         integrantesActuales = {integrantesActuales}
         columnsIn={columns}
+        tipoDatoParaFoto={"contacto"}
+        nombreTipoDatoParaModuloVisibilidad={"PROFESIONAL"}
         ServiceDeIntegrantes = {ServiceDeIntegrantes ? ServiceDeIntegrantes : ProfesionalService}
         handleInputChange = {handleInputChange}
         nombreHandleInputChange = {nombreHandleInputChange}

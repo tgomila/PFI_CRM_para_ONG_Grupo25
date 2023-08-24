@@ -49,11 +49,11 @@ import CreateVoluntarioComponent from "./components/CRUD/Create/CreateVoluntario
 import CreateEmployeeComponent from "./trash-can/CreateEmployeeComponent";//Testing
 
 // import CreateUserComponent from "./components/CRUD/Create/CreateUserComponent";
-// import CreateActividadComponent from "./components/CRUD/Create/CreateActividadComponent";
-// import CreateProgramaDeActividadesComponent from "./components/CRUD/Create/CreateProgramaDeActividadesComponent";
+import CreateActividadComponent from "./components/CRUD/Create/CreateActividadComponent";
+import CreateProgramaDeActividadesComponent from "./components/CRUD/Create/CreateProgramaDeActividadesComponent";
 import CreateProductoComponent from "./components/CRUD/Create/CreateProductoComponent";
 import CreateDonacionComponent from "./components/CRUD/Create/CreateDonacionComponent";
-import CreateFacturaComponent from "./components/CRUD/Create/CreateFacturaComponent";
+import { CreateFacturaComponent } from "./components/CRUD/Create/CreateFacturaComponent";
 import CreateInsumoComponent from "./components/CRUD/Create/CreateInsumoComponent";
 import CreatePrestamoComponent from "./components/CRUD/Create/CreatePrestamoComponent";
 import CreateProyectoComponent from "./components/CRUD/Create/CreateProyectoComponent";
@@ -71,8 +71,8 @@ import ReadVoluntarioComponent from "./components/CRUD/Read/ReadVoluntarioCompon
 import ReadPersonaJuridicaComponent from "./components/CRUD/Read/ReadPersonaJuridicaComponent";
 
 // import ReadUserComponent from "./components/CRUD/Read/ReadUserComponent";
-// import ReadActividadComponent from "./components/CRUD/Read/ReadActividadComponent";
-// import ReadProgramaDeActividadesComponent from "./components/CRUD/Read/ReadProgramaDeActividadesComponent";
+import ReadActividadComponent from "./components/CRUD/Read/ReadActividadComponent";
+import ReadProgramaDeActividadesComponent from "./components/CRUD/Read/ReadProgramaDeActividadesComponent";
 import ReadProductoComponent from "./components/CRUD/Read/ReadProductoComponent";
 import ReadDonacionComponent from "./components/CRUD/Read/ReadDonacionComponent";
 import ReadFacturaComponent from "./components/CRUD/Read/ReadFacturaComponent";
@@ -93,8 +93,8 @@ import UpdateConsejoAdHonoremComponent from "./components/CRUD/Update/UpdateCons
 import UpdateVoluntarioComponent from "./components/CRUD/Update/UpdateVoluntarioComponent";
 
 // import UpdateUserComponent from "./components/CRUD/Update/UpdateUserComponent";
-// import UpdateActividadComponent from "./components/CRUD/Update/UpdateActividadComponent";
-// import UpdateProgramaDeActividadesComponent from "./components/CRUD/Update/UpdateProgramaDeActividadesComponent";
+import UpdateActividadComponent from "./components/CRUD/Update/UpdateActividadComponent";
+import UpdateProgramaDeActividadesComponent from "./components/CRUD/Update/UpdateProgramaDeActividadesComponent";
 import UpdateProductoComponent from "./components/CRUD/Update/UpdateProductoComponent";
 import UpdateDonacionComponent from "./components/CRUD/Update/UpdateDonacionComponent";
 import UpdateFacturaComponent from "./components/CRUD/Update/UpdateFacturaComponent";
@@ -352,8 +352,8 @@ const App = () => {
             <Route path="/personajuridica/create" element={<CreatePersonaJuridicaComponent />} />
 
             {/* <Route path="/users/create" element={<CreateUserComponent />} /> */}
-            {/* <Route path="/actividad/create" element={<CreateActividadComponent />} /> */}
-            {/* <Route path="/programadeactividades/create" element={<CreateProgramaDeActividadesComponent />} /> */}
+            <Route path="/actividad/create" element={<CreateActividadComponent />} />
+            <Route path="/programadeactividades/create" element={<CreateProgramaDeActividadesComponent />} />
             <Route path="/producto/create" element={<CreateProductoComponent />} />
             <Route path="/donacion/create" element={<CreateDonacionComponent />} />
             <Route path="/factura/create" element={<CreateFacturaComponent />} />
@@ -380,8 +380,8 @@ const App = () => {
             <Route path="/personajuridica/update" element={<UpdatePersonaJuridicaComponent />} />
 
             {/* <Route path="/users/update" element={<UpdateUserComponent />} /> */}
-            {/* <Route path="/actividad/update" element={<UpdateActividadComponent />} /> */}
-            {/* <Route path="/programadeactividades/update" element={<UpdateProgramaDeActividadesComponent />} /> */}
+            <Route path="/actividad/update" element={<UpdateActividadComponent />} />
+            <Route path="/programadeactividades/update" element={<UpdateProgramaDeActividadesComponent />} />
             <Route path="/producto/update" element={<UpdateProductoComponent />} />
             <Route path="/donacion/update" element={<UpdateDonacionComponent />} />
             <Route path="/factura/update" element={<UpdateFacturaComponent />} />
@@ -402,14 +402,14 @@ const App = () => {
             <Route path="/personajuridica/read" element={<ReadPersonaJuridicaComponent />} />
 
             {/* <Route path="/users/read" element={<ReadUserComponent />} /> */}
-            {/* <Route path="/actividad/read" element={<ReadActividadComponent />} /> */}
-            {/* <Route path="/programadeactividades/read" element={<ReadProgramaDeActividadesComponent />} /> */}
+            <Route path="/actividad/read" element={<ReadActividadComponent />} />
+            <Route path="/programadeactividades/read" element={<ReadProgramaDeActividadesComponent />} />
             <Route path="/producto/read" element={<ReadProductoComponent />} />
             <Route path="/donacion/read" element={<ReadDonacionComponent />} />
             <Route path="/factura/read" element={<ReadFacturaComponent />} />
             <Route path="/insumo/read" element={<ReadInsumoComponent />} />
             <Route path="/prestamo/read" element={<ReadPrestamoComponent />} />
-            <Route path="/proyecto/read" element={<CreateEmployeeComponent />} />
+            <Route path="/proyecto/read" element={<ReadProyectoComponent />} />
             {/* <Route path="/chat/read" element={<ReadChatComponent />} /> */}
 
 

@@ -3,9 +3,11 @@ import Input from "react-validation/build/input";
 import Select from "react-validation/build/select";
 
 import DatePicker from 'react-datepicker';
+import { format } from 'date-fns';
 import 'react-datepicker/dist/react-datepicker.css';
 import { required, IdInput, IdShowInput } from '../ConstantsInput';
 import { IdRead } from '../ConstantsRead';
+import { FechaInicioFinInput, FechaRead } from './ConstantsInputGeneric';
 
 import { ModalSeleccionarIntegrantesPersona } from './Elegir_integrantes';
 
@@ -27,76 +29,6 @@ const DescripcionRead = ({data}) => {
             <label> Descripción:
                 <br />
             {data.descripcion}</label>
-        </div>
-    );
-};
-
-const FechaInicioInput = ({ disabled, data, handleInputChange }) => {
-    return (
-      <div className="form-group">
-        <label> Fecha de inicio: </label>
-        <br/>
-        <DatePicker
-          disabled={disabled}
-          selected={data.fechaInicio ? new Date(data.fechaInicio) : null}
-          onChange={(date) =>
-            handleInputChange({
-              target: {
-                name: 'fechaInicio',
-                value: date ? date.toISOString() : '',
-              },
-            })
-          }
-          dateFormat="yyyy-MM-dd"
-          className="form-control"
-          minDate={new Date()}
-          maxDate={new Date(3000, 0, 1)}
-          placeholderText="Selecciona una fecha"
-          autoComplete="off"
-        />
-      </div>
-    );
-};
-
-const FechaInicioRead = ({ data }) => {
-    return(
-        <div className = "form-group">
-            <label> Fecha de inicio: <br/>{data.fechaInicio}</label>
-        </div>
-    );
-};
-
-const FechaFinInput = ({ disabled, data, handleInputChange }) => {
-    return (
-      <div className="form-group">
-        <label> Fecha de finalización: </label>
-        <br/>
-        <DatePicker
-          disabled={disabled}
-          selected={data.fechaFin ? new Date(data.fechaFin) : null}
-          onChange={(date) =>
-            handleInputChange({
-              target: {
-                name: 'fechaFin',
-                value: date ? date.toISOString() : '',
-              },
-            })
-          }
-          dateFormat="yyyy-MM-dd"
-          className="form-control"
-          minDate={new Date()}
-          maxDate={new Date(3000, 0, 1)}
-          placeholderText="Selecciona una fecha"
-          autoComplete="off"
-        />
-      </div>
-    );
-};
-
-const FechaFinRead = ({ data }) => {
-    return(
-        <div className = "form-group">
-            <label> Fecha de finalización: <br/>{data.fechaFin}</label>
         </div>
     );
 };
@@ -132,8 +64,14 @@ const ProyectoCreateInput = ({ searchEncontrado, data, handleInputChange }) => {
         <div>
             <IdShowInput show={searchEncontrado} data={data} handleInputChange={handleInputChange} />
             <DescripcionInput disabled={searchEncontrado} data={data} handleInputChange={handleInputChange} />
-            <FechaInicioInput disabled={searchEncontrado} data={data} handleInputChange={handleInputChange} />
-            <FechaFinInput disabled={searchEncontrado} data={data} handleInputChange={handleInputChange} />
+            {/* <FechaInicioInput disabled={searchEncontrado} data={data} handleInputChange={handleInputChange} />
+            <FechaFinInput disabled={searchEncontrado} data={data} handleInputChange={handleInputChange} /> */}
+            <FechaInicioFinInput 
+                disabled={searchEncontrado} data={data} handleInputChange={handleInputChange} 
+                propertyFechaInicio="fechaInicio" propertyFechaFin="fechaFin" 
+                labelTextFechaInicio="Fecha de inicio" labelTextFechaFin="Fecha de finalización" 
+                isHour={true}
+            />
             <InvolucradosInput disabled={searchEncontrado} data={data} handleInputChange={handleInputChange} />
         </div>
     );
@@ -146,8 +84,14 @@ const ProyectoUpdateInput = ({ data, handleInputChange }) => {
                 <div>
                     <IdShowInput show={false} data={data} handleInputChange={handleInputChange} />
                     <DescripcionInput disabled={false} data={data} handleInputChange={handleInputChange} />
-                    <FechaInicioInput disabled={false} data={data} handleInputChange={handleInputChange} />
-                    <FechaFinInput disabled={false} data={data} handleInputChange={handleInputChange} />
+                    {/* <FechaInicioInput disabled={false} data={data} handleInputChange={handleInputChange} />
+                    <FechaFinInput disabled={false} data={data} handleInputChange={handleInputChange} /> */}
+                    <FechaInicioFinInput 
+                        disabled={false} data={data} handleInputChange={handleInputChange} 
+                        propertyFechaInicio="fechaInicio" propertyFechaFin="fechaFin" 
+                        labelTextFechaInicio="Fecha de inicio" labelTextFechaFin="Fecha de finalización" 
+                        isHour={true}
+                    />
                     <InvolucradosInput disabled={false} data={data} handleInputChange={handleInputChange} />
                 </div>
             )}
@@ -162,8 +106,10 @@ const ProyectoRead = ({ data }) => {
                 <div>
                     <IdRead data={data} />
                     <DescripcionRead data={data} />
-                    <FechaInicioRead data={data} />
-                    <FechaFinRead data={data} />
+                    <FechaRead data={data} propertyFecha="fechaInicio" labelText="Fecha de inicio"/>
+                    <FechaRead data={data} propertyFecha="fechaFin" labelText="Fecha de finalización"/>
+                    {/* <FechaInicioRead data={data} />
+                    <FechaFinRead data={data} /> */}
                     <InvolucradosInput disabled={true} data={data}/>
                 </div>
             )}

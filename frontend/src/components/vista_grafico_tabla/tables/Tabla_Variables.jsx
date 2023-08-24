@@ -107,6 +107,46 @@ const IndeterminateSelectCheckbox = forwardRef(({ indeterminate, isSelected, ...
   );
 });
 
+const QuitarElementoCheckbox = forwardRef(({ indeterminate, isSelected, ...rest }, ref) => {
+  const defaultRef = useRef();
+  const resolvedRef = ref || defaultRef;
+
+  useEffect(() => {
+    resolvedRef.current.indeterminate = indeterminate;
+  }, [resolvedRef, indeterminate]);
+
+  const useHover = () => {
+    const [hovering, setHovering] = useState(false);
+    const onHoverProps = {
+      onMouseEnter: () => setHovering(true),
+      onMouseLeave: () => setHovering(false),
+    }
+    return [hovering, onHoverProps]
+  }
+  const [buttonIsHovering, buttonHoverProps] = useHover();
+
+  return (
+    <>
+      <div className="cb-integrantes action">
+        <label {...buttonHoverProps}>
+          <input type="checkbox" ref={resolvedRef} {...rest} />
+          <span>
+            {isSelected ? (
+              <>
+                {!buttonIsHovering ? <MdOutlinePersonAdd /> : <MdOutlinePersonOff/>} {!buttonIsHovering ? "Agregado" : "Quitar"}
+              </>
+            ) : (
+              <>
+                {!buttonIsHovering ? <MdOutlinePersonOff /> : <MdOutlinePersonAdd/>} {!buttonIsHovering ? "Quitado" : "Agregar"}
+              </>
+            )}
+          </span>
+        </label>
+      </div>
+    </>
+  );
+});
+
 
 /**
  * 

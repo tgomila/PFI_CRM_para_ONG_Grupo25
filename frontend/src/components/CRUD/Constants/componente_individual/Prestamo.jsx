@@ -2,13 +2,11 @@ import React, {useEffect, useState} from 'react'
 import Input from "react-validation/build/input";
 import Select from "react-validation/build/select";
 
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
-
 import { required, IdInput, IdShowInput } from '../ConstantsInput';
 import { IdRead } from '../ConstantsRead';
+import { FechaInicioFinInput, FechaRead } from './ConstantsInputGeneric';
 
-import { ModalSeleccionarIntegrantesContacto, ModalSeleccionarIntegrantes } from './Elegir_integrantes';
+import { ModalSeleccionarIntegrantesContacto } from './Elegir_integrantes';
 
 import ContactoService from '../../../../services/ContactoService';
 import PersonaService from '../../../../services/PersonaService';
@@ -50,84 +48,6 @@ const CantidadRead = ({data}) => {
             <label> Cantidad:
                 <br />
             {data.cantidad}</label>
-        </div>
-    );
-};
-
-const FechaPrestamoInicioInput = ({ disabled, data, handleInputChange }) => {
-    return (
-      <div className="form-group">
-        <label> Fecha de inicio de préstamo: </label>
-        <br/>
-        <DatePicker
-          disabled={disabled}
-          selected={data.fechaPrestamoInicio ? new Date(data.fechaPrestamoInicio) : null}
-          onChange={(date) =>
-            handleInputChange({
-              target: {
-                name: 'fechaPrestamoInicio',
-                value: date ? date.toISOString() : '',
-              },
-            })
-          }
-          showTimeSelect
-          timeFormat="HH:mm"
-          timeIntervals={15}
-          timeCaption="Hora"
-          dateFormat="yyyy-MM-dd HH:mm"
-          className="form-control"
-          minDate={new Date()}
-          maxDate={new Date(3000, 0, 1)}
-          placeholderText="Selecciona una fecha y hora"
-          autoComplete="off"
-        />
-      </div>
-    );
-};
-
-const FechaPrestamoInicioRead = ({ data }) => {
-    return(
-        <div className = "form-group">
-            <label> Fecha de inicio de préstamo: <br/>{data.fechaPrestamoInicio}</label>
-        </div>
-    );
-};
-
-const FechaPrestamoFinInput = ({ disabled, data, handleInputChange }) => {
-    return (
-      <div className="form-group">
-        <label> Fecha de fin de préstamo: </label>
-        <br/>
-        <DatePicker
-          disabled={disabled}
-          selected={data.fechaPrestamoFin ? new Date(data.fechaPrestamoFin) : null}
-          onChange={(date) =>
-            handleInputChange({
-              target: {
-                name: 'fechaPrestamoFin',
-                value: date ? date.toISOString() : '',
-              },
-            })
-          }
-          showTimeSelect
-          timeFormat="HH:mm"
-          timeIntervals={15}
-          timeCaption="Hora"
-          dateFormat="yyyy-MM-dd HH:mm"
-          className="form-control"
-          minDate={data.fechaPrestamoFin ? data.fechaPrestamoFin : new Date()}
-          maxDate={new Date(3000, 0, 1)}
-          placeholderText="Selecciona una fecha y hora"
-          autoComplete="off"
-        />
-      </div>
-    );
-};
-
-const FechaPrestamoFinRead = ({ data }) => {
-    return(
-        <div className = "form-group">
-            <label> Fecha de fin de préstamo: <br/>{data.fechaPrestamoFin}</label>
         </div>
     );
 };
@@ -208,8 +128,14 @@ const PrestamoCreateInput = ({ searchEncontrado, data, handleInputChange }) => {
             <IdShowInput show={searchEncontrado} data={data} handleInputChange={handleInputChange} />
             <DescripcionInput disabled={searchEncontrado} data={data} handleInputChange={handleInputChange} />
             <CantidadInput disabled={searchEncontrado} data={data} handleInputChange={handleInputChange} />
-            <FechaPrestamoInicioInput disabled={searchEncontrado} data={data} handleInputChange={handleInputChange} />
-            <FechaPrestamoFinInput disabled={searchEncontrado} data={data} handleInputChange={handleInputChange} />
+            {/* <FechaPrestamoInicioInput disabled={searchEncontrado} data={data} handleInputChange={handleInputChange} />
+            <FechaPrestamoFinInput disabled={searchEncontrado} data={data} handleInputChange={handleInputChange} /> */}
+            <FechaInicioFinInput 
+                disabled={searchEncontrado} data={data} handleInputChange={handleInputChange} 
+                propertyFechaInicio="fechaPrestamoInicio" propertyFechaFin="fechaPrestamoFin" 
+                labelTextFechaInicio="Fecha de inicio de préstamo" labelTextFechaFin="Fecha de fin de préstamo" 
+                isHour={true}
+            />
             <HaSidoDevueltoInput disabled={searchEncontrado} data={data} handleInputChange={handleInputChange} />
             <PrestamistaInput disabled={false} data={data} handleInputChange={handleInputChange} />
             <PrestatarioInput disabled={false} data={data} handleInputChange={handleInputChange} />
@@ -225,8 +151,14 @@ const PrestamoUpdateInput = ({ data, handleInputChange }) => {
                     <IdShowInput show={false} data={data} handleInputChange={handleInputChange} />
                     <DescripcionInput disabled={false} data={data} handleInputChange={handleInputChange} />
                     <CantidadInput disabled={false} data={data} handleInputChange={handleInputChange} />
-                    <FechaPrestamoInicioInput disabled={false} data={data} handleInputChange={handleInputChange} />
-                    <FechaPrestamoFinInput disabled={false} data={data} handleInputChange={handleInputChange} />
+                    {/* <FechaPrestamoInicioInput disabled={false} data={data} handleInputChange={handleInputChange} />
+                    <FechaPrestamoFinInput disabled={false} data={data} handleInputChange={handleInputChange} /> */}
+                    <FechaInicioFinInput 
+                        disabled={false} data={data} handleInputChange={handleInputChange} 
+                        propertyFechaInicio="fechaPrestamoInicio" propertyFechaFin="fechaPrestamoFin" 
+                        labelTextFechaInicio="Fecha de inicio de préstamo" labelTextFechaFin="Fecha de fin de préstamo" 
+                        isHour={true}
+                    />
                     <HaSidoDevueltoInput disabled={false} data={data} handleInputChange={handleInputChange} />
                     <PrestamistaInput disabled={false} data={data} handleInputChange={handleInputChange} />
                     <PrestatarioInput disabled={false} data={data} handleInputChange={handleInputChange} />
@@ -244,8 +176,10 @@ const PrestamoRead = ({ data }) => {
                 <IdRead data={data} />
                 <DescripcionRead data={data} />
                 <CantidadRead data={data} />
-                <FechaPrestamoInicioRead data={data} />
-                <FechaPrestamoFinRead data={data} />
+                {/* <FechaPrestamoInicioRead data={data} />
+                <FechaPrestamoFinRead data={data} /> */}
+                <FechaRead data={data} propertyFecha="fechaPrestamoInicio" labelText="Fecha de inicio de préstamo"/>
+                <FechaRead data={data} propertyFecha="fechaPrestamoFin" labelText="Fecha de fin de préstamo"/>
                 <HaSidoDevueltoRead data={data} />
                 <PrestamistaInput disabled={true} data={data} />
                 <PrestatarioInput disabled={true} data={data} />
@@ -258,27 +192,6 @@ const PrestamoRead = ({ data }) => {
 
 
 export {
-    //Create, Update
-    IdInput,
-    IdShowInput,
-    DescripcionInput,
-    CantidadInput,
-    FechaPrestamoInicioInput,
-    FechaPrestamoFinInput,
-    HaSidoDevueltoInput,
-    PrestamistaInput,
-    PrestatarioInput,
-    
-    //Read
-    IdRead,
-    DescripcionRead,
-    CantidadRead,
-    FechaPrestamoInicioRead,
-    FechaPrestamoFinRead,
-    HaSidoDevueltoRead,
-    //PrestamistaRead,
-    //PrestatarioRead,
-
     //CRUD armado (lo que se va a usar)
     cargarPrestamoDefault,
     PrestamoCreateInput,
