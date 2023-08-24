@@ -34,8 +34,20 @@ const TablaUser = ({visibilidadInput}) => {
         type: "string",
       },
       {
+        Header: "Nombre de usuario",
+        accessor: "username",
+        filter: 'fuzzyText',
+        type: "string",
+      },
+      {
         Header: "Email",
         accessor: "email",
+        filter: 'fuzzyText',
+        type: "string",
+      },
+      {
+        Header: "Rol del usuario",
+        accessor: "roleMasValuado",
         filter: 'fuzzyText',
         type: "string",
       },
