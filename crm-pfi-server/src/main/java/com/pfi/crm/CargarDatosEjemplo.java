@@ -2094,6 +2094,22 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		programa.agregarActividadesPorSemana(10, actividad);
 		programa.setDescripcion(actividad.getDescripcion());
 		programaDeActividadesService.altaProgramaDeActividades(programa);
+		
+		ProgramaDeActividadesPayload programa2 = new ProgramaDeActividadesPayload();
+		ActividadPayload actividad2 = new ActividadPayload();
+		actividad2.setFechaHoraDesde(LocalDateTime.of(todayMinus1month.getYear(), todayMinus1month.getMonth(), 1, 12, 00));
+		actividad2.setFechaHoraHasta(actividad.getFechaHoraDesde().plusHours(3));
+		actividad2.agregarProfesional(profesionales.get(0));
+		if(beneficiarios.size() >= 1 && beneficiarios.size() <= 2)
+			actividad2.agregarBeneficiario(beneficiarios.get(0));//default
+		if(beneficiarios.size() >= 3)
+			actividad2.agregarBeneficiario(beneficiarios.get(2));
+		if(beneficiarios.size() >= 4)
+			actividad2.agregarBeneficiario(beneficiarios.get(3));
+		actividad2.setDescripcion("Clases teóricas");
+		programa2.agregarActividadesPorSemana(2, actividad2);
+		programa2.setDescripcion(actividad2.getDescripcion());
+		programaDeActividadesService.altaProgramaDeActividades(programa2);
 	}
 	
 	public void cargarDonacionesTenant2() {

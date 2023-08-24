@@ -25,7 +25,7 @@ public class MasterTenantService {
 	}
 	
 	public List<TenantPayload> getTenants() {
-		return masterTenantRepository.findAll().stream().map(e -> toPayload(e)).collect(Collectors.toList());
+		return masterTenantRepository.findAllByOrderByTenantClientId().stream().map(e -> toPayload(e)).collect(Collectors.toList());
 	}
 	
 	public List<String> getDbNames() {
@@ -70,7 +70,12 @@ public class MasterTenantService {
 			payload.setTenantClientId(newTenantId);
 			payload.setDbName("tenant" + newTenantId.intValue()/100);
 		}
-		return masterTenantRepository.save(new MasterTenant(payload)).toPayload();
+		MasterTenant masterTenant;
+		if(payload.getTenantName() != null && payload.getTenantName().equalsIgnoreCase("tenant2"))
+			masterTenant = new MasterTenant(payload, "America/Argentina/Buenos_Aires");
+		else
+			masterTenant = new MasterTenant(payload);
+		return masterTenantRepository.save(masterTenant).toPayload();
 	}
 	
 	private boolean existsTenantById(Integer idTenant) {

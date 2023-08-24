@@ -86,8 +86,14 @@ Productos
 	* producto_5: https://www.freepik.es/foto-gratis/arroz-integral_9186549.htm
 
 
+Actividad
+	* test: https://www.freepik.es/foto-gratis/gente-negocios-organizando-varias-notas-adhesivas-texto-vidrio-oficina_27998773.htm
+	* actividad 1 a 10: https://www.freepik.es/foto-gratis/familia-tiro-medio-cocinando-deliciosa-pizza_40408614.htm
+	* actividad 11 y 12: https://www.freepik.es/foto-gratis/libro-recetas-reloj-arena-cocina_5204285.htm
 
-
+Programa de actividades:
+	* programa_2: https://www.freepik.es/foto-gratis/libro-recetas-reloj-arena-cocina_5204285.htm
+	
 
 
 

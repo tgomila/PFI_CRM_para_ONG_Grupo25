@@ -89,7 +89,7 @@ public class PrestamoService {
 				m.setPrestamista(null);
 			}
 			if(m.getPrestatario() != null) {
-				message += ", y desasociado a su prestatario id: " + m.getPrestamista().getId();
+				message += ", y desasociado a su prestatario id: " + m.getPrestatario().getId();
 				m.setPrestatario(null);
 			}
 			prestamoRepository.save(m);

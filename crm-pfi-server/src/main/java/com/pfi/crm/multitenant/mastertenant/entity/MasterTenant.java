@@ -74,6 +74,25 @@ public class MasterTenant implements Serializable {
 		this.status = "Active";
 		this.tenantPhoneNumber = "+541131105305";
 	}
+	
+	public MasterTenant(TenantPayload p, String timeZone) {
+		this.tenantClientId = p.getTenantClientId();
+		this.dbName = p.getDbName();
+		this.tenantName = p.getTenantName();
+		if(timeZone != null&& !timeZone.isEmpty()) {
+			this.url = "jdbc:mysql://localhost:3306/" + p.getDbName()
+					+ "?useSSL=false&serverTimezone=" + timeZone 
+					+ "&useLegacyDatetimeCode=false";
+		} else {
+			this.url = "jdbc:mysql://localhost:3306/" + p.getDbName()
+			+ "?useSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false";
+		}
+		this.userName = "root";
+		this.password = "1234";
+		this.driverClass = "com.mysql.cj.jdbc.Driver";
+		this.status = "Active";
+		this.tenantPhoneNumber = "+541131105305";
+	}
 
 	public Integer getTenantClientId() {
 		return tenantClientId;
