@@ -1675,7 +1675,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		// Contacto
 		m.setNombreDescripcion("Ente gobernamental");
 		m.setCuit("20-53917506-9");
-		m.setDomicilio("Avenida de mayo 100");
+		m.setDomicilio("Avenida de mayo 157");
 		m.setEmail("entegobernamental@lanacion.gov.ar");
 		m.setTelefono("5614-6546");
 

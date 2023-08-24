@@ -9,6 +9,8 @@ public class UserPayload {
 	
 	private Long id;
 	private String name;
+	private String username;
+	private String roleMasValuado;
 	private String email;
 	private ContactoPayload contacto;
 	private Set<RoleName> roles = new HashSet<>();
@@ -17,11 +19,13 @@ public class UserPayload {
 		super();
 	}
 
-	public UserPayload(Long id, String name, String email, ContactoPayload contactoPayload, Set<RoleName> roles) {
+	public UserPayload(Long id, String name, String username, String email, String roleMasValuado, ContactoPayload contactoPayload, Set<RoleName> roles) {
 		super();
 		this.id = id;
 		this.name = name;
+		this.username = username;
 		this.email = email;
+		this.roleMasValuado = roleMasValuado;
 		this.contacto = contactoPayload;
 		this.roles = roles;
 	}
@@ -42,12 +46,28 @@ public class UserPayload {
 		this.name = name;
 	}
 
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
 	public String getEmail() {
 		return email;
 	}
 
 	public void setEmail(String email) {
 		this.email = email;
+	}
+
+	public String getRoleMasValuado() {
+		return roleMasValuado;
+	}
+
+	public void setRoleMasValuado(String roleMasValuado) {
+		this.roleMasValuado = roleMasValuado;
 	}
 
 	public ContactoPayload getContacto() {

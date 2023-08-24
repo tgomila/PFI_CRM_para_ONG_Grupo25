@@ -74,7 +74,9 @@ public class User extends UserDateAudit{
 		// User
 		p.setId(this.getId());
 		p.setName(this.getName());
+		p.setUsername(this.username);
 		p.setEmail(this.getEmail());
+		p.setRoleMasValuado((this.getRoleMasValuado().getName()));
 		if(contacto!=null)
 			p.setContacto(this.getContacto().toPayload());
 		p.setRoles(roles.stream().map(r -> r.getRoleName()).collect(Collectors.toSet()));
