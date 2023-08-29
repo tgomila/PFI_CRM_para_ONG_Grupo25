@@ -98,8 +98,18 @@ public class ModuloMarket extends UserDateAudit {
 		return fechaMaximaSuscripcion;
 	}
 	
+	//si ya fue activado anteriormente, no se activa
 	public boolean activarSieteDiasGratis() {
 		if(moduloEnum.isFreeModule() || prueba7DiasUtilizada)
+			return false;
+		return forzarActivarSieteDiasGratis();
+	}
+	
+	//Solo para casos que activas 7 días gratis para padres de enum
+	//Ejemplo activas 7 días para Programa de actividades, pero actividad ya usaste sus 7 días gratis
+	//   entonces activas "forzosamente" otros 7 días gratis
+	public boolean forzarActivarSieteDiasGratis() {
+		if(moduloEnum.isFreeModule())// || prueba7DiasUtilizada)
 			return false;
 		this.fechaInicioSuscripcion = LocalDateTime.now();
 		fechaPrueba7DiasUtilizada = LocalDateTime.now();

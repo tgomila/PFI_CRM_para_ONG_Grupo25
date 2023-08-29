@@ -96,6 +96,38 @@ public class ModuloVisibilidadPorRolService {
 		throw new ForbiddenException(mensaje);
 	}
 	
+	//Copiado y pegado del anterior
+	public void poseePermisosParaAccederImageContacto(UserPrincipal currentUser, ModuloTipoVisibilidadEnum visibilidadRequerida, ModuloEnum modulo_a_acceder, String mensajeAccion) {
+		Set<String> rolesUsuario = new HashSet<>();//Esto es solo si no tiene permisos, se prepara el mensaje.
+		for (GrantedAuthority authority : currentUser.getAuthorities()) {
+			String roleString = authority.getAuthority();
+			RoleName unRolDelUsuario = RoleName.valueOf(roleString);
+			ModuloVisibilidadPorRol moduloVisibilidad = getModulosVisibilidadPorRolModel(unRolDelUsuario);
+			
+			//Este metodo cambia nomás
+			if(moduloVisibilidad != null && moduloVisibilidad.poseePermisoParaContacto(modulo_a_acceder, visibilidadRequerida))
+				return;//Posee permisos, ya puede volver
+			rolesUsuario.add(unRolDelUsuario.getName());
+		}
+		
+		//Exception no tiene permisos, se preparará el mensaje:
+		String accion = mensajeAccion != null && !mensajeAccion.isEmpty() ? mensajeAccion : visibilidadRequerida.getName();
+		String modulo = modulo_a_acceder.getName();
+		String mensaje = "Su usuario " + currentUser.getUsername();
+		if(rolesUsuario.size()==0)
+			mensaje += " no posee ningún rol asignado, por lo tanto no tiene permiso";
+		else if(rolesUsuario.size()==1)
+			mensaje += " con rol '" + rolesUsuario.iterator().next() + "' no tiene permiso";
+		else if(rolesUsuario.size()>=2) {
+			mensaje += " con roles:";
+			for(String rol: rolesUsuario)
+				mensaje += " '" + rol + "',";
+			mensaje += " no tiene permisos";
+		}
+		mensaje+= " para realizar la acción de: '" + accion + "' en módulo: '" + modulo + "'.";
+		throw new ForbiddenException(mensaje);
+	}
+	
 	public List<ModuloItemPayload> getModulosVisibilidadPorRol(UserPrincipal currentUser){
 		User user = obtenerUser(currentUser);
 		RoleName rolSuperior = user.getRoleMasValuado();
@@ -249,6 +281,23 @@ public class ModuloVisibilidadPorRolService {
                 () -> new ResourceNotFoundException("ModuloVisibilidadPorRol", "Role->RoleName", roleName.toString()));
 		modulo.desuscribir();
 		moduloVisibilidadPorRolRepository.save(modulo);
+	}
+	
+	public ModuloPayload modificarModuloVisibilidadTipos(RoleName roleName, ModuloEnum moduloEnum, ModuloTipoVisibilidadEnum tipoVisibilidad) {
+		ModuloVisibilidadPorRol moduloBD = moduloVisibilidadPorRolRepository.findByRoleRoleName(roleName).orElseThrow(
+                () -> new ResourceNotFoundException("ModuloVisibilidadPorRol", "Role->RoleName", roleName.toString()));
+		boolean huboModificaciones = false;	//inicializo false, si no hay modificaciones, no hago save para no desperdiciar tiempo.
+		for(ModuloVisibilidadPorRolTipo mBD: moduloBD.getModulos()) {	//Recorro módulos existentes
+			if(moduloEnum.equals(mBD.getModuloEnum())) {					//Encontré el modulo a modificar? Si/No
+				if(mBD.setTipoVisibilidad(tipoVisibilidad)) {			//Modifico, si hubo modificación hago save
+					huboModificaciones = true;					//Hago save si encontré, sino no desperdicio tiempo save a BD.
+				}
+			}
+		}
+		if(huboModificaciones)
+			return moduloVisibilidadPorRolRepository.save(moduloBD).toPayload();
+		else
+			return null;
 	}
 	
 	public ModuloPayload modificarModuloVisibilidadTipos(ModuloPayload moduloNuevo) {

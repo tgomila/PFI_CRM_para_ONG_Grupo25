@@ -216,6 +216,33 @@ public class ModuloVisibilidadPorRol {
 		return false;
 	}
 	
+	//La idea es que se use solo para permisos de fotos. no tengo vista a "contacto" pero si a "beneficiarios"
+	public boolean poseePermisoParaContacto(ModuloEnum enum_a_acceder, ModuloTipoVisibilidadEnum visibilidadRequerida) {
+		boolean poseePermiso = poseePermiso(enum_a_acceder, visibilidadRequerida);
+		if(poseePermiso)
+			return true;
+		
+		if(enum_a_acceder.equals(ModuloEnum.CONTACTO)) {
+			boolean personaJuridica = poseePermiso(ModuloEnum.PERSONAJURIDICA, visibilidadRequerida);
+			boolean personaFisica = poseePermisoParaContacto(ModuloEnum.PERSONA, visibilidadRequerida);//Bucle
+			
+			boolean poseeAlgunPermiso = (personaJuridica || personaFisica);
+			return poseeAlgunPermiso;
+		}
+		if(enum_a_acceder.equals(ModuloEnum.PERSONA)) {
+			boolean beneficiario = poseePermiso(ModuloEnum.BENEFICIARIO, visibilidadRequerida);
+			boolean empleado = poseePermiso(ModuloEnum.EMPLEADO, visibilidadRequerida);
+			boolean profesional = poseePermiso(ModuloEnum.PROFESIONAL, visibilidadRequerida);
+			boolean colaborador = poseePermiso(ModuloEnum.COLABORADOR, visibilidadRequerida);
+			boolean consejoAdHonorem = poseePermiso(ModuloEnum.CONSEJOADHONOREM, visibilidadRequerida);
+			boolean voluntario = poseePermiso(ModuloEnum.VOLUNTARIO, visibilidadRequerida);
+			
+			boolean poseeAlgunPermiso = (beneficiario || empleado || profesional || colaborador || consejoAdHonorem || voluntario);
+			return poseeAlgunPermiso;
+		}
+		return false;
+	}
+	
 	
 	public ModuloPayload toPayload() {
 		ModuloPayload payload = new ModuloPayload();

@@ -2145,7 +2145,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		donacion2.setDonante(null);
 		donacion2.setTipoDonacion(DonacionTipo.INSUMO);
 		donacion2.setDescripcion("Budín horneado caseras");
-		donacion.setValorAproximadoDeLaDonacion(BigDecimal.valueOf(1500.00));
+		donacion2.setValorAproximadoDeLaDonacion(BigDecimal.valueOf(1500.00));
 		donacion2 = donacionService.altaDonacion(donacion2);
 	}
 	

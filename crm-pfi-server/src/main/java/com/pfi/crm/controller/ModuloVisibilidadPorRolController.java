@@ -2,10 +2,14 @@ package com.pfi.crm.controller;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -15,6 +19,7 @@ import com.pfi.crm.multitenant.tenant.model.ModuloVisibilidadPorRol;
 import com.pfi.crm.multitenant.tenant.model.RoleName;
 import com.pfi.crm.multitenant.tenant.payload.ModuloItemPayload;
 import com.pfi.crm.multitenant.tenant.payload.ModuloPayload;
+import com.pfi.crm.multitenant.tenant.payload.request.ModificarVisibilidadRequestPayload;
 import com.pfi.crm.multitenant.tenant.service.ModuloVisibilidadPorRolService;
 import com.pfi.crm.security.CurrentUser;
 import com.pfi.crm.security.UserPrincipal;
@@ -65,10 +70,17 @@ public class ModuloVisibilidadPorRolController {
 		return moduloVisibilidadPorRolService.getModulosVisibilidadPorRol();
 	}
 	
-	@PostMapping({"/", "/alta"})
+	@PostMapping({"/agregar_todos_los_modulos"})
 	public List<ModuloPayload> agregarTodosLosModulos(@CurrentUser UserPrincipal currentUser) {
 		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.MARKETPLACE, "Asegurar que estén todos los módulos dados de alta");
 		return moduloVisibilidadPorRolService.agregarTodosLosModulos();
+	}
+	
+	//Solo admin
+	@PutMapping({"/", "/modificar"})
+	public ModuloPayload cambiarVisibilidad(@Valid @RequestBody ModificarVisibilidadRequestPayload payload, @CurrentUser UserPrincipal currentUser) {
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.MARKETPLACE, "Editar visibilidad de módulos");
+		return moduloVisibilidadPorRolService.modificarModuloVisibilidadTipos(payload.getRol(), payload.getModuloEnum(), payload.getTipoVisibilidad());
 	}
 	
 	//@PostMapping({"/", "/alta"})

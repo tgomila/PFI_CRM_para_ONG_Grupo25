@@ -1,5 +1,6 @@
 package com.pfi.crm.multitenant.tenant.service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -194,7 +195,72 @@ public class ModuloMarketService {
 				modulosModificados.add(this.modificarModuloMarket(m));
 			}
 		}
+		modulosModificados.addAll(chequearModuloHijosConSuscripcion());
 		return modulosModificados;
+	}
+	
+	private List<ModuloMarketPayload> chequearModuloHijosConSuscripcion() {
+		List<ModuloMarketPayload> modulosModificados = new ArrayList<ModuloMarketPayload>();
+		ModuloMarket programa = getModuloMarketModelByModuloEnum(ModuloEnum.PROGRAMA_DE_ACTIVIDADES);
+		LocalDateTime fechaMaximaPrograma = programa.getFechaMaximaSuscripcion();
+		
+		if(fechaMaximaPrograma != null) {//Hay suscripción al programa
+			ModuloMarket actividad = getModuloMarketModelByModuloEnum(ModuloEnum.ACTIVIDAD);
+			LocalDateTime fechaMaximaActividad = actividad.getFechaMaximaSuscripcion();
+			
+			if(fechaMaximaActividad == null || fechaMaximaPrograma.isAfter(fechaMaximaActividad)) {
+				//Forzar inscribir a la actividad a la misma fecha de finalización del programa
+				actividad.setFechaMaximaSuscripcion(fechaMaximaPrograma);
+				modulosModificados.add(this.modificarModuloMarket(actividad));
+			}
+		
+		}
+		return modulosModificados;
+	}
+	
+	private enum EnumAuxTiempo {
+		PRUEBA_7_DIAS, _1_MES, _1_ANIO;
+	}
+	
+	@SuppressWarnings("unused")
+	private ModuloMarketPayload suscripcionBasicGeneric(ModuloEnum moduloEnum, EnumAuxTiempo tiempo) {
+		ModuloMarket m = getModuloMarketModelByModuloEnum(moduloEnum);
+		if(!m.isFreeModule()) {
+			//Si es prueba gratuita, verificar si ya fue activado anteriormente o no
+			if(tiempo.equals(EnumAuxTiempo.PRUEBA_7_DIAS) && m.isPrueba7DiasUtilizada()) {
+				if(m.getFechaPrueba7DiasUtilizada() != null)
+					throw new BadRequestException("La prueba gratuita de 7 días ya ha sido "
+							+ "utilizada el día " + m.getFechaPrueba7DiasUtilizada().toString());
+				else
+					throw new BadRequestException("La prueba gratuita de 7 días ya ha sido utilizada");
+			}
+			//Inicio solo para casos de model "Padres e hijos", ejemplo Programa de Actividades
+			ModuloMarket aux = null;
+			switch (moduloEnum) {//Busco modulo padre/hijo para activar
+				case        ACTIVIDAD:        aux = getModuloMarketModelByModuloEnum(ModuloEnum.PROGRAMA_DE_ACTIVIDADES);
+				case PROGRAMA_DE_ACTIVIDADES: aux = getModuloMarketModelByModuloEnum(ModuloEnum.ACTIVIDAD);
+				default:                      break;
+			}
+			if(aux != null) {//Activo prueba gratuita, haya sido activado o no, anteriormente
+				switch (tiempo) {
+					case PRUEBA_7_DIAS:	aux.forzarActivarSieteDiasGratis();
+					case _1_MES:		aux.sumarUnMes();
+					case _1_ANIO:		aux.sumarUnAnio();
+				}
+				this.modificarModuloMarket(aux);
+			}
+			//Fin caso padres e hijos
+			switch (tiempo) {
+				case PRUEBA_7_DIAS:	m.activarSieteDiasGratis();
+				case _1_MES:		m.sumarUnMes();
+				case _1_ANIO:		m.sumarUnAnio();
+			}
+			this.modificarModuloMarket(aux);
+			m.sumarUnMes();
+			return this.modificarModuloMarket(m);
+		}
+		else
+			throw new BadRequestException("No se puede suscribir a un módulo gratuito");
 	}
 	
 	public ModuloMarketPayload suscripcionBasicMes(ModuloEnum moduloEnum) {

@@ -77,34 +77,28 @@ public class ImageController {
 	
 	
 	
-	
-	
-	
-	
-	
-	
 	//Inicio Contacto
 	@GetMapping("/contacto/search/{idContacto}")
 	public ResponseEntity<byte[]> getFotoContacto(@PathVariable Long idContacto, @CurrentUser UserPrincipal currentUser) {
-		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.CONTACTO, "Ver foto de contacto en tamaño completo");
+		seguridad.poseePermisosParaAccederImageContacto(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.CONTACTO, "Ver foto de contacto en tamaño completo");
 		return fileStorageService.getFotoContacto(idContacto);
 	}
 	
 	@GetMapping("/contacto/search_tabla/{idContacto}")
 	public ResponseEntity<byte[]> getFotoTablaContacto(@PathVariable Long idContacto, @CurrentUser UserPrincipal currentUser) {
-		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.CONTACTO, "Ver foto de contacto en tamaño tabla");
+		seguridad.poseePermisosParaAccederImageContacto(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.CONTACTO, "Ver foto de contacto en tamaño tabla");
 		return fileStorageService.getFotoTablaContacto(idContacto);
 	}
 	
 	@GetMapping("/contacto/info/{idContacto}")
 	public ResponseEntity<ImagenPayload> getInfoFotoContacto(@PathVariable Long idContacto, @CurrentUser UserPrincipal currentUser) {
-		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.CONTACTO, "Ver información de foto de contacto cargado");
+		seguridad.poseePermisosParaAccederImageContacto(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.CONTACTO, "Ver información de foto de contacto cargado");
 		return fileStorageService.getInfoFotoContacto(idContacto);
 	}
 	
 	@GetMapping("/contacto/info")
 	public List<ImagenPayload> getInfoFotoContactos(@CurrentUser UserPrincipal currentUser) {
-		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.CONTACTO, "Ver información de fotos de contactos cargados");
+		seguridad.poseePermisosParaAccederImageContacto(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.CONTACTO, "Ver información de fotos de contactos cargados");
 		//return fileStorageService.loadAllContactos();
 		return fileStorageService.getInfoFotosGeneric("contacto");
 		
@@ -120,7 +114,7 @@ public class ImageController {
 	
 	@PostMapping("/contacto/{id}")
 	public ResponseEntity<?> uploadImageContacto(@PathVariable Long id, @RequestParam("file") MultipartFile file, @CurrentUser UserPrincipal currentUser) {
-		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.CONTACTO, "Dar de alta/modificar una foto a contacto");
+		seguridad.poseePermisosParaAccederImageContacto(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.CONTACTO, "Dar de alta/modificar una foto a contacto");
 		String message = "";
 		try {
 			fileStorageService.saveFotoContacto(file, id);
@@ -134,7 +128,7 @@ public class ImageController {
 	
 	@DeleteMapping("/contacto/{idContacto}")
 	public ResponseEntity<?> deleteFotoContacto(@PathVariable Long idContacto, @CurrentUser UserPrincipal currentUser) {
-		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.CONTACTO, "Eliminar una foto a contacto");
+		seguridad.poseePermisosParaAccederImageContacto(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.CONTACTO, "Eliminar una foto a contacto");
 		String message = "";
 		try {
 			fileStorageService.deleteFotoContacto(idContacto);
