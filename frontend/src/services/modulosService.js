@@ -97,6 +97,41 @@ const getAll = () => {
 
 };
 
+/**
+ * Exclusivo para la vista tabla de modificar la visibilidad de modulos
+ * Incluye NO_VISTA
+ * @returns 
+ */
+const getAllParaModificar = () => {
+   let rta = axios
+    //.get(link, { headers: authHeader() }) //V1 cuando backend no leia roles del usuario, se lo ponía a mano.
+    .get(BACKEND_API_BASE_URL + "modulo/all/simple", { headers: authHeader() })
+    .then((response) => {
+        return response;
+    });
+    return rta;
+};
+
+const putModificarModuloVisibilidad = (roleEnum, moduloEnum, tipoVisibilidadEnum) => {
+    const dto = {
+        roleEnum: roleEnum,
+        moduloEnum: moduloEnum,
+        tipoVisibilidadEnum: tipoVisibilidadEnum
+    };
+    console.log("dto");
+    console.log(dto);
+
+    let rta = axios
+    .put(BACKEND_API_BASE_URL + "modulo/modificar", dto, { headers: authHeader() })
+    .then((response) => {
+        return response.data;
+    })
+    .catch((error) => {
+        throw error;
+    });
+    return rta;
+}
+
 const getBestRoleLink = () => {
     let rol = getBestRole();
     if(rol !== null)
@@ -149,6 +184,8 @@ const modulosService = {
     getAll,
     getBestRole,
     getModulos,
+    getAllParaModificar,
+    putModificarModuloVisibilidad,
   };
 
 export default modulosService;

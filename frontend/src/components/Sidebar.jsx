@@ -14,12 +14,16 @@ import {
     FaTruckLoading,
     FaShareAltSquare,
     FaPalfed,
-    FaComments
+    FaComments,
 } from "react-icons/fa";
 
 import {
-    AiFillContacts
+    AiFillContacts,
 } from "react-icons/ai";
+
+import {
+    GrConfigure,
+} from "react-icons/gr";
 
 import {
     GoPerson,
@@ -173,14 +177,14 @@ const Sidebar = ({ children }) => {
         menuItem = menuItem.filter(item => item.name !== 'Chat');
 
         //Agregado extra de item para pruebas
-        // let commonItemsAux = {
-        //     order: 21,
-        //     path: "/contacto_estatico",
-        //     name: "Contacto estático",
-        //     tipoVisibilidad: "EDITAR",
-        //     icon: <AiFillContacts />
-        // };
-        // menuItem.push(commonItemsAux);
+        let commonItemsAux = {
+            order: 21,
+            path: "/modulo_visibilidad",
+            name: "Modulo visibilidad",
+            tipoVisibilidad: "EDITAR",
+            icon: <GrConfigure />
+        };
+        menuItem.push(commonItemsAux);
     }
     else {
 

@@ -32,6 +32,7 @@ import FacturaVista from "./components/vista_grafico_tabla/FacturaVista";
 import InsumoVista from "./components/vista_grafico_tabla/InsumoVista";
 import PrestamoVista from "./components/vista_grafico_tabla/PrestamoVista";
 import ProyectoVista from "./components/vista_grafico_tabla/ProyectoVista";
+import ModuloVisibilidadVista from "./components/vista_grafico_tabla/ModuloVisibilidadVista";
 // import ChatVista from "./components/vista_grafico_tabla/ChatVista";
 
 import FooterComponent from "./components/FooterComponent";
@@ -330,6 +331,7 @@ const App = () => {
             <Route path="/insumo" element={<InsumoVista />} />
             <Route path="/prestamo" element={<PrestamoVista/>} />
             <Route path="/proyecto" element={<ProyectoVista/>} />
+            <Route path="/modulo_visibilidad" element={<ModuloVisibilidadVista/>} />
             {/* <Route path="/chat" element={<eChatVista/>} /> */}
 
             <Route path="/proyecto" element={<TablasDinamicas redireccionamiento='proyecto' />} />

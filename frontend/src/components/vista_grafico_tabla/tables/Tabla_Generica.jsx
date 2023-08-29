@@ -115,10 +115,28 @@ const TablaGenericaConFoto = ({ columnsIn, dataIn, Service, visibilidadInput, no
       });
     }
 
-    agregarFotos();
+    //agregarFotos();
 
   }, []);
 
+  const test = () => {
+    if (visibilidadInput !== "") {
+      setVisibilidad(visibilidadInput);
+      setIsVisibilidadReady(true);
+    } else {
+      let modulo = modulosService.getVisibilidadByModulo(nombreTipoDatoParaModuloVisibilidad);
+      modulo.then((response) => {
+        if (response) {
+          setVisibilidad(response);
+          setIsVisibilidadReady(true);
+        }
+      });
+    }
+
+    agregarFotos();
+  }
+
+  const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
     //En caso de que cambies de "all actividades" a "mis actividades", poner foto a sus nuevos data's
     agregarFotos();
@@ -130,12 +148,14 @@ const TablaGenericaConFoto = ({ columnsIn, dataIn, Service, visibilidadInput, no
       setData(modifiedData);
       setColumnsData(modifiedColumns);
       setIsDataColumnsReady(true);
+      setIsLoading(false);
     } else {
       Service.getAll().then(async (res) => {
         const { columns: modifiedColumns, data: modifiedData } = await agregarFotoData(columnsIn, res.data, tipoDatoParaFoto);
         setData(modifiedData);
         setColumnsData(modifiedColumns);
         setIsDataColumnsReady(true);
+        setIsLoading(false);
       });
     }
   }
@@ -146,7 +166,7 @@ const TablaGenericaConFoto = ({ columnsIn, dataIn, Service, visibilidadInput, no
 
   return (
     <div>
-      {data &&(
+      {!isLoading ? (
         <TablaGenerica
           columnsIn={columnsData}
           dataIn={data}
@@ -159,6 +179,13 @@ const TablaGenericaConFoto = ({ columnsIn, dataIn, Service, visibilidadInput, no
           integrantesActuales = {integrantesActuales}
           maxIntegrantesSelected = {maxIntegrantesSelected}
         />
+      ) : (
+        <div>
+          <span className="spinner-border spinner-border-sm"></span>
+          <p>Cargando imágenes de la tabla...</p>
+          probando uno y dos
+          {console.log("Pase por aqui")}
+        </div>
       )}
     </div>
   );

@@ -84,7 +84,7 @@ function SelectColumnFilter({
         setFilter(e.target.value || undefined)
       }}
     >
-      <option value="">All</option>
+      <option value="">Mostrar todos</option>
       {options.map((option, i) => (
         <option key={i} value={option}>
           {option}
