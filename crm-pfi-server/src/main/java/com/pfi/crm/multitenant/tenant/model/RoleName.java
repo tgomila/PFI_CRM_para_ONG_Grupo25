@@ -6,7 +6,7 @@ import java.util.List;
 
 public enum  RoleName {
 	//Prioridad (nro mas alto es igual a más prioridad)
-	ROLE_DEFAULT	("Rol default error", 	0), //indefinido
+	ROLE_DEFAULT	("Rol default indefinido", 	0), //indefinido
 	ROLE_USER		("Rol usuario",		  	1),	//indefinido que hace, pero diria que nada de nada salvo leer unas cosas como noticias.
 	ROLE_PROFESIONAL("Rol Profesional",	   10), //Da actividades a beneficiarios.
 	ROLE_EMPLOYEE	("Rol Empleado",	  100),	//abm de clases models.

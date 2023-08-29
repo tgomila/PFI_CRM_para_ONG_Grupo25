@@ -23,6 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.pfi.crm.multitenant.tenant.payload.ModuloPayload;
+import com.pfi.crm.multitenant.tenant.payload.request.ModificarVisibilidadRequestPayload;
 
 @Entity
 @Table(name = "modulo_visibilidad_por_rol"//, uniqueConstraints = {
@@ -249,6 +250,12 @@ public class ModuloVisibilidadPorRol {
 		payload.setRol(this.getRole().getRoleName().toString());
 		payload.setItems(this.getModulos().stream().map(e -> e.toPayload()).collect(Collectors.toList()));
 		return payload;
+	}
+	
+	
+	public List<ModificarVisibilidadRequestPayload> toRequestPayload() {
+		RoleName rol = this.getRole().getRoleName();
+		return this.getModulos().stream().map(e -> e.toRequestPayload(rol)).collect(Collectors.toList());
 	}
 	
 	

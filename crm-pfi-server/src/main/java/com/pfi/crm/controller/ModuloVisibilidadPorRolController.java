@@ -41,11 +41,13 @@ public class ModuloVisibilidadPorRolController {
 	
 	@GetMapping({"/"})
 	public List<ModuloItemPayload> getModulosPorRolDelUsuario(@CurrentUser UserPrincipal currentUser) {
+		//No necesita seguridad
 		return  moduloVisibilidadPorRolService.getModulosVisibilidadPorRol(currentUser);
 	}
 	
 	@GetMapping({"/moduloname/{moduloName}"})
 	public ModuloItemPayload getUnModuloPorRolDelUsuario(@PathVariable("moduloName") ModuloEnum moduloName, @CurrentUser UserPrincipal currentUser) {
+		//No necesita seguridad
 		return  moduloVisibilidadPorRolService.getUnModuloPorRolDelUsuario(moduloName, currentUser);
 	}
 	
@@ -55,7 +57,9 @@ public class ModuloVisibilidadPorRolController {
 	 * @return modulos
 	 */
 	@GetMapping({"/rolename/{roleName}"})
-	public List<ModuloItemPayload> getModuloPorRol(@PathVariable("roleName") RoleName roleName) {
+	public List<ModuloItemPayload> getModuloPorRol(@PathVariable("roleName") RoleName roleName, @CurrentUser UserPrincipal currentUser) {
+		//Quizas se quita su seguridad a futuro
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.MARKETPLACE, "Ver tipo de vista para rol: " + roleName.name());
 		return moduloVisibilidadPorRolService.getModulosVisibilidadPorRol(roleName).getItems();
 	}
 	
@@ -67,7 +71,13 @@ public class ModuloVisibilidadPorRolController {
 	
 	@GetMapping({"/all"})
 	public List<ModuloPayload> getModulos(@CurrentUser UserPrincipal currentUser) {
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.MARKETPLACE, "Ver visibilidad de todos los roles");
 		return moduloVisibilidadPorRolService.getModulosVisibilidadPorRol();
+	}
+	
+	@GetMapping({"/all/simple"})
+	public List<ModificarVisibilidadRequestPayload> getSimpleModulos(@CurrentUser UserPrincipal currentUser) {
+		return moduloVisibilidadPorRolService.getModulosVisibilidadPorRolSimple();
 	}
 	
 	@PostMapping({"/agregar_todos_los_modulos"})
@@ -78,9 +88,10 @@ public class ModuloVisibilidadPorRolController {
 	
 	//Solo admin
 	@PutMapping({"/", "/modificar"})
-	public ModuloPayload cambiarVisibilidad(@Valid @RequestBody ModificarVisibilidadRequestPayload payload, @CurrentUser UserPrincipal currentUser) {
+	public ModificarVisibilidadRequestPayload cambiarVisibilidad(@Valid @RequestBody ModificarVisibilidadRequestPayload payload, @CurrentUser UserPrincipal currentUser) {
 		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.MARKETPLACE, "Editar visibilidad de módulos");
-		return moduloVisibilidadPorRolService.modificarModuloVisibilidadTipos(payload.getRol(), payload.getModuloEnum(), payload.getTipoVisibilidad());
+		ModificarVisibilidadRequestPayload moduloItemPayload = moduloVisibilidadPorRolService.modificarModuloVisibilidadTipos(payload.getRoleEnum(), payload.getModuloEnum(), payload.getTipoVisibilidadEnum());
+		return moduloItemPayload;
 	}
 	
 	//@PostMapping({"/", "/alta"})

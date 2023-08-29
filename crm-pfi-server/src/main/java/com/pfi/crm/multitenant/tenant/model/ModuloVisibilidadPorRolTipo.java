@@ -11,6 +11,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 import com.pfi.crm.multitenant.tenant.payload.ModuloItemPayload;
+import com.pfi.crm.multitenant.tenant.payload.request.ModificarVisibilidadRequestPayload;
 
 @Entity
 @Table(name = "modulo_visibilidad_por_rol_tipo")
@@ -68,6 +69,14 @@ public class ModuloVisibilidadPorRolTipo {
 		itemPayload.setTipoVisibilidad(tipoVisibilidad.toString());
 		itemPayload.setPriceOneMonth(moduloEnum.getPriceOneMonth());
 		itemPayload.setPriceOneYear(moduloEnum.getPriceOneYear());
+		return itemPayload;
+	}
+	
+	public ModificarVisibilidadRequestPayload toRequestPayload(RoleName roleName){
+		ModificarVisibilidadRequestPayload itemPayload = new ModificarVisibilidadRequestPayload();
+		itemPayload.setRoleEnum(roleName);
+		itemPayload.setModuloEnum(moduloEnum);
+		itemPayload.setTipoVisibilidadEnum(tipoVisibilidad);
 		return itemPayload;
 	}
 	

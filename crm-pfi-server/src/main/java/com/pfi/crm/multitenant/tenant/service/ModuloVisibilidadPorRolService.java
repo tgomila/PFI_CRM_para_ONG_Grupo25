@@ -26,7 +26,9 @@ import com.pfi.crm.multitenant.tenant.model.RoleName;
 import com.pfi.crm.multitenant.tenant.model.User;
 import com.pfi.crm.multitenant.tenant.payload.ModuloItemPayload;
 import com.pfi.crm.multitenant.tenant.payload.ModuloPayload;
+import com.pfi.crm.multitenant.tenant.payload.request.ModificarVisibilidadRequestPayload;
 import com.pfi.crm.multitenant.tenant.persistence.repository.ModuloVisibilidadPorRolRepository;
+import com.pfi.crm.multitenant.tenant.persistence.repository.ModuloVisibilidadPorRolTipoRepository;
 import com.pfi.crm.multitenant.tenant.persistence.repository.RoleRepository;
 import com.pfi.crm.multitenant.tenant.persistence.repository.UserRepository;
 import com.pfi.crm.security.UserPrincipal;
@@ -36,6 +38,9 @@ public class ModuloVisibilidadPorRolService {
 	
 	@Autowired
 	private ModuloVisibilidadPorRolRepository moduloVisibilidadPorRolRepository;
+	
+	@Autowired
+	private ModuloVisibilidadPorRolTipoRepository moduloVisibilidadPorRolTipoRepository;
 	
 	@Autowired
 	UserRepository userRepository;
@@ -209,6 +214,13 @@ public class ModuloVisibilidadPorRolService {
 		return moduloVisibilidadPorRolRepository.findAll().stream().map(e -> e.toPayload()).collect(Collectors.toList());
     }
 	
+	public List<ModificarVisibilidadRequestPayload> getModulosVisibilidadPorRolSimple(){
+		return moduloVisibilidadPorRolRepository.findAll()
+				.stream()
+				.flatMap(e -> e.toRequestPayload().stream())
+				.collect(Collectors.toList());
+    }
+	
 	public List<ModuloPayload> agregarTodosLosModulos() {
 		List<ModuloVisibilidadPorRol> modulos = moduloVisibilidadPorRolRepository.findAll();
 		List<ModuloPayload> dadosDeAlta = new ArrayList<ModuloPayload>();
@@ -283,19 +295,22 @@ public class ModuloVisibilidadPorRolService {
 		moduloVisibilidadPorRolRepository.save(modulo);
 	}
 	
-	public ModuloPayload modificarModuloVisibilidadTipos(RoleName roleName, ModuloEnum moduloEnum, ModuloTipoVisibilidadEnum tipoVisibilidad) {
+	public ModificarVisibilidadRequestPayload modificarModuloVisibilidadTipos(RoleName roleName, ModuloEnum moduloEnum, ModuloTipoVisibilidadEnum tipoVisibilidad) {
 		ModuloVisibilidadPorRol moduloBD = moduloVisibilidadPorRolRepository.findByRoleRoleName(roleName).orElseThrow(
                 () -> new ResourceNotFoundException("ModuloVisibilidadPorRol", "Role->RoleName", roleName.toString()));
 		boolean huboModificaciones = false;	//inicializo false, si no hay modificaciones, no hago save para no desperdiciar tiempo.
+		ModuloVisibilidadPorRolTipo visibilidadModificado = null;
 		for(ModuloVisibilidadPorRolTipo mBD: moduloBD.getModulos()) {	//Recorro módulos existentes
 			if(moduloEnum.equals(mBD.getModuloEnum())) {					//Encontré el modulo a modificar? Si/No
 				if(mBD.setTipoVisibilidad(tipoVisibilidad)) {			//Modifico, si hubo modificación hago save
 					huboModificaciones = true;					//Hago save si encontré, sino no desperdicio tiempo save a BD.
+					visibilidadModificado = mBD;
+					break;
 				}
 			}
 		}
 		if(huboModificaciones)
-			return moduloVisibilidadPorRolRepository.save(moduloBD).toPayload();
+			return moduloVisibilidadPorRolTipoRepository.save(visibilidadModificado).toRequestPayload(roleName);
 		else
 			return null;
 	}

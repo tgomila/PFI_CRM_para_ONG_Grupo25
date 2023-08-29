@@ -5,38 +5,48 @@ import com.pfi.crm.multitenant.tenant.model.ModuloTipoVisibilidadEnum;
 import com.pfi.crm.multitenant.tenant.model.RoleName;
 
 public class ModificarVisibilidadRequestPayload {
-	private RoleName rol;
+	private RoleName roleEnum;
 	private ModuloEnum moduloEnum;
-	private ModuloTipoVisibilidadEnum tipoVisibilidad;
-	
+	private ModuloTipoVisibilidadEnum tipoVisibilidadEnum;
 	
 	public ModificarVisibilidadRequestPayload() {
 		super();
 	}
-	
 
-	public RoleName getRol() {
-		return rol;
+	public RoleName getRoleEnum() {
+		return roleEnum;
+	}
+	
+	public String getRoleName() {
+		return roleEnum != null ? roleEnum.getName() : null;
 	}
 
-	public void setRol(RoleName rol) {
-		this.rol = rol;
+	public void setRoleEnum(RoleName roleEnum) {
+		this.roleEnum = roleEnum;
 	}
 
 	public ModuloEnum getModuloEnum() {
 		return moduloEnum;
+	}
+	
+	public String getModuloName() {
+		return moduloEnum != null ? moduloEnum.getName() : null;
 	}
 
 	public void setModuloEnum(ModuloEnum moduloEnum) {
 		this.moduloEnum = moduloEnum;
 	}
 
-	public ModuloTipoVisibilidadEnum getTipoVisibilidad() {
-		return tipoVisibilidad;
+	public ModuloTipoVisibilidadEnum getTipoVisibilidadEnum() {
+		return tipoVisibilidadEnum;
+	}
+	
+	public String getTipoVisibilidadName() {
+		return tipoVisibilidadEnum != null ? tipoVisibilidadEnum.getName() : null;
 	}
 
-	public void setTipoVisibilidad(ModuloTipoVisibilidadEnum tipoVisibilidad) {
-		this.tipoVisibilidad = tipoVisibilidad;
+	public void setTipoVisibilidadEnum(ModuloTipoVisibilidadEnum tipoVisibilidadEnum) {
+		this.tipoVisibilidadEnum = tipoVisibilidadEnum;
 	}
 
 }
