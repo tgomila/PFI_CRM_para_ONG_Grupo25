@@ -133,6 +133,32 @@ public class ModuloVisibilidadPorRolService {
 		throw new ForbiddenException(mensaje);
 	}
 	
+	public void poseeRolAdmin(UserPrincipal currentUser, String mensajeAccion) {
+		Set<String> rolesUsuario = new HashSet<>();//Esto es solo si no tiene permisos, se prepara el mensaje.
+		for (GrantedAuthority authority : currentUser.getAuthorities()) {
+			String roleString = authority.getAuthority();
+			RoleName unRolDelUsuario = RoleName.valueOf(roleString);
+			if(unRolDelUsuario.equals(RoleName.ROLE_ADMIN))
+				return;//Es admin
+		}
+		
+		//Exception no es admin, entonces se preparará el mensaje de error:
+		String accion = mensajeAccion != null && !mensajeAccion.isEmpty() ? mensajeAccion : "";
+		String mensaje = "Su usuario " + currentUser.getUsername();
+		if(rolesUsuario.size()==0)
+			mensaje += " no posee ningún rol asignado, por lo tanto no tiene permiso";
+		else if(rolesUsuario.size()==1)
+			mensaje += " con rol '" + rolesUsuario.iterator().next() + "' no tiene permiso como administrador";
+		else if(rolesUsuario.size()>=2) {
+			mensaje += " con roles:";
+			for(String rol: rolesUsuario)
+				mensaje += " '" + rol + "',";
+			mensaje += " no tiene permisos como administrador";
+		}
+		mensaje+= " para realizar la acción de: '" + accion + "'.";
+		throw new ForbiddenException(mensaje);
+	}
+	
 	public List<ModuloItemPayload> getModulosVisibilidadPorRol(UserPrincipal currentUser){
 		User user = obtenerUser(currentUser);
 		RoleName rolSuperior = user.getRoleMasValuado();
@@ -296,6 +322,12 @@ public class ModuloVisibilidadPorRolService {
 	}
 	
 	public ModificarVisibilidadRequestPayload modificarModuloVisibilidadTipos(RoleName roleName, ModuloEnum moduloEnum, ModuloTipoVisibilidadEnum tipoVisibilidad) {
+		if(roleName == null)
+			throw new BadRequestException("Ha introducido un 'null' como nombre de rol, por favor ingrese un rol válido.");
+		if(moduloEnum == null)
+			throw new BadRequestException("Ha introducido un 'null' como nombre de módulo, por favor ingrese un módulo válido.");
+		if(tipoVisibilidad == null)
+			throw new BadRequestException("Ha introducido un 'null' como nombre de tipo de visibilidad para módulo, por favor ingrese un tipo de visibilidad para módulo válido.");
 		ModuloVisibilidadPorRol moduloBD = moduloVisibilidadPorRolRepository.findByRoleRoleName(roleName).orElseThrow(
                 () -> new ResourceNotFoundException("ModuloVisibilidadPorRol", "Role->RoleName", roleName.toString()));
 		boolean huboModificaciones = false;	//inicializo false, si no hay modificaciones, no hago save para no desperdiciar tiempo.
