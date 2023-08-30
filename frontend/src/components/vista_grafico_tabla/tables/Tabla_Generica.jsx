@@ -21,6 +21,7 @@ import { useNavigate } from 'react-router-dom';
 import {
   FaSistrix,
   FaRegEdit,
+  FaRegEye,
   FaSortAlphaDownAlt,
   FaSortAlphaDown,
   FaSortNumericDown,
@@ -566,7 +567,7 @@ const TablaGenerica = ({columnsIn, dataIn, visibilidadInput, Service, el_la, nom
             &nbsp;&nbsp;&nbsp;
             <button className="btn btn-primary" onClick={() => navigate( window.location.pathname + "/read")}>
               <span style={{ display: 'flex', alignItems: 'center' }}>
-                <FaRegEdit style={{ marginRight: '5px', fontSize: '20px' }}/> Ver {nombreTipoDato}
+                <FaRegEye style={{ marginRight: '5px', fontSize: '20px' }}/> Ver {nombreTipoDato}
               </span>
             </button>
           </div>

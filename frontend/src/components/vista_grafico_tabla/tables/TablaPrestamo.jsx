@@ -58,7 +58,8 @@ const TablaPrestamo = ({visibilidadInput, dataIn}) => {
     {
       Header: "Ha sido devuelto",
       accessor: "haSidoDevuelto",
-      Cell: ({ row, value }) => (row.original?.id ? (value ? "✅" : "❌") : "")
+      Cell: ({ row, value }) => //(row.original?.id ? (value ? "✅" : "❌") : "")
+        (value === true ? "✅" : value === false ? "❌" : "")
     },
     columnIntegranteConFotoColumn("Prestamista", "prestamista", "contacto"),
     columnIntegranteConFotoColumn("Prestatario", "prestatario", "contacto"),

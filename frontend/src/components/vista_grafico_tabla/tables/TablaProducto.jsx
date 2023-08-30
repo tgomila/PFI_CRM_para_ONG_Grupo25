@@ -65,7 +65,8 @@ const TablaProducto = ({visibilidadInput, dataIn}) => {
     {
       Header: "Fragil",
       accessor: "fragil",
-      Cell: ({ row, value }) => (row.original?.id ? (value ? "✅" : "❌") : "")
+      Cell: ({ row, value }) => //(row.original?.id ? (value ? "✅" : "❌") : "")
+        (value === true ? "✅" : value === false ? "❌" : "")
     },
     columnIntegranteConFotoColumn("Proveedor", "proveedor", "contacto"),
   ];

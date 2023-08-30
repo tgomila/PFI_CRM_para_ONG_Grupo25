@@ -70,8 +70,8 @@ const TablaModuloVisibilidad = ({visibilidadInput}) => {
         Cell: ({ value, row }) => {
           return (
             <div>
-              <div style={{ display: "none" }}>{value}</div>
-              {row.original.roleName}
+              <div style={{ display: "none" }}></div>
+              {row.original?.roleName ? row.original?.roleName : value}
             </div>
           );
         },
@@ -85,8 +85,8 @@ const TablaModuloVisibilidad = ({visibilidadInput}) => {
         Cell: ({ value, row }) => {
           return (
             <div>
-              <div style={{ display: "none" }}>{value}</div>
-              {row.original.moduloName}
+              <div style={{ display: "none" }}></div>
+              {row.original?.moduloName ? row.original?.moduloName : value}
             </div>
           );
         },
@@ -116,6 +116,9 @@ const TablaModuloVisibilidad = ({visibilidadInput}) => {
               setIsLoading(false);
             }
           };
+          
+          if(!value)
+            return(<div/>);
 
           return (
             <>

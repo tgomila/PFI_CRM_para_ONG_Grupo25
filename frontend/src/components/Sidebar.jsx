@@ -15,15 +15,12 @@ import {
     FaShareAltSquare,
     FaPalfed,
     FaComments,
+    FaRegEye,
 } from "react-icons/fa";
 
 import {
     AiFillContacts,
 } from "react-icons/ai";
-
-import {
-    GrConfigure,
-} from "react-icons/gr";
 
 import {
     GoPerson,
@@ -87,6 +84,9 @@ const Sidebar = ({ children }) => {
     }, []);
     
     if (user) {
+
+        console.log("user");
+        console.log(user);
         
         //menuItem = mockSERVICIODEMODULOS.map((item) => {
         menuItem = menuItemService.map((item) => {
@@ -177,14 +177,17 @@ const Sidebar = ({ children }) => {
         menuItem = menuItem.filter(item => item.name !== 'Chat');
 
         //Agregado extra de item para pruebas
-        let commonItemsAux = {
-            order: 21,
-            path: "/modulo_visibilidad",
-            name: "Modulo visibilidad",
-            tipoVisibilidad: "EDITAR",
-            icon: <GrConfigure />
-        };
-        menuItem.push(commonItemsAux);
+
+        if(user.roles.includes("ROLE_ADMIN")) {
+            let commonItemsAux = {
+                order: 21,
+                path: "/modulo_visibilidad",
+                name: "Modulo visibilidad",
+                tipoVisibilidad: "EDITAR",
+                icon: <FaRegEye />
+            };
+            menuItem.push(commonItemsAux);
+        }
     }
     else {
 

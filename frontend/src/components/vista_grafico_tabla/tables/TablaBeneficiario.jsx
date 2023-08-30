@@ -76,7 +76,8 @@ const columnsBeneficiario = [
   {
     Header: "Se retira solo",
     accessor: "seRetiraSolo",
-    Cell: ({ row, value }) => (row.original?.id ? (value ? "✅" : "❌") : "")
+    Cell: ({ row, value }) => //(row.original?.id ? (value ? "✅" : "❌") : "")
+      (value === true ? "✅" : value === false ? "❌" : "")
   },
   {
     Header: "Cuidados especiales",
