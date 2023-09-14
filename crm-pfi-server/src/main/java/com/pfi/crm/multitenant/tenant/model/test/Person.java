@@ -9,7 +9,7 @@ import com.pfi.crm.multitenant.tenant.model.audit.DateAudit;
 //@MappedSuperclass
 public class Person extends DateAudit{
 
-    /**
+	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 351444627902533075L;
@@ -20,17 +20,17 @@ public class Person extends DateAudit{
 	@SequenceGenerator(name = "person_seq", sequenceName = "person_sequence", allocationSize = 1)
 	private long id;
 
-    private String firstName;
+	private String firstName;
 
-    private String lastName;
-    
-    private boolean estaActivo;
-    
-    public Person() {
+	private String lastName;
+	
+	private boolean estaActivo;
+	
+	public Person() {
 		super();
 		estaActivo = true;
 	}
-    
+	
 	public Person(long id, String firstName, String lastName) {
 		super();
 		this.id = id;
@@ -72,5 +72,3 @@ public class Person extends DateAudit{
 	}
 
 }
-    
-    

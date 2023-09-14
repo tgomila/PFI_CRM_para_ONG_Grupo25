@@ -37,15 +37,15 @@ public class PfiApplication {
 	//Esto es para resetear por cada tenant, y crear sus tablas a cada tenant
 	//Esta en fase alpha, tiene errores el restart
 	public static void restart() {
-        ApplicationArguments args = context.getBean(ApplicationArguments.class);
+		ApplicationArguments args = context.getBean(ApplicationArguments.class);
 
-        Thread thread = new Thread(() -> {
-            context.close();
-            context = SpringApplication.run(PfiApplication.class, args.getSourceArgs());
-        });
+		Thread thread = new Thread(() -> {
+			context.close();
+			context = SpringApplication.run(PfiApplication.class, args.getSourceArgs());
+		});
 
-        thread.setDaemon(false);
-        thread.start();
-    }
+		thread.setDaemon(false);
+		thread.start();
+	}
 
 }

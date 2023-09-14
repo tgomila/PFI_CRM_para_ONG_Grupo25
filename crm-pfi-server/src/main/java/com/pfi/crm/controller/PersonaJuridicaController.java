@@ -45,38 +45,38 @@ public class PersonaJuridicaController {
 	
 	
 	@GetMapping("/{id}")
-    public PersonaJuridicaPayload getPersonaJuridicaById(@PathVariable Long id, @CurrentUser UserPrincipal currentUser) {
+	public PersonaJuridicaPayload getPersonaJuridicaById(@PathVariable Long id, @CurrentUser UserPrincipal currentUser) {
 		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.PERSONAJURIDICA, "Ver PersonaJuridica con id: '" + id + "'");
-        return personaJuridicaService.getPersonaJuridicaByIdContacto(id);
-    }
+		return personaJuridicaService.getPersonaJuridicaByIdContacto(id);
+	}
 	
 	@GetMapping({"/", "/all"})
-    public List<PersonaJuridicaPayload> getPersonaJuridica(@CurrentUser UserPrincipal currentUser) {
+	public List<PersonaJuridicaPayload> getPersonaJuridica(@CurrentUser UserPrincipal currentUser) {
 		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.PERSONAJURIDICA, "Ver lista completa de PersonaJuridicas");
-    	return  personaJuridicaService.getPersonasJuridicas();
+		return  personaJuridicaService.getPersonasJuridicas();
 	}
 	
 	@PostMapping({"/", "/alta"})
-    public PersonaJuridicaPayload altaPersonaJuridica(@Valid @RequestBody PersonaJuridicaPayload payload, @CurrentUser UserPrincipal currentUser) {
+	public PersonaJuridicaPayload altaPersonaJuridica(@Valid @RequestBody PersonaJuridicaPayload payload, @CurrentUser UserPrincipal currentUser) {
 		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.PERSONAJURIDICA, "Cargar una PersonaJuridica");
-    	return personaJuridicaService.altaPersonaJuridica(payload);
-    }
+		return personaJuridicaService.altaPersonaJuridica(payload);
+	}
 	
 	@DeleteMapping({"/{id}", "/baja/{id}"})
-    public ResponseEntity<?> bajaPersonaJuridica(@PathVariable Long id, @CurrentUser UserPrincipal currentUser) {
+	public ResponseEntity<?> bajaPersonaJuridica(@PathVariable Long id, @CurrentUser UserPrincipal currentUser) {
 		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.PERSONAJURIDICA, "Baja de PersonaJuridica con id: '" + id + "'");
 		String message = personaJuridicaService.bajaPersonaJuridica(id);
-    	if(!message.isEmpty())
-    		return ResponseEntity.ok().body(new ApiResponse(true, message));
-    	else
-    		throw new BadRequestException("Algo salió mal en la baja. Verifique message que retorna en backend.");
-    }
+		if(!message.isEmpty())
+			return ResponseEntity.ok().body(new ApiResponse(true, message));
+		else
+			throw new BadRequestException("Algo salió mal en la baja. Verifique message que retorna en backend.");
+	}
 	
 	@PutMapping({"/", "/modificar"})
-    public PersonaJuridicaPayload modificarPersonaJuridica(@Valid @RequestBody PersonaJuridicaPayload payload, @CurrentUser UserPrincipal currentUser) {
+	public PersonaJuridicaPayload modificarPersonaJuridica(@Valid @RequestBody PersonaJuridicaPayload payload, @CurrentUser UserPrincipal currentUser) {
 		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.PERSONAJURIDICA, "Modificar una PersonaJuridica");
-    	return personaJuridicaService.modificarPersonaJuridica(payload);
-    }
+		return personaJuridicaService.modificarPersonaJuridica(payload);
+	}
 	
 	@GetMapping({"/nombres_tabla"})
 	public LinkedHashMap<String, String> getNombresTabla(@CurrentUser UserPrincipal currentUser) {
@@ -119,10 +119,10 @@ public class PersonaJuridicaController {
 	
 	//Devuelve dto (si existe) de Persona, o de contacto, o not found. 
 	@GetMapping("/search/{id}")
-    public ResponseEntity<?> searchPersonaJuridicaById(@PathVariable Long id, @CurrentUser UserPrincipal currentUser) {
+	public ResponseEntity<?> searchPersonaJuridicaById(@PathVariable Long id, @CurrentUser UserPrincipal currentUser) {
 		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.PERSONAJURIDICA, "Buscar una PersonaJuridica con id: '" + id + "'");
-        return personaJuridicaService.buscarContactoSiExiste(id);
-    }
+		return personaJuridicaService.buscarContactoSiExiste(id);
+	}
 	
 	
 	

@@ -36,19 +36,19 @@ import java.util.Arrays;
  */
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    @Autowired
-    private JwtTokenProviderUtil tokenProvider;
+	@Autowired
+	private JwtTokenProviderUtil tokenProvider;
 
-    @Autowired
-    private JwtUserDetailsService jwtUserDetailsService;
-    
-    @Autowired
-    private MasterTenantService masterTenantService;
+	@Autowired
+	private JwtUserDetailsService jwtUserDetailsService;
+	
+	@Autowired
+	private MasterTenantService masterTenantService;
 
-    private static final Logger logger = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
+	private static final Logger logger = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
 
-    @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+	@Override
+	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 		
 		String header = request.getHeader(JWTConstants.HEADER_STRING);
 		String username = null;
@@ -86,8 +86,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 			}
 		}
 		filterChain.doFilter(request, response);
-    	
-    	/*try {
+		
+		/*try {
 			String jwt = getJwtFromRequest(request);
 
 			if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
@@ -110,13 +110,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 		}
 
 		filterChain.doFilter(request, response);*/
-    }
+	}
 
-    /*private String getJwtFromRequest(HttpServletRequest request) {
-        String bearerToken = request.getHeader("Authorization");
-        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
-            return bearerToken.substring(7, bearerToken.length());
-        }
-        return null;
-    }*/
+	/*private String getJwtFromRequest(HttpServletRequest request) {
+		String bearerToken = request.getHeader("Authorization");
+		if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
+			return bearerToken.substring(7, bearerToken.length());
+		}
+		return null;
+	}*/
 }

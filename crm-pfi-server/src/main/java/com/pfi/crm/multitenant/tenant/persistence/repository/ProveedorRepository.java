@@ -38,6 +38,6 @@ public interface ProveedorRepository extends JpaRepository<Producto, Long> {
 	List<Map<String, Object>> findAllProveedoresWithNumeroDeProductos();
 	
 	@Query("SELECT p FROM Producto p WHERE p.proveedor.id = :proveedorId ORDER BY p.descripcion DESC")
-    List<Producto> findProductosByProveedorId(@Param("proveedorId") Long proveedorId);
+	List<Producto> findProductosByProveedorId(@Param("proveedorId") Long proveedorId);
 	
 }

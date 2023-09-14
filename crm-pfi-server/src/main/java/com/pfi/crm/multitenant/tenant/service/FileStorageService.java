@@ -185,7 +185,7 @@ public class FileStorageService {
 			String filename = file.getFilename();
 			String contentDispositionValue;
 			contentDispositionValue = String.format("inline; filename=\"%s\"; filename*=UTF-8''%s", 
-			        filename, URLEncoder.encode(filename, StandardCharsets.UTF_8.toString()).replace("+", "%20"));
+					filename, URLEncoder.encode(filename, StandardCharsets.UTF_8.toString()).replace("+", "%20"));
 			headers.set(HttpHeaders.CONTENT_DISPOSITION, contentDispositionValue); // Establecer el encabezado de contenido en línea
 			return ResponseEntity.ok().headers(headers).body(file);
 		} catch (UnsupportedEncodingException e) {
@@ -228,7 +228,7 @@ public class FileStorageService {
 				headers.setContentType(MediaType.IMAGE_PNG); // Establecer el tipo de contenido a imagen JPEG
 			} else {
 				String mensaje = "Foto no encontrada para el contacto con el id: " + idContacto;
-		        //return ResponseEntity.status(HttpStatus.NOT_FOUND).body(mensaje.getBytes());
+				//return ResponseEntity.status(HttpStatus.NOT_FOUND).body(mensaje.getBytes());
 				throw new ResponseStatusException(HttpStatus.NOT_FOUND, mensaje);
 			}
 			
@@ -237,21 +237,21 @@ public class FileStorageService {
 			BufferedImage originalImage = ImageIO.read(file.getFile());
 			
 			// Redimensionar la imagen a 96x96 píxeles
-		    //Image resizedImage = originalImage.getScaledInstance(96, 96, Image.SCALE_DEFAULT);
-		    //BufferedImage resizedBufferedImage = new BufferedImage(96, 96, BufferedImage.TYPE_INT_RGB);
-		    //resizedBufferedImage.getGraphics().drawImage(resizedImage, 0, 0, null);
-		    
-		    // Convertir la imagen redimensionada a un arreglo de bytes
-		    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		    ImageIO.write(originalImage, "jpeg", baos);
-		    byte[] imageBytes = baos.toByteArray();
+			//Image resizedImage = originalImage.getScaledInstance(96, 96, Image.SCALE_DEFAULT);
+			//BufferedImage resizedBufferedImage = new BufferedImage(96, 96, BufferedImage.TYPE_INT_RGB);
+			//resizedBufferedImage.getGraphics().drawImage(resizedImage, 0, 0, null);
 			
-		    // Configurar las cabeceras de la respuesta
-		    headers.setContentLength(imageBytes.length);
+			// Convertir la imagen redimensionada a un arreglo de bytes
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			ImageIO.write(originalImage, "jpeg", baos);
+			byte[] imageBytes = baos.toByteArray();
+			
+			// Configurar las cabeceras de la respuesta
+			headers.setContentLength(imageBytes.length);
 			String filename = file.getFilename();
 			String contentDispositionValue;
 			contentDispositionValue = String.format("inline; filename=\"%s\"; filename*=UTF-8''%s", 
-			        filename, URLEncoder.encode(filename, StandardCharsets.UTF_8.toString()).replace("+", "%20"));
+					filename, URLEncoder.encode(filename, StandardCharsets.UTF_8.toString()).replace("+", "%20"));
 			headers.set(HttpHeaders.CONTENT_DISPOSITION, contentDispositionValue); // Establecer el encabezado de contenido en línea
 			return ResponseEntity.ok().headers(headers).body(imageBytes);
 			
@@ -289,7 +289,7 @@ public class FileStorageService {
 				headers.setContentType(MediaType.IMAGE_PNG); // Establecer el tipo de contenido a imagen JPEG
 			} else {
 				String mensaje = "Foto no encontrada para el contacto con el id: " + idContacto;
-		        //return ResponseEntity.status(HttpStatus.NOT_FOUND).body(mensaje.getBytes());
+				//return ResponseEntity.status(HttpStatus.NOT_FOUND).body(mensaje.getBytes());
 				throw new ResponseStatusException(HttpStatus.NOT_FOUND, mensaje);
 			}
 			
@@ -298,21 +298,21 @@ public class FileStorageService {
 			BufferedImage originalImage = ImageIO.read(file.getFile());
 			
 			// Redimensionar la imagen a 96x96 píxeles
-		    Image resizedImage = originalImage.getScaledInstance(96, 96, Image.SCALE_DEFAULT);
-		    BufferedImage resizedBufferedImage = new BufferedImage(96, 96, BufferedImage.TYPE_INT_RGB);
-		    resizedBufferedImage.getGraphics().drawImage(resizedImage, 0, 0, null);
-		    
-		    // Convertir la imagen redimensionada a un arreglo de bytes
-		    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		    ImageIO.write(resizedBufferedImage, "jpeg", baos);
-		    byte[] imageBytes = baos.toByteArray();
+			Image resizedImage = originalImage.getScaledInstance(96, 96, Image.SCALE_DEFAULT);
+			BufferedImage resizedBufferedImage = new BufferedImage(96, 96, BufferedImage.TYPE_INT_RGB);
+			resizedBufferedImage.getGraphics().drawImage(resizedImage, 0, 0, null);
 			
-		    // Configurar las cabeceras de la respuesta
-		    headers.setContentLength(imageBytes.length);
+			// Convertir la imagen redimensionada a un arreglo de bytes
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			ImageIO.write(resizedBufferedImage, "jpeg", baos);
+			byte[] imageBytes = baos.toByteArray();
+			
+			// Configurar las cabeceras de la respuesta
+			headers.setContentLength(imageBytes.length);
 			String filename = file.getFilename();
 			String contentDispositionValue;
 			contentDispositionValue = String.format("inline; filename=\"%s\"; filename*=UTF-8''%s", 
-			        filename, URLEncoder.encode(filename, StandardCharsets.UTF_8.toString()).replace("+", "%20"));
+					filename, URLEncoder.encode(filename, StandardCharsets.UTF_8.toString()).replace("+", "%20"));
 			headers.set(HttpHeaders.CONTENT_DISPOSITION, contentDispositionValue); // Establecer el encabezado de contenido en línea
 			return ResponseEntity.ok().headers(headers).body(imageBytes);
 			
@@ -386,7 +386,7 @@ public class FileStorageService {
 				headers.setContentType(MediaType.IMAGE_PNG); // Establecer el tipo de contenido a imagen JPEG
 			} else {
 				String mensaje = "Foto no encontrada para " + nombreTipoArchivo + " con el id: " + id;
-		        //return ResponseEntity.status(HttpStatus.NOT_FOUND).body(mensaje.getBytes());
+				//return ResponseEntity.status(HttpStatus.NOT_FOUND).body(mensaje.getBytes());
 				throw new ResponseStatusException(HttpStatus.NOT_FOUND, mensaje);
 			}
 			
@@ -395,23 +395,23 @@ public class FileStorageService {
 			BufferedImage originalImage = ImageIO.read(file.getFile());
 			
 			if(isFotoForTable) {// Redimensionar la imagen a 96x96 píxeles
-			    Image resizedImage = originalImage.getScaledInstance(96, 96, Image.SCALE_DEFAULT);
-			    BufferedImage resizedBufferedImage = new BufferedImage(96, 96, BufferedImage.TYPE_INT_RGB);
-			    resizedBufferedImage.getGraphics().drawImage(resizedImage, 0, 0, null);
-			    originalImage = resizedBufferedImage;
+				Image resizedImage = originalImage.getScaledInstance(96, 96, Image.SCALE_DEFAULT);
+				BufferedImage resizedBufferedImage = new BufferedImage(96, 96, BufferedImage.TYPE_INT_RGB);
+				resizedBufferedImage.getGraphics().drawImage(resizedImage, 0, 0, null);
+				originalImage = resizedBufferedImage;
 			}
-		    
-		    // Convertir la imagen redimensionada a un arreglo de bytes
-		    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		    ImageIO.write(originalImage, "jpeg", baos);
-		    byte[] imageBytes = baos.toByteArray();
 			
-		    // Configurar las cabeceras de la respuesta
-		    headers.setContentLength(imageBytes.length);
+			// Convertir la imagen redimensionada a un arreglo de bytes
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			ImageIO.write(originalImage, "jpeg", baos);
+			byte[] imageBytes = baos.toByteArray();
+			
+			// Configurar las cabeceras de la respuesta
+			headers.setContentLength(imageBytes.length);
 			String filename = file.getFilename();
 			String contentDispositionValue;
 			contentDispositionValue = String.format("inline; filename=\"%s\"; filename*=UTF-8''%s", 
-			        filename, URLEncoder.encode(filename, StandardCharsets.UTF_8.toString()).replace("+", "%20"));
+					filename, URLEncoder.encode(filename, StandardCharsets.UTF_8.toString()).replace("+", "%20"));
 			headers.set(HttpHeaders.CONTENT_DISPOSITION, contentDispositionValue); // Establecer el encabezado de contenido en línea
 			return ResponseEntity.ok().headers(headers).body(imageBytes);
 			
@@ -445,12 +445,12 @@ public class FileStorageService {
 				fecha_mas_tardia = getFechaMasTardia(fileFotoPerfil_png);
 			} else {
 				//String mensaje = "Foto no encontrada para el contacto con el id: " + idContacto;
-		        ImagenPayload imagen = new ImagenPayload(idContacto, "contacto", null);
+				ImagenPayload imagen = new ImagenPayload(idContacto, "contacto", null);
 				return ResponseEntity.ok().body(imagen);
 				//throw new ResponseStatusException(HttpStatus.NOT_FOUND, mensaje);
 			}
 			
-		    // Configurar las cabeceras de la respuesta
+			// Configurar las cabeceras de la respuesta
 			ImagenPayload imagen = new ImagenPayload(idContacto, "contacto", fecha_mas_tardia);
 			return ResponseEntity.ok().body(imagen);
 			
@@ -503,12 +503,12 @@ public class FileStorageService {
 				fecha_mas_tardia = getFechaMasTardia(fileFoto_png);
 			} else {
 				//String mensaje = "Foto no encontrada para el " + nombreTipoArchivo + " con el id: " + id;
-		        ImagenPayload imagen = new ImagenPayload(id, nombreTipoArchivo, null);
+				ImagenPayload imagen = new ImagenPayload(id, nombreTipoArchivo, null);
 				return ResponseEntity.ok().body(imagen);
 				//throw new ResponseStatusException(HttpStatus.NOT_FOUND, mensaje);
 			}
 			
-		    // Configurar las cabeceras de la respuesta
+			// Configurar las cabeceras de la respuesta
 			ImagenPayload imagen = new ImagenPayload(id, nombreTipoArchivo, fecha_mas_tardia);
 			return ResponseEntity.ok().body(imagen);
 			
@@ -567,20 +567,20 @@ public class FileStorageService {
 		try {
 			//Preparo su nombre "miFoto.jpg" a: "contacto_3.jpg"
 			String originalFileName = StringUtils.cleanPath(file.getOriginalFilename());
-		    String extension = StringUtils.getFilenameExtension(originalFileName);
-		    if(!extension.equalsIgnoreCase("png") && !extension.equalsIgnoreCase("jpg") && !extension.equalsIgnoreCase("jpeg")) {
-		    	throw new BadRequestException("Tiene que subir un archivo de tipo foto .jpg, .jpeg o .png");
-		    }
-		    if(id == null || id.intValue() < 0) {
-		    	throw new BadRequestException("Error al guardar la foto del " + nombreTipoArchivo + " sin id especificado");
-		    }
-		    if(nombreTipoArchivo == null || nombreTipoArchivo.isEmpty()) {
-		    	throw new BadRequestException("Error interno al guardar el archivo, contacte al administrador. Error: nombreTipoArchivo/el_la == null");
-		    }
-		    String newFileName = nombreTipoArchivo + "_" + id.toString() + "." + extension;
+			String extension = StringUtils.getFilenameExtension(originalFileName);
+			if(!extension.equalsIgnoreCase("png") && !extension.equalsIgnoreCase("jpg") && !extension.equalsIgnoreCase("jpeg")) {
+				throw new BadRequestException("Tiene que subir un archivo de tipo foto .jpg, .jpeg o .png");
+			}
+			if(id == null || id.intValue() < 0) {
+				throw new BadRequestException("Error al guardar la foto del " + nombreTipoArchivo + " sin id especificado");
+			}
+			if(nombreTipoArchivo == null || nombreTipoArchivo.isEmpty()) {
+				throw new BadRequestException("Error interno al guardar el archivo, contacte al administrador. Error: nombreTipoArchivo/el_la == null");
+			}
+			String newFileName = nombreTipoArchivo + "_" + id.toString() + "." + extension;
 			
-		    //Preparo su path
-		    String tenantName = DBContextHolder.getCurrentDb();
+			//Preparo su path
+			String tenantName = DBContextHolder.getCurrentDb();
 			Path fileFoto = root.resolve(tenantName).resolve(nombreTipoArchivo).resolve(newFileName);
 			crearCarpeta(fileFoto.getParent());
 			

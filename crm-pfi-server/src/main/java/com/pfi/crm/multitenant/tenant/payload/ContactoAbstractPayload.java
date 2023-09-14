@@ -12,7 +12,7 @@ public abstract class ContactoAbstractPayload {
 	//private LocalDate fechaAltaContacto;
 	//private LocalDate fechaBajaContacto;
 	@NotBlank
-    @Size(max = 140)
+	@Size(max = 140)
 	private String nombreDescripcion;
 	
 	@Size(max = 25)

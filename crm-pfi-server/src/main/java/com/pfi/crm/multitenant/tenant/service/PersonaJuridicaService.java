@@ -31,18 +31,18 @@ public class PersonaJuridicaService {
 	//private PersonaJuridicaService personaJuridicaService;
 	
 	public PersonaJuridicaPayload getPersonaJuridicaByIdContacto(@PathVariable Long id) {
-        return this.getPersonaJuridicaModelByIdContacto(id).toPayload();
-    }
+		return this.getPersonaJuridicaModelByIdContacto(id).toPayload();
+	}
 	
 	public PersonaJuridica getPersonaJuridicaModelByIdContacto(Long id) {
-        return personaJuridicaRepository.findByContacto_Id(id).orElseThrow(
-                () -> new ResourceNotFoundException("PersonaJuridica", "id", id));
-    }
+		return personaJuridicaRepository.findByContacto_Id(id).orElseThrow(
+				() -> new ResourceNotFoundException("PersonaJuridica", "id", id));
+	}
 	
 	public List<PersonaJuridicaPayload> getPersonasJuridicas() {
 		//return personaJuridicaRepository.findAll();
 		return personaJuridicaRepository.findAll().stream().map(e -> e.toPayload()).collect(Collectors.toList());
-    }
+	}
 	
 	public PersonaJuridicaPayload altaPersonaJuridica (PersonaJuridicaPayload payload) {
 		return this.altaPersonaJuridicaModel(payload).toPayload();

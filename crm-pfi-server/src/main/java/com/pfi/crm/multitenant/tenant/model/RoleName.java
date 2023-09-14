@@ -30,9 +30,9 @@ public enum  RoleName {
 	}
 	
 	public static Comparator<RoleName> priorityComparator = new Comparator<RoleName>() {
-	    public int compare(RoleName r1, RoleName r2) {
-	      return r1.getPriority() - r2.getPriority();
-	    }
+		public int compare(RoleName r1, RoleName r2) {
+		  return r1.getPriority() - r2.getPriority();
+		}
 	  };
 
 	public int compare(RoleName that) {
@@ -40,8 +40,8 @@ public enum  RoleName {
 	}
 	
 	public RoleName max(List<RoleName> roles) {
-    	RoleName max = Collections.max(roles, Comparator.comparingInt(RoleName::getPriority));
-    	return max;
+		RoleName max = Collections.max(roles, Comparator.comparingInt(RoleName::getPriority));
+		return max;
 	}
 
 	public String getName() {

@@ -118,8 +118,8 @@ public class AuthController implements Serializable {
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 		List<String> roles = userDetails.getAuthorities().stream()
-		        .map(item -> item.getAuthority())
-		        .collect(Collectors.toList());
+				.map(item -> item.getAuthority())
+				.collect(Collectors.toList());
 		System.out.println("userDetails: " + userDetails.getUsername() + " psw: " + userDetails.getPassword() + " auth: " + userDetails.getAuthorities().toString());
 		final String token = tokenProvider.generateToken(userDetails.getUsername(),String.valueOf(loginRequest.getTenantOrClientId()));
 		//Map the value into applicationScope bean
@@ -144,12 +144,12 @@ public class AuthController implements Serializable {
 		
 		String jwt = tokenProvider.generateToken(authentication);
 		return ResponseEntity.ok(new JwtAuthenticationResponse(jwt));*/
-    }
+	}
 	
 	private void loadCurrentDatabaseInstance(String databaseName, String userName) {
-        DBContextHolder.setCurrentDb(databaseName);
-        mapValue.put(userName, databaseName);
-    }
+		DBContextHolder.setCurrentDb(databaseName);
+		mapValue.put(userName, databaseName);
+	}
 	
 	@Bean(name = "userTenantInfo")
 	@ApplicationScope
@@ -204,27 +204,27 @@ public class AuthController implements Serializable {
 			return new ResponseEntity<>("Email Address already in use!",
 					HttpStatus.BAD_REQUEST);
 		}
-        
+		
 		//Entry Client Wise value dbName store into bean.
 		loadCurrentDatabaseInstance(masterTenant.getDbName(), signUpRequest.getUsername());
 		
-        // Creacion del usuario
-        User user = new User(signUpRequest.getName(), signUpRequest.getUsername(),
-                signUpRequest.getEmail(), signUpRequest.getPassword());
+		// Creacion del usuario
+		User user = new User(signUpRequest.getName(), signUpRequest.getUsername(),
+				signUpRequest.getEmail(), signUpRequest.getPassword());
 
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+		user.setPassword(passwordEncoder.encode(user.getPassword()));
 
-        Role userRole = roleRepository.findByRoleName(RoleName.ROLE_USER)
-                .orElseThrow(() -> new AppException("User Role not set."));
+		Role userRole = roleRepository.findByRoleName(RoleName.ROLE_USER)
+				.orElseThrow(() -> new AppException("User Role not set."));
 
-        user.setRoles(Collections.singleton(userRole));
+		user.setRoles(Collections.singleton(userRole));
 
-        User result = userRepository.save(user);
+		User result = userRepository.save(user);
 
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentContextPath().path("/users/{username}")
-                .buildAndExpand(result.getUsername()).toUri();
+		URI location = ServletUriComponentsBuilder
+				.fromCurrentContextPath().path("/users/{username}")
+				.buildAndExpand(result.getUsername()).toUri();
 
-        return ResponseEntity.created(location).body(new ApiResponse(true, "User registered successfully"));
-    }
+		return ResponseEntity.created(location).body(new ApiResponse(true, "User registered successfully"));
+	}
 }

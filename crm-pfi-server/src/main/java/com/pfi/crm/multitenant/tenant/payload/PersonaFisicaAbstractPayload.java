@@ -12,11 +12,11 @@ public class PersonaFisicaAbstractPayload extends ContactoAbstractPayload{
 	private int dni;
 	
 	@NotBlank
-    @Size(max = 140)
+	@Size(max = 140)
 	private String nombre;
 	
 	@NotBlank
-    @Size(max = 140)
+	@Size(max = 140)
 	private String apellido;
 	
 	private LocalDate fechaNacimiento;
@@ -72,7 +72,7 @@ public class PersonaFisicaAbstractPayload extends ContactoAbstractPayload{
 	public void setFechaNacimiento(LocalDate fechaNacimiento) {
 		this.fechaNacimiento = fechaNacimiento;
 		if (fechaNacimiento != null)
-            edad = Period.between(fechaNacimiento, LocalDate.now()).getYears();
+			edad = Period.between(fechaNacimiento, LocalDate.now()).getYears();
 		else
 			edad = null;
 	}

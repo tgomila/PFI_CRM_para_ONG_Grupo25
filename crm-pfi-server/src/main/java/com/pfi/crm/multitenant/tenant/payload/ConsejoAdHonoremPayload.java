@@ -8,7 +8,7 @@ public class ConsejoAdHonoremPayload extends PersonaFisicaAbstractPayload{
 	//private Long idConsejoAdHonorem;
 	
 	@NotBlank
-    @Size(max = 140)
+	@Size(max = 140)
 	private String funcion;
 	
 	

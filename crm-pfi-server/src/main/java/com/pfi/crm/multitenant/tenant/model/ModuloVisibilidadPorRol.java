@@ -40,7 +40,7 @@ public class ModuloVisibilidadPorRol {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	//@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "modulo_visibilidad_seq")
 	//@SequenceGenerator(name = "modulo_visibilidad_seq", sequenceName = "modulo_visibilidad_sequence", allocationSize = 1)
-    private Long id;
+	private Long id;
 	
 	@ManyToOne(fetch=FetchType.EAGER, cascade = CascadeType.MERGE)
 	@JoinColumn(name="role", nullable=false)
@@ -201,12 +201,44 @@ public class ModuloVisibilidadPorRol {
 		}
 	}
 	
-	public void cambiarTipoVisibilidad(ModuloEnum moduloEnum, ModuloTipoVisibilidadEnum tipoVisibilidad) {
-		for(ModuloVisibilidadPorRolTipo moduloTipo: modulos) {
-			if(moduloTipo.getModuloEnum().equals(moduloEnum)) {
-				moduloTipo.setTipoVisibilidad(tipoVisibilidad);
+	/**
+	 * Modificación de visibilidad
+	 * @param moduloEnum
+	 * @param tipoVisibilidad
+	 * @return null si no se modificó, objeto si se modificó y deba modificarse en Repository
+	 */
+	public ModuloVisibilidadPorRolTipo cambiarTipoVisibilidad(ModuloEnum moduloEnum, ModuloTipoVisibilidadEnum tipoVisibilidad) {
+		boolean huboModificaciones = false;
+		//Controlo cosas que no deberían tener acceso otros roles.
+		if(moduloEnum.equals(ModuloEnum.MARKETPLACE)) {
+			if(role.getRoleName().equals(RoleName.ROLE_ADMIN)) {//Es admin
+				if(!tipoVisibilidad.equals(ModuloTipoVisibilidadEnum.EDITAR)) {
+					return null;//El admin debe editar marketplace, no puede quitarse el permiso
+				}
+				//Si llegue aquí es porque el admin quiere editar marketplace
+			}
+			else {//No es admin
+				if(tipoVisibilidad.equals(ModuloTipoVisibilidadEnum.EDITAR)) {
+					return null;//solo el rol admin puede editar marketplace
+				}
+				//si llegué aquí es porque se quiere dar no vista, o vista, a otro rol respecto a marketplace
+				if(tipoVisibilidad.equals(ModuloTipoVisibilidadEnum.SOLO_VISTA)) {
+					return null;//pero no voy a darle vista a otro rol, porque marketplace no tiene implementado "vista"
+				}
 			}
 		}
+		//Fin control
+		
+		//Esto es para modificar, si pasa los controles.
+		for(ModuloVisibilidadPorRolTipo moduloTipo: modulos) {
+			if(moduloTipo.getModuloEnum().equals(moduloEnum)) {
+				huboModificaciones = moduloTipo.setTipoVisibilidad(tipoVisibilidad);
+				if(huboModificaciones)
+					return moduloTipo;
+				break;
+			}
+		}
+		return null;
 	}
 	
 	public boolean poseePermiso(ModuloEnum enum_a_acceder, ModuloTipoVisibilidadEnum visibilidadRequerida) {
@@ -456,9 +488,9 @@ public class ModuloVisibilidadPorRol {
 	class myItemComparator implements Comparator<ModuloVisibilidadPorRolTipo>
 	{
 	   
-	    public int compare(ModuloVisibilidadPorRolTipo s1, ModuloVisibilidadPorRolTipo s2)
-	    {
-	        return s1.getModuloEnum().getOrder()-s2.getModuloEnum().getOrder();
-	    }
+		public int compare(ModuloVisibilidadPorRolTipo s1, ModuloVisibilidadPorRolTipo s2)
+		{
+			return s1.getModuloEnum().getOrder()-s2.getModuloEnum().getOrder();
+		}
 	}
 }

@@ -9,7 +9,7 @@ import com.pfi.crm.multitenant.tenant.model.Factura;
 
 @Repository
 public interface FacturaRepository extends JpaRepository<Factura, Long> {
-    
+	
 	List<Factura> findByCliente_Id(Long id);
 	List<Factura> findByCliente_Cuit(String cuit);
 	List<Factura> findByCliente_Email(String email);
@@ -17,6 +17,6 @@ public interface FacturaRepository extends JpaRepository<Factura, Long> {
 	List<Factura> findByEmisorFactura_Id(Long id);
 	
 	Boolean existsByCliente_Id(Long id);
-    Boolean existsByCliente_Cuit(String cuit);
-    Boolean existsByCliente_Email(String email);
+	Boolean existsByCliente_Cuit(String cuit);
+	Boolean existsByCliente_Email(String email);
 }

@@ -15,7 +15,7 @@ import com.pfi.crm.multitenant.tenant.model.Voluntario;
 
 @Repository
 public interface VoluntarioRepository extends JpaRepository<Voluntario, Long> {
-    
+	
 	//Probar
 	//@Query("SELECT e FROM  Voluntario e WHERE e.Contacto.estadoActivoContacto=?1")
 	Optional<Voluntario> findByPersonaFisica_Contacto_Id(Long id);
@@ -34,8 +34,8 @@ public interface VoluntarioRepository extends JpaRepository<Voluntario, Long> {
 	
 	@Query("SELECT YEAR(v.personaFisica.contacto.createdAt) as year, MONTH(v.personaFisica.contacto.createdAt) as month, COUNT(v) as count FROM Voluntario v WHERE v.personaFisica.contacto.createdAt BETWEEN :start AND :end GROUP BY YEAR(v.personaFisica.contacto.createdAt), MONTH(v.personaFisica.contacto.createdAt) ORDER BY YEAR(v.personaFisica.contacto.createdAt) ASC, MONTH(v.personaFisica.contacto.createdAt) ASC")
 	List<Map<String, Object>> countCreatedLast12MonthsByMonth(@Param("start") Instant start, @Param("end") Instant end);
-    
+	
 	@Query("SELECT v.personaFisica.fechaNacimiento FROM Voluntario v")
-    List<LocalDate> findAllFechaNacimiento();
+	List<LocalDate> findAllFechaNacimiento();
 	
 }

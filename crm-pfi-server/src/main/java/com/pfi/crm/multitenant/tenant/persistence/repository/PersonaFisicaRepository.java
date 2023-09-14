@@ -15,7 +15,7 @@ import com.pfi.crm.multitenant.tenant.model.PersonaFisica;
 
 @Repository
 public interface PersonaFisicaRepository extends JpaRepository<PersonaFisica, Long> {
-    
+	
 	//Probar SELECT e FROM  Employee e WHERE e.active=?1
 	//@Query("SELECT e FROM  PersonaFisica e WHERE e.contacto.estadoActivoContacto=?1")
 	Optional<PersonaFisica> findByContacto_Id(Long id);
@@ -46,7 +46,7 @@ public interface PersonaFisicaRepository extends JpaRepository<PersonaFisica, Lo
 	
 	
 	
-    
+	
 	/**
 	 * La idea es que si es contacto es null en personaFisica, se borre personaFisica. 
 	 * Pero también hay que borrar en otros objetos, lo asociado a personas (beneficiario).

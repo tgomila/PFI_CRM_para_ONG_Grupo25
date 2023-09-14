@@ -16,7 +16,7 @@ public class Chat {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	//@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "chat_seq")
 	//@SequenceGenerator(name = "chat_seq", sequenceName = "chat_sequence", allocationSize = 1)
-    private Long id;
+	private Long id;
 	
 	private String userNameFrom;
 	

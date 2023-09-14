@@ -102,6 +102,7 @@ public class MasterTenantService {
 		p.setTenantClientId(m.getTenantClientId());
 		p.setDbName(m.getDbName());
 		p.setTenantName(m.getTenantName());
+		p.setTenantPhoneNumber(m.getTenantPhoneNumber());
 		
 		return p;
 	}

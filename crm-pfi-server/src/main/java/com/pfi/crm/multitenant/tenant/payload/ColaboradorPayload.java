@@ -8,7 +8,7 @@ public class ColaboradorPayload extends TrabajadorAbstractPayload{
 	//private Long idColaborador;
 	
 	@NotBlank
-    @Size(max = 140)
+	@Size(max = 140)
 	private String area;
 
 	public String getArea() {

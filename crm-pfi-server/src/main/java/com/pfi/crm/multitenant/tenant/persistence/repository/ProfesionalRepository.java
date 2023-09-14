@@ -15,7 +15,7 @@ import com.pfi.crm.multitenant.tenant.model.Profesional;
 
 @Repository
 public interface ProfesionalRepository extends JpaRepository<Profesional, Long> {
-    
+	
 	//Probar
 	//@Query("SELECT e FROM  Voluntario e WHERE e.Contacto.estadoActivoContacto=?1")
 	Optional<Profesional> findByPersonaFisica_Contacto_Id(Long id);
@@ -36,5 +36,5 @@ public interface ProfesionalRepository extends JpaRepository<Profesional, Long> 
 	List<Map<String, Object>> countCreatedLast12MonthsByMonth(@Param("start") Instant start, @Param("end") Instant end);
 
 	@Query("SELECT p.personaFisica.fechaNacimiento FROM Profesional p")
-    List<LocalDate> findAllFechaNacimiento();
+	List<LocalDate> findAllFechaNacimiento();
 }

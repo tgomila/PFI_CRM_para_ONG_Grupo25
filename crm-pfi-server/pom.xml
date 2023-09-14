@@ -10,7 +10,7 @@
 	<packaging>jar</packaging>
 
 	<name>pfi</name>
-	<description>Proyecto PFI usando Spring Boot, Spring Security, MySQL y JWT</description>
+	<description>Proyecto PFI usando Spring Boot, Spring Security, PostgreSQL/MySQL y JWT</description>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>

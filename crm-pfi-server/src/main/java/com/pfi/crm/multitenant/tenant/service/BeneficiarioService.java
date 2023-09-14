@@ -44,17 +44,17 @@ public class BeneficiarioService {
 	
 	public BeneficiarioPayload getBeneficiarioByIdContacto(@PathVariable Long id) {
 		return getBeneficiarioModelByIdContacto(id).toPayload();
-    }
+	}
 	
 	public Beneficiario getBeneficiarioModelByIdContacto(@PathVariable Long id) {
 		return beneficiarioRepository.findByPersonaFisica_Contacto_Id(id).orElseThrow(
 				() -> new ResourceNotFoundException("Beneficiario contacto", "id", id));
-    }
+	}
 	
 	public List<BeneficiarioPayload> getBeneficiarios() {
 		//return beneficiarioRepository.findAll();
 		return beneficiarioRepository.findAll().stream().map(e -> e.toPayload()).collect(Collectors.toList());
-    }
+	}
 	
 	public BeneficiarioPayload altaBeneficiario (BeneficiarioPayload payload) {
 		return this.altaBeneficiarioModel(payload).toPayload();
@@ -197,9 +197,9 @@ public class BeneficiarioService {
 	}
 	
 	public List<Map<String, Object>> obtenerConteoPorEtapasEdad() {
-        List<LocalDate> fechasNacimiento = beneficiarioRepository.findAllFechaNacimiento();
-        return personaFisicaService.clasificarPorEtapasEdad(fechasNacimiento);
-    }
+		List<LocalDate> fechasNacimiento = beneficiarioRepository.findAllFechaNacimiento();
+		return personaFisicaService.clasificarPorEtapasEdad(fechasNacimiento);
+	}
 	
 	
 	

@@ -61,10 +61,10 @@ public class ActividadController {
 	public ResponseEntity<?> bajaActividad(@PathVariable Long id, @CurrentUser UserPrincipal currentUser) {
 		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.ACTIVIDAD, "Dar de baja la actividad" + id!=null ? (" con id "+id+"'"):"");
 		String message = actividadService.bajaActividad(id);
-    	if(!message.isEmpty())
-    		return ResponseEntity.ok().body(new ApiResponse(true, message));
-    	else
-    		throw new BadRequestException("Algo salió mal en la baja. Verifique message que retorna en backend.");
+		if(!message.isEmpty())
+			return ResponseEntity.ok().body(new ApiResponse(true, message));
+		else
+			throw new BadRequestException("Algo salió mal en la baja. Verifique message que retorna en backend.");
 	}
 
 	@PutMapping({ "/", "/modificar" })

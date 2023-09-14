@@ -138,9 +138,9 @@ public class ProgramaDeActividades extends UserDateAudit {
 			return actividadesSinOrdenar;
 		
 		List<Actividad> actividadesOrdenadas = actividadesSinOrdenar
-                .stream()
-                .sorted(Comparator.comparing(Actividad::getFechaHoraDesde))
-                .collect(Collectors.toList());
+				.stream()
+				.sorted(Comparator.comparing(Actividad::getFechaHoraDesde))
+				.collect(Collectors.toList());
 		return actividadesOrdenadas;
 	}
 	

@@ -9,10 +9,10 @@ import com.pfi.crm.multitenant.tenant.model.test.Person;
 
 @Repository
 public interface PersonRepository extends JpaRepository<Person, Long> {
-    
+	
 	Optional<Person> findByFirstName(String firstName);
 	Optional<Person> findByLastName(String lastName);
 	
-    Boolean existsByFirstName(String firstName);
-    Boolean existsByLastName(String lastName);
+	Boolean existsByFirstName(String firstName);
+	Boolean existsByLastName(String lastName);
 }

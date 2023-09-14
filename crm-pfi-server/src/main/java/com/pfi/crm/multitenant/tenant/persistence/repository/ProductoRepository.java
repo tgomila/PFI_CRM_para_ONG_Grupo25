@@ -15,7 +15,7 @@ public interface ProductoRepository extends JpaRepository<Producto, Long> {
 	
 	//@Query("SELECT e FROM  Producto e WHERE e.estadoActivo=?1")
 	//List<Producto> findAll();
-    
+	
 	List<Producto> findByProveedor_Id(Long id);
 	List<Producto> findByProveedor_Cuit(String cuit);
 	List<Producto> findByProveedor_Email(String email);

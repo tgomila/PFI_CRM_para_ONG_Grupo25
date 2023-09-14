@@ -18,12 +18,12 @@ import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "users", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {
-            "username"
-        }),
-        @UniqueConstraint(columnNames = {
-            "email"
-        })
+		@UniqueConstraint(columnNames = {
+			"username"
+		}),
+		@UniqueConstraint(columnNames = {
+			"email"
+		})
 })
 public class User extends UserDateAudit{
 
@@ -33,27 +33,27 @@ public class User extends UserDateAudit{
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	//@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "users_seq")
 	//@SequenceGenerator(name = "users_seq", sequenceName = "users_sequence", allocationSize = 1)
-    private Long id;
+	private Long id;
 
-    @NotBlank
-    @Size(max = 40)
-    private String name;
+	@NotBlank
+	@Size(max = 40)
+	private String name;
 
-    @NotBlank
-    @Size(max = 15)
-    private String username;
+	@NotBlank
+	@Size(max = 15)
+	private String username;
 
-    @NaturalId
-    @NotBlank
-    @Size(max = 40)
-    @Email
-    private String email;
+	@NaturalId
+	@NotBlank
+	@Size(max = 40)
+	@Email
+	private String email;
 
-    @NotBlank
-    @Size(max = 100)
-    private String password;
-    
-    @ManyToOne(cascade = {CascadeType.MERGE} )
+	@NotBlank
+	@Size(max = 100)
+	private String password;
+	
+	@ManyToOne(cascade = {CascadeType.MERGE} )
 	@OrderBy("nombreDescripcion ASC")
 	private Contacto contacto;
 
@@ -83,27 +83,27 @@ public class User extends UserDateAudit{
 		return p;
 	}
 
-    public User(String nombre, String username, String email, String password) {
-        this.name = nombre;
-        this.username = username;
-        this.email = email;
-        this.password = password;
-    }
-    
-    public void agregarRol(Role rol) {
-    	roles.add(rol);
-    }
-    
-    public void quitarRol(Role rol) {
-    	roles.remove(rol);
-    }
-    
-    public RoleName getRoleMasValuado() {
-    	Set<RoleName> roles = new HashSet<RoleName>();
-    	getRoles().forEach((rol) -> roles.add(rol.getRoleName()));
-    	
+	public User(String nombre, String username, String email, String password) {
+		this.name = nombre;
+		this.username = username;
+		this.email = email;
+		this.password = password;
+	}
+	
+	public void agregarRol(Role rol) {
+		roles.add(rol);
+	}
+	
+	public void quitarRol(Role rol) {
+		roles.remove(rol);
+	}
+	
+	public RoleName getRoleMasValuado() {
+		Set<RoleName> roles = new HashSet<RoleName>();
+		getRoles().forEach((rol) -> roles.add(rol.getRoleName()));
+		
 		//Por prioridad
-    	RoleName rolSuperior;
+		RoleName rolSuperior;
 		if(roles.contains(RoleName.ROLE_ADMIN))
 			rolSuperior = RoleName.ROLE_ADMIN;
 		else if(roles.contains(RoleName.ROLE_EMPLOYEE))
@@ -116,70 +116,70 @@ public class User extends UserDateAudit{
 			new ResourceNotFoundException("roles", "currentUser", this);
 			rolSuperior = RoleName.ROLE_DEFAULT;
 		}
-    	
-    	/*if(roles.size() == 0) {
-    		new ResourceNotFoundException("roles", "currentUser", this);
-    		return null;
-    	}
-    	rolSuperior = roles.stream().max(Comparator.comparing(r -> r.getPriority())).get();
-    	*/
 		
-    	return rolSuperior;
-    }
-    
-    public Set<RoleName> getRoleNames() {
-    	return roles.stream().map(Role::getRoleName).collect(Collectors.toSet());
-    }
+		/*if(roles.size() == 0) {
+			new ResourceNotFoundException("roles", "currentUser", this);
+			return null;
+		}
+		rolSuperior = roles.stream().max(Comparator.comparing(r -> r.getPriority())).get();
+		*/
+		
+		return rolSuperior;
+	}
+	
+	public Set<RoleName> getRoleNames() {
+		return roles.stream().map(Role::getRoleName).collect(Collectors.toSet());
+	}
 
-    public Long getId() {
-        return id;
-    }
+	public Long getId() {
+		return id;
+	}
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-    public String getUsername() {
-        return username;
-    }
+	public String getUsername() {
+		return username;
+	}
 
-    public void setUsername(String username) {
-    	//Sin acentos
-        this.username = Normalizer.normalize(username, Normalizer.Form.NFD)
-                .replaceAll("\\p{M}", "");;
-    }
+	public void setUsername(String username) {
+		//Sin acentos
+		this.username = Normalizer.normalize(username, Normalizer.Form.NFD)
+				.replaceAll("\\p{M}", "");;
+	}
 
-    public String getName() {
-        return name;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public void setName(String name) {
-        this.name = name;
-    }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    public String getEmail() {
-        return email;
-    }
+	public String getEmail() {
+		return email;
+	}
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+	public void setEmail(String email) {
+		this.email = email;
+	}
 
-    public String getPassword() {
-        return password;
-    }
+	public String getPassword() {
+		return password;
+	}
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
+	public void setPassword(String password) {
+		this.password = password;
+	}
 
-    public Set<Role> getRoles() {
-        return roles;
-    }
+	public Set<Role> getRoles() {
+		return roles;
+	}
 
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
-    }
+	public void setRoles(Set<Role> roles) {
+		this.roles = roles;
+	}
 
 	public Contacto getContacto() {
 		return contacto;

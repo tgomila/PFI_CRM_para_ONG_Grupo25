@@ -34,13 +34,13 @@ public class VoluntarioService {
 	private static final Logger logger = LoggerFactory.getLogger(VoluntarioService.class);
 	
 	public VoluntarioPayload getVoluntarioByIdContacto(@PathVariable Long id) {
-        return this.getVoluntarioModelByIdContacto(id).toPayload();
-    }
+		return this.getVoluntarioModelByIdContacto(id).toPayload();
+	}
 	
 	public Voluntario getVoluntarioModelByIdContacto(@PathVariable Long id) {
-        return voluntarioRepository.findByPersonaFisica_Contacto_Id(id).orElseThrow(
-                () -> new ResourceNotFoundException("Voluntario", "id", id));
-    }
+		return voluntarioRepository.findByPersonaFisica_Contacto_Id(id).orElseThrow(
+				() -> new ResourceNotFoundException("Voluntario", "id", id));
+	}
 	
 	public List<VoluntarioPayload> getVoluntarios() {
 		//return voluntarioRepository.findAll();
@@ -93,7 +93,7 @@ public class VoluntarioService {
 	public String bajaVoluntario(Long id) {
 		
 		Voluntario m = voluntarioRepository.findByPersonaFisica_Contacto_Id(id).orElseThrow(
-                () -> new ResourceNotFoundException("Voluntario", "id", id));
+				() -> new ResourceNotFoundException("Voluntario", "id", id));
 		m.setEstadoActivoVoluntario(false);
 		m.setPersonaFisica(null);
 		voluntarioRepository.save(m);
@@ -162,7 +162,7 @@ public class VoluntarioService {
 	}
 	
 	public List<Map<String, Object>> obtenerConteoPorEtapasEdad() {
-        List<LocalDate> fechasNacimiento = voluntarioRepository.findAllFechaNacimiento();
-        return personaFisicaService.clasificarPorEtapasEdad(fechasNacimiento);
-    }
+		List<LocalDate> fechasNacimiento = voluntarioRepository.findAllFechaNacimiento();
+		return personaFisicaService.clasificarPorEtapasEdad(fechasNacimiento);
+	}
 }

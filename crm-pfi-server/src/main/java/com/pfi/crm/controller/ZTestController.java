@@ -33,117 +33,117 @@ import com.pfi.crm.multitenant.tenant.service.ContactoService;
 public class ZTestController {
 	
 	@Autowired
-    private PersonRepository personRepository;
+	private PersonRepository personRepository;
 	
 	@Autowired
-    private ContactoService contactoService;
+	private ContactoService contactoService;
 	
 	//@Autowired
-    //private EjemploService ejemploService;
+	//private EjemploService ejemploService;
 
-    @Autowired
-    private EmployeeRepository employeeRepository;
+	@Autowired
+	private EmployeeRepository employeeRepository;
 
-    @Autowired
-    private CustomerRepository customerRepository;
-    
-    @Autowired
-    private VoluntarioRepository voluntarioRepository;
-    
-    @GetMapping("/testContacto")
-    public ContactoPayload getContacto(/*@Valid @RequestBody Contacto contacto*/) {
-    	System.out.println("Entre aca");
-    	
-    	Contacto c = new Contacto();
-    	
-    	//Contacto
-    	c.setEstadoActivoContacto(true);
-    	c.setNombreDescripcion("Contacto test");
-    	c.setCuit("20-1235678-9");
-    	c.setDomicilio("Avenida siempre falsa 123, piso 4, depto A");
-    	c.setEmail("testContacto@gmail.com");
-    	c.setTelefono("1234-4567");
-    	
-    	return c.toPayload();
-    }
-    
-    @PostMapping("/testContacto")
-    public ContactoPayload getContacto(@Valid @RequestBody ContactoPayload payload) {
-    	return contactoService.altaContacto(payload);
-    }
-    
-    @PostMapping("/testEntities")
-    public Employee createEmployee(/*@Valid @RequestBody Employee employee*/) {
-    	System.out.println("Entre aca");
-    	
-    	/*Person person = new Person();
-    	//person.setId(1);
-    	person.setFirstName("El fabuloso");
-    	person.setLastName("Godofredo");
-    	personRepository.save(person);*/
-    	
-    	Employee employee = new Employee();
-    	//employee.setId(1);
-    	employee.setFirstName("El fabuloso");
-    	employee.setLastName("Godofredo");
-    	employee.setPayrate(Double.parseDouble("47500.25"));
-    	employee.setHireDate(new Date());
-    	employeeRepository.save(employee);
-    	
-    	Employee employee2 = new Employee();
-    	//employee.setId(1);
-    	employee2.setFirstName("Sori");
-    	employee2.setLastName("Titoli");
-    	employee2.setPayrate(Double.parseDouble("74000.00"));
-    	employee2.setHireDate(new Date());
-    	employeeRepository.save(employee2);
-    	
-    	Person p = personRepository.findById(Long.parseLong("1")).orElse(new Person());
-    	Customer customer = new Customer();
-    	customer.setPerson(p);
-    	customer.setFirstName("MODIFICO");
-    	customer.setRating("SILVER");
-    	customerRepository.save(customer);
-    	
-    	return employee;
-    }
-    
-    @PostMapping("/testVoluntario")
-    public Voluntario altaVoluntarioTest(/*@Valid @RequestBody Voluntario voluntario*/) {
-    	System.out.println("Entre aca");
-    	
-    	Voluntario v = new Voluntario();
-    	
-    	//Contacto
-    	v.setEstadoActivoContacto(true);
-    	v.setNombreDescripcion("Voluntario Don Roque");
-    	v.setCuit("20-1235678-9");
-    	v.setDomicilio("Avenida siempre falsa 123, piso 4, depto A");
-    	v.setEmail("felipe@gmail.com");
-    	v.setTelefono("1234-4567");
-    	
-    	//PersonaFisica
-    	v.setNombre("Felipe");
-    	v.setApellido("del 8");
-    	v.setFechaNacimiento(LocalDate.of(1990, 1, 20));
-    	
-    	Voluntario ret = voluntarioRepository.save(v);
-    	
-    	return ret;
-    }
-    
-    //MiniCambio
-    @PostMapping("/voluntario")
-    public Voluntario altaVoluntario(@Valid @RequestBody Voluntario voluntario) {
-    	System.out.println("Entre aca");
-    	
-    	return voluntarioRepository.save(voluntario);
-    }
-    
-    
-    
-    
-    //test conexión
+	@Autowired
+	private CustomerRepository customerRepository;
+	
+	@Autowired
+	private VoluntarioRepository voluntarioRepository;
+	
+	@GetMapping("/testContacto")
+	public ContactoPayload getContacto(/*@Valid @RequestBody Contacto contacto*/) {
+		System.out.println("Entre aca");
+		
+		Contacto c = new Contacto();
+		
+		//Contacto
+		c.setEstadoActivoContacto(true);
+		c.setNombreDescripcion("Contacto test");
+		c.setCuit("20-1235678-9");
+		c.setDomicilio("Avenida siempre falsa 123, piso 4, depto A");
+		c.setEmail("testContacto@gmail.com");
+		c.setTelefono("1234-4567");
+		
+		return c.toPayload();
+	}
+	
+	@PostMapping("/testContacto")
+	public ContactoPayload getContacto(@Valid @RequestBody ContactoPayload payload) {
+		return contactoService.altaContacto(payload);
+	}
+	
+	@PostMapping("/testEntities")
+	public Employee createEmployee(/*@Valid @RequestBody Employee employee*/) {
+		System.out.println("Entre aca");
+		
+		/*Person person = new Person();
+		//person.setId(1);
+		person.setFirstName("El fabuloso");
+		person.setLastName("Godofredo");
+		personRepository.save(person);*/
+		
+		Employee employee = new Employee();
+		//employee.setId(1);
+		employee.setFirstName("El fabuloso");
+		employee.setLastName("Godofredo");
+		employee.setPayrate(Double.parseDouble("47500.25"));
+		employee.setHireDate(new Date());
+		employeeRepository.save(employee);
+		
+		Employee employee2 = new Employee();
+		//employee.setId(1);
+		employee2.setFirstName("Sori");
+		employee2.setLastName("Titoli");
+		employee2.setPayrate(Double.parseDouble("74000.00"));
+		employee2.setHireDate(new Date());
+		employeeRepository.save(employee2);
+		
+		Person p = personRepository.findById(Long.parseLong("1")).orElse(new Person());
+		Customer customer = new Customer();
+		customer.setPerson(p);
+		customer.setFirstName("MODIFICO");
+		customer.setRating("SILVER");
+		customerRepository.save(customer);
+		
+		return employee;
+	}
+	
+	@PostMapping("/testVoluntario")
+	public Voluntario altaVoluntarioTest(/*@Valid @RequestBody Voluntario voluntario*/) {
+		System.out.println("Entre aca");
+		
+		Voluntario v = new Voluntario();
+		
+		//Contacto
+		v.setEstadoActivoContacto(true);
+		v.setNombreDescripcion("Voluntario Don Roque");
+		v.setCuit("20-1235678-9");
+		v.setDomicilio("Avenida siempre falsa 123, piso 4, depto A");
+		v.setEmail("felipe@gmail.com");
+		v.setTelefono("1234-4567");
+		
+		//PersonaFisica
+		v.setNombre("Felipe");
+		v.setApellido("del 8");
+		v.setFechaNacimiento(LocalDate.of(1990, 1, 20));
+		
+		Voluntario ret = voluntarioRepository.save(v);
+		
+		return ret;
+	}
+	
+	//MiniCambio
+	@PostMapping("/voluntario")
+	public Voluntario altaVoluntario(@Valid @RequestBody Voluntario voluntario) {
+		System.out.println("Entre aca");
+		
+		return voluntarioRepository.save(voluntario);
+	}
+	
+	
+	
+	
+	//test conexión
 	@GetMapping("/all")
 	public String allAccess() {
 		return "Public Content.";

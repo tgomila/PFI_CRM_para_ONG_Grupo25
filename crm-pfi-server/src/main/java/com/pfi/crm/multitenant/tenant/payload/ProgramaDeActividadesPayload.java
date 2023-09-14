@@ -47,9 +47,9 @@ public class ProgramaDeActividadesPayload {
 			return;
 		
 		actividades = actividades
-                .stream()
-                .sorted(Comparator.comparing(ActividadPayload::getFechaHoraDesde))
-                .collect(Collectors.toList());
+				.stream()
+				.sorted(Comparator.comparing(ActividadPayload::getFechaHoraDesde))
+				.collect(Collectors.toList());
 		
 		fechaDesde = actividades.get(0).getFechaHoraDesde();
 		fechaHasta = actividades.get(actividades.size() - 1).getFechaHoraHasta();

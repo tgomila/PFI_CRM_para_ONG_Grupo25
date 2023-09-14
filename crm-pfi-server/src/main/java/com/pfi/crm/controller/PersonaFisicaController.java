@@ -46,46 +46,46 @@ public class PersonaFisicaController {
 	
 	
 	@GetMapping("/{id}")
-    public PersonaFisicaPayload getPersonaFisicaById(@PathVariable Long id, @CurrentUser UserPrincipal currentUser) {
+	public PersonaFisicaPayload getPersonaFisicaById(@PathVariable Long id, @CurrentUser UserPrincipal currentUser) {
 		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.PERSONA, "Ver persona con id: '" + id + "'");
-        return personaFisicaService.getPersonaFisicaByIdContacto(id);
-    }
+		return personaFisicaService.getPersonaFisicaByIdContacto(id);
+	}
 	
 	@GetMapping("/si_existe/{id}")
-    public PersonaFisicaPayload getSiExistePersonaFisicaById(@PathVariable Long id, @CurrentUser UserPrincipal currentUser) {
+	public PersonaFisicaPayload getSiExistePersonaFisicaById(@PathVariable Long id, @CurrentUser UserPrincipal currentUser) {
 		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.PERSONA, "Ver persona con id: '" + id + "'");
-        boolean existe = personaFisicaService.existePersonaFisicaPorIdContacto(id);
+		boolean existe = personaFisicaService.existePersonaFisicaPorIdContacto(id);
 		return existe ? personaFisicaService.getPersonaFisicaByIdContacto(id) : null;
-    }
+	}
 	
 	@GetMapping({"/", "/all"})
 	//@PreAuthorize("hasRole('ROLE_EMPLOYEE')")
-    public List<PersonaFisicaPayload> getPersonaFisica(@CurrentUser UserPrincipal currentUser) {
+	public List<PersonaFisicaPayload> getPersonaFisica(@CurrentUser UserPrincipal currentUser) {
 		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.PERSONA, "Ver personas");
-    	return  personaFisicaService.getPersonasFisicas();
+		return  personaFisicaService.getPersonasFisicas();
 	}
 	
 	@PostMapping({"/", "/alta"})
-    public PersonaFisicaPayload altaPersonaFisica(@Valid @RequestBody PersonaFisicaPayload payload, @CurrentUser UserPrincipal currentUser) {
+	public PersonaFisicaPayload altaPersonaFisica(@Valid @RequestBody PersonaFisicaPayload payload, @CurrentUser UserPrincipal currentUser) {
 		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.PERSONA, "Dar de alta una persona");
-    	return personaFisicaService.altaPersonaFisica(payload);
-    }
+		return personaFisicaService.altaPersonaFisica(payload);
+	}
 	
 	@DeleteMapping({"/{id}", "/baja/{id}"})
-    public ResponseEntity<?> bajaPersonaFisica(@PathVariable Long id, @CurrentUser UserPrincipal currentUser) {
+	public ResponseEntity<?> bajaPersonaFisica(@PathVariable Long id, @CurrentUser UserPrincipal currentUser) {
 		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.PERSONA, "Dar de baja persona");
 		String message = personaFisicaService.bajaPersonaFisica(id);
-    	if(!message.isEmpty())
-    		return ResponseEntity.ok().body(new ApiResponse(true, message));
-    	else
-    		throw new BadRequestException("Algo salió mal en la baja. Verifique message que retorna en backend.");
-    }
+		if(!message.isEmpty())
+			return ResponseEntity.ok().body(new ApiResponse(true, message));
+		else
+			throw new BadRequestException("Algo salió mal en la baja. Verifique message que retorna en backend.");
+	}
 	
 	@PutMapping({"/", "/modificar"})
-    public PersonaFisicaPayload modificarPersonaFisica(@Valid @RequestBody PersonaFisicaPayload payload, @CurrentUser UserPrincipal currentUser) {
+	public PersonaFisicaPayload modificarPersonaFisica(@Valid @RequestBody PersonaFisicaPayload payload, @CurrentUser UserPrincipal currentUser) {
 		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.PERSONA, "Modificar una persona");
-    	return personaFisicaService.modificarPersonaFisica(payload);
-    }
+		return personaFisicaService.modificarPersonaFisica(payload);
+	}
 	
 	@GetMapping({"/nombres_tabla"})
 	public LinkedHashMap<String, String> getNombresTabla(@CurrentUser UserPrincipal currentUser) {
@@ -93,12 +93,19 @@ public class PersonaFisicaController {
 		return new PersonaFisicaNombreTablaPayload().getNombresPersonaFisicaTabla();
 	}
 	
-	//Devuelve dto (si existe) de Persona, o de contacto, o not found. 
+	//Devuelve dto de contacto (si existe), o not found, o error si existe persona (se usa para alta persona y asociar contacto). 
 	@GetMapping("/search/{id}")
-    public ResponseEntity<?> searchPersonaFisicaById(@PathVariable Long id, @CurrentUser UserPrincipal currentUser) {
+	public ResponseEntity<?> searchPersonaFisicaById(@PathVariable Long id, @CurrentUser UserPrincipal currentUser) {
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.PERSONA, "Buscar contacto si existe");
+		return personaFisicaService.buscarContactoSiExiste(id);
+	}
+	
+	//Devuelve dto de persona o contacto (si existe), o not found 
+	@GetMapping("/search_persona_contacto/{id}")
+	public ResponseEntity<?> searchPersonaFisicaOContactoById(@PathVariable Long id, @CurrentUser UserPrincipal currentUser) {
 		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.PERSONA, "Buscar una persona/contacto");
-        return personaFisicaService.buscarContactoSiExiste(id);
-    }
+		return personaFisicaService.buscarPersonaOContactoSiExiste(id);
+	}
 	
 	
 	

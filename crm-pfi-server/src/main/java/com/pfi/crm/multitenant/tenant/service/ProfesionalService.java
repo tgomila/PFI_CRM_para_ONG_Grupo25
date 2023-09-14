@@ -37,18 +37,18 @@ public class ProfesionalService {
 	private static final Logger logger = LoggerFactory.getLogger(ProfesionalService.class);
 	
 	public ProfesionalPayload getProfesionalByIdContacto(@PathVariable Long id) {
-        return this.getProfesionalModelByIdContacto(id).toPayload();
-    }
+		return this.getProfesionalModelByIdContacto(id).toPayload();
+	}
 	
 	public Profesional getProfesionalModelByIdContacto(Long id) {
-        return profesionalRepository.findByPersonaFisica_Contacto_Id(id).orElseThrow(
-                () -> new ResourceNotFoundException("Profesional", "id", id));
-    }
+		return profesionalRepository.findByPersonaFisica_Contacto_Id(id).orElseThrow(
+				() -> new ResourceNotFoundException("Profesional", "id", id));
+	}
 	
 	public List<ProfesionalPayload> getProfesionales() {
 		//return profesionalRepository.findAll();
 		return profesionalRepository.findAll().stream().map(e -> e.toPayload()).collect(Collectors.toList());
-    }
+	}
 	
 	public ProfesionalPayload altaProfesional (ProfesionalPayload payload) {
 		return this.altaProfesionalModel(payload).toPayload();
@@ -170,7 +170,7 @@ public class ProfesionalService {
 	}
 	
 	public List<Map<String, Object>> obtenerConteoPorEtapasEdad() {
-        List<LocalDate> fechasNacimiento = profesionalRepository.findAllFechaNacimiento();
-        return personaFisicaService.clasificarPorEtapasEdad(fechasNacimiento);
-    }
+		List<LocalDate> fechasNacimiento = profesionalRepository.findAllFechaNacimiento();
+		return personaFisicaService.clasificarPorEtapasEdad(fechasNacimiento);
+	}
 }

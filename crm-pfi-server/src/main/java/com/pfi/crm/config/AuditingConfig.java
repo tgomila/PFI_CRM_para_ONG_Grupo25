@@ -13,29 +13,29 @@ import java.util.Optional;
 @Configuration
 @EnableJpaAuditing
 public class AuditingConfig {
-    // Esto es todo para activar el FechaAudit (sin agregar codigo).
+	// Esto es todo para activar el FechaAudit (sin agregar codigo).
 	// El codigo agregado de aca para abajo es para UserDateAudit, asi en cada clase model
 	// pueda saber quién dió de alta a la persona, indispensable para una ONG. 
 	@Bean
-    public AuditorAware<Long> auditorProvider() {
-        return new SpringSecurityAuditAwareImpl();
-    }
+	public AuditorAware<Long> auditorProvider() {
+		return new SpringSecurityAuditAwareImpl();
+	}
 }
 
 class SpringSecurityAuditAwareImpl implements AuditorAware<Long> {
 
-    @Override
-    public Optional<Long> getCurrentAuditor() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+	@Override
+	public Optional<Long> getCurrentAuditor() {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        if (authentication == null ||
-                !authentication.isAuthenticated() ||
-                authentication instanceof AnonymousAuthenticationToken) {
-            return Optional.empty();
-        }
+		if (authentication == null ||
+				!authentication.isAuthenticated() ||
+				authentication instanceof AnonymousAuthenticationToken) {
+			return Optional.empty();
+		}
 
-        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+		UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
 
-        return Optional.ofNullable(userPrincipal.getId());
-    }
+		return Optional.ofNullable(userPrincipal.getId());
+	}
 }

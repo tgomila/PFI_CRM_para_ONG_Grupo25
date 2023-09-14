@@ -40,7 +40,7 @@ public class ModuloMarketService {
 	
 	public ModuloMarketPayload getModuloMarketById(@PathVariable Long id) {
 		return moduloMarketRepository.findById(id).orElseThrow(
-                () -> new ResourceNotFoundException("ModuloMarket", "id", id)).toPayload();
+				() -> new ResourceNotFoundException("ModuloMarket", "id", id)).toPayload();
 	}
 	
 	public List<ModuloMarketPayload> getModuloMarkets() {
@@ -95,7 +95,7 @@ public class ModuloMarketService {
 	
 	private  ModuloMarket getModuloMarketModelByModuloEnum(ModuloEnum moduloEnum) {
 		return moduloMarketRepository.findByModuloEnum(moduloEnum).orElseThrow(
-                () -> new ResourceNotFoundException("ModuloMarket", "moduloEnum name: ", moduloEnum.getName()));
+				() -> new ResourceNotFoundException("ModuloMarket", "moduloEnum name: ", moduloEnum.getName()));
 	}
 	
 	private List<ModuloMarket> getModulosPagos() {
@@ -237,9 +237,9 @@ public class ModuloMarketService {
 			//Inicio solo para casos de model "Padres e hijos", ejemplo Programa de Actividades
 			ModuloMarket aux = null;
 			switch (moduloEnum) {//Busco modulo padre/hijo para activar
-				case        ACTIVIDAD:        aux = getModuloMarketModelByModuloEnum(ModuloEnum.PROGRAMA_DE_ACTIVIDADES);
-				case PROGRAMA_DE_ACTIVIDADES: aux = getModuloMarketModelByModuloEnum(ModuloEnum.ACTIVIDAD);
-				default:                      break;
+				case		ACTIVIDAD:			aux = getModuloMarketModelByModuloEnum(ModuloEnum.PROGRAMA_DE_ACTIVIDADES);
+				case PROGRAMA_DE_ACTIVIDADES:	aux = getModuloMarketModelByModuloEnum(ModuloEnum.ACTIVIDAD);
+				default:						break;
 			}
 			if(aux != null) {//Activo prueba gratuita, haya sido activado o no, anteriormente
 				switch (tiempo) {

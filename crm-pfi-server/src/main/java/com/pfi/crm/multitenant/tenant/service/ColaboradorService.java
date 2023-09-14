@@ -34,18 +34,18 @@ public class ColaboradorService {
 	private static final Logger logger = LoggerFactory.getLogger(ColaboradorService.class);
 	
 	public ColaboradorPayload getColaboradorByIdContacto(@PathVariable Long id) {
-        return this.getColaboradorModelByIdContacto(id).toPayload();
-    }
+		return this.getColaboradorModelByIdContacto(id).toPayload();
+	}
 	
 	public Colaborador getColaboradorModelByIdContacto(@PathVariable Long id) {
-        return colaboradorRepository.findByPersonaFisica_Contacto_Id(id).orElseThrow(
-                () -> new ResourceNotFoundException("Colaborador", "id", id));
-    }
+		return colaboradorRepository.findByPersonaFisica_Contacto_Id(id).orElseThrow(
+				() -> new ResourceNotFoundException("Colaborador", "id", id));
+	}
 	
 	public List<ColaboradorPayload> getColaboradores() {
 		//return colaboradorRepository.findAll();
 		return colaboradorRepository.findAll().stream().map(e -> e.toPayload()).collect(Collectors.toList());
-    }
+	}
 	
 	public ColaboradorPayload altaColaborador (ColaboradorPayload payload) {
 		return this.altaColaboradorModel(payload).toPayload();
@@ -166,7 +166,7 @@ public class ColaboradorService {
 	}
 	
 	public List<Map<String, Object>> obtenerConteoPorEtapasEdad() {
-        List<LocalDate> fechasNacimiento = colaboradorRepository.findAllFechaNacimiento();
-        return personaFisicaService.clasificarPorEtapasEdad(fechasNacimiento);
-    }
+		List<LocalDate> fechasNacimiento = colaboradorRepository.findAllFechaNacimiento();
+		return personaFisicaService.clasificarPorEtapasEdad(fechasNacimiento);
+	}
 }

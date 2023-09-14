@@ -34,28 +34,28 @@ public class ChatController {
 	
 	
 	//@GetMapping("/{id}")
-    //public ChatPayload getChatById(@PathVariable Long id, @CurrentUser UserPrincipal currentUser) {
+	//public ChatPayload getChatById(@PathVariable Long id, @CurrentUser UserPrincipal currentUser) {
 	//	seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.CHAT, "Buscar un mensaje de chat por su ID");
 	//	return chatService.getChatByIdContacto(id);
 	//}
 	
 	@GetMapping({"/", "/all"})
-    public List<ChatPayload> getChat(@CurrentUser UserPrincipal currentUser) {
+	public List<ChatPayload> getChat(@CurrentUser UserPrincipal currentUser) {
 		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.CHAT, "Ver todos los chats");
-    	return  chatService.getChats();
+		return  chatService.getChats();
 	}
 	
 	@GetMapping({"/from"})
-    public List<ChatPayload> getChatByUsernameFrom(@CurrentUser UserPrincipal currentUser) {
+	public List<ChatPayload> getChatByUsernameFrom(@CurrentUser UserPrincipal currentUser) {
 		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.CHAT, "");
 		return chatService.getChatsByUsernameFrom(currentUser.getUsername());
 	}
 	
 	@PostMapping({"/", "/alta"})
-    public ChatPayload altaChat(@CurrentUser UserPrincipal currentUser, @Valid @RequestBody ChatPayload payload) {
+	public ChatPayload altaChat(@CurrentUser UserPrincipal currentUser, @Valid @RequestBody ChatPayload payload) {
 		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.CHAT, "");
 		return chatService.altaChat(currentUser, payload);
-    }
+	}
 	
 	
 	

@@ -24,55 +24,55 @@ import org.springframework.web.filter.CorsFilter;
 
 /*
  * extemds WebSecurityConfigurerAdapter:
- *    - Provee configuración de seguridad por defecto.
- *    - Permite customizar la seguridad de otras clases en sus metodos, al extender esta clase.
+ *	- Provee configuración de seguridad por defecto.
+ *	- Permite customizar la seguridad de otras clases en sus metodos, al extender esta clase.
  */
 
 @Configuration
 @EnableWebSecurity				//Habilita el web security en el proyecto.
 @EnableGlobalMethodSecurity(	//Habilita seguridad en metodos con annotations.
-        securedEnabled = true,	//Habilita @Secured annotation, ejemplo: @Secured({"ROLE_USER", "ROLE_ADMIN"})
-        jsr250Enabled = true,	//Habilita @RolesAllowed annotation, ejemplo: @RolesAllowed("ROLE_ADMIN").
-        prePostEnabled = true	//habilita @PreAuthorize y @PostAuthorize annotations, ejemplo: @PreAuthorize("isAnonymous()")
+		securedEnabled = true,	//Habilita @Secured annotation, ejemplo: @Secured({"ROLE_USER", "ROLE_ADMIN"})
+		jsr250Enabled = true,	//Habilita @RolesAllowed annotation, ejemplo: @RolesAllowed("ROLE_ADMIN").
+		prePostEnabled = true	//habilita @PreAuthorize y @PostAuthorize annotations, ejemplo: @PreAuthorize("isAnonymous()")
 )
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Autowired
-    JwtUserDetailsService jwtUserDetailsService;
+	@Autowired
+	JwtUserDetailsService jwtUserDetailsService;
 
-    @Autowired
-    private JwtAuthenticationEntryPoint unauthorizedHandler;
+	@Autowired
+	private JwtAuthenticationEntryPoint unauthorizedHandler;
 
-    @Bean
-    public JwtAuthenticationFilter jwtAuthenticationFilter() {
-        return new JwtAuthenticationFilter();
-    }
+	@Bean
+	public JwtAuthenticationFilter jwtAuthenticationFilter() {
+		return new JwtAuthenticationFilter();
+	}
 
-    @Override
-    public void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
-        authenticationManagerBuilder
-                .userDetailsService(jwtUserDetailsService)
-                .passwordEncoder(passwordEncoder());
-    }
+	@Override
+	public void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
+		authenticationManagerBuilder
+				.userDetailsService(jwtUserDetailsService)
+				.passwordEncoder(passwordEncoder());
+	}
 
-    @Bean(BeanIds.AUTHENTICATION_MANAGER)
-    @Override
-    public AuthenticationManager authenticationManagerBean() throws Exception {
-        return super.authenticationManagerBean();
-    }
-    
+	@Bean(BeanIds.AUTHENTICATION_MANAGER)
+	@Override
+	public AuthenticationManager authenticationManagerBean() throws Exception {
+		return super.authenticationManagerBean();
+	}
+	
 	@Autowired
 	public void globalUserDetails(AuthenticationManagerBuilder auth) throws Exception {
 		auth.userDetailsService(jwtUserDetailsService).passwordEncoder(passwordEncoder());
 	}
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-    
-    
-    // HttpSecurity se usa para sesiones en sessionManagement, agrega las reglas de ROLE
+	@Bean
+	public PasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
+	}
+	
+	
+	// HttpSecurity se usa para sesiones en sessionManagement, agrega las reglas de ROLE
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http
@@ -114,9 +114,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		// Agrega nuestro custom JWT security filter
 		http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 		
-    }
-    
-    
+	}
+	
+	
 	@SuppressWarnings("rawtypes")
 	@Bean
 	public FilterRegistrationBean platformCorsFilter() {

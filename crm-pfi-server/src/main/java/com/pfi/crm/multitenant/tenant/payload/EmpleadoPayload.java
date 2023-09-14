@@ -8,10 +8,10 @@ public class EmpleadoPayload extends TrabajadorAbstractPayload{
 	//private Long idEmpleado;
 	
 	@NotBlank
-    @Size(max = 140)
+	@Size(max = 140)
 	private String funcion;
 	
-    @Size(max = 140)
+	@Size(max = 140)
 	private String descripcion;
 
 	public String getFuncion() {
@@ -29,6 +29,6 @@ public class EmpleadoPayload extends TrabajadorAbstractPayload{
 	public void setDescripcion(String descripcion) {
 		this.descripcion = descripcion;
 	}
-    
-    
+	
+	
 }

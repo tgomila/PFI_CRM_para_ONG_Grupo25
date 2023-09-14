@@ -15,7 +15,7 @@ import com.pfi.crm.multitenant.tenant.model.Colaborador;
 
 @Repository
 public interface ColaboradorRepository extends JpaRepository<Colaborador, Long> {
-    
+	
 	//Probar
 	//@Query("SELECT e FROM  Colaborador e WHERE e.Contacto.estadoActivoContacto=?1")
 	Optional<Colaborador> findByPersonaFisica_Contacto_Id(Long id);
@@ -36,5 +36,5 @@ public interface ColaboradorRepository extends JpaRepository<Colaborador, Long> 
 	List<Map<String, Object>> countCreatedLast12MonthsByMonth(@Param("start") Instant start, @Param("end") Instant end);
 
 	@Query("SELECT c.personaFisica.fechaNacimiento FROM Colaborador c")
-    List<LocalDate> findAllFechaNacimiento();
+	List<LocalDate> findAllFechaNacimiento();
 }

@@ -58,27 +58,27 @@ public class PersonaFisicaService {
 	private VoluntarioService voluntarioService;
 	
 	public PersonaFisicaPayload getPersonaFisicaByIdContacto(@PathVariable Long id) {
-        return this.getPersonaFisicaModelByIdContacto(id).toPayload();
-    }
+		return this.getPersonaFisicaModelByIdContacto(id).toPayload();
+	}
 	
 	public PersonaFisica getPersonaFisicaModelByIdContacto(Long id) {
-        return personaFisicaRepository.findByContacto_Id(id).orElseThrow(
-                () -> new ResourceNotFoundException("PersonaFisica", "id", id));
-    }
+		return personaFisicaRepository.findByContacto_Id(id).orElseThrow(
+				() -> new ResourceNotFoundException("PersonaFisica", "id", id));
+	}
 	
 	public PersonaFisicaPayload getPersonaFisicaByDni(@PathVariable int dni) {
-        return this.getPersonaFisicaModelByDni(dni).toPayload();
-    }
+		return this.getPersonaFisicaModelByDni(dni).toPayload();
+	}
 	
 	public PersonaFisica getPersonaFisicaModelByDni(int dni) {
-        return personaFisicaRepository.findByDni(dni).orElseThrow(
-                () -> new ResourceNotFoundException("PersonaFisica", "dni", dni));
-    }
+		return personaFisicaRepository.findByDni(dni).orElseThrow(
+				() -> new ResourceNotFoundException("PersonaFisica", "dni", dni));
+	}
 	
 	public List<PersonaFisicaPayload> getPersonasFisicas() {
 		//return personaFisicaRepository.findAll();
 		return personaFisicaRepository.findAll().stream().map(e -> e.toPayload()).collect(Collectors.toList());
-    }
+	}
 	
 	public PersonaFisicaPayload altaPersonaFisica (PersonaFisicaPayload payload) {
 		return altaPersonaFisicaModel(payload).toPayload();
@@ -283,6 +283,20 @@ public class PersonaFisicaService {
 		return ResponseEntity.ok(contactoService.getContactoById(id));//Devuelve no ok si no hay contacto cargado
 	}
 	
+	//Se usará en frontend, si una donación tiene donante (contacto) asociado, busco si tiene persona 
+	public ResponseEntity<?> buscarPersonaOContactoSiExiste(Long id) {
+		boolean existePersona = personaFisicaRepository.existsByContacto_Id(id);
+		if(existePersona)
+			return ResponseEntity.ok(this.getPersonaFisicaByIdContacto(id));
+		boolean existeContacto = contactoService.existeContacto(id);
+		if(!existeContacto)
+			throw new BadRequestException("No existe Contacto ID '" + id.toString() + "' cargado. "
+					+ "Es posible que sea otro número o no exista.");
+			//return ResponseEntity.notFound().build();
+		//Existe contacto
+		return ResponseEntity.ok(contactoService.getContactoById(id));//Devuelve no ok si no hay contacto cargado
+	}
+	
 	/**
 	 * Este método sirve para services superiores. No controllers.
 	 * @param id a buscar.
@@ -318,56 +332,56 @@ public class PersonaFisicaService {
 	
 	
 	public List<Map<String, Object>> obtenerConteoPorEtapasEdad() {
-        List<LocalDate> fechasNacimiento = personaFisicaRepository.findAllFechaNacimiento();
-        return clasificarPorEtapasEdad(fechasNacimiento);
-    }
+		List<LocalDate> fechasNacimiento = personaFisicaRepository.findAllFechaNacimiento();
+		return clasificarPorEtapasEdad(fechasNacimiento);
+	}
 	
 	public List<Map<String, Object>> clasificarPorEtapasEdad(List<LocalDate> fechasNacimiento) {
-        List<Map<String, Object>> resultado = new ArrayList<>();
+		List<Map<String, Object>> resultado = new ArrayList<>();
 
-        // Obtener la cantidad de personas en cada etapa de edad
-        int primeraInfancia = contarPersonasEnRangoEdad(fechasNacimiento, 0, 5);
-        int infancia = contarPersonasEnRangoEdad(fechasNacimiento, 6, 11);
-        int adolescencia = contarPersonasEnRangoEdad(fechasNacimiento, 12, 18);
-        int juventud = contarPersonasEnRangoEdad(fechasNacimiento, 19, 26);
-        int adultez = contarPersonasEnRangoEdad(fechasNacimiento, 27, 59);
-        int personaMayor = contarPersonasEnRangoEdad(fechasNacimiento, 60, 9999);
+		// Obtener la cantidad de personas en cada etapa de edad
+		int primeraInfancia = contarPersonasEnRangoEdad(fechasNacimiento, 0, 5);
+		int infancia = contarPersonasEnRangoEdad(fechasNacimiento, 6, 11);
+		int adolescencia = contarPersonasEnRangoEdad(fechasNacimiento, 12, 18);
+		int juventud = contarPersonasEnRangoEdad(fechasNacimiento, 19, 26);
+		int adultez = contarPersonasEnRangoEdad(fechasNacimiento, 27, 59);
+		int personaMayor = contarPersonasEnRangoEdad(fechasNacimiento, 60, 9999);
 
-        // Agregar la información al resultado
-        resultado.add(crearMapEtapaEdad("Primera Infancia", "0 a 5 años", primeraInfancia));
-        resultado.add(crearMapEtapaEdad("Infancia", "6 a 11 años", infancia));
-        resultado.add(crearMapEtapaEdad("Adolescencia", "12 a 18 años", adolescencia));
-        resultado.add(crearMapEtapaEdad("Juventud", "19 a 26 años", juventud));
-        resultado.add(crearMapEtapaEdad("Adultez", "27 a 59 años", adultez));
-        resultado.add(crearMapEtapaEdad("Persona mayor", "mayor a 60 años", personaMayor));
+		// Agregar la información al resultado
+		resultado.add(crearMapEtapaEdad("Primera Infancia", "0 a 5 años", primeraInfancia));
+		resultado.add(crearMapEtapaEdad("Infancia", "6 a 11 años", infancia));
+		resultado.add(crearMapEtapaEdad("Adolescencia", "12 a 18 años", adolescencia));
+		resultado.add(crearMapEtapaEdad("Juventud", "19 a 26 años", juventud));
+		resultado.add(crearMapEtapaEdad("Adultez", "27 a 59 años", adultez));
+		resultado.add(crearMapEtapaEdad("Persona mayor", "mayor a 60 años", personaMayor));
 
-        return resultado;
+		return resultado;
 	}
 	
 	private int contarPersonasEnRangoEdad(List<LocalDate> fechasNacimiento, int edadMinima, int edadMaxima) {
-        int conteo = 0;
-        LocalDate fechaActual = LocalDate.now();
+		int conteo = 0;
+		LocalDate fechaActual = LocalDate.now();
 
-        for (LocalDate fechaNacimiento : fechasNacimiento) {
-            int edad = fechaActual.getYear() - fechaNacimiento.getYear();
-            if (fechaNacimiento.plusYears(edad).isAfter(fechaActual)) {
-                edad--;
-            }
-            if (edad >= edadMinima && edad <= edadMaxima) {
-                conteo++;
-            }
-        }
+		for (LocalDate fechaNacimiento : fechasNacimiento) {
+			int edad = fechaActual.getYear() - fechaNacimiento.getYear();
+			if (fechaNacimiento.plusYears(edad).isAfter(fechaActual)) {
+				edad--;
+			}
+			if (edad >= edadMinima && edad <= edadMaxima) {
+				conteo++;
+			}
+		}
 
-        return conteo;
-    }
+		return conteo;
+	}
 	
 	private Map<String, Object> crearMapEtapaEdad(String etapa, String rangoEdad, int cantidad) {
-        Map<String, Object> mapa = new HashMap<>();
-        mapa.put("etapa", etapa);
-        mapa.put("rangoEdad", rangoEdad);
-        mapa.put("cantidad", cantidad);
-        return mapa;
-    }
+		Map<String, Object> mapa = new HashMap<>();
+		mapa.put("etapa", etapa);
+		mapa.put("rangoEdad", rangoEdad);
+		mapa.put("cantidad", cantidad);
+		return mapa;
+	}
 
 
 	
@@ -482,16 +496,16 @@ public class PersonaFisicaService {
 		
 		if(inputMinimoEdadPersona == null && inputMaximoEdadPersona == null) {
 			int numAleatorio = random.nextInt(100);
-	        if (numAleatorio < 65) { // 65% de probabilidad
-	        	edadMinima = 5;
-	        	edadMaxima = 20;
-	        } else if (numAleatorio < 90) { // 25% de probabilidad
-	        	edadMinima = 21;
-	        	edadMaxima = 45;
-	        } else { // 10% de probabilidad
-	        	edadMinima = 46;
-	        	edadMaxima = 70;
-	        }
+			if (numAleatorio < 65) { // 65% de probabilidad
+				edadMinima = 5;
+				edadMaxima = 20;
+			} else if (numAleatorio < 90) { // 25% de probabilidad
+				edadMinima = 21;
+				edadMaxima = 45;
+			} else { // 10% de probabilidad
+				edadMinima = 46;
+				edadMaxima = 70;
+			}
 		}
 		LocalDate now = LocalDate.now();
 		LocalDate minFechaNacimiento = now.minusYears(edadMaxima+1).plusDays(1);
@@ -585,11 +599,11 @@ public class PersonaFisicaService {
 		String apellido = personaGenerada.getApellido();
 		//Minúsculas y sin acentos
 		String nombreMinusculasSinAcento = Normalizer.normalize(nombre, Normalizer.Form.NFD)
-		        .replaceAll("\\p{M}", "")
-		        .toLowerCase();
+				.replaceAll("\\p{M}", "")
+				.toLowerCase();
 		String apellidoMinusculasSinAcentos = Normalizer.normalize(apellido, Normalizer.Form.NFD)
-		        .replaceAll("\\p{M}", "")
-		        .toLowerCase();
+				.replaceAll("\\p{M}", "")
+				.toLowerCase();
 		personaGenerada.setEmail(nombreMinusculasSinAcento + apellidoMinusculasSinAcentos + "@testing.com");
 		
 		//Modifico su descripción

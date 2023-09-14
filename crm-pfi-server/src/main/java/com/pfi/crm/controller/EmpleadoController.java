@@ -44,38 +44,38 @@ public class EmpleadoController {
 	
 	
 	@GetMapping("/{id}")
-    public EmpleadoPayload getEmpleadoById(@PathVariable Long id, @CurrentUser UserPrincipal currentUser) {
+	public EmpleadoPayload getEmpleadoById(@PathVariable Long id, @CurrentUser UserPrincipal currentUser) {
 		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.EMPLEADO, "Buscar un empleado por su ID: '" + id + "'");
-        return empleadoService.getEmpleadoByIdContacto(id);
-    }
+		return empleadoService.getEmpleadoByIdContacto(id);
+	}
 	
 	@GetMapping({"/", "/all"})
-    public List<EmpleadoPayload> getEmpleado(@CurrentUser UserPrincipal currentUser) {
+	public List<EmpleadoPayload> getEmpleado(@CurrentUser UserPrincipal currentUser) {
 		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.EMPLEADO, "Ver lista de todos los empleados");
-    	return  empleadoService.getEmpleados();
+		return  empleadoService.getEmpleados();
 	}
 	
 	@PostMapping({"/", "/alta"})
-    public EmpleadoPayload altaEmpleado(@Valid @RequestBody EmpleadoPayload payload, @CurrentUser UserPrincipal currentUser) {
+	public EmpleadoPayload altaEmpleado(@Valid @RequestBody EmpleadoPayload payload, @CurrentUser UserPrincipal currentUser) {
 		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.EMPLEADO, "Dar de alta un empleado");
-    	return empleadoService.altaEmpleado(payload);
-    }
+		return empleadoService.altaEmpleado(payload);
+	}
 	
 	@DeleteMapping({"/{id}", "/baja/{id}"})
-    public ResponseEntity<?> bajaEmpleado(@PathVariable Long id, @CurrentUser UserPrincipal currentUser) {
+	public ResponseEntity<?> bajaEmpleado(@PathVariable Long id, @CurrentUser UserPrincipal currentUser) {
 		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.EMPLEADO, "Eliminar un empleado");
 		String message = empleadoService.bajaEmpleado(id);
-    	if(!message.isEmpty())
-    		return ResponseEntity.ok().body(new ApiResponse(true, message));
-    	else
-    		throw new BadRequestException("Algo salió mal en la baja. Verifique message que retorna en backend.");
-    }
+		if(!message.isEmpty())
+			return ResponseEntity.ok().body(new ApiResponse(true, message));
+		else
+			throw new BadRequestException("Algo salió mal en la baja. Verifique message que retorna en backend.");
+	}
 	
 	@PutMapping({"/", "/modificar"})
-    public EmpleadoPayload modificarEmpleado(@Valid @RequestBody EmpleadoPayload payload, @CurrentUser UserPrincipal currentUser) {
+	public EmpleadoPayload modificarEmpleado(@Valid @RequestBody EmpleadoPayload payload, @CurrentUser UserPrincipal currentUser) {
 		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.EMPLEADO, "Modificar un empleado");
-    	return empleadoService.modificarEmpleado(payload);
-    }
+		return empleadoService.modificarEmpleado(payload);
+	}
 	
 	@GetMapping({"/nombres_tabla"})
 	public LinkedHashMap<String, String> getNombresTabla(@CurrentUser UserPrincipal currentUser) {
@@ -85,10 +85,10 @@ public class EmpleadoController {
 	
 	//Devuelve dto (si existe) de Persona, o de contacto, o not found. 
 	@GetMapping("/search/{id}")
-    public ResponseEntity<?> searchEmpleadoById(@PathVariable Long id, @CurrentUser UserPrincipal currentUser) {
+	public ResponseEntity<?> searchEmpleadoById(@PathVariable Long id, @CurrentUser UserPrincipal currentUser) {
 		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.EMPLEADO, "Ver un ejemplo de empleado");
-        return empleadoService.buscarPersonaFisicaSiExiste(id);
-    }
+		return empleadoService.buscarPersonaFisicaSiExiste(id);
+	}
 	
 	
 	

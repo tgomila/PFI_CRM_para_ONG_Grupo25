@@ -34,18 +34,18 @@ public class ConsejoAdHonoremService {
 	private static final Logger logger = LoggerFactory.getLogger(ConsejoAdHonoremService.class);
 	
 	public ConsejoAdHonoremPayload getConsejoAdHonoremByIdContacto(@PathVariable Long id) {
-        return this.getConsejoAdHonoremModelByIdContacto(id).toPayload();
-    }
+		return this.getConsejoAdHonoremModelByIdContacto(id).toPayload();
+	}
 	
 	public ConsejoAdHonorem getConsejoAdHonoremModelByIdContacto(@PathVariable Long id) {
-        return consejoAdHonoremRepository.findByPersonaFisica_Contacto_Id(id).orElseThrow(
-                () -> new ResourceNotFoundException("ConsejoAdHonorem", "id", id));
-    }
+		return consejoAdHonoremRepository.findByPersonaFisica_Contacto_Id(id).orElseThrow(
+				() -> new ResourceNotFoundException("ConsejoAdHonorem", "id", id));
+	}
 	
 	public List<ConsejoAdHonoremPayload> getConsejoAdHonorems() {
 		//return ConsejoAdHonoremRepository.findAll();
 		return consejoAdHonoremRepository.findAll().stream().map(e -> e.toPayload()).collect(Collectors.toList());
-    }
+	}
 	
 	public ConsejoAdHonoremPayload altaConsejoAdHonorem (ConsejoAdHonoremPayload payload) {
 		return this.altaConsejoAdHonoremModel(payload).toPayload();
@@ -162,7 +162,7 @@ public class ConsejoAdHonoremService {
 	}
 	
 	public List<Map<String, Object>> obtenerConteoPorEtapasEdad() {
-        List<LocalDate> fechasNacimiento = consejoAdHonoremRepository.findAllFechaNacimiento();
-        return personaFisicaService.clasificarPorEtapasEdad(fechasNacimiento);
-    }
+		List<LocalDate> fechasNacimiento = consejoAdHonoremRepository.findAllFechaNacimiento();
+		return personaFisicaService.clasificarPorEtapasEdad(fechasNacimiento);
+	}
 }

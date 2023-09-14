@@ -90,10 +90,10 @@ public class ProductoController {
 	public ResponseEntity<?> bajaProducto(@PathVariable Long id, @CurrentUser UserPrincipal currentUser) {
 		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.PRODUCTO, "Eliminar un producto con id: '" + id + "'");
 		String message = productoService.bajaProducto(id);
-    	if(!message.isEmpty())
-    		return ResponseEntity.ok().body(new ApiResponse(true, message));
-    	else
-    		throw new BadRequestException("Algo salió mal en la baja. Verifique message que retorna en backend.");
+		if(!message.isEmpty())
+			return ResponseEntity.ok().body(new ApiResponse(true, message));
+		else
+			throw new BadRequestException("Algo salió mal en la baja. Verifique message que retorna en backend.");
 	}
 
 	@PutMapping({ "/", "/modificar" })

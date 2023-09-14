@@ -20,8 +20,8 @@ public class TenantController {
 	private MasterTenantService masterTenantService;
 	
 	@GetMapping({"/", "/all"})
-    public List<TenantPayload> getTenant() {
-    	return  masterTenantService.getTenants();
+	public List<TenantPayload> getTenant() {
+		return  masterTenantService.getTenants();
 	}
 	
 	@GetMapping({"/nombres_tabla"})

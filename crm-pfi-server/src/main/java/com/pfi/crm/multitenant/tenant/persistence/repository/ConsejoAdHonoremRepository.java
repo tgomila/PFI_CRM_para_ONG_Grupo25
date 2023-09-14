@@ -15,7 +15,7 @@ import com.pfi.crm.multitenant.tenant.model.ConsejoAdHonorem;
 
 @Repository
 public interface ConsejoAdHonoremRepository extends JpaRepository<ConsejoAdHonorem, Long> {
-    
+	
 	//Probar
 	//@Query("SELECT e FROM  ConsejoAdHonorem e WHERE e.contacto.estadoActivoContacto=?1")
 	Optional<ConsejoAdHonorem> findByPersonaFisica_Contacto_Id(Long id);
@@ -36,5 +36,5 @@ public interface ConsejoAdHonoremRepository extends JpaRepository<ConsejoAdHonor
 	List<Map<String, Object>> countContactosCreatedLast12MonthsByMonth(@Param("start") Instant start, @Param("end") Instant end);
 
 	@Query("SELECT c.personaFisica.fechaNacimiento FROM ConsejoAdHonorem c")
-    List<LocalDate> findAllFechaNacimiento();
+	List<LocalDate> findAllFechaNacimiento();
 }

@@ -39,12 +39,12 @@ public class PersonaFisica extends ContactoAbstract{
 	
 	//Metodo edad
 	public Integer getEdad () {
-        if (fechaNacimiento != null) {
-            return Period.between(fechaNacimiento, LocalDate.now()).getYears();
-        } else {
-            return null;
-        }
-    }
+		if (fechaNacimiento != null) {
+			return Period.between(fechaNacimiento, LocalDate.now()).getYears();
+		} else {
+			return null;
+		}
+	}
 	
 	//Constructores
 	public PersonaFisica() {

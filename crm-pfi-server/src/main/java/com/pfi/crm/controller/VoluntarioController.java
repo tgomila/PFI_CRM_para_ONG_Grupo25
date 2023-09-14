@@ -43,39 +43,39 @@ public class VoluntarioController {
 	
 	
 	@GetMapping("/{id}")
-    public VoluntarioPayload getVoluntarioById(@PathVariable Long id, @CurrentUser UserPrincipal currentUser) {
+	public VoluntarioPayload getVoluntarioById(@PathVariable Long id, @CurrentUser UserPrincipal currentUser) {
 		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.VOLUNTARIO, "Ver voluntario con id: '" + id + "'");
-        return voluntarioService.getVoluntarioByIdContacto(id);
-    }
+		return voluntarioService.getVoluntarioByIdContacto(id);
+	}
 	
 	@GetMapping({"/", "/all"})
 	//@PreAuthorize("hasRole('ROLE_EMPLOYEE')")
-    public List<VoluntarioPayload> getVoluntario(@CurrentUser UserPrincipal currentUser) {
+	public List<VoluntarioPayload> getVoluntario(@CurrentUser UserPrincipal currentUser) {
 		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.VOLUNTARIO, "Ver lista de voluntarios");
-    	return  voluntarioService.getVoluntarios();
+		return  voluntarioService.getVoluntarios();
 	}
 	
 	@PostMapping({"/", "/alta"})
-    public VoluntarioPayload altaVoluntario(@Valid @RequestBody VoluntarioPayload payload, @CurrentUser UserPrincipal currentUser) {
+	public VoluntarioPayload altaVoluntario(@Valid @RequestBody VoluntarioPayload payload, @CurrentUser UserPrincipal currentUser) {
 		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.VOLUNTARIO, "Cargar nuevo voluntario");
-    	return voluntarioService.altaVoluntario(payload);
-    }
+		return voluntarioService.altaVoluntario(payload);
+	}
 	
 	@DeleteMapping({"/{id}", "/baja/{id}"})
-    public ResponseEntity<?> bajaVoluntario(@PathVariable Long id, @CurrentUser UserPrincipal currentUser) {
+	public ResponseEntity<?> bajaVoluntario(@PathVariable Long id, @CurrentUser UserPrincipal currentUser) {
 		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.VOLUNTARIO, "Eliminar un voluntario");
 		String message = voluntarioService.bajaVoluntario(id);
-    	if(!message.isEmpty())
-    		return ResponseEntity.ok().body(new ApiResponse(true, message));
-    	else
-    		throw new BadRequestException("Algo salió mal en la baja. Verifique message que retorna en backend.");
-    }
+		if(!message.isEmpty())
+			return ResponseEntity.ok().body(new ApiResponse(true, message));
+		else
+			throw new BadRequestException("Algo salió mal en la baja. Verifique message que retorna en backend.");
+	}
 	
 	@PutMapping({"/", "/modificar"})
-    public VoluntarioPayload modificarVoluntario(@Valid @RequestBody VoluntarioPayload payload, @CurrentUser UserPrincipal currentUser) {
+	public VoluntarioPayload modificarVoluntario(@Valid @RequestBody VoluntarioPayload payload, @CurrentUser UserPrincipal currentUser) {
 		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.VOLUNTARIO, "Modificar voluntario");
-    	return voluntarioService.modificarVoluntario(payload);
-    }
+		return voluntarioService.modificarVoluntario(payload);
+	}
 	
 	@GetMapping({"/nombres_tabla"})
 	public LinkedHashMap<String, String> getNombresTabla(@CurrentUser UserPrincipal currentUser) {
@@ -85,10 +85,10 @@ public class VoluntarioController {
 	
 	//Devuelve dto (si existe) de Persona, o de contacto, o not found. 
 	@GetMapping("/search/{id}")
-    public ResponseEntity<?> searchVoluntarioById(@PathVariable Long id, @CurrentUser UserPrincipal currentUser) {
+	public ResponseEntity<?> searchVoluntarioById(@PathVariable Long id, @CurrentUser UserPrincipal currentUser) {
 		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.VOLUNTARIO, "Buscar voluntario/persona/contacto con id: '" + id + "'");
-        return voluntarioService.buscarPersonaFisicaSiExiste(id);
-    }
+		return voluntarioService.buscarPersonaFisicaSiExiste(id);
+	}
 	
 	
 	

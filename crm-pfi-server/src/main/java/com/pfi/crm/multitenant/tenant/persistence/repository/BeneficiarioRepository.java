@@ -15,7 +15,7 @@ import com.pfi.crm.multitenant.tenant.model.Beneficiario;
 
 @Repository
 public interface BeneficiarioRepository extends JpaRepository<Beneficiario, Long> {
-    
+	
 	//Probar
 	//@Query("SELECT e FROM  Voluntario e WHERE e.Contacto.estadoActivoContacto=?1")
 	Optional<Beneficiario> findByPersonaFisica_Contacto_Id(Long id);
@@ -36,6 +36,6 @@ public interface BeneficiarioRepository extends JpaRepository<Beneficiario, Long
 	List<Map<String, Object>> countCreatedLast12MonthsByMonth(@Param("start") Instant start, @Param("end") Instant end);
 
 	@Query("SELECT b.personaFisica.fechaNacimiento FROM Beneficiario b")
-    List<LocalDate> findAllFechaNacimiento();
+	List<LocalDate> findAllFechaNacimiento();
 	
 }

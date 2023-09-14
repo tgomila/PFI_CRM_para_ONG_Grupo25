@@ -44,38 +44,38 @@ public class BeneficiarioController {
 	
 	
 	@GetMapping("/{id}")
-    public BeneficiarioPayload getBeneficiarioById(@PathVariable Long id, @CurrentUser UserPrincipal currentUser) {
+	public BeneficiarioPayload getBeneficiarioById(@PathVariable Long id, @CurrentUser UserPrincipal currentUser) {
 		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.BENEFICIARIO, "Buscar un beneficiario por su ID");
-        return beneficiarioService.getBeneficiarioByIdContacto(id);
-    }
+		return beneficiarioService.getBeneficiarioByIdContacto(id);
+	}
 	
 	@GetMapping({"/", "/all"})
-    public List<BeneficiarioPayload> getBeneficiario(@CurrentUser UserPrincipal currentUser) {
+	public List<BeneficiarioPayload> getBeneficiario(@CurrentUser UserPrincipal currentUser) {
 		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.BENEFICIARIO, "Ver todos los beneficiarios");
-    	return  beneficiarioService.getBeneficiarios();
+		return  beneficiarioService.getBeneficiarios();
 	}
 	
 	@PostMapping({"/", "/alta"})
-    public BeneficiarioPayload altaBeneficiario(@Valid @RequestBody BeneficiarioPayload payload, @CurrentUser UserPrincipal currentUser) {
+	public BeneficiarioPayload altaBeneficiario(@Valid @RequestBody BeneficiarioPayload payload, @CurrentUser UserPrincipal currentUser) {
 		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.BENEFICIARIO, "Cargar un nuevo beneficiario");
-    	return beneficiarioService.altaBeneficiario(payload);
-    }
+		return beneficiarioService.altaBeneficiario(payload);
+	}
 	
 	@DeleteMapping({"/{id}", "/baja/{id}"})
-    public ResponseEntity<?> bajaBeneficiario(@PathVariable Long id, @CurrentUser UserPrincipal currentUser) {
+	public ResponseEntity<?> bajaBeneficiario(@PathVariable Long id, @CurrentUser UserPrincipal currentUser) {
 		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.BENEFICIARIO, "Eliminar un beneficiario");
 		String message = beneficiarioService.bajaBeneficiario(id);
-    	if(!message.isEmpty())
-    		return ResponseEntity.ok().body(new ApiResponse(true, message));
-    	else
-    		throw new BadRequestException("Algo salió mal en la baja. Verifique message que retorna en backend.");
-    }
+		if(!message.isEmpty())
+			return ResponseEntity.ok().body(new ApiResponse(true, message));
+		else
+			throw new BadRequestException("Algo salió mal en la baja. Verifique message que retorna en backend.");
+	}
 	
 	@PutMapping({"/", "/modificar"})
-    public BeneficiarioPayload modificarBeneficiario(@Valid @RequestBody BeneficiarioPayload payload, @CurrentUser UserPrincipal currentUser) {
+	public BeneficiarioPayload modificarBeneficiario(@Valid @RequestBody BeneficiarioPayload payload, @CurrentUser UserPrincipal currentUser) {
 		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.BENEFICIARIO, "Modificar un beneficiario");
-    	return beneficiarioService.modificarBeneficiario(payload);
-    }
+		return beneficiarioService.modificarBeneficiario(payload);
+	}
 	
 	@GetMapping({"/nombres_tabla"})
 	public LinkedHashMap<String, String> getNombresTabla(@CurrentUser UserPrincipal currentUser) {
@@ -85,10 +85,10 @@ public class BeneficiarioController {
 	
 	//Devuelve dto (si existe) de Persona, o de contacto, o not found. 
 	@GetMapping("/search/{id}")
-    public ResponseEntity<?> searchBeneficiarioById(@PathVariable Long id, @CurrentUser UserPrincipal currentUser) {
+	public ResponseEntity<?> searchBeneficiarioById(@PathVariable Long id, @CurrentUser UserPrincipal currentUser) {
 		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.BENEFICIARIO, "Buscar un beneficiario por su verdadero ID en DB");
-        return beneficiarioService.buscarPersonaFisicaSiExiste(id);
-    }
+		return beneficiarioService.buscarPersonaFisicaSiExiste(id);
+	}
 	
 	
 	

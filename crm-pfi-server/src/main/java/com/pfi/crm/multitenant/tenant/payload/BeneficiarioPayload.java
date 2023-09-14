@@ -12,25 +12,25 @@ public class BeneficiarioPayload extends PersonaFisicaAbstractPayload{
 	private Long legajo;
 	
 	@NotBlank
-    @Size(max = 140)
+	@Size(max = 140)
 	private String lugarDeNacimiento;
 	
 	private boolean seRetiraSolo;
 	
 	@NotBlank
-    @Size(max = 140)
+	@Size(max = 140)
 	private String cuidadosEspeciales;
 	
 	@NotBlank
-    @Size(max = 140)
+	@Size(max = 140)
 	private String escuela;
 	
 	@NotBlank
-    @Size(max = 30)
+	@Size(max = 30)
 	private String grado;
 	
 	@NotBlank
-    @Size(max = 30)
+	@Size(max = 30)
 	private String turno;
 	
 	

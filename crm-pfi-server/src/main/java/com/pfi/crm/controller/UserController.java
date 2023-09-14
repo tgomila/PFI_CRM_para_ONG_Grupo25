@@ -31,15 +31,15 @@ public class UserController {
 	
 	
 	@GetMapping("/{id}")
-    public UserPayload getUserById(@PathVariable Long id, @CurrentUser UserPrincipal currentUser) {
+	public UserPayload getUserById(@PathVariable Long id, @CurrentUser UserPrincipal currentUser) {
 		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.USERS, "Ver user id: '" + id + "'");
-        return userService.getUserById(id).toPayload();
-    }
+		return userService.getUserById(id).toPayload();
+	}
 	
 	@GetMapping({"/", "/all"})
-    public List<UserPayload> getUser(@CurrentUser UserPrincipal currentUser) {
+	public List<UserPayload> getUser(@CurrentUser UserPrincipal currentUser) {
 		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.USERS, "Ver users");
-    	return  userService.getUsers().stream().map(e -> e.toPayload()).collect(Collectors.toList());
+		return  userService.getUsers().stream().map(e -> e.toPayload()).collect(Collectors.toList());
 	}
 	
 	@GetMapping("/list")
@@ -50,24 +50,24 @@ public class UserController {
 	}
 	
 	/*@PostMapping({"/", "/alta"})
-    public UserPayload altaUser(@Valid @RequestBody UserPayload payload, @CurrentUser UserPrincipal currentUser) {
+	public UserPayload altaUser(@Valid @RequestBody UserPayload payload, @CurrentUser UserPrincipal currentUser) {
 		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.USERS, "Cargar nuevo user");
-    	return userService.altaUsuario(payload);
-    }
+		return userService.altaUsuario(payload);
+	}
 	
 	@DeleteMapping({"/{id}", "/baja/{id}"})
-    public ResponseEntity<?> bajaUser(@PathVariable Long id, @CurrentUser UserPrincipal currentUser) {
+	public ResponseEntity<?> bajaUser(@PathVariable Long id, @CurrentUser UserPrincipal currentUser) {
 		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.USERS, "Dar de baja a user con id: '" + id + "'");
 		String message = userService.bajaUser(id);
-    	if(!message.isEmpty())
-    		return ResponseEntity.ok().body(new ApiResponse(true, message));
-    	else
-    		throw new BadRequestException("Algo salió mal en la baja. Verifique message que retorna en backend.");
-    }
+		if(!message.isEmpty())
+			return ResponseEntity.ok().body(new ApiResponse(true, message));
+		else
+			throw new BadRequestException("Algo salió mal en la baja. Verifique message que retorna en backend.");
+	}
 	
 	@PutMapping({"/", "/modificar"})
-    public UserPayload modificarUser(@Valid @RequestBody UserPayload payload, @CurrentUser UserPrincipal currentUser) {
+	public UserPayload modificarUser(@Valid @RequestBody UserPayload payload, @CurrentUser UserPrincipal currentUser) {
 		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.USERS, "Modificar user");
-    	return userService.modificarUser(payload);
-    }*/
+		return userService.modificarUser(payload);
+	}*/
 }

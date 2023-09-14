@@ -24,11 +24,11 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint, Se
 	
 	private static final long serialVersionUID = -8655883510464937178L;
 	private static final Logger logger = LoggerFactory.getLogger(JwtAuthenticationEntryPoint.class);
-    @Override
-    public void commence(HttpServletRequest httpServletRequest,
-                         HttpServletResponse httpServletResponse,
-                         AuthenticationException e) throws IOException, ServletException {
-        logger.error("Responding with unauthorized error. Message - {}", e.getMessage());
-        httpServletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
-    }
+	@Override
+	public void commence(HttpServletRequest httpServletRequest,
+						 HttpServletResponse httpServletResponse,
+						 AuthenticationException e) throws IOException, ServletException {
+		logger.error("Responding with unauthorized error. Message - {}", e.getMessage());
+		httpServletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
+	}
 }

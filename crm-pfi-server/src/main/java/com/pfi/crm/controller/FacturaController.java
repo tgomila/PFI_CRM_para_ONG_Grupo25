@@ -45,38 +45,38 @@ public class FacturaController {
 	
 	
 	@GetMapping("/{id}")
-    public FacturaPayload getFacturaById(@PathVariable Long id, @CurrentUser UserPrincipal currentUser) {
+	public FacturaPayload getFacturaById(@PathVariable Long id, @CurrentUser UserPrincipal currentUser) {
 		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.FACTURA, "Ver factura con id: '" + id + "'");
-        return facturaService.getFacturaById(id);
-    }
+		return facturaService.getFacturaById(id);
+	}
 	
 	@GetMapping({"/", "/all"})
-    public List<FacturaPayload> getFactura(@CurrentUser UserPrincipal currentUser) {
+	public List<FacturaPayload> getFactura(@CurrentUser UserPrincipal currentUser) {
 		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.FACTURA, "Ver todas las facturas");
-    	return  facturaService.getFacturas();
+		return  facturaService.getFacturas();
 	}
 	
 	@PostMapping({"/", "/alta"})
-    public FacturaPayload altaFactura(@Valid @RequestBody FacturaPayload payload, @CurrentUser UserPrincipal currentUser) {
+	public FacturaPayload altaFactura(@Valid @RequestBody FacturaPayload payload, @CurrentUser UserPrincipal currentUser) {
 		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.FACTURA, "Cargar una nueva factura");
-    	return facturaService.altaFactura(payload);
-    }
+		return facturaService.altaFactura(payload);
+	}
 	
 	@DeleteMapping({"/{id}", "/baja/{id}"})
-    public ResponseEntity<?> bajaFactura(@PathVariable Long id, @CurrentUser UserPrincipal currentUser) {
+	public ResponseEntity<?> bajaFactura(@PathVariable Long id, @CurrentUser UserPrincipal currentUser) {
 		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.FACTURA, "Eliminar una factura");
 		String message = facturaService.bajaFactura(id);
-    	if(!message.isEmpty())
-    		return ResponseEntity.ok().body(new ApiResponse(true, message));
-    	else
-    		throw new BadRequestException("Algo salió mal en la baja. Verifique message que retorna en backend.");
-    }
+		if(!message.isEmpty())
+			return ResponseEntity.ok().body(new ApiResponse(true, message));
+		else
+			throw new BadRequestException("Algo salió mal en la baja. Verifique message que retorna en backend.");
+	}
 	
 	@PutMapping({"/", "/modificar"})
-    public FacturaPayload modificarFactura(@Valid @RequestBody FacturaPayload payload, @CurrentUser UserPrincipal currentUser) {
+	public FacturaPayload modificarFactura(@Valid @RequestBody FacturaPayload payload, @CurrentUser UserPrincipal currentUser) {
 		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.FACTURA, "Modificar una factura");
-    	return facturaService.modificarFactura(payload);
-    }
+		return facturaService.modificarFactura(payload);
+	}
 	
 	@GetMapping({"/nombres_tabla"})
 	public LinkedHashMap<String, String> getNombresTabla(@CurrentUser UserPrincipal currentUser) {

@@ -36,7 +36,7 @@ public class Event {
 	/**
 	 * @Scheduled
 	 * seconds minutes hours day-of-month month day-of-week
-	 *    0       0      8        *         *        ?
+	 *	0	   0	  8		*		 *		?
 	 * For example, 0 0 8 * * ? means that the task is executed at 08:00:00 every day.
 	 */
 	// 0 0 8 * * ? means that the task is executed at 08:00:00 every day.

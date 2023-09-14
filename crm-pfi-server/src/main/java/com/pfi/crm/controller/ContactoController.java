@@ -45,41 +45,41 @@ public class ContactoController {
 	
 	
 	@GetMapping("/{id}")
-    public ContactoPayload getContactoById(@PathVariable Long id, @CurrentUser UserPrincipal currentUser) {
+	public ContactoPayload getContactoById(@PathVariable Long id, @CurrentUser UserPrincipal currentUser) {
 		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.CONTACTO, "Ver un id");
-        return contactoService.getContactoById(id);
-    }
+		return contactoService.getContactoById(id);
+	}
 	
 	@GetMapping({"/", "/all"})
 	public List<ContactoPayload> getContactos(@CurrentUser UserPrincipal currentUser) {
 		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.CONTACTO, "Ver todos los contactos");
 		System.out.println("\n\n\n----------------------------Entre acá /all-----------------------------------\n\n\n");
-    	//return  contactoService.getContactos().stream().map(e -> contactoService.toPayload(e)).collect(Collectors.toList());
+		//return  contactoService.getContactos().stream().map(e -> contactoService.toPayload(e)).collect(Collectors.toList());
 		return  contactoService.getContactos();
 	}
 	
 	@PostMapping({"/", "/alta"})
-    public ContactoPayload altaContacto(@Valid @RequestBody ContactoPayload payload, @CurrentUser UserPrincipal currentUser) {
+	public ContactoPayload altaContacto(@Valid @RequestBody ContactoPayload payload, @CurrentUser UserPrincipal currentUser) {
 		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.CONTACTO, "Dar de alta un contacto");
 		System.out.println("\n\nEntre acáaaaaaaaaaaaaaaaaa\n\n");
-    	return contactoService.altaContacto(payload);
-    }
+		return contactoService.altaContacto(payload);
+	}
 	
 	@DeleteMapping({"/{id}", "/baja/{id}"})
-    public ResponseEntity<?> bajaContacto(@PathVariable Long id, @CurrentUser UserPrincipal currentUser) {
+	public ResponseEntity<?> bajaContacto(@PathVariable Long id, @CurrentUser UserPrincipal currentUser) {
 		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.CONTACTO, "Dar de baja un contacto");
-    	String message = contactoService.bajaContacto(id);
-    	if(!message.isEmpty())
-    		return ResponseEntity.ok().body(new ApiResponse(true, message));
-    	else
-    		throw new BadRequestException("Algo salió mal en la baja. Verifique message que retorna en backend.");
-    }	
+		String message = contactoService.bajaContacto(id);
+		if(!message.isEmpty())
+			return ResponseEntity.ok().body(new ApiResponse(true, message));
+		else
+			throw new BadRequestException("Algo salió mal en la baja. Verifique message que retorna en backend.");
+	}	
 	
 	@PutMapping({"/", "/modificar"})
-    public ContactoPayload modificarContacto(@Valid @RequestBody ContactoPayload payload, @CurrentUser UserPrincipal currentUser) {
+	public ContactoPayload modificarContacto(@Valid @RequestBody ContactoPayload payload, @CurrentUser UserPrincipal currentUser) {
 		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.CONTACTO, "Modificar un contacto");
-    	return contactoService.modificarContacto(payload);
-    }
+		return contactoService.modificarContacto(payload);
+	}
 	
 	@GetMapping({"/nombres_tabla"})
 	public LinkedHashMap<String, String> getNombresTabla(@CurrentUser UserPrincipal currentUser) {
@@ -114,11 +114,11 @@ public class ContactoController {
 		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.CONTACTO, "test get fecha");
 		Instant now = Instant.now();
 		Instant firstDayOfMonth = now.atZone(ZoneId.systemDefault())
-			    .toLocalDate()
-			    .withDayOfMonth(1)
-			    .atStartOfDay()
-			    .atZone(ZoneId.systemDefault())
-			    .toInstant();
+				.toLocalDate()
+				.withDayOfMonth(1)
+				.atStartOfDay()
+				.atZone(ZoneId.systemDefault())
+				.toInstant();
 		
 		return firstDayOfMonth;
 	}

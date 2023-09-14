@@ -1,6 +1,12 @@
 package com.pfi.crm.multitenant.tenant.service;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -14,8 +20,10 @@ import com.pfi.crm.exception.BadRequestException;
 import com.pfi.crm.exception.ResourceNotFoundException;
 import com.pfi.crm.multitenant.tenant.model.Contacto;
 import com.pfi.crm.multitenant.tenant.model.Donacion;
+import com.pfi.crm.multitenant.tenant.model.PersonaFisica;
 import com.pfi.crm.multitenant.tenant.payload.DonacionPayload;
 import com.pfi.crm.multitenant.tenant.persistence.repository.DonacionRepository;
+import com.pfi.crm.multitenant.tenant.persistence.repository.PersonaFisicaRepository;
 
 @Service
 public class DonacionService  {
@@ -24,24 +32,27 @@ public class DonacionService  {
 	private DonacionRepository donacionRepository;
 	
 	@Autowired
+	private PersonaFisicaRepository personaFisicaRepository;
+	
+	@Autowired
 	private ContactoService contactoService;
 	
 	@SuppressWarnings("unused")
 	private static final Logger logger = LoggerFactory.getLogger(DonacionService.class);
 	
 	public DonacionPayload getDonacionById(@PathVariable Long id) {
-        return getDonacionModelById(id).toPayload();
-    }
+		return getDonacionModelById(id).toPayload();
+	}
 	
 	public Donacion getDonacionModelById(Long id) {
-        return donacionRepository.findById(id).orElseThrow(
-                () -> new ResourceNotFoundException("Donacion", "id", id));
-    }
+		return donacionRepository.findById(id).orElseThrow(
+				() -> new ResourceNotFoundException("Donacion", "id", id));
+	}
 	
 	public List<DonacionPayload> getDonaciones() {
 		//return donacionRepository.findAll();
 		return donacionRepository.findAll().stream().map(e -> e.toPayload()).collect(Collectors.toList());
-    }
+	}
 	
 	public DonacionPayload altaDonacion (DonacionPayload payload) {
 		if(payload == null)
@@ -152,5 +163,106 @@ public class DonacionService  {
 	
 	public boolean existeDonacionesPorIdContacto(Long id) {
 		return donacionRepository.existsByDonante_Id(id);
+	}
+	
+	
+	
+
+	/**
+	 * Info para gráficos de front 
+	 * @return
+	 */
+	public List<Map<String, Object>> countTop20DonantesByCantidad() {
+		List<Map<String, Object>> countTop20Donantes = donacionRepository.findTop20DonantesOrderedByCount();
+		//Esto es solo para que me lo devuelva con orden de propiedades: id, nombre...
+		//Sin esto te devuelve como: cantidad, apellido, nombre..., nombtr, cantidad, apellido...
+		//Orden de propiedades sin orden
+		List<Map<String, Object>> nuevaLista = new ArrayList<>();
+		for (Map<String, Object> item : countTop20Donantes) {
+			Map<String, Object> orderedDonante = new LinkedHashMap<>();
+			
+			orderedDonante.put("id", item.get("id"));
+			
+			Long contactoId = (Long) item.get("id");
+			Optional<PersonaFisica> personaOptional = personaFisicaRepository.findByContacto_Id(contactoId);
+			PersonaFisica persona = personaOptional.get();
+			if(persona != null) {
+				orderedDonante.put("nombre", persona.getNombre());
+				orderedDonante.put("apellido", persona.getApellido());
+			}
+			orderedDonante.put("cuit", item.get("cuit"));
+			orderedDonante.put("descripcion", item.get("nombreDescripcion"));
+			orderedDonante.put("cantidad", item.get("cantidad"));
+			item = orderedDonante;
+			nuevaLista.add(orderedDonante);
+		}
+		return nuevaLista;
+	}
+	
+	public List<Map<String, Object>> countTop20DonantesByTotalSpent() {
+		List<Map<String, Object>> countTop20Donantes = donacionRepository.findTop20DonantesOrderedByTotalSpent();
+		//Esto es solo para que me lo devuelva con orden de propiedades: id, nombre...
+		//Sin esto te devuelve como: cantidad, apellido, nombre..., nombtr, cantidad, apellido...
+		//Orden de propiedades sin orden
+		List<Map<String, Object>> nuevaLista = new ArrayList<>();
+		for (Map<String, Object> item : countTop20Donantes) {
+			Map<String, Object> orderedDonante = new LinkedHashMap<>();
+			
+			orderedDonante.put("id", item.get("id"));
+			
+			Long contactoId = (Long) item.get("id");
+			Optional<PersonaFisica> personaOptional = personaFisicaRepository.findByContacto_Id(contactoId);
+			PersonaFisica persona = personaOptional.get();
+			if(persona != null) {
+				orderedDonante.put("nombre", persona.getNombre());
+				orderedDonante.put("apellido", persona.getApellido());
+			}
+			orderedDonante.put("cuit", item.get("cuit"));
+			orderedDonante.put("descripcion", item.get("nombreDescripcion"));
+			orderedDonante.put("cantidad", item.get("cantidad"));
+			orderedDonante.put("total", item.get("total"));
+			item = orderedDonante;
+			nuevaLista.add(orderedDonante);
+		}
+		return nuevaLista;
+	}
+	
+	public List<Map<String, Object>> countUltimos12meses() {
+		LocalDateTime now = LocalDateTime.now();
+		LocalDateTime start = now.minusMonths(12).withDayOfMonth(1).withHour(0).withMinute(0).withSecond(0).withNano(0);
+		List<Map<String, Object>> countDonacionesCreatedLast12MonthsByMonth = donacionRepository.findDonacionesByFechaBetween(start, now);
+		//return countContactosCreatedLast12MonthsByMonth;//No incluye meses con 0 actividades
+		
+		// Generar meses/años faltantes con cantidad 0
+		List<Map<String, Object>> result = new ArrayList<>();
+		LocalDateTime currentMonth = start;
+		while (currentMonth.isBefore(now)) {
+			int month = currentMonth.getMonthValue();
+			int year = currentMonth.getYear();
+			boolean found = false;
+
+			for (Map<String, Object> map : countDonacionesCreatedLast12MonthsByMonth) {
+				int mapMonth = (int) map.get("month");
+				int mapYear = (int) map.get("year");
+
+				if (month == mapMonth && year == mapYear) {
+					result.add(map);
+					found = true;
+					break;
+				}
+			}
+
+			if (!found) {
+				Map<String, Object> missingMonth = new HashMap<>();
+				missingMonth.put("month", month);
+				missingMonth.put("year", year);
+				missingMonth.put("cantidad", 0);
+				result.add(missingMonth);
+			}
+
+			currentMonth = currentMonth.plusMonths(1);
+		}
+
+		return result;
 	}
 }

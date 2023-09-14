@@ -14,7 +14,7 @@ import com.pfi.crm.multitenant.tenant.model.PersonaJuridica;
 
 @Repository
 public interface PersonaJuridicaRepository extends JpaRepository<PersonaJuridica, Long> {
-    
+	
 	//Probar
 	//@Query("SELECT e FROM  PersonaJuridica e WHERE e.contacto.estadoActivoContacto=?1")
 	Optional<PersonaJuridica> findByContacto_Id(Long id);
@@ -33,5 +33,5 @@ public interface PersonaJuridicaRepository extends JpaRepository<PersonaJuridica
 	
 	@Query("SELECT YEAR(pj.contacto.createdAt) as year, MONTH(pj.contacto.createdAt) as month, COUNT(pj) as count FROM PersonaJuridica pj WHERE pj.contacto.createdAt BETWEEN :start AND :end GROUP BY YEAR(pj.contacto.createdAt), MONTH(pj.contacto.createdAt) ORDER BY YEAR(pj.contacto.createdAt) ASC, MONTH(pj.contacto.createdAt) ASC")
 	List<Map<String, Object>> countCreatedLast12MonthsByMonth(@Param("start") Instant start, @Param("end") Instant end);
-    
+	
 }

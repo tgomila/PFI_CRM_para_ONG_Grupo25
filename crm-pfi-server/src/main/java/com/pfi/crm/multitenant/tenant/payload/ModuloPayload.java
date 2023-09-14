@@ -29,10 +29,10 @@ public class ModuloPayload {
 	class myItemComparator implements Comparator<ModuloItemPayload>
 	{
 	   
-	    public int compare(ModuloItemPayload s1, ModuloItemPayload s2)
-	    {
-	        return s1.getOrder()-s2.getOrder();
-	    }
+		public int compare(ModuloItemPayload s1, ModuloItemPayload s2)
+		{
+			return s1.getOrder()-s2.getOrder();
+		}
 	}
 
 	

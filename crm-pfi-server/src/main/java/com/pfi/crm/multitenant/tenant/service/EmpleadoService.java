@@ -35,16 +35,16 @@ public class EmpleadoService {
 	
 	public EmpleadoPayload getEmpleadoByIdContacto(@PathVariable Long id) {
 		return this.getEmpleadoModelByIdContacto(id).toPayload();
-    }
+	}
 	
 	public Empleado getEmpleadoModelByIdContacto(@PathVariable Long id) {
 		return empleadoRepository.findByPersonaFisica_Contacto_Id(id).orElseThrow(
-        		() -> new ResourceNotFoundException("Empleado contacto", "id", id));
-    }
+				() -> new ResourceNotFoundException("Empleado contacto", "id", id));
+	}
 	
 	public List<EmpleadoPayload> getEmpleados() {
 		return empleadoRepository.findAll().stream().map(e -> e.toPayload()).collect(Collectors.toList());
-    }
+	}
 	
 	public EmpleadoPayload altaEmpleado (EmpleadoPayload payload) {
 		return this.altaEmpleadoModel(payload).toPayload();
@@ -160,7 +160,7 @@ public class EmpleadoService {
 	}
 	
 	public List<Map<String, Object>> obtenerConteoPorEtapasEdad() {
-        List<LocalDate> fechasNacimiento = empleadoRepository.findAllFechaNacimiento();
-        return personaFisicaService.clasificarPorEtapasEdad(fechasNacimiento);
-    }
+		List<LocalDate> fechasNacimiento = empleadoRepository.findAllFechaNacimiento();
+		return personaFisicaService.clasificarPorEtapasEdad(fechasNacimiento);
+	}
 }

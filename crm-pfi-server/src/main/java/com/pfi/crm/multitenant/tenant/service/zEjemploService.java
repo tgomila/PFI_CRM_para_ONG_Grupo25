@@ -18,39 +18,39 @@ import com.pfi.crm.multitenant.tenant.persistence.repository.test.PersonReposito
 public class zEjemploService {
 	
 	@Autowired
-    private PersonRepository personRepository;
+	private PersonRepository personRepository;
 
-    @Autowired
-    private EmployeeRepository employeeRepository;
+	@Autowired
+	private EmployeeRepository employeeRepository;
 
-    @Autowired
-    private CustomerRepository customerRepository;
+	@Autowired
+	private CustomerRepository customerRepository;
 
-    @SuppressWarnings("unused")
+	@SuppressWarnings("unused")
 	private static final Logger logger = LoggerFactory.getLogger(zEjemploService.class);
-    
-    public Person savePerson(Person person) {
-        return personRepository.save(person);
-    }
-    
-    public Optional<Person> findPersonById(Long id) {
-        return personRepository.findById(id);
-    }
-    
-    
-    public Employee saveEmployee(Employee employee) {
-        return employeeRepository.save(employee);
-    }
-    
-    public Optional<Employee> findEmployeeById(Long id) {
-        return employeeRepository.findById(id);
-    }
-    
-    public Customer saveCustomer(Customer customer) {
-        return customerRepository.save(customer);
-    }
-    
-    public Optional<Customer> findCustomerById(Long id) {
-        return customerRepository.findById(id);
-    }
+	
+	public Person savePerson(Person person) {
+		return personRepository.save(person);
+	}
+	
+	public Optional<Person> findPersonById(Long id) {
+		return personRepository.findById(id);
+	}
+	
+	
+	public Employee saveEmployee(Employee employee) {
+		return employeeRepository.save(employee);
+	}
+	
+	public Optional<Employee> findEmployeeById(Long id) {
+		return employeeRepository.findById(id);
+	}
+	
+	public Customer saveCustomer(Customer customer) {
+		return customerRepository.save(customer);
+	}
+	
+	public Optional<Customer> findCustomerById(Long id) {
+		return customerRepository.findById(id);
+	}
 }

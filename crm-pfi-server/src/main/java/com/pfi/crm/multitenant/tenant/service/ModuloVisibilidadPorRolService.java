@@ -55,7 +55,7 @@ public class ModuloVisibilidadPorRolService {
 	
 	public ModuloVisibilidadPorRol getModuloVisibilidadPorRolById(@PathVariable Long id) {
 		return moduloVisibilidadPorRolRepository.findById(id).orElseThrow(
-                () -> new ResourceNotFoundException("ModuloVisibilidadPorRol", "id", id));
+				() -> new ResourceNotFoundException("ModuloVisibilidadPorRol", "id", id));
 	}
 	
 	/**
@@ -190,7 +190,7 @@ public class ModuloVisibilidadPorRolService {
 	//	RoleName rolSuperior = obtenerMejorRoleDelUser(currentUser);
 	//	
 	//	return moduloVisibilidadPorRolRepository.findByRoleRoleName(rolSuperior).orElseThrow(
-    //            () -> new ResourceNotFoundException("ModuloVisibilidadPorRol", "Role->RoleName", rolSuperior.toString())).toPayload();
+	//			() -> new ResourceNotFoundException("ModuloVisibilidadPorRol", "Role->RoleName", rolSuperior.toString())).toPayload();
 	//}
 	
 	//private RoleName obtenerMejorRoleDelUser(UserPrincipal currentUser) {
@@ -226,7 +226,7 @@ public class ModuloVisibilidadPorRolService {
 	
 	public ModuloPayload getModulosVisibilidadPorRol(RoleName roleName){
 		return getModulosVisibilidadPorRolModel(roleName).toPayload();
-    }
+	}
 	
 	private ModuloVisibilidadPorRol getModulosVisibilidadPorRolModel(RoleName roleName){
 		Optional<ModuloVisibilidadPorRol> optional = moduloVisibilidadPorRolRepository.findByRoleRoleName(roleName);
@@ -234,18 +234,18 @@ public class ModuloVisibilidadPorRolService {
 			return optional.get();
 		}
 		return null;
-    }
+	}
 	
 	public List<ModuloPayload> getModulosVisibilidadPorRol(){
 		return moduloVisibilidadPorRolRepository.findAll().stream().map(e -> e.toPayload()).collect(Collectors.toList());
-    }
+	}
 	
 	public List<ModificarVisibilidadRequestPayload> getModulosVisibilidadPorRolSimple(){
 		return moduloVisibilidadPorRolRepository.findAll()
 				.stream()
 				.flatMap(e -> e.toRequestPayload().stream())
 				.collect(Collectors.toList());
-    }
+	}
 	
 	public List<ModuloPayload> agregarTodosLosModulos() {
 		List<ModuloVisibilidadPorRol> modulos = moduloVisibilidadPorRolRepository.findAll();
@@ -316,7 +316,7 @@ public class ModuloVisibilidadPorRolService {
 	
 	public void desuscripcion(RoleName roleName) {
 		ModuloVisibilidadPorRol modulo = moduloVisibilidadPorRolRepository.findByRoleRoleName(roleName).orElseThrow(
-                () -> new ResourceNotFoundException("ModuloVisibilidadPorRol", "Role->RoleName", roleName.toString()));
+				() -> new ResourceNotFoundException("ModuloVisibilidadPorRol", "Role->RoleName", roleName.toString()));
 		modulo.desuscribir();
 		moduloVisibilidadPorRolRepository.save(modulo);
 	}
@@ -329,9 +329,16 @@ public class ModuloVisibilidadPorRolService {
 		if(tipoVisibilidad == null)
 			throw new BadRequestException("Ha introducido un 'null' como nombre de tipo de visibilidad para módulo, por favor ingrese un tipo de visibilidad para módulo válido.");
 		ModuloVisibilidadPorRol moduloBD = moduloVisibilidadPorRolRepository.findByRoleRoleName(roleName).orElseThrow(
-                () -> new ResourceNotFoundException("ModuloVisibilidadPorRol", "Role->RoleName", roleName.toString()));
-		boolean huboModificaciones = false;	//inicializo false, si no hay modificaciones, no hago save para no desperdiciar tiempo.
+				() -> new ResourceNotFoundException("ModuloVisibilidadPorRol", "Role->RoleName", roleName.toString()));
+		
 		ModuloVisibilidadPorRolTipo visibilidadModificado = null;
+		visibilidadModificado = moduloBD.cambiarTipoVisibilidad(moduloEnum, tipoVisibilidad);
+		if(visibilidadModificado != null)
+			return moduloVisibilidadPorRolTipoRepository.save(visibilidadModificado).toRequestPayload(roleName);
+		else
+			return null;
+		
+		/*boolean huboModificaciones = false;	//inicializo false, si no hay modificaciones, no hago save para no desperdiciar tiempo.
 		for(ModuloVisibilidadPorRolTipo mBD: moduloBD.getModulos()) {	//Recorro módulos existentes
 			if(moduloEnum.equals(mBD.getModuloEnum())) {					//Encontré el modulo a modificar? Si/No
 				if(mBD.setTipoVisibilidad(tipoVisibilidad)) {			//Modifico, si hubo modificación hago save
@@ -344,7 +351,7 @@ public class ModuloVisibilidadPorRolService {
 		if(huboModificaciones)
 			return moduloVisibilidadPorRolTipoRepository.save(visibilidadModificado).toRequestPayload(roleName);
 		else
-			return null;
+			return null;*/
 	}
 	
 	public ModuloPayload modificarModuloVisibilidadTipos(ModuloPayload moduloNuevo) {
@@ -352,7 +359,7 @@ public class ModuloVisibilidadPorRolService {
 		//Role rol = roleRepository.findByRoleName(roleName).orElseThrow(
 		//		() -> new ResourceNotFoundException("Role", "role_name", roleName.toString()));
 		ModuloVisibilidadPorRol moduloBD = moduloVisibilidadPorRolRepository.findByRoleRoleName(roleName).orElseThrow(
-                () -> new ResourceNotFoundException("ModuloVisibilidadPorRol", "Role->RoleName", roleName.toString()));
+				() -> new ResourceNotFoundException("ModuloVisibilidadPorRol", "Role->RoleName", roleName.toString()));
 		boolean huboModificaciones = false;	//inicializo false, si no hay modificaciones, no hago save para no desperdiciar tiempo.
 		for(ModuloItemPayload pNew: moduloNuevo.getItems()) {	//Recorro módulos a modificar
 			ModuloEnum pNewEnum = ModuloEnum.valueOf(pNew.getModuloEnum());
@@ -595,7 +602,7 @@ public class ModuloVisibilidadPorRolService {
 	/*public boolean bajaModuloVisibilidadPorRol(Long id) {
 		try {
 			ModuloVisibilidadPorRol rolBaja = moduloVisibilidadPorRolRepository.findById(id).orElseThrow(
-	                () -> new ResourceNotFoundException("ModuloVisibilidadPorRol", "id", id));
+					() -> new ResourceNotFoundException("ModuloVisibilidadPorRol", "id", id));
 			List<ModuloVisibilidadPorRolTipo> modulosTipo = rolBaja.getModulos();
 			rolBaja.setModulos(null);
 			moduloVisibilidadPorRolRepository.save(rolBaja);	//quito sus modulo tipo de bd

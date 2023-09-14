@@ -6,13 +6,13 @@ import javax.persistence.*;
 @Table(name="zTEST_CUSTOMER") //joined with Person table to form Customer
 public class Customer extends PersonAbstract {
 
-    public enum Rating { GOLD, SILVER, BRONZE }
+	public enum Rating { GOLD, SILVER, BRONZE }
 
-    @Enumerated(EnumType.STRING)
+	@Enumerated(EnumType.STRING)
 
-    private Rating rating;
+	private Rating rating;
 
-    
+	
 	public Customer() {
 		super();
 		// TODO Auto-generated constructor stub
@@ -38,5 +38,4 @@ public class Customer extends PersonAbstract {
 		this.rating = Rating.valueOf(rating);
 	}
 }
-    
-    
+

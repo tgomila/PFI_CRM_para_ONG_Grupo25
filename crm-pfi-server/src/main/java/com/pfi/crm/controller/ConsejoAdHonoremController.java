@@ -44,39 +44,39 @@ public class ConsejoAdHonoremController {
 	
 	
 	@GetMapping("/{id}")
-    public ConsejoAdHonoremPayload getConsejoAdHonoremById(@PathVariable Long id, @CurrentUser UserPrincipal currentUser) {
+	public ConsejoAdHonoremPayload getConsejoAdHonoremById(@PathVariable Long id, @CurrentUser UserPrincipal currentUser) {
 		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.CONSEJOADHONOREM, "Buscar ConsejoAdHonorem por id: '" + id + "'");
-        return consejoAdHonoremService.getConsejoAdHonoremByIdContacto(id);
-    }
+		return consejoAdHonoremService.getConsejoAdHonoremByIdContacto(id);
+	}
 	
 	@GetMapping({"/", "/all"})
 	//@PreAuthorize("hasRole('ROLE_EMPLOYEE')")
-    public List<ConsejoAdHonoremPayload> getConsejoAdHonorem(@CurrentUser UserPrincipal currentUser) {
+	public List<ConsejoAdHonoremPayload> getConsejoAdHonorem(@CurrentUser UserPrincipal currentUser) {
 		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.CONSEJOADHONOREM, "Buscar la lista completa de ConsejoAdHonorem");
-    	return  consejoAdHonoremService.getConsejoAdHonorems();
+		return  consejoAdHonoremService.getConsejoAdHonorems();
 	}
 	
 	@PostMapping({"/", "/alta"})
-    public ConsejoAdHonoremPayload altaConsejoAdHonorem(@Valid @RequestBody ConsejoAdHonoremPayload payload, @CurrentUser UserPrincipal currentUser) {
+	public ConsejoAdHonoremPayload altaConsejoAdHonorem(@Valid @RequestBody ConsejoAdHonoremPayload payload, @CurrentUser UserPrincipal currentUser) {
 		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.CONSEJOADHONOREM, "Dar de alta un nuevo ConsejoAdHonorem");
-    	return consejoAdHonoremService.altaConsejoAdHonorem(payload);
-    }
+		return consejoAdHonoremService.altaConsejoAdHonorem(payload);
+	}
 	
 	@DeleteMapping({"/{id}", "/baja/{id}"})
-    public ResponseEntity<?> bajaConsejoAdHonorem(@PathVariable Long id, @CurrentUser UserPrincipal currentUser) {
+	public ResponseEntity<?> bajaConsejoAdHonorem(@PathVariable Long id, @CurrentUser UserPrincipal currentUser) {
 		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.CONSEJOADHONOREM, "Eliminar un ConsejoAdHonorem");
 		String message = consejoAdHonoremService.bajaConsejoAdHonorem(id);
-    	if(!message.isEmpty())
-    		return ResponseEntity.ok().body(new ApiResponse(true, message));
-    	else
-    		throw new BadRequestException("Algo salió mal en la baja. Verifique message que retorna en backend.");
-    }
+		if(!message.isEmpty())
+			return ResponseEntity.ok().body(new ApiResponse(true, message));
+		else
+			throw new BadRequestException("Algo salió mal en la baja. Verifique message que retorna en backend.");
+	}
 	
 	@PutMapping({"/", "/modificar"})
-    public ConsejoAdHonoremPayload modificarConsejoAdHonorem(@Valid @RequestBody ConsejoAdHonoremPayload payload, @CurrentUser UserPrincipal currentUser) {
+	public ConsejoAdHonoremPayload modificarConsejoAdHonorem(@Valid @RequestBody ConsejoAdHonoremPayload payload, @CurrentUser UserPrincipal currentUser) {
 		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.CONSEJOADHONOREM, "Modificar un ConsejoAdHonorem");
-    	return consejoAdHonoremService.modificarConsejoAdHonorem(payload);
-    }
+		return consejoAdHonoremService.modificarConsejoAdHonorem(payload);
+	}
 	
 	@GetMapping({"/nombres_tabla"})
 	public LinkedHashMap<String, String> getNombresTabla(@CurrentUser UserPrincipal currentUser) {
@@ -86,10 +86,10 @@ public class ConsejoAdHonoremController {
 	
 	//Devuelve dto (si existe) de Persona, o de contacto, o not found. 
 	@GetMapping("/search/{id}")
-    public ResponseEntity<?> searchConsejoAdHonoremById(@PathVariable Long id, @CurrentUser UserPrincipal currentUser) {
+	public ResponseEntity<?> searchConsejoAdHonoremById(@PathVariable Long id, @CurrentUser UserPrincipal currentUser) {
 		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.CONSEJOADHONOREM, "Buscar un consejoAdHonorem/persona/contacto por id: '" + id + "'");
-        return consejoAdHonoremService.buscarPersonaFisicaSiExiste(id);
-    }
+		return consejoAdHonoremService.buscarPersonaFisicaSiExiste(id);
+	}
 	
 	
 	

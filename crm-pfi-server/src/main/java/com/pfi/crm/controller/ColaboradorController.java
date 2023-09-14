@@ -44,39 +44,39 @@ public class ColaboradorController  {
 	
 	
 	@GetMapping("/{id}")
-    public ColaboradorPayload getColaboradorById(@PathVariable Long id, @CurrentUser UserPrincipal currentUser) {
+	public ColaboradorPayload getColaboradorById(@PathVariable Long id, @CurrentUser UserPrincipal currentUser) {
 		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.COLABORADOR, "Buscar un colaborador por id: '" + id + "'");
-        return colaboradorService.getColaboradorByIdContacto(id);
-    }
+		return colaboradorService.getColaboradorByIdContacto(id);
+	}
 	
 	@GetMapping({"/", "/all"})
 	//@PreAuthorize("hasRole('ROLE_EMPLOYEE')")
-    public List<ColaboradorPayload> getColaborador(@CurrentUser UserPrincipal currentUser) {
+	public List<ColaboradorPayload> getColaborador(@CurrentUser UserPrincipal currentUser) {
 		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.COLABORADOR, "Buscar una lista de colaboradores");
-    	return  colaboradorService.getColaboradores();
+		return  colaboradorService.getColaboradores();
 	}
 	
 	@PostMapping({"/", "/alta"})
-    public ColaboradorPayload altaColaborador(@Valid @RequestBody ColaboradorPayload payload, @CurrentUser UserPrincipal currentUser) {
+	public ColaboradorPayload altaColaborador(@Valid @RequestBody ColaboradorPayload payload, @CurrentUser UserPrincipal currentUser) {
 		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.COLABORADOR, "Cargar un nuevo colaborador");
-    	return colaboradorService.altaColaborador(payload);
-    }
+		return colaboradorService.altaColaborador(payload);
+	}
 	
 	@DeleteMapping({"/{id}", "/baja/{id}"})
-    public ResponseEntity<?> bajaColaborador(@PathVariable Long id, @CurrentUser UserPrincipal currentUser) {
+	public ResponseEntity<?> bajaColaborador(@PathVariable Long id, @CurrentUser UserPrincipal currentUser) {
 		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.COLABORADOR, "Eliminar un colaborador con id: '" + id + "'");
 		String message = colaboradorService.bajaColaborador(id);
-    	if(!message.isEmpty())
-    		return ResponseEntity.ok().body(new ApiResponse(true, message));
-    	else
-    		throw new BadRequestException("Algo salió mal en la baja. Verifique message que retorna en backend.");
-    }
+		if(!message.isEmpty())
+			return ResponseEntity.ok().body(new ApiResponse(true, message));
+		else
+			throw new BadRequestException("Algo salió mal en la baja. Verifique message que retorna en backend.");
+	}
 	
 	@PutMapping({"/", "/modificar"})
-    public ColaboradorPayload modificarColaborador(@Valid @RequestBody ColaboradorPayload payload, @CurrentUser UserPrincipal currentUser) {
+	public ColaboradorPayload modificarColaborador(@Valid @RequestBody ColaboradorPayload payload, @CurrentUser UserPrincipal currentUser) {
 		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.COLABORADOR, "Modificar un colaborador");
-    	return colaboradorService.modificarColaborador(payload);
-    }
+		return colaboradorService.modificarColaborador(payload);
+	}
 	
 	@GetMapping({"/nombres_tabla"})
 	public LinkedHashMap<String, String> getNombresTabla(@CurrentUser UserPrincipal currentUser) {
@@ -86,10 +86,10 @@ public class ColaboradorController  {
 	
 	//Devuelve dto (si existe) de Persona, o de contacto, o not found. 
 	@GetMapping("/search/{id}")
-    public ResponseEntity<?> searchColaboradorById(@PathVariable Long id, @CurrentUser UserPrincipal currentUser) {
+	public ResponseEntity<?> searchColaboradorById(@PathVariable Long id, @CurrentUser UserPrincipal currentUser) {
 		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.COLABORADOR, "Buscar un colaborador/persona/contacto");
-        return colaboradorService.buscarPersonaFisicaSiExiste(id);
-    }
+		return colaboradorService.buscarPersonaFisicaSiExiste(id);
+	}
 	
 	
 	

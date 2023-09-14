@@ -3,6 +3,7 @@ package com.pfi.crm.controller;
 import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.validation.Valid;
 
@@ -44,43 +45,65 @@ public class DonacionController {
 	
 	
 	@GetMapping("/{id}")
-    public DonacionPayload getDonacionById(@PathVariable Long id, @CurrentUser UserPrincipal currentUser) {
+	public DonacionPayload getDonacionById(@PathVariable Long id, @CurrentUser UserPrincipal currentUser) {
 		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.DONACION, "Ver Donacion id: '" + id + "'");
-        return donacionService.getDonacionById(id);
-    }
+		return donacionService.getDonacionById(id);
+	}
 	
 	@GetMapping({"/", "/all"})
-    public List<DonacionPayload> getDonacion(@CurrentUser UserPrincipal currentUser) {
+	public List<DonacionPayload> getDonacion(@CurrentUser UserPrincipal currentUser) {
 		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.DONACION, "Ver todas las donaciones");
-    	return  donacionService.getDonaciones();
+		return  donacionService.getDonaciones();
 	}
 	
 	@PostMapping({"/", "/alta"})
-    public DonacionPayload altaDonacion(@Valid @RequestBody DonacionPayload payload, @CurrentUser UserPrincipal currentUser) {
+	public DonacionPayload altaDonacion(@Valid @RequestBody DonacionPayload payload, @CurrentUser UserPrincipal currentUser) {
 		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.DONACION, "Dar de alta una donación");
-    	return donacionService.altaDonacion(payload);
-    }
+		return donacionService.altaDonacion(payload);
+	}
 	
 	@DeleteMapping({"/{id}", "/baja/{id}"})
-    public ResponseEntity<?> bajaDonacion(@PathVariable Long id, @CurrentUser UserPrincipal currentUser) {
+	public ResponseEntity<?> bajaDonacion(@PathVariable Long id, @CurrentUser UserPrincipal currentUser) {
 		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.DONACION, "Dar de baja una donación");
 		String message = donacionService.bajaDonacion(id);
-    	if(!message.isEmpty())
-    		return ResponseEntity.ok().body(new ApiResponse(true, message));
-    	else
-    		throw new BadRequestException("Algo salió mal en la baja. Verifique message que retorna en backend.");
-    }
+		if(!message.isEmpty())
+			return ResponseEntity.ok().body(new ApiResponse(true, message));
+		else
+			throw new BadRequestException("Algo salió mal en la baja. Verifique message que retorna en backend.");
+	}
 	
 	@PutMapping({"/", "/modificar"})
-    public DonacionPayload modificarDonacion(@Valid @RequestBody DonacionPayload payload, @CurrentUser UserPrincipal currentUser) {
+	public DonacionPayload modificarDonacion(@Valid @RequestBody DonacionPayload payload, @CurrentUser UserPrincipal currentUser) {
 		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.DONACION, "Modificar una donación");
-    	return donacionService.modificarDonacion(payload);
-    }
+		return donacionService.modificarDonacion(payload);
+	}
 	
 	@GetMapping({"/nombres_tabla"})
 	public LinkedHashMap<String, String> getNombresTabla(@CurrentUser UserPrincipal currentUser) {
 		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.DONACION, "Ver nombre de columnas de tabla Donacion");
 		return new DonacionNombreTablaPayload().getNombresDonacionTabla();
+	}
+	
+	
+	
+	
+	//Gráficos
+	@GetMapping("/grafico/top_20_donantes/cantidad")
+	public List<Map<String, Object>> countTop20DonantesByCantidad(@CurrentUser UserPrincipal currentUser) {
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.DONACION, "Ver top 20 donantes que más hayan dado nro de donaciones");
+		return donacionService.countTop20DonantesByCantidad();
+	}
+	
+	@GetMapping("/grafico/top_20_donantes/total")
+	public List<Map<String, Object>> countTop20Donantes(@CurrentUser UserPrincipal currentUser) {
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.DONACION, "Ver top 20 donantes que más hayan invertido en dinero");
+		return donacionService.countTop20DonantesByTotalSpent();
+	}
+	
+	@GetMapping("/grafico/ultimos_12_meses")
+	public List<Map<String, Object>> countUltimosProximos12meses(@CurrentUser UserPrincipal currentUser) {
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.DONACION, "Ver donaciones en los ultimos 12 meses por mes");
+		return donacionService.countUltimos12meses();
 	}
 	
 	

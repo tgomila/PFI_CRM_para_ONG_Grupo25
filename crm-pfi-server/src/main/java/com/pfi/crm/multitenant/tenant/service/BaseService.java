@@ -19,14 +19,14 @@ public abstract class BaseService<M, P, R, IDTYPE> {
 	//TODO cambiar Model a Contacto por ejemplo
 	public M getModelById(@PathVariable IDTYPE id) {
 		return genericRepository.findById(id).orElseThrow(
-                () -> new ResourceNotFoundException("Model", "id", id));
-    }
+				() -> new ResourceNotFoundException("Model", "id", id));
+	}
 	
 	abstract List<M> getAll();
 	/*public List<M> getAll() {
 		return genericRepository.findAll();
 		//return contactoRepository.findAll().filter(a -> a.getEstadoActivoContacto()).collect(Collectors.toList());
-    }*/
+	}*/
 	
 	abstract M alta(M model);
 	/*public M alta (M model) {

@@ -22,13 +22,13 @@ public class ChatService {
 	
 	//TODO
 	public ChatPayload getChatByIdContacto(@PathVariable Long id) {
-        return chatRepository.findById(id).orElseThrow(
-                () -> new ResourceNotFoundException("Chat", "id", id)).toPayload();
-    }
+		return chatRepository.findById(id).orElseThrow(
+				() -> new ResourceNotFoundException("Chat", "id", id)).toPayload();
+	}
 	
 	public List<ChatPayload> getChats() {
 		return chatRepository.findAll().stream().map(e -> e.toPayload()).collect(Collectors.toList());
-    }
+	}
 	
 	/**
 	 * Controlador debería tener como input "@CurrentUser UserPrincipal currentUser" para este método.
@@ -49,7 +49,7 @@ public class ChatService {
 	
 	public List<ChatPayload> getChatsByUsernameFrom(String usernameFrom) {
 		return chatRepository.findByUserNameFrom(usernameFrom).stream().map(e -> e.toPayload()).collect(Collectors.toList());
-    }
+	}
 	
 	/*public Chat toModel(ChatPayload p) {
 		Chat m = new Chat();

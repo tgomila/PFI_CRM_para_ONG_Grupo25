@@ -164,15 +164,15 @@ public class ProyectoService {
 		//Orden de propiedades sin orden
 		List<Map<String, Object>> nuevaLista = new ArrayList<>();
 		for (Map<String, Object> item : countTop20Involucrados) {
-            Map<String, Object> orderedPersona = new LinkedHashMap<>();
-            orderedPersona.put("id", item.get("id"));
-            orderedPersona.put("nombre", item.get("nombre"));
-            orderedPersona.put("apellido", item.get("apellido"));
-            orderedPersona.put("descripcion", item.get("nombreDescripcion"));
-            orderedPersona.put("cantidad", item.get("cantidad"));
-            item = orderedPersona;
-            nuevaLista.add(orderedPersona);
-        }
+			Map<String, Object> orderedPersona = new LinkedHashMap<>();
+			orderedPersona.put("id", item.get("id"));
+			orderedPersona.put("nombre", item.get("nombre"));
+			orderedPersona.put("apellido", item.get("apellido"));
+			orderedPersona.put("descripcion", item.get("nombreDescripcion"));
+			orderedPersona.put("cantidad", item.get("cantidad"));
+			item = orderedPersona;
+			nuevaLista.add(orderedPersona);
+		}
 		return nuevaLista;
 	}
 	
@@ -184,36 +184,36 @@ public class ProyectoService {
 		//return countContactosCreatedLast12MonthsByMonth;//No incluye meses con 0 actividades
 		
 		// Generar meses/años faltantes con cantidad 0
-	    List<Map<String, Object>> result = new ArrayList<>();
-	    LocalDate currentMonth = start;
-	    while (currentMonth.isBefore(end)) {
-	        int month = currentMonth.getMonthValue();
-	        int year = currentMonth.getYear();
-	        boolean found = false;
+		List<Map<String, Object>> result = new ArrayList<>();
+		LocalDate currentMonth = start;
+		while (currentMonth.isBefore(end)) {
+			int month = currentMonth.getMonthValue();
+			int year = currentMonth.getYear();
+			boolean found = false;
 
-	        for (Map<String, Object> map : countProyectosCreatedLast12MonthsByMonth) {
-	            int mapMonth = (int) map.get("month");
-	            int mapYear = (int) map.get("year");
+			for (Map<String, Object> map : countProyectosCreatedLast12MonthsByMonth) {
+				int mapMonth = (int) map.get("month");
+				int mapYear = (int) map.get("year");
 
-	            if (month == mapMonth && year == mapYear) {
-	                result.add(map);
-	                found = true;
-	                break;
-	            }
-	        }
+				if (month == mapMonth && year == mapYear) {
+					result.add(map);
+					found = true;
+					break;
+				}
+			}
 
-	        if (!found) {
-	            Map<String, Object> missingMonth = new HashMap<>();
-	            missingMonth.put("month", month);
-	            missingMonth.put("year", year);
-	            missingMonth.put("cantidad", 0);
-	            result.add(missingMonth);
-	        }
+			if (!found) {
+				Map<String, Object> missingMonth = new HashMap<>();
+				missingMonth.put("month", month);
+				missingMonth.put("year", year);
+				missingMonth.put("cantidad", 0);
+				result.add(missingMonth);
+			}
 
-	        currentMonth = currentMonth.plusMonths(1);
-	    }
+			currentMonth = currentMonth.plusMonths(1);
+		}
 
-	    return result;
+		return result;
 	}
 	
 	

@@ -61,27 +61,27 @@ public class ContactoService {
 	
 	public ContactoPayload getContactoById(@PathVariable Long id) {
 		return this.getContactoModelById(id).toPayload();
-    }
+	}
 	
 	public Contacto getContactoModelById(@PathVariable Long id) {
 		return contactoRepository.findById(id).orElseThrow(
-                () -> new ResourceNotFoundException("Contacto", "id", id));
-    }
+				() -> new ResourceNotFoundException("Contacto", "id", id));
+	}
 	
 	public ContactoPayload getContactoByCuit(@PathVariable String cuit) {
 		return this.getContactoModelByCuit(cuit).toPayload();
-    }
+	}
 	
 	public Contacto getContactoModelByCuit(@PathVariable String cuit) {
 		return contactoRepository.findByCuit(cuit).orElseThrow(
-                () -> new ResourceNotFoundException("Contacto", "Cuit", cuit));
-    }
+				() -> new ResourceNotFoundException("Contacto", "Cuit", cuit));
+	}
 	
 	public List<ContactoPayload> getContactos() {
 		//return contactoRepository.findAllByEstadoActivoContactoTrue();
 		return contactoRepository.findAll().stream().map(e -> e.toPayload()).collect(Collectors.toList());
 		//return contactoRepository.findAll().stream().filter(a -> a.getEstadoActivoContacto()).map(e -> e.toPayload()).collect(Collectors.toList());
-    }
+	}
 	
 	public ContactoPayload altaContacto (ContactoAbstractPayload payload) {
 		return this.altaContactoModel(payload).toPayload();
@@ -484,17 +484,17 @@ public class ContactoService {
 		
 		//Cuit
 		Random random = new Random();
-        int numAleatorio = random.nextInt(10);
-        int dniAleatorio;
-        if (numAleatorio < 1) { // 10% de probabilidad
-        	dniAleatorio = random.nextInt(10000000, 20000000);
-        } else if (numAleatorio < 3) { // 20% de probabilidad
-        	dniAleatorio =  random.nextInt(20000000, 30000000);
-        } else { // 70% de probabilidad
-        	dniAleatorio =  random.nextInt(30000000, 40000000);
-        }
-        int nroUnoAlNueveAleatorio = random.nextInt(9) + 1;
-        contactoGenerado.setCuit("23-"+dniAleatorio+"-"+nroUnoAlNueveAleatorio);
+		int numAleatorio = random.nextInt(10);
+		int dniAleatorio;
+		if (numAleatorio < 1) { // 10% de probabilidad
+			dniAleatorio = random.nextInt(10000000, 20000000);
+		} else if (numAleatorio < 3) { // 20% de probabilidad
+			dniAleatorio =  random.nextInt(20000000, 30000000);
+		} else { // 70% de probabilidad
+			dniAleatorio =  random.nextInt(30000000, 40000000);
+		}
+		int nroUnoAlNueveAleatorio = random.nextInt(9) + 1;
+		contactoGenerado.setCuit("23-"+dniAleatorio+"-"+nroUnoAlNueveAleatorio);
 		
 		//Domicilio
 		final List<String> CALLES = Arrays.asList(

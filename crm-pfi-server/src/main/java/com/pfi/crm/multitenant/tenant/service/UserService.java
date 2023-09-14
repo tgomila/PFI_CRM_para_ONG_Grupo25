@@ -34,18 +34,18 @@ public class UserService {
 	
 	public User getUserById(@PathVariable Long id) {
 		return userRepository.findById(id).orElseThrow(
-                () -> new ResourceNotFoundException("User", "id", id));
-    }
+				() -> new ResourceNotFoundException("User", "id", id));
+	}
 	
 	public User getUserByUsername(@PathVariable String username) {
 		return userRepository.findByUsername(username).orElseThrow(
-                () -> new ResourceNotFoundException("User", "username", username));
-    }
+				() -> new ResourceNotFoundException("User", "username", username));
+	}
 	
 	public List<User> getUsers() {
 		return userRepository.findAll();
 		//return userRepository.findAll().filter(a -> a.isActive()).collect(Collectors.toList());
-    }
+	}
 	
 	public User altaUsuario (User user) {
 		user.setId(null);//Para no modificar nada
@@ -70,7 +70,7 @@ public class UserService {
 	
 	private Role buscarRole(RoleName roleName) {
 		return roleRepository.findByRoleName(roleName).orElseThrow(
-                () -> new ResourceNotFoundException("Role", "roleName", roleName.toString()));
+				() -> new ResourceNotFoundException("Role", "roleName", roleName.toString()));
 	}
 	
 	public User quitarRol(String username, RoleName roleName) {

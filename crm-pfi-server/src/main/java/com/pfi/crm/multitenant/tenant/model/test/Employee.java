@@ -9,11 +9,11 @@ import javax.persistence.*;
 //@PrimaryKeyJoinColumn(name = "person")
 public class Employee extends PersonAbstract {
 	
-    private double payrate;
+	private double payrate;
 
-    @Temporal(TemporalType.DATE)
+	@Temporal(TemporalType.DATE)
 
-    private Date hireDate;
+	private Date hireDate;
 
 	public Employee() {
 		super();
