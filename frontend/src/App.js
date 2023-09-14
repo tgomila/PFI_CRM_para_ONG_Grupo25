@@ -131,12 +131,12 @@ import Product from "./pages/Product.jsx";
 import ProductList from "./pages/ProductList.jsx";
 import AuthService from "./services/auth.service";
 import modulosService from "./services/modulosService";
-import Login from "./components/Login";
+import Login from "./components/login/Login";
 import Marketplace from "./components/marketplace/Marketplace";
 import RealizarPagoComponent from "./components/marketplace/RealizarPagoComponent";
 import BoardAdmin from "./components/BoardAdmin";
 import EventBus from "./common/EventBus";
-import Register from "./components/Register";
+import Register from "./components/login/Register";
 import Profile from "./components/Profile";
 
 import { useTable } from "react-table";

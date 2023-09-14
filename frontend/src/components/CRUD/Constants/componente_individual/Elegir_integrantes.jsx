@@ -6,6 +6,7 @@ import ContactoService from "../../../../services/ContactoService";
 import PersonaService from "../../../../services/PersonaService";
 import BeneficiarioService from "../../../../services/BeneficiarioService";
 import ProfesionalService from "../../../../services/ProfesionalService";
+import TenantService from "../../../../services/TenantService";
 
 import { TablaGenericaPersona, TablaGenericaConFoto } from "../../../vista_grafico_tabla/tables/Tabla_Generica";
 
@@ -18,6 +19,8 @@ import {
   fuzzyTextFilterFn,
   NumberRangeColumnFilter,
 } from"../../../vista_grafico_tabla/tables/Tabla_Filters";
+
+import { RenderFotoPerfilForTablaTenant } from "../../../vista_grafico_tabla/tables/Tabla_Variables";
 
 
 //Leer estos:
@@ -45,7 +48,7 @@ import {
  * @param {string} nombreTipoIntegrantePrural - Nombre del tipo del integrante en prural (ejemplo "actividades").
  * @returns {JSX.Element} - Componente de la tabla de integrantes.
  */
-const ModalSeleccionarIntegrantes = ({integrantesActuales, columnsIn, CreateItemComponent, tipoDatoParaFoto="contacto", nombreTipoDatoParaModuloVisibilidad="CONTACTO", ServiceDeIntegrantes, handleInputChange, nombreHandleInputChange, maxIntegrantesSelected, isEditable, el_la, nombreTipoIntegrante, nombreTipoIntegrantePrural}) => {
+const ModalSeleccionarIntegrantes = ({integrantesActuales, columnsIn, CreateItemComponent, tipoDatoParaFoto="contacto", nombreTipoDatoParaModuloVisibilidad="CONTACTO", candidatosAIntegrantesIn, ServiceDeIntegrantes, handleInputChange, nombreHandleInputChange, maxIntegrantesSelected, isEditable, el_la, nombreTipoIntegrante, nombreTipoIntegrantePrural}) => {
   const [showModalSeleccionar, setShowModalSeleccionar] = useState(false);
   const [showModalCrearItem, setShowModalCrearItem] = useState(false);
   const [integrantesActualesAux, setIntegrantesActualesAux] = useState(null);
@@ -55,6 +58,9 @@ const ModalSeleccionarIntegrantes = ({integrantesActuales, columnsIn, CreateItem
 
   useEffect(() => {
     setIsEditableAux(isEditable ? true : false);
+    if(candidatosAIntegrantesIn){//Por ahora solo se usa para ingresar tabla tenant
+      setCandidatosAIntegrantes(candidatosAIntegrantesIn);
+    }
   }, []);
 
   useEffect(() => {
@@ -411,6 +417,11 @@ const ModalSeleccionarIntegrantesBeneficiario = ({integrantesActuales, ServiceDe
       type: "string",
     },
     {
+      Header: "Cuit",
+      accessor: "cuit",
+      type: "number",
+    },
+    {
       Header: "Edad",
       accessor: "edad",
       type: "number",
@@ -428,12 +439,12 @@ const ModalSeleccionarIntegrantesBeneficiario = ({integrantesActuales, ServiceDe
       filter: 'fuzzyText',
       type: "string",
     },
-    {
-      Header: "Descripción",
-      accessor: "nombreDescripcion",
-      filter: 'fuzzyText',
-      type: "string",
-    },
+    // {
+    //   Header: "Descripción",
+    //   accessor: "nombreDescripcion",
+    //   filter: 'fuzzyText',
+    //   type: "string",
+    // },
   ];
 
   return (
@@ -516,6 +527,63 @@ const ModalSeleccionarIntegrantesProfesional = ({integrantesActuales, ServiceDeI
   );
 }
 
+const ModalSeleccionarTenant = ({handleInputChange, dataIn}) => {
+
+  const [data, setData] = useState(undefined);
+
+  useEffect(() => {
+    if (dataIn) {
+      setData(dataIn);
+      console.log("dataIn");
+      console.log(dataIn);
+    } else{
+      TenantService.getAllWithImage().then((res) => {
+        setData(res);
+        console.log("res");
+        console.log(res);
+      });
+    }
+  }, []);
+
+  const columnsTenant = [
+    {
+      Header: "ID",
+      accessor: "tenantClientId",
+      type: "number",//sirve para mostrar el icono FaSortNumericDown en tabla generica
+    },
+    {
+      Header: "Foto",
+      Cell: ({ row }) => RenderFotoPerfilForTablaTenant(row.original?.imagen, row.original?.tenantName),
+    },
+    {
+      Header: "Nombre",
+      accessor: "tenantName",
+    },
+    {
+      Header: "Número de teléfono",
+      accessor: "tenantPhoneNumber",
+    },
+  ];
+
+  return (
+    <ModalSeleccionarIntegrantes
+        //integrantesActuales = {integrantesActuales}
+        columnsIn={columnsTenant}
+        //tipoDatoParaFoto={"contacto"}
+        //nombreTipoDatoParaModuloVisibilidad={"PROFESIONAL"}
+        candidatosAIntegrantesIn = {data}
+        //ServiceDeIntegrantes = {ServiceDeIntegrantes ? ServiceDeIntegrantes : ProfesionalService}
+        handleInputChange = {handleInputChange}
+        //nombreHandleInputChange = {nombreHandleInputChange}
+        maxIntegrantesSelected = {1}
+        //isEditable = {isEditable}
+        el_la = {"la"}
+        nombreTipoIntegrante = {"ONG"}
+        nombreTipoIntegrantePrural = {"ONGs"}
+    />
+  );
+}
+
 
 export {
   ModalSeleccionarIntegrantes,
@@ -523,6 +591,7 @@ export {
   ModalSeleccionarIntegrantesPersona,    //Proyecto
   ModalSeleccionarIntegrantesBeneficiario,  //Actividad
   ModalSeleccionarIntegrantesProfesional,   //Actividad
+  ModalSeleccionarTenant,                 //Login
   
   //actividad //Programa de actividades
   //itemFactura

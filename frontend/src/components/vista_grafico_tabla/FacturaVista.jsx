@@ -1,6 +1,6 @@
 import AbstractVista from "./AbstractVista";
 import { TablaFactura } from "./tables/TablaFactura";
 
-const FacturaVista = AbstractVista(TablaFactura, "FACTURA", null);
+const FacturaVista = AbstractVista(TablaFactura, "FACTURA", null, "facturas");
 
 export default FacturaVista;

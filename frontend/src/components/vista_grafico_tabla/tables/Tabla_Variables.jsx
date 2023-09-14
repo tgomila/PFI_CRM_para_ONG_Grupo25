@@ -268,6 +268,91 @@ const RenderFotoPerfil = (id, tipo, imagen, nombrePerfil) => {
   );
 };
 
+//Solo se utilizará para login tenant select
+const RenderFotoPerfilForTablaTenant = ({imagen, nombreFoto}) => {
+  const [showModal, setShowModal] = useState(false);
+
+  const handleOpenModal = () => {
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+  };
+
+  if(!nombreFoto){
+    nombreFoto = "";
+  }
+  return(
+    <div>
+      {imagen ? (
+        <div>
+          {nombreFoto ? (
+            <div>
+              <OverlayTrigger
+                placement="top"
+                overlay={
+                  <Tooltip id="tooltip-top">
+                    {nombreFoto}
+                  </Tooltip>
+                }
+              >
+                <Image 
+                src={imagen} 
+                alt="Foto de perfil" 
+                className="contacto-img-card"
+                onClick={handleOpenModal}
+                />
+              </OverlayTrigger>
+            </div>
+          ) : (
+            <img 
+            src={imagen} 
+            alt="Foto de perfil" 
+            className="contacto-img-card"
+            onClick={handleOpenModal}
+            />
+
+          )}
+        
+          <Modal show={showModal} onHide={handleCloseModal}>
+            <Modal.Header>
+              <Modal.Title>{nombreFoto}</Modal.Title>
+              <button className="close" onClick={handleCloseModal}>
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </Modal.Header>
+            <Modal.Body>
+              {imagen ? (
+                <a href={imagen} target="_blank" rel="noopener noreferrer">
+                  <img src={imagen} alt="Foto de perfil" className="contacto-img-modal" />
+                </a>
+              ) : (
+                <div>
+                  <span className="spinner-border spinner-border-sm"></span>
+                  <p>No hay foto<br />cargada...</p>
+                </div>
+              )}
+            </Modal.Body>
+            <Modal.Footer>
+              <Button variant="secondary" onClick={handleCloseModal}>
+                Cerrar
+              </Button>
+            </Modal.Footer>
+          </Modal>
+          
+        </div>
+      ) : (
+        <div>
+          <span className="spinner-border spinner-border-sm"></span>
+          <p>No hay foto cargada</p>
+        </div>
+      )}
+    </div>
+
+  );
+};
+
 /**
  * 
  * @param {string} idInput si es row declararlo como row.original?.id
@@ -490,25 +575,270 @@ const getNombreDelDato = (dato) => {
   return nombreCompleto;
 }
 
+//Este column funciona muy bien, pero si agrupas no te muestra el integrante
+//Si el "nuevo" render no funciona luego de testear, utilizar este render
+// function columnIntegranteConFotoColumn_old(title, property, tipoFoto) {
+//   return {
+//     Header: title,
+//     accessor: (row) => {
+//       const data = row?.[property];
+//       if (data) {
+//         const filteredKeys = Object.keys(data).filter(key => {
+//           const value = data[key];
+//           return !['imagen', 'imagen_completa'].includes(key) && !Array.isArray(value);
+//         });
+//         const dataString = filteredKeys.map(key => data[key]).join(' ').toLowerCase();
+//         console.log("dataString");
+//         console.log(dataString);
+//         return dataString;
+//       }
+//       return null;
+//     },
+//     Cell: ({ row }) => RenderFotoIntegranteRow(row, row.original?.[property], tipoFoto),
+//     //filter: 'fuzzyText',
+//     type: "string",
+//   };
+// }
+
+//Este render funciona muy bien, pero si agrupas no te muestra el integrante
+//Si el "nuevo" render no funciona luego de testear, utilizar este render
+// const RenderMostrarContacto_old = (datoContactoIntegrante, tipoImagen) => {
+//   const [showModal, setShowModal] = useState(false);
+//   const [loadedImage, setLoadedImage] = useState(null);
+//   const [persona, setPersona] = useState(null);
+//   const [loadingSearch, setLoadingSearch] = useState(true);
+//   const [nombreModal, setNombreModal] = useState("");
+
+//   useEffect(() => {
+//     setNombreModal(getNombreDelDato(datoContactoIntegrante));
+//     setPersona(null);
+//     setLoadingSearch(true);
+//     if(datoContactoIntegrante?.id){
+//       PersonaService.search(datoContactoIntegrante.id).then
+//         (response => {
+//           setLoadingSearch(false);
+//           console.log("response CCCCCCCCCCC de " + datoContactoIntegrante?.id);
+//           console.log(response);
+//           if(response.data){
+//             setPersona(response.data);
+//             setNombreModal(getNombreDelDato(response.data));
+//           }
+//         },
+//         (error) => {
+//           setLoadingSearch(false);
+//         }
+//       );
+//     }
+
+//   }, [datoContactoIntegrante]);
+
+//   useEffect(() => {
+//     if(datoContactoIntegrante?.id){
+//       if(!datoContactoIntegrante?.imagen_tabla){
+//         ImageService.getFoto(datoContactoIntegrante.id, tipoImagen, 'tabla')
+//           .then(response => {
+//             setLoadedImage(response);
+//           })
+//           .catch(error => {
+//             console.error('Error al obtener la imagen:', error);
+//           }
+//         );
+//       }
+//       else{
+//         setLoadedImage(datoContactoIntegrante.imagen_tabla);
+//       }
+//     }
+//   }, [datoContactoIntegrante?.id, tipoImagen]);
+
+//   /*useEffect(() => {
+//     setNombreModal(getNombreDelDato(datoContactoIntegrante));
+//     if(showModal){
+//       setPersona(null);
+//       setLoadingSearch(true);
+//       PersonaService.getById(datoContactoIntegrante.id).then
+//         (response => {
+//           setPersona(response.data);
+//           setNombreModal(getNombreDelDato(response.data));
+//           setLoadingSearch(false);
+//         },
+//         (error) => {
+//           setLoadingSearch(false);
+//         }
+//       );
+//     }
+//   }, [showModal]);*/
+
+//   useEffect(() => {
+//     setNombreModal(getNombreDelDato(datoContactoIntegrante));
+//   }, [datoContactoIntegrante]);
+
+//   const handleOpenModal = () => {
+//     setShowModal(true);
+//   };
+
+//   const handleCloseModal = () => {
+//     setShowModal(false);
+//   };
+  
+//   return(
+//     <div>
+//       {datoContactoIntegrante?.id && (
+//         <>
+//         {loadedImage ? (
+//           <div>
+//             {nombreModal ? (
+//               <div>
+//                 <OverlayTrigger
+//                   placement="top"
+//                   overlay={
+//                     <Tooltip id="tooltip-top">
+//                       {nombreModal}
+//                     </Tooltip>
+//                   }
+//                 >
+//                   <Image 
+//                   src={loadedImage} 
+//                   alt="Foto de perfil" 
+//                   className="contacto-img-card"
+//                   onClick={handleOpenModal}
+//                   />
+//                 </OverlayTrigger>
+//               </div>
+//             ) : (
+//               <img 
+//               src={loadedImage} 
+//               alt="Foto del integrante" 
+//               className="contacto-img-card"
+//               onClick={handleOpenModal}
+//               />
+
+//             )}
+          
+//             <Modal show={showModal} onHide={handleCloseModal}>
+//               <Modal.Header>
+//                 <Modal.Title>{nombreModal}</Modal.Title>
+//                 <button className="close" onClick={handleCloseModal}>
+//                   <span aria-hidden="true">&times;</span>
+//                 </button>
+//               </Modal.Header>
+//               <Modal.Body>
+//                 <div>
+//                   {loadingSearch ? (
+//                     <div>
+//                       <span className="spinner-border spinner-border-sm"></span>
+//                       <p>Cargando datos de contacto o persona...</p>
+//                     </div>
+//                   ) : (
+//                     <div>
+//                       <CreateReadUpdateGenericoConFoto
+//                         cargarDatosDefault = {persona ? cargarPersonaDefault : cargarContactoDefault}
+//                         DatoUpdateInput = {persona ? PersonaRead : ContactoRead}
+//                         tipoDatoForImageService = {'contacto'}
+//                         dataIn = {persona ? persona : datoContactoIntegrante}
+//                         Service = {persona ? PersonaService : ContactoService}
+//                         urlTablaDato = {persona ? '/personafisica' : '/contacto'}
+//                         isVentanaEmergente = {true}
+//                         el_la = {persona ? 'la' : 'el'}
+//                         nombreTipoDato = {persona ? 'persona' : 'contacto'}
+//                         typeCRUD={'READ'}
+//                       />
+//                     </div>
+//                   )}
+//                 </div>
+//               </Modal.Body>
+//               <Modal.Footer>
+//                 <Button variant="secondary" onClick={handleCloseModal}>
+//                   Cerrar
+//                 </Button>
+//               </Modal.Footer>
+//             </Modal>
+            
+//           </div>
+//         ) : (
+//           <div>
+//           <span className="spinner-border spinner-border-sm"></span>
+//           <p>Cargando foto<br />de integrante...</p>
+//           </div>
+//         )}
+//         </>
+//       )}
+//     </div>
+
+//   );
+// };
+
+
+function columnIntegranteConFotoColumn(title, property, tipoFoto) {
+  return {
+    Header: title,
+    accessor: (row) => {
+      const data = row?.[property];
+      if (data) {
+        const filteredKeys = Object.keys(data).filter(key => {
+          const value = data[key];
+          return !['imagen', 'imagen_completa'].includes(key) && !Array.isArray(value);
+        });
+        const dataString = filteredKeys.map(key => data[key]).join(' ').toLowerCase();
+        console.log("dataString");
+        console.log(dataString);
+        return dataString;
+      }
+      return null;
+    },
+    Cell: ({ row }) => RenderFotoIntegranteRow(
+                row, 
+                row.original?.[property] || parseInt(row.values?.[title]?.match(/^\d+/)) || null, 
+                tipoFoto
+              ),
+    //filter: 'fuzzyText',
+    type: "string",
+  };
+}
+
 const RenderMostrarContacto = (datoContactoIntegrante, tipoImagen) => {
   const [showModal, setShowModal] = useState(false);
   const [loadedImage, setLoadedImage] = useState(null);
+  const [contacto, setContacto] = useState(null);
   const [persona, setPersona] = useState(null);
   const [loadingSearch, setLoadingSearch] = useState(true);
   const [nombreModal, setNombreModal] = useState("");
+
+  const GetIdContacto = () => {
+    if(datoContactoIntegrante?.id) {
+      return datoContactoIntegrante?.id;
+    } else if(typeof datoContactoIntegrante === 'number') {
+      return datoContactoIntegrante;
+    }
+    return null;
+  }
 
   useEffect(() => {
     setNombreModal(getNombreDelDato(datoContactoIntegrante));
     setPersona(null);
     setLoadingSearch(true);
-    if(datoContactoIntegrante?.id){
-      PersonaService.getSiExisteById(datoContactoIntegrante.id).then
+    let idContactoAux = GetIdContacto();//Consigo su id
+    if(datoContactoIntegrante?.id && datoContactoIntegrante?.nombre ){
+      //No es necesario buscar, ya se ingresó una persona
+      setPersona(datoContactoIntegrante);
+      setNombreModal(getNombreDelDato(datoContactoIntegrante));
+      setLoadingSearch(false);
+    }
+    else if(idContactoAux && !datoContactoIntegrante?.nombre ){
+      //Asigno persona o contacto si existen (al menos con el id deberia existir uno de los dos)
+
+      //Busco si existe persona
+      PersonaService.search_persona_contacto(idContactoAux).then
         (response => {
-          setLoadingSearch(false);
           if(response.data){
-            setPersona(response.data);
+            if(response.data.dni) {
+              setPersona(response.data);
+            }
+            else {
+              setContacto(response.data);
+            }
             setNombreModal(getNombreDelDato(response.data));
-          }
+          }//Si no hay response.data, no existe contacto con ese id
+          setLoadingSearch(false);
         },
         (error) => {
           setLoadingSearch(false);
@@ -519,9 +849,10 @@ const RenderMostrarContacto = (datoContactoIntegrante, tipoImagen) => {
   }, [datoContactoIntegrante]);
 
   useEffect(() => {
-    if(datoContactoIntegrante?.id){
+    let idContactoAux = GetIdContacto();
+    if(idContactoAux){
       if(!datoContactoIntegrante?.imagen_tabla){
-        ImageService.getFoto(datoContactoIntegrante.id, tipoImagen, 'tabla')
+        ImageService.getFoto(idContactoAux, tipoImagen, 'tabla')
           .then(response => {
             setLoadedImage(response);
           })
@@ -534,25 +865,7 @@ const RenderMostrarContacto = (datoContactoIntegrante, tipoImagen) => {
         setLoadedImage(datoContactoIntegrante.imagen_tabla);
       }
     }
-  }, [datoContactoIntegrante?.id, tipoImagen]);
-
-  /*useEffect(() => {
-    setNombreModal(getNombreDelDato(datoContactoIntegrante));
-    if(showModal){
-      setPersona(null);
-      setLoadingSearch(true);
-      PersonaService.getById(datoContactoIntegrante.id).then
-        (response => {
-          setPersona(response.data);
-          setNombreModal(getNombreDelDato(response.data));
-          setLoadingSearch(false);
-        },
-        (error) => {
-          setLoadingSearch(false);
-        }
-      );
-    }
-  }, [showModal]);*/
+  }, [datoContactoIntegrante, tipoImagen]);
 
   useEffect(() => {
     setNombreModal(getNombreDelDato(datoContactoIntegrante));
@@ -568,7 +881,7 @@ const RenderMostrarContacto = (datoContactoIntegrante, tipoImagen) => {
   
   return(
     <div>
-      {datoContactoIntegrante?.id && (
+      {(datoContactoIntegrante?.id || GetIdContacto()) && (
         <>
         {loadedImage ? (
           <div>
@@ -616,18 +929,24 @@ const RenderMostrarContacto = (datoContactoIntegrante, tipoImagen) => {
                     </div>
                   ) : (
                     <div>
-                      <CreateReadUpdateGenericoConFoto
-                        cargarDatosDefault = {persona ? cargarPersonaDefault : cargarContactoDefault}
-                        DatoUpdateInput = {persona ? PersonaRead : ContactoRead}
-                        tipoDatoForImageService = {'contacto'}
-                        dataIn = {persona ? persona : datoContactoIntegrante}
-                        Service = {persona ? PersonaService : ContactoService}
-                        urlTablaDato = {persona ? '/personafisica' : '/contacto'}
-                        isVentanaEmergente = {true}
-                        el_la = {persona ? 'la' : 'el'}
-                        nombreTipoDato = {persona ? 'persona' : 'contacto'}
-                        typeCRUD={'READ'}
-                      />
+                      {(contacto || persona) ? (
+                        <CreateReadUpdateGenericoConFoto
+                          cargarDatosDefault = {persona ? cargarPersonaDefault : cargarContactoDefault}
+                          DatoUpdateInput = {persona ? PersonaRead : ContactoRead}
+                          tipoDatoForImageService = {'contacto'}
+                          dataIn = {persona ? persona : contacto}
+                          Service = {persona ? PersonaService : ContactoService}
+                          urlTablaDato = {persona ? '/personafisica' : '/contacto'}
+                          isVentanaEmergente = {true}
+                          el_la = {persona ? 'la' : 'el'}
+                          nombreTipoDato = {persona ? 'persona' : 'contacto'}
+                          typeCRUD={'READ'}
+                        />
+                      ) : (
+                        <>
+                        <p>Error al buscar al contacto o persona</p>
+                        </>
+                      )}
                     </div>
                   )}
                 </div>
@@ -652,29 +971,6 @@ const RenderMostrarContacto = (datoContactoIntegrante, tipoImagen) => {
 
   );
 };
-
-function columnIntegranteConFotoColumn(title, property, tipoFoto) {
-  return {
-    Header: title,
-    accessor: (row) => {
-      const data = row?.[property];
-      if (data) {
-        const filteredKeys = Object.keys(data).filter(key => {
-          const value = data[key];
-          return !['imagen', 'imagen_completa'].includes(key) && !Array.isArray(value);
-        });
-        const dataString = filteredKeys.map(key => data[key]).join(' ').toLowerCase();
-        console.log("dataString");
-        console.log(dataString);
-        return dataString;
-      }
-      return null;
-    },
-    Cell: ({ row }) => RenderFotoIntegranteRow(row, row.original?.[property], tipoFoto),
-    //filter: 'fuzzyText',
-    type: "string",
-  };
-}
 
 function columnsIntegrantesPersonas({property="personas", el_la = "la", nombreIntegranteSingular ="persona", nombreIntegrantePlural="personas"}) {
   return columnsIntegrantesGeneric({
@@ -818,6 +1114,7 @@ export {
   IndeterminateSelectCheckbox,
   RenderFotoPerfilRow,
   RenderFotoPerfil,
+  RenderFotoPerfilForTablaTenant,
   RenderFotoIntegranteRow,
   RenderMostrarContacto,
   RenderBotonVer,

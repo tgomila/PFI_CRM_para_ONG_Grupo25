@@ -31,6 +31,17 @@ class DonacionService {
     }
 
 
+
+    //Graficos
+    top_20_donantes_total(){
+        return axios.get(BACKEND_API_BASE_URL + 'donacion/grafico/top_20_donantes/total', { headers: authHeader() });
+    }
+
+    top_20_donantes_cantidad(){
+        return axios.get(BACKEND_API_BASE_URL + 'donacion/grafico/top_20_donantes/cantidad', { headers: authHeader() });
+    }
+
+
     
 }
 

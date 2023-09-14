@@ -48,10 +48,11 @@ const TablaDonacion = ({visibilidadInput, dataIn}) => {
         } else if(value === "OTRO") {
           return "Otro";
         }//else...
-        const formattedValue = value
+        const formattedValue = value ? value
           .toLowerCase()
           .replace(/_/g, " ")
-          .replace(/\b\w/g, (match) => match.toUpperCase());
+          .replace(/\b\w/g, (match) => match.toUpperCase())
+          : <></>;
   
         return formattedValue;
       },

@@ -39,6 +39,7 @@ import { NavLink } from 'react-router-dom';
 
 import modulosService from '../services/modulosService';
 import * as constantsURL from "../components/constants/ConstantsURL";
+import { Modal, Button, OverlayTrigger, Tooltip, Image } from "react-bootstrap";
 const BACKEND_STATIC_BASE_URL = constantsURL.STATIC_BASE_URL;
 //DOCUMENTACION ICONOS
 // https://react-icons.github.io/react-icons/icons?name=fa
@@ -56,7 +57,9 @@ const Sidebar = ({ children }) => {
     let tenantLogoName = "";
     const [currentUser, setCurrentUser] = useState(undefined);
     const [urlLogo, setUrlLogo] = useState(undefined);
+    const [tenantName, setTenantName] = useState("");
     const [menuItemService, setMenuitem] = useState([]);
+    const [showModal, setShowModal] = useState(false);
     useEffect(() => {
         // Fetch data
         // Update the document title using the browser API
@@ -71,14 +74,16 @@ const Sidebar = ({ children }) => {
         //TODO testing borrarlo despues
 
         setUrlLogo("http://ssl.gstatic.com/accounts/ui/avatar_2x.png");//Default
-        const user = AuthService.getCurrentUser();
+        //const user = AuthService.getCurrentUser();
         if (user) {
             setCurrentUser(user);
-            setUrlLogo("http://localhost:8080/logo/" + user.dbName + ".png");
+            setUrlLogo(BACKEND_STATIC_BASE_URL + "logo/" + user.dbName + ".png");
+            setTenantName(user.tenantName);
             //setUrlLogo("http://localhost:8080/logo/tenant2.png");
         }
         else {//Default
             setUrlLogo("http://ssl.gstatic.com/accounts/ui/avatar_2x.png");
+            setTenantName("No se ha iniciado sesión");
         }
         
     }, []);
@@ -199,11 +204,38 @@ const Sidebar = ({ children }) => {
                 <div className="top_section">
                     {/* display: isOpen ? "block" : "none" */}
                     <div style={{ marginLeft: isOpen ? "0px" : "-50px" }} className="logoDivSideBar">
-                        <img 
-                            src={urlLogo}
+                        <OverlayTrigger
+                            placement="top"
+                            overlay={
+                            <Tooltip id="tooltip-top">
+                                {tenantName}
+                            </Tooltip>
+                            }
+                        >
+                            <Image 
+                            src={urlLogo} 
                             alt="profile-img"
                             className="logoSideBar"
-                        />
+                            onClick={() => setShowModal(true)}
+                            />
+                        </OverlayTrigger>
+
+                        <Modal show={showModal} onHide={() => setShowModal(false)}>
+                            <Modal.Header>
+                                <Modal.Title>{tenantName}</Modal.Title>
+                                    <button className="close" onClick={() => setShowModal(false)}>
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                            </Modal.Header>
+                            <Modal.Body>
+                                <img src={urlLogo} alt="Logo de ONG" className="contacto-img-modal" />
+                            </Modal.Body>
+                            <Modal.Footer>
+                            <Button variant="secondary" onClick={() => setShowModal(false)}>
+                                Cerrar
+                            </Button>
+                            </Modal.Footer>
+                        </Modal>
                     </div>
                     {/*<h1 style={{ display: isOpen ? "block" : "none" }} className="logoText">Logo</h1>*/}
                     <div>

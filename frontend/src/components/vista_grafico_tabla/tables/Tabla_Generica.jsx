@@ -521,7 +521,12 @@ const TablaGenerica = ({columnsIn, dataIn, visibilidadInput, Service, el_la, nom
       //console.log("selectedIds");
       //console.log(selectedIds);
 
-      handleInputChange({ target: { name: nombreHandleInputChange, value: selectedIds} });
+      //handleInputChange({ target: { name: nombreHandleInputChange, value: selectedIds} });
+      if(nombreHandleInputChange) {
+        handleInputChange({ target: { name: nombreHandleInputChange, value: selectedIds} });
+      } else {
+        handleInputChange(selectedIds);
+      }
     }
   }, [selectedFlatRows]);
 

@@ -8,11 +8,6 @@ class PersonaService {
     getById(dtoId){
         return axios.get(BACKEND_API_BASE_URL + 'personafisica/' + dtoId, { headers: authHeader() });
     }
-
-    //devuelve null si persona no existe, pero si existe devuelve persona
-    getSiExisteById(dtoId){
-        return axios.get(BACKEND_API_BASE_URL + 'personafisica/si_existe/' + dtoId, { headers: authHeader() });
-    }
     
     getAll(){
         return axios.get(BACKEND_API_BASE_URL + 'personafisica/all', { headers: authHeader() });
@@ -30,8 +25,21 @@ class PersonaService {
         return axios.delete(BACKEND_API_BASE_URL + 'personafisica/' + dtoId, {headers: authHeader()} );
     }
 
+    //Búsquedas de personas
+
+    //devuelve error si persona existe, solo devuelve contacto si existe, se usa para asociar alta persona con contacto
     search(dtoId){
         return axios.get(BACKEND_API_BASE_URL + 'personafisica/search/' + dtoId, {headers: authHeader()} );
+    }
+
+    //devuelve persona o contacto si existe
+    search_persona_contacto(dtoId){
+        return axios.get(BACKEND_API_BASE_URL + 'personafisica/search_persona_contacto/' + dtoId, {headers: authHeader()} );
+    }
+
+    //No se usa en nada, devuelve null si persona no existe, pero si existe devuelve persona
+    getSiExisteById(dtoId){
+        return axios.get(BACKEND_API_BASE_URL + 'personafisica/si_existe/' + dtoId, { headers: authHeader() });
     }
 
     //Graficos
