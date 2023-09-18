@@ -24,7 +24,7 @@ const TablaProgramaDeActividades = ({visibilidadInput, dataIn}) => {
         dataIn={dataIn ? dataIn : null}
         Service={ProgramaDeActividadesService}
         visibilidadInput={visibilidadInput}
-        nombreTipoDatoParaModuloVisibilidad={"PROGRAMA_DE_ACTIVIDADES"}
+        nombreTipoDatoParaModuloVisibilidad={"ACTIVIDAD"}
         tipoDatoParaFoto={"programaDeActividades"}
         el_la={"la"}
         nombreTipoDato={"actividad"}

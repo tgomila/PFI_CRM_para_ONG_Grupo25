@@ -67,8 +67,35 @@ const Sidebar = ({ children }) => {
         //Lista de modulos a mostrar
         let modulos = modulosService.getModulos();
         modulos.then((res) => {
-            const menuItemConNoVista = res.data;
+            let menuItemConNoVista = res.data;
+            //Si existe actividad, agregar programa de actividades
+            const actividadIndex = menuItemConNoVista.findIndex(item => item.name === 'Actividad');
+            console.log("actividadIndex");
+            console.log(actividadIndex);
+            if(actividadIndex !== -1) {
+                let commonItemsAux = {
+                    order: 11,
+                    moduloEnum: "PROGRAMA_DE_ACTIVIDADES",
+                    name: 'Programa de Actividades',
+                    path: "/programadeactividades",
+                    iconName: "FaClipboardList",
+                    tipoVisibilidad: menuItemConNoVista[actividadIndex].tipoVisibilidad,
+                    priceOneMonth: 1.0,
+                    priceOneYear: 10.0,
+                };
+                console.log("menuItemConNoVista antes");
+                console.log(menuItemConNoVista);
+                menuItemConNoVista.push(commonItemsAux);
+                console.log("menuItemConNoVista despues");
+                console.log(menuItemConNoVista);
+            }
             const filteredMenuItems = menuItemConNoVista.filter(item => item.tipoVisibilidad !== "NO_VISTA" && item.tipoVisibilidad !== "SIN_SUSCRIPCION");
+            filteredMenuItems.sort((a, b) => {
+                if (a.order !== b.order) {
+                    return a.order - b.order;
+                }
+                return a.name.localeCompare(b.name);
+            });
             setMenuitem(filteredMenuItems);
         });
         //TODO testing borrarlo despues

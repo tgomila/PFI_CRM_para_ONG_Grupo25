@@ -175,6 +175,90 @@ function Marketplace() {
   const formatFechaHora = (fechaISO8601) => {
     return moment(fechaISO8601).locale("es").format("DD/MM/YYYY [a las] HH:mm");
   };
+  const CardSuscripcion = ({ elements }) => {
+    //Hasta 3 elementos por row.
+    const divideListIntoRows = (elements) => {
+      const rows = [];
+      for (let i = 0; i < elements.length; i += 3) {
+        rows.push(elements.slice(i, i + 3));
+      }
+      return rows;
+    }
+    const rows = divideListIntoRows(elements);
+    //Listo aquí tengo 3 componentes para cada row
+  
+    //render:
+    return (
+      <div>
+        {rows.map((row, rowIndex) => (
+          <div className="row" key={rowIndex}>
+            {row.map((element, idx) => (
+              
+              <div className={`col-lg-4 col-md-${idx === 0 ? 12 : 6}`} key={idx}>
+              {/* Elemento 1 de 3 tiene md-12, los otros elementos tienen md-6 */}
+              {/* <div className="col-xs-12 col-sm-12 col-md-6 col-lg-4"> */}
+                <div className="grid__item_modulos">
+                  <div className="card">
+                    <img className="card__img" src={element.imagenSrc} alt={element.titulo} />
+                    <div className="card__content">
+                      <h1 className="card__header">{element.titulo}</h1>
+                      {element.moduloInformacionSuscripcion && informacionSuscripcion(element.moduloInformacionSuscripcion)}
+                      <br></br>
+                      <p className="card__text" dangerouslySetInnerHTML={{ __html: element.textoDescripcion }} />
+                      {element.moduloInformacionSuscripcion && buttonTrialSiNoFueCanjeado(element.moduloInformacionSuscripcion)}
+                      <br></br>
+                      <button className="card__btn" onClick={() => chooseSubscription(element.moduloInformacionSuscripcion, "mes")}>Comprar 1 mes por {buscarPrecioUnMes(element.moduloInformacionSuscripcion)}<span>&rarr;</span></button>
+                      <br></br>
+                      <button className="card__btn" onClick={() => chooseSubscription(element.moduloInformacionSuscripcion, "anio")}>Comprar 1 año por {buscarPrecioUnAnio(element.moduloInformacionSuscripcion)}<span>&rarr;</span></button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        ))}
+      </div>
+    );
+  }
+  const elementsSuscripciones = [
+    {
+      titulo: "Actividad",
+      moduloInformacionSuscripcion: "ACTIVIDAD",
+      textoDescripcion: "Guarde las actividades que realice en su ONG con la mejor organización, asignando <strong>beneficiarios</strong> y <strong>profesionales</strong> a cada <strong>actividad</strong>.",
+      imagenSrc: "https://images.unsplash.com/photo-1506318164473-2dfd3ede3623?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=crop&amp;w=3300&amp;q=80",
+    },
+    {
+      titulo: "Factura",
+      moduloInformacionSuscripcion: "FACTURA",
+      textoDescripcion: "Con este módulo podrá almacenar <strong>facturas de</strong> sus diferentes <strong>contactos</strong> que haya almacenado en el sistema. Útil para el manejo económico.",
+      imagenSrc: "https://images.unsplash.com/photo-1506318164473-2dfd3ede3623?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=crop&amp;w=3300&amp;q=80",
+    },
+    {
+      titulo: "Insumo",
+      moduloInformacionSuscripcion: "INSUMO",
+      textoDescripcion: "Módulo que permitirá almacenar <strong>información</strong> de <strong>bienes</strong> de la ONG.",
+      imagenSrc: "https://images.unsplash.com/photo-1506318164473-2dfd3ede3623?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=crop&amp;w=3300&amp;q=80",
+    },
+    {
+      titulo: "Prestamo",
+      moduloInformacionSuscripcion: "PRESTAMO",
+      textoDescripcion: "Módulo que permitirá registrar <strong>préstamos</strong> de <strong>beneficiarios</strong> de la ONG.",
+      imagenSrc: "https://images.unsplash.com/photo-1506318164473-2dfd3ede3623?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=crop&amp;w=3300&amp;q=80",
+    },
+    {
+      titulo: "Proyecto",
+      moduloInformacionSuscripcion: "PROYECTO",
+      textoDescripcion: "Módulo que permitirá registrar fecha y descripción de <strong>proyectos</strong> de de la ONG.",
+      imagenSrc: "https://images.unsplash.com/photo-1506318164473-2dfd3ede3623?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=crop&amp;w=3300&amp;q=80",
+    },
+    // Chat no será implementado, se agregará una pantalla estilo whatsapp
+    // {
+    //   titulo: "Chat",
+    //   moduloInformacionSuscripcion: "CHAT",
+    //   textoDescripcion: "En este módulo permitirá acceder a un <strong>chat</strong> para que puedan conversar entre <strong>usuarios</strong> de la ONG.",
+    //   imagenSrc: "https://images.unsplash.com/photo-1506318164473-2dfd3ede3623?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=crop&amp;w=3300&amp;q=80",
+    // },
+  ];
 
   const formatter = new Intl.NumberFormat('en-US', {
     style: 'currency',
@@ -268,7 +352,6 @@ function Marketplace() {
     <div className="Marketplace">
       {(!moduloElegido && !tiempoElegido) ? (
         <div>
-          <br></br><br></br>
           <h1><span className="underlined underline-clip-title">Marketplace</span></h1>
           <br></br>
           <p className="parrafo1">Encuentre lo mejor para su ONG.</p>
@@ -332,7 +415,10 @@ function Marketplace() {
           <p className="parrafo1">O sinó, suscribase al módulo que su ONG desea.</p>
           {/*<div className="container mx-auto">*/}
           <div>
-            <div className="row">
+
+            <CardSuscripcion elements={elementsSuscripciones} />
+
+            {/* <div className="row">
               <div className="col-lg-4 col-md-12">
                 <div className="grid__item_modulos">
                   <div className="card"><img className="card__img" src={"https://images.unsplash.com/photo-1506318164473-2dfd3ede3623?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=crop&amp;w=3300&amp;q=80"} alt="Canyons" />
@@ -390,14 +476,13 @@ function Marketplace() {
 
             <div className="row">
               <div className="col-lg-4 col-md-12">
-              {/* <div className="col-xs-12 col-sm-12 col-md-6 col-lg-4"> */}
                 <div className="grid__item_modulos">
                   <div className="card"><img className="card__img" src={"https://images.unsplash.com/photo-1506318164473-2dfd3ede3623?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=crop&amp;w=3300&amp;q=80"} alt="Canyons" />
                     <div className="card__content">
                       <h1 className="card__header">Prestamo</h1>
                       {informacionSuscripcion('PRESTAMO')}
                       <br></br>
-                      <p className="card__text">Sunsets over the <strong>stunning</strong> Utah Canyonlands, is truly something much more than incredible.</p>
+                      <p className="card__text">Módulo que registrará <strong>préstamos</strong> de <strong>beneficiarios</strong> de la ONG.</p>
                       {buttonTrialSiNoFueCanjeado('PRESTAMO')}
                       <br></br>
                       <button className="card__btn" onClick={() => chooseSubscription("PRESTAMO", "mes")}>Comprar 1 mes por {buscarPrecioUnMes('PRESTAMO')}<span>&rarr;</span></button>
@@ -409,14 +494,13 @@ function Marketplace() {
               </div>
 
               <div className="col-lg-4 col-md-6">
-              {/* <div className="col-xs-12 col-sm-12 col-md-6 col-lg-4"> */}
                 <div className="grid__item_modulos">
                   <div className="card"><img className="card__img" src={"https://images.unsplash.com/photo-1506318164473-2dfd3ede3623?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=crop&amp;w=3300&amp;q=80"} alt="Canyons" />
                     <div className="card__content">
                       <h1 className="card__header">Proyecto</h1>
                       {informacionSuscripcion('PROYECTO')}
                       <br></br>
-                      <p className="card__text">Sunsets over the <strong>stunning</strong> Utah Canyonlands, is truly something much more than incredible.</p>
+                      <p className="card__text">Módulo que registrará fecha y descripción de <strong>proyectos</strong> de de la ONG.</p>
                       {buttonTrialSiNoFueCanjeado('PROYECTO')}
                       <br></br>
                       <button className="card__btn" onClick={() => chooseSubscription("PROYECTO", "mes")}>Comprar 1 mes por {buscarPrecioUnMes('PROYECTO')}<span>&rarr;</span></button>
@@ -428,14 +512,13 @@ function Marketplace() {
               </div>
 
               <div className="col-lg-4 col-md-6">
-              {/* <div className="col-xs-12 col-sm-12 col-md-6 col-lg-4"> */}
                 <div className="grid__item_modulos">
                   <div className="card"><img className="card__img" src={"https://images.unsplash.com/photo-1506318164473-2dfd3ede3623?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=crop&amp;w=3300&amp;q=80"} alt="Canyons" />
                     <div className="card__content">
                       <h1 className="card__header">Chat</h1>
                       {informacionSuscripcion('CHAT')}
                       <br></br>
-                      <p className="card__text">Sunsets over the <strong>stunning</strong> Utah Canyonlands, is truly something much more than incredible.</p>
+                      <p className="card__text">En este módulo permitirá acceder a un <strong>chat</strong> para que puedan conversar entre <strong>usuarios</strong> de la ONG.</p>
                       {buttonTrialSiNoFueCanjeado('CHAT')}
                       <br></br>
                       <button className="card__btn" onClick={() => chooseSubscription("CHAT", "mes")}>Comprar 1 mes por {buscarPrecioUnMes('CHAT')}<span>&rarr;</span></button>
@@ -445,7 +528,7 @@ function Marketplace() {
                   </div>
                 </div>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
       ) : (
