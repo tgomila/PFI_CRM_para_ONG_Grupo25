@@ -2013,6 +2013,30 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		//
 		factura2 = facturaService.altaFactura(factura2);
 		
+		ContactoPayload empleado_asistente = contactoService.getContactoSiExisteByCuit("27-34326093-9");
+		ContactoPayload jumbo = contactoService.getContactoSiExisteByCuit("30-62719317-4");
+		LocalDateTime fechaFactura3 = LocalDateTime.of(todayMinus1month.getYear(), todayMinus1month.getMonth(), 19, 12, 30);
+		FacturaPayload factura3 = new FacturaPayload();
+		factura3.setFecha(fechaFactura3);
+		factura3.setCliente(empleado_asistente);
+		factura3.setEmisorFactura(jumbo);
+		//
+		FacturaItemPayload factura3_item1 = new FacturaItemPayload();
+		factura3_item1.setDescripcion("Chicle");
+		factura3_item1.setUnidades(1);
+		factura3_item1.setPrecioUnitario(BigDecimal.valueOf(350.00));
+		factura3_item1.setPrecio(BigDecimal.valueOf(350.00).multiply(BigDecimal.valueOf(factura3_item1.getUnidades())));
+		factura3.agregarItemFactura(factura3_item1);
+		//
+		FacturaItemPayload factura3_item2 = new FacturaItemPayload();
+		factura3_item2.setDescripcion("Caramelos");
+		factura3_item2.setUnidades(10);
+		factura3_item2.setPrecioUnitario(BigDecimal.valueOf(25.00));
+		factura3_item2.setPrecio(BigDecimal.valueOf(350.00).multiply(BigDecimal.valueOf(factura3_item2.getUnidades())));
+		factura3.agregarItemFactura(factura3_item2);
+		//
+		factura3 = facturaService.altaFactura(factura3);
+		
 		
 		//Get lista para payloads con personas
 		List<EmpleadoPayload> empleados = empleadoService.getEmpleados();
@@ -2147,6 +2171,26 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		donacion2.setDescripcion("Budín horneado caseras");
 		donacion2.setValorAproximadoDeLaDonacion(BigDecimal.valueOf(1500.00));
 		donacion2 = donacionService.altaDonacion(donacion2);
+		
+		DonacionPayload donacion3 = new DonacionPayload();
+		donacion3.setId(null);
+		donacion3.setFecha(LocalDateTime.now().minusMonths(1));
+		donacion3.setDonante(contactoDonante);
+		donacion3.setTipoDonacion(DonacionTipo.DINERO);
+		donacion3.setDescripcion("$100.000 pesos");
+		donacion3.setValorAproximadoDeLaDonacion(BigDecimal.valueOf(20000.00));
+		donacion3 = donacionService.altaDonacion(donacion3);
+		
+		ContactoPayload contactoDonante4 = contactoService.existeContacto((long) 14) ? contactoService.getContactoById((long) 14) : null;
+		
+		DonacionPayload donacion4 = new DonacionPayload();
+		donacion4.setId(null);
+		donacion4.setFecha(LocalDateTime.now().minusMonths(1));
+		donacion4.setDonante(contactoDonante4);
+		donacion4.setTipoDonacion(DonacionTipo.DINERO);
+		donacion4.setDescripcion("$100.000 pesos");
+		donacion4.setValorAproximadoDeLaDonacion(BigDecimal.valueOf(30000.00));
+		donacion4 = donacionService.altaDonacion(donacion4);
 	}
 	
 	public void copiarFotosDeTestHaciaDB() {

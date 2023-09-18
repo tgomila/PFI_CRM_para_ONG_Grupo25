@@ -14,15 +14,15 @@ public enum ModuloEnum {
 	USERS(10, "Users", "/users", "FaUsersCog", 0.00),
 	
 	ACTIVIDAD(11, "Actividad", "/actividad", "BiTask", 3.00),
-	PROGRAMA_DE_ACTIVIDADES(12, "Programa de Actividades", "/programadeactividades", "GoCalendar", 1.00),
-	PRODUCTO(13, "Producto", "/producto", "GiHandTruck", 0.00),
-	DONACION(14, "Donacion", "/donacion", "FaDonate", 0.00),
-	FACTURA(15, "Factura", "/factura", "FaFileInvoiceDollar", 2.00),
-	INSUMO(16, "Insumo", "/insumo", "FiShoppingCart", 2.00),
-	PRESTAMO(17, "Prestamo", "/prestamo", "FaHandHolding", 2.00),
-	PROYECTO(18, "Proyecto", "/proyecto", "AiOutlineFundProjectionScreen", 2.00),
-	CHAT(19, "Chat", "/chat", "HiChatBubbleLeftRight", 2.00),
-	MARKETPLACE(20, "Marketplace", "/marketplace", "MdLocalGroceryStore", 0.00);
+	//PROGRAMA_DE_ACTIVIDADES(12, "Programa de Actividades", "/programadeactividades", "GoCalendar", 1.00),
+	PRODUCTO(12, "Producto", "/producto", "GiHandTruck", 0.00),
+	DONACION(13, "Donacion", "/donacion", "FaDonate", 0.00),
+	FACTURA(14, "Factura", "/factura", "FaFileInvoiceDollar", 2.00),
+	INSUMO(15, "Insumo", "/insumo", "FiShoppingCart", 2.00),
+	PRESTAMO(16, "Prestamo", "/prestamo", "FaHandHolding", 2.00),
+	PROYECTO(17, "Proyecto", "/proyecto", "AiOutlineFundProjectionScreen", 2.00),
+	CHAT(18, "Chat", "/chat", "HiChatBubbleLeftRight", 2.00),
+	MARKETPLACE(19, "Marketplace", "/marketplace", "MdLocalGroceryStore", 0.00);
 	
 	
 	private final int order;

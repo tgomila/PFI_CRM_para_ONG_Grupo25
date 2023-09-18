@@ -1,6 +1,5 @@
 package com.pfi.crm.multitenant.tenant.service;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -163,16 +162,16 @@ public class ModuloMarketService {
 				throw new BadRequestException("La prueba gratuita de 7 días ya ha sido utilizada");
 		
 
-		if(moduloEnum.equals(ModuloEnum.ACTIVIDAD)) {
-			ModuloMarket aux = getModuloMarketModelByModuloEnum(ModuloEnum.PROGRAMA_DE_ACTIVIDADES);
-			aux.activarSieteDiasGratis();
-			this.modificarModuloMarket(aux);
-		}
-		else if(moduloEnum.equals(ModuloEnum.PROGRAMA_DE_ACTIVIDADES)) {
-			ModuloMarket aux = getModuloMarketModelByModuloEnum(ModuloEnum.ACTIVIDAD);
-			aux.activarSieteDiasGratis();
-			this.modificarModuloMarket(aux);
-		}
+//		if(moduloEnum.equals(ModuloEnum.ACTIVIDAD)) {
+//			ModuloMarket aux = getModuloMarketModelByModuloEnum(ModuloEnum.PROGRAMA_DE_ACTIVIDADES);
+//			aux.activarSieteDiasGratis();
+//			this.modificarModuloMarket(aux);
+//		}
+//		else if(moduloEnum.equals(ModuloEnum.PROGRAMA_DE_ACTIVIDADES)) {
+//			ModuloMarket aux = getModuloMarketModelByModuloEnum(ModuloEnum.ACTIVIDAD);
+//			aux.activarSieteDiasGratis();
+//			this.modificarModuloMarket(aux);
+//		}
 		m.activarSieteDiasGratis();
 		return this.modificarModuloMarket(m);
 	}
@@ -195,28 +194,28 @@ public class ModuloMarketService {
 				modulosModificados.add(this.modificarModuloMarket(m));
 			}
 		}
-		modulosModificados.addAll(chequearModuloHijosConSuscripcion());
+//		modulosModificados.addAll(chequearModuloHijosConSuscripcion());
 		return modulosModificados;
 	}
 	
-	private List<ModuloMarketPayload> chequearModuloHijosConSuscripcion() {
-		List<ModuloMarketPayload> modulosModificados = new ArrayList<ModuloMarketPayload>();
-		ModuloMarket programa = getModuloMarketModelByModuloEnum(ModuloEnum.PROGRAMA_DE_ACTIVIDADES);
-		LocalDateTime fechaMaximaPrograma = programa.getFechaMaximaSuscripcion();
-		
-		if(fechaMaximaPrograma != null) {//Hay suscripción al programa
-			ModuloMarket actividad = getModuloMarketModelByModuloEnum(ModuloEnum.ACTIVIDAD);
-			LocalDateTime fechaMaximaActividad = actividad.getFechaMaximaSuscripcion();
-			
-			if(fechaMaximaActividad == null || fechaMaximaPrograma.isAfter(fechaMaximaActividad)) {
-				//Forzar inscribir a la actividad a la misma fecha de finalización del programa
-				actividad.setFechaMaximaSuscripcion(fechaMaximaPrograma);
-				modulosModificados.add(this.modificarModuloMarket(actividad));
-			}
-		
-		}
-		return modulosModificados;
-	}
+//	private List<ModuloMarketPayload> chequearModuloHijosConSuscripcion() {
+//		List<ModuloMarketPayload> modulosModificados = new ArrayList<ModuloMarketPayload>();
+//		ModuloMarket programa = getModuloMarketModelByModuloEnum(ModuloEnum.PROGRAMA_DE_ACTIVIDADES);
+//		LocalDateTime fechaMaximaPrograma = programa.getFechaMaximaSuscripcion();
+//		
+//		if(fechaMaximaPrograma != null) {//Hay suscripción al programa
+//			ModuloMarket actividad = getModuloMarketModelByModuloEnum(ModuloEnum.ACTIVIDAD);
+//			LocalDateTime fechaMaximaActividad = actividad.getFechaMaximaSuscripcion();
+//			
+//			if(fechaMaximaActividad == null || fechaMaximaPrograma.isAfter(fechaMaximaActividad)) {
+//				//Forzar inscribir a la actividad a la misma fecha de finalización del programa
+//				actividad.setFechaMaximaSuscripcion(fechaMaximaPrograma);
+//				modulosModificados.add(this.modificarModuloMarket(actividad));
+//			}
+//		
+//		}
+//		return modulosModificados;
+//	}
 	
 	private enum EnumAuxTiempo {
 		PRUEBA_7_DIAS, _1_MES, _1_ANIO;
@@ -235,28 +234,28 @@ public class ModuloMarketService {
 					throw new BadRequestException("La prueba gratuita de 7 días ya ha sido utilizada");
 			}
 			//Inicio solo para casos de model "Padres e hijos", ejemplo Programa de Actividades
-			ModuloMarket aux = null;
-			switch (moduloEnum) {//Busco modulo padre/hijo para activar
-				case		ACTIVIDAD:			aux = getModuloMarketModelByModuloEnum(ModuloEnum.PROGRAMA_DE_ACTIVIDADES);
-				case PROGRAMA_DE_ACTIVIDADES:	aux = getModuloMarketModelByModuloEnum(ModuloEnum.ACTIVIDAD);
-				default:						break;
-			}
-			if(aux != null) {//Activo prueba gratuita, haya sido activado o no, anteriormente
-				switch (tiempo) {
-					case PRUEBA_7_DIAS:	aux.forzarActivarSieteDiasGratis();
-					case _1_MES:		aux.sumarUnMes();
-					case _1_ANIO:		aux.sumarUnAnio();
-				}
-				this.modificarModuloMarket(aux);
-			}
-			//Fin caso padres e hijos
+//			ModuloMarket aux = null;
+//			switch (moduloEnum) {//Busco modulo padre/hijo para activar
+//				case		ACTIVIDAD:			aux = getModuloMarketModelByModuloEnum(ModuloEnum.PROGRAMA_DE_ACTIVIDADES);
+//				case PROGRAMA_DE_ACTIVIDADES:	aux = getModuloMarketModelByModuloEnum(ModuloEnum.ACTIVIDAD);
+//				default:						break;
+//			}
+//			if(aux != null) {//Activo prueba gratuita, haya sido activado o no, anteriormente
+//				switch (tiempo) {
+//					case PRUEBA_7_DIAS:	aux.forzarActivarSieteDiasGratis();
+//					case _1_MES:		aux.sumarUnMes();
+//					case _1_ANIO:		aux.sumarUnAnio();
+//				}
+//				this.modificarModuloMarket(aux);
+//			}
+//			this.modificarModuloMarket(aux);
+//			//Fin caso padres e hijos
 			switch (tiempo) {
 				case PRUEBA_7_DIAS:	m.activarSieteDiasGratis();
 				case _1_MES:		m.sumarUnMes();
 				case _1_ANIO:		m.sumarUnAnio();
 			}
-			this.modificarModuloMarket(aux);
-			m.sumarUnMes();
+			//m.sumarUnMes();
 			return this.modificarModuloMarket(m);
 		}
 		else
@@ -266,16 +265,16 @@ public class ModuloMarketService {
 	public ModuloMarketPayload suscripcionBasicMes(ModuloEnum moduloEnum) {
 		ModuloMarket m = getModuloMarketModelByModuloEnum(moduloEnum);
 		if(!m.isFreeModule()) {
-			if(moduloEnum.equals(ModuloEnum.ACTIVIDAD)) {
-				ModuloMarket aux = getModuloMarketModelByModuloEnum(ModuloEnum.PROGRAMA_DE_ACTIVIDADES);
-				aux.sumarUnMes();
-				this.modificarModuloMarket(aux);
-			}
-			else if(moduloEnum.equals(ModuloEnum.PROGRAMA_DE_ACTIVIDADES)) {
-				ModuloMarket aux = getModuloMarketModelByModuloEnum(ModuloEnum.ACTIVIDAD);
-				aux.sumarUnMes();
-				this.modificarModuloMarket(aux);
-			}
+//			if(moduloEnum.equals(ModuloEnum.ACTIVIDAD)) {
+//				ModuloMarket aux = getModuloMarketModelByModuloEnum(ModuloEnum.PROGRAMA_DE_ACTIVIDADES);
+//				aux.sumarUnMes();
+//				this.modificarModuloMarket(aux);
+//			}
+//			else if(moduloEnum.equals(ModuloEnum.PROGRAMA_DE_ACTIVIDADES)) {
+//				ModuloMarket aux = getModuloMarketModelByModuloEnum(ModuloEnum.ACTIVIDAD);
+//				aux.sumarUnMes();
+//				this.modificarModuloMarket(aux);
+//			}
 			m.sumarUnMes();
 			return this.modificarModuloMarket(m);
 		}
@@ -286,16 +285,16 @@ public class ModuloMarketService {
 	public ModuloMarketPayload suscripcionBasicAnio(ModuloEnum moduloEnum) {
 		ModuloMarket m = getModuloMarketModelByModuloEnum(moduloEnum);
 		if(!m.isFreeModule()) {
-			if(moduloEnum.equals(ModuloEnum.ACTIVIDAD)) {
-				ModuloMarket aux = getModuloMarketModelByModuloEnum(ModuloEnum.PROGRAMA_DE_ACTIVIDADES);
-				aux.sumarUnAnio();
-				this.modificarModuloMarket(aux);
-			}
-			else if(moduloEnum.equals(ModuloEnum.PROGRAMA_DE_ACTIVIDADES)) {
-				ModuloMarket aux = getModuloMarketModelByModuloEnum(ModuloEnum.ACTIVIDAD);
-				aux.sumarUnAnio();
-				this.modificarModuloMarket(aux);
-			}
+//			if(moduloEnum.equals(ModuloEnum.ACTIVIDAD)) {
+//				ModuloMarket aux = getModuloMarketModelByModuloEnum(ModuloEnum.PROGRAMA_DE_ACTIVIDADES);
+//				aux.sumarUnAnio();
+//				this.modificarModuloMarket(aux);
+//			}
+//			else if(moduloEnum.equals(ModuloEnum.PROGRAMA_DE_ACTIVIDADES)) {
+//				ModuloMarket aux = getModuloMarketModelByModuloEnum(ModuloEnum.ACTIVIDAD);
+//				aux.sumarUnAnio();
+//				this.modificarModuloMarket(aux);
+//			}
 			m.sumarUnAnio();
 			return this.modificarModuloMarket(m);
 		}

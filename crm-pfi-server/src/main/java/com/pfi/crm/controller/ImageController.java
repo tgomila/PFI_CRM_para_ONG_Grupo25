@@ -269,7 +269,7 @@ public class ImageController {
 	//Inicio ProgramaDeActividades
 	@GetMapping("/programaDeActividades/search/{idProgramaDeActividades}")
 	public ResponseEntity<byte[]> getFotoProgramaDeActividades(@PathVariable Long idProgramaDeActividades, @CurrentUser UserPrincipal currentUser) {
-		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.PROGRAMA_DE_ACTIVIDADES, "Ver foto de programa de actividades en tamaño completo");
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.ACTIVIDAD, "Ver foto de programa de actividades en tamaño completo");
 		return fileStorageService.getFotoProgramaDeActividades(idProgramaDeActividades);
 	}
 	

@@ -39,25 +39,25 @@ public class ProgramaDeActividadesController {
 
 	@GetMapping("/{id}")
 	public ProgramaDeActividadesPayload getProgramaDeActividadesById(@PathVariable Long id, @CurrentUser UserPrincipal currentUser) {
-		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.PROGRAMA_DE_ACTIVIDADES, "Ver un programa de actividades con id: '"+id+"'");
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.ACTIVIDAD, "Ver un programa de actividades con id: '"+id+"'");
 		return programaDeActividadesService.getProgramaDeActividadesById(id);
 	}
 
 	@GetMapping({ "/", "/all" })
 	public List<ProgramaDeActividadesPayload> getProgramaDeActividades(@CurrentUser UserPrincipal currentUser) {
-		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.PROGRAMA_DE_ACTIVIDADES, "Ver todas los programas de actividades");
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.ACTIVIDAD, "Ver todas los programas de actividades");
 		return programaDeActividadesService.getProgramasDeActividades();
 	}
 
 	@PostMapping({ "/", "/alta" })
 	public ProgramaDeActividadesPayload altaProgramaDeActividades(@Valid @RequestBody ProgramaDeActividadesPayload payload, @CurrentUser UserPrincipal currentUser) {
-		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.PROGRAMA_DE_ACTIVIDADES, "Cargar un nuevo programa de actividades");
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.ACTIVIDAD, "Cargar un nuevo programa de actividades");
 		return programaDeActividadesService.altaProgramaDeActividades(payload);
 	}
 
 	@DeleteMapping({ "/{id}", "/baja/{id}" })
 	public ResponseEntity<?> bajaProgramaDeActividades(@PathVariable Long id, @CurrentUser UserPrincipal currentUser) {
-		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.PROGRAMA_DE_ACTIVIDADES, "Dar de baja el programa de actividad" + id!=null ? (" con id "+id+"'"):"");
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.ACTIVIDAD, "Dar de baja el programa de actividad" + id!=null ? (" con id "+id+"'"):"");
 		String message = programaDeActividadesService.bajaProgramaDeActividades(id);
 		if(!message.isEmpty())
 			return ResponseEntity.ok().body(new ApiResponse(true, message));
@@ -67,13 +67,13 @@ public class ProgramaDeActividadesController {
 
 	@PutMapping({ "/", "/modificar" })
 	public ProgramaDeActividadesPayload modificarProgramaDeActividades(@Valid @RequestBody ProgramaDeActividadesPayload payload, @CurrentUser UserPrincipal currentUser) {
-		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.PROGRAMA_DE_ACTIVIDADES, "Modificar un programa de actividades" + payload!=null && payload.getId()!=null ? " con id: '"+payload.getId()+"'" :"");
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.ACTIVIDAD, "Modificar un programa de actividades" + payload!=null && payload.getId()!=null ? " con id: '"+payload.getId()+"'" :"");
 		return programaDeActividadesService.modificarProgramaDeActividades(payload);
 	}
 
 	@GetMapping({ "/nombres_tabla" })
 	public LinkedHashMap<String, String> getNombresTabla(@CurrentUser UserPrincipal currentUser) {
-		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.PROGRAMA_DE_ACTIVIDADES, "Ver nombres de la tabla de programa de actividades");
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.ACTIVIDAD, "Ver nombres de la tabla de programa de actividades");
 		return new ProgramaDeActividadesNombreTablaPayload().getNombresProgramaDeActividadesTabla();
 	}
 	
@@ -93,7 +93,7 @@ public class ProgramaDeActividadesController {
 	
 	@GetMapping("/test")
 	public ProgramaDeActividadesPayload getProgramaDeActividadesTest(@CurrentUser UserPrincipal currentUser) {
-		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.PROGRAMA_DE_ACTIVIDADES, "Ver ejemplo de una actividad");
+		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.EDITAR, ModuloEnum.ACTIVIDAD, "Ver ejemplo de una actividad");
 		
 		ProgramaDeActividadesPayload p = new ProgramaDeActividadesPayload();
 		p.setId(Long.valueOf(1234));
