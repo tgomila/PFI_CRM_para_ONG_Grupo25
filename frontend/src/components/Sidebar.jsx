@@ -70,8 +70,6 @@ const Sidebar = ({ children }) => {
             let menuItemConNoVista = res.data;
             //Si existe actividad, agregar programa de actividades
             const actividadIndex = menuItemConNoVista.findIndex(item => item.name === 'Actividad');
-            console.log("actividadIndex");
-            console.log(actividadIndex);
             if(actividadIndex !== -1) {
                 let commonItemsAux = {
                     order: 11,
@@ -83,11 +81,7 @@ const Sidebar = ({ children }) => {
                     priceOneMonth: 1.0,
                     priceOneYear: 10.0,
                 };
-                console.log("menuItemConNoVista antes");
-                console.log(menuItemConNoVista);
                 menuItemConNoVista.push(commonItemsAux);
-                console.log("menuItemConNoVista despues");
-                console.log(menuItemConNoVista);
             }
             const filteredMenuItems = menuItemConNoVista.filter(item => item.tipoVisibilidad !== "NO_VISTA" && item.tipoVisibilidad !== "SIN_SUSCRIPCION");
             filteredMenuItems.sort((a, b) => {
@@ -117,8 +111,8 @@ const Sidebar = ({ children }) => {
     
     if (user) {
 
-        console.log("user");
-        console.log(user);
+        // console.log("user");
+        // console.log(user);
         
         //menuItem = mockSERVICIODEMODULOS.map((item) => {
         menuItem = menuItemService.map((item) => {

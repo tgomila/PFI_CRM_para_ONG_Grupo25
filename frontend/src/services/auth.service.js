@@ -15,6 +15,8 @@ const register = (name, username, email, password, tenantOrClientId) => {
 };
 
 const login = (usernameOrEmail, password, tenantOrClientId) => {
+  localStorage.clear();
+  console.log(usernameOrEmail + " " + password)
   return axios
     .post(API_URL + "signin", {
       usernameOrEmail,

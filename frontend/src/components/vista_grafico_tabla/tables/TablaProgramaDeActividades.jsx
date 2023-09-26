@@ -26,8 +26,8 @@ const TablaProgramaDeActividades = ({visibilidadInput, dataIn}) => {
         visibilidadInput={visibilidadInput}
         nombreTipoDatoParaModuloVisibilidad={"ACTIVIDAD"}
         tipoDatoParaFoto={"programaDeActividades"}
-        el_la={"la"}
-        nombreTipoDato={"actividad"}
+        el_la={"el"}
+        nombreTipoDato={"programa de actividades"}
       />
     </div>
   );

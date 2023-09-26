@@ -13,15 +13,7 @@ import { ModalSeleccionarTenant } from "../CRUD/Constants/componente_individual/
 
 import { RenderFotoPerfilForTablaTenant } from "../vista_grafico_tabla/tables/Tabla_Variables";
 
-const required = (value) => {
-  if (!value) {
-    return (
-      <div className="alert alert-danger" role="alert">
-        ¡Este campo es obligatorio!
-      </div>
-    );
-  }
-};
+import { required } from "../CRUD/Constants/ConstantsInput";
 
 //const Login = () => {
 function Login() {

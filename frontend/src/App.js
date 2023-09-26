@@ -49,7 +49,7 @@ import CreateConsejoAdHonoremComponent from "./components/CRUD/Create/CreateCons
 import CreateVoluntarioComponent from "./components/CRUD/Create/CreateVoluntarioComponent";
 import CreateEmployeeComponent from "./trash-can/CreateEmployeeComponent";//Testing
 
-// import CreateUserComponent from "./components/CRUD/Create/CreateUserComponent";
+import CreateUserComponent from "./components/CRUD/Create/CreateUserComponent";
 import CreateActividadComponent from "./components/CRUD/Create/CreateActividadComponent";
 import CreateProgramaDeActividadesComponent from "./components/CRUD/Create/CreateProgramaDeActividadesComponent";
 import CreateProductoComponent from "./components/CRUD/Create/CreateProductoComponent";
@@ -71,7 +71,7 @@ import ReadConsejoAdHonoremComponent from "./components/CRUD/Read/ReadConsejoAdH
 import ReadVoluntarioComponent from "./components/CRUD/Read/ReadVoluntarioComponent";
 import ReadPersonaJuridicaComponent from "./components/CRUD/Read/ReadPersonaJuridicaComponent";
 
-// import ReadUserComponent from "./components/CRUD/Read/ReadUserComponent";
+import ReadUserComponent from "./components/CRUD/Read/ReadUserComponent";
 import ReadActividadComponent from "./components/CRUD/Read/ReadActividadComponent";
 import ReadProgramaDeActividadesComponent from "./components/CRUD/Read/ReadProgramaDeActividadesComponent";
 import ReadProductoComponent from "./components/CRUD/Read/ReadProductoComponent";
@@ -93,7 +93,7 @@ import UpdateColaboradorComponent from "./components/CRUD/Update/UpdateColaborad
 import UpdateConsejoAdHonoremComponent from "./components/CRUD/Update/UpdateConsejoAdHonoremComponent";
 import UpdateVoluntarioComponent from "./components/CRUD/Update/UpdateVoluntarioComponent";
 
-// import UpdateUserComponent from "./components/CRUD/Update/UpdateUserComponent";
+import UpdateUserComponent from "./components/CRUD/Update/UpdateUserComponent";
 import UpdateActividadComponent from "./components/CRUD/Update/UpdateActividadComponent";
 import UpdateProgramaDeActividadesComponent from "./components/CRUD/Update/UpdateProgramaDeActividadesComponent";
 import UpdateProductoComponent from "./components/CRUD/Update/UpdateProductoComponent";
@@ -353,7 +353,7 @@ const App = () => {
             <Route path="/voluntario/create" element={<CreateVoluntarioComponent />} />
             <Route path="/personajuridica/create" element={<CreatePersonaJuridicaComponent />} />
 
-            {/* <Route path="/users/create" element={<CreateUserComponent />} /> */}
+            <Route path="/users/create" element={<CreateUserComponent />} />
             <Route path="/actividad/create" element={<CreateActividadComponent />} />
             <Route path="/programadeactividades/create" element={<CreateProgramaDeActividadesComponent />} />
             <Route path="/producto/create" element={<CreateProductoComponent />} />
@@ -381,7 +381,7 @@ const App = () => {
             <Route path="/voluntario/update" element={<UpdateVoluntarioComponent />} />
             <Route path="/personajuridica/update" element={<UpdatePersonaJuridicaComponent />} />
 
-            {/* <Route path="/users/update" element={<UpdateUserComponent />} /> */}
+            <Route path="/users/update" element={<UpdateUserComponent />} />
             <Route path="/actividad/update" element={<UpdateActividadComponent />} />
             <Route path="/programadeactividades/update" element={<UpdateProgramaDeActividadesComponent />} />
             <Route path="/producto/update" element={<UpdateProductoComponent />} />
@@ -403,7 +403,7 @@ const App = () => {
             <Route path="/voluntario/read" element={<ReadVoluntarioComponent />} />
             <Route path="/personajuridica/read" element={<ReadPersonaJuridicaComponent />} />
 
-            {/* <Route path="/users/read" element={<ReadUserComponent />} /> */}
+            <Route path="/users/read" element={<ReadUserComponent />} />
             <Route path="/actividad/read" element={<ReadActividadComponent />} />
             <Route path="/programadeactividades/read" element={<ReadProgramaDeActividadesComponent />} />
             <Route path="/producto/read" element={<ReadProductoComponent />} />

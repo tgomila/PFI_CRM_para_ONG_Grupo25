@@ -83,10 +83,36 @@ const getAll = () => {
     .get(BACKEND_API_BASE_URL + "modulo/", { headers: authHeader() })
     .then((response) => {
         if (response.data) {
+            let modulosItem = response.data;
+            // //Si existe actividad, agregar programa de actividades
+            // const actividadIndex = modulosItem.findIndex(item => item.name === 'Actividad');
+            // if(actividadIndex !== -1) {
+            //     let commonItemsAux = {
+            //         order: 11,
+            //         moduloEnum: "PROGRAMA_DE_ACTIVIDADES",
+            //         name: 'Programa de Actividades',
+            //         path: "/programadeactividades",
+            //         iconName: "FaClipboardList",
+            //         tipoVisibilidad: modulosItem[actividadIndex].tipoVisibilidad,
+            //         priceOneMonth: 1.0,
+            //         priceOneYear: 10.0,
+            //     };
+            //     console.log("modulosItem antes");
+            //     console.log(modulosItem);
+            //     modulosItem.push(commonItemsAux);
+            //     console.log("modulosItem despues");
+            //     console.log(modulosItem);
+            // }
+            modulosItem.sort((a, b) => {
+                if (a.order !== b.order) {
+                    return a.order - b.order;
+                }
+                return a.name.localeCompare(b.name);
+            });
             if (localStorage.getItem("modulos") !== null){
                 localStorage.removeItem("modulos");
             }
-            localStorage.setItem("modulos", JSON.stringify(response.data));
+            localStorage.setItem("modulos", JSON.stringify(modulosItem));
             
         }
 
