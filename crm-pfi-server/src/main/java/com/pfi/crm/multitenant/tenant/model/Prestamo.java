@@ -51,7 +51,7 @@ public class Prestamo extends UserDateAudit {
 	public Prestamo(PrestamoPayload p, Contacto prestamista, Contacto prestatario) {
 		super();
 		this.id = p.getId();
-		this.modificar(p);
+		this.modificar(p, prestamista, prestatario);
 	}
 	
 	/**

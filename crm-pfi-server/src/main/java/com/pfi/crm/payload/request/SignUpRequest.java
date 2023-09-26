@@ -1,6 +1,12 @@
 package com.pfi.crm.payload.request;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.validation.constraints.*;
+
+import com.pfi.crm.multitenant.tenant.model.RoleName;
+import com.pfi.crm.multitenant.tenant.payload.ContactoPayload;
 
 public class SignUpRequest {
 	@NotBlank
@@ -21,6 +27,11 @@ public class SignUpRequest {
 	private String password;
 	
 	private Integer tenantOrClientId;
+	
+	//Esto es si lo da de alta un usuario con permisos altos, no es necesario su instancia.
+	private ContactoPayload contacto;
+	private Set<RoleName> roles = new HashSet<>();
+	//Fin si lo da de alta un usuario con permisos altos
 
 	public String getName() {
 		return name;
@@ -60,5 +71,21 @@ public class SignUpRequest {
 
 	public void setTenantOrClientId(Integer tenantOrClientId) {
 		this.tenantOrClientId = tenantOrClientId;
+	}
+
+	public ContactoPayload getContacto() {
+		return contacto;
+	}
+
+	public void setContacto(ContactoPayload contacto) {
+		this.contacto = contacto;
+	}
+
+	public Set<RoleName> getRoles() {
+		return roles;
+	}
+
+	public void setRoles(Set<RoleName> roles) {
+		this.roles = roles;
 	}
 }

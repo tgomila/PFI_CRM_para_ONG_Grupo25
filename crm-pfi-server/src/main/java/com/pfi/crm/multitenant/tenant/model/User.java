@@ -5,6 +5,7 @@ import org.hibernate.annotations.NaturalId;
 import com.pfi.crm.exception.ResourceNotFoundException;
 import com.pfi.crm.multitenant.tenant.model.audit.UserDateAudit;
 import com.pfi.crm.multitenant.tenant.payload.UserPayload;
+import com.pfi.crm.payload.request.SignUpRequest;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -88,6 +89,59 @@ public class User extends UserDateAudit{
 		this.username = username;
 		this.email = email;
 		this.password = password;
+	}
+
+	public User(SignUpRequest payload, Contacto contacto, Set<Role> roles) {
+		this.name = payload.getName();
+		this.username = payload.getUsername();
+		this.email = payload.getEmail();
+		this.password = payload.getPassword();
+		this.contacto = contacto;
+		this.roles = roles;
+	}
+	
+	/**
+	 * Pendiente modificar roles y/o password en service
+	 * @param userPayload
+	 */
+	public void modificar(UserPayload p) {
+		//this.id = p.getId();//No permito modificar id
+		this.name = p.getName();
+		//this.username = p.getUsername();//No permito modificar username
+		//this.email = p.getEmail();
+		//this.password
+		//this.roles
+	}
+	
+	/**
+	 * Es aux para el service, si tiene nuevos roles hay que modificar y save.
+	 * @return
+	 */
+	public boolean hayQueModificarSusRoles (UserPayload p) {
+		Set<RoleName> rolesPayload = p.getRoles();
+		Set<RoleName> rolesUser = this.getRoles().stream()
+				.map(Role::getRoleName)
+				.collect(Collectors.toSet());
+		return !rolesPayload.equals(rolesUser);
+	}
+	
+	/**
+	 * Es aux para el service, si tiene distinto contacto hay que modificar y save.
+	 * @return
+	 */
+	public boolean hayQueModificarSuContacto (UserPayload p) {
+		Long idContactoPayload = (p.getContacto() != null) ? p.getContacto().getId() : null;
+		Long idContactoUser = (this.getContacto() != null) ? this.getContacto().getId() : null;
+		
+		if (idContactoPayload == null && idContactoUser == null) {
+			return false;
+		}
+		
+		if (idContactoPayload != null && idContactoUser != null) {
+			return !idContactoPayload.equals(idContactoUser);
+		}
+		
+		return true;
 	}
 	
 	public void agregarRol(Role rol) {

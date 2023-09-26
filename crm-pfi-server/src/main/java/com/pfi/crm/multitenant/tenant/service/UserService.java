@@ -5,8 +5,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 
@@ -17,8 +19,10 @@ import com.pfi.crm.multitenant.tenant.model.Contacto;
 import com.pfi.crm.multitenant.tenant.model.Role;
 import com.pfi.crm.multitenant.tenant.model.RoleName;
 import com.pfi.crm.multitenant.tenant.model.User;
+import com.pfi.crm.multitenant.tenant.payload.UserPayload;
 import com.pfi.crm.multitenant.tenant.persistence.repository.RoleRepository;
 import com.pfi.crm.multitenant.tenant.persistence.repository.UserRepository;
+import com.pfi.crm.payload.request.SignUpRequest;
 
 @Service
 public class UserService {
@@ -31,8 +35,15 @@ public class UserService {
 	
 	@Autowired
 	private ContactoService contactoService;
+
+	@Autowired
+	private BCryptPasswordEncoder passwordEncoder;
 	
-	public User getUserById(@PathVariable Long id) {
+	public UserPayload getUserById(@PathVariable Long id) {
+		return this.getUserByIdModel(id).toPayload();
+	}
+	
+	private User getUserByIdModel(@PathVariable Long id) {
 		return userRepository.findById(id).orElseThrow(
 				() -> new ResourceNotFoundException("User", "id", id));
 	}
@@ -42,9 +53,9 @@ public class UserService {
 				() -> new ResourceNotFoundException("User", "username", username));
 	}
 	
-	public List<User> getUsers() {
-		return userRepository.findAll();
+	public List<UserPayload> getUsers() {
 		//return userRepository.findAll().filter(a -> a.isActive()).collect(Collectors.toList());
+		return userRepository.findAll().stream().map(e -> e.toPayload()).collect(Collectors.toList());
 	}
 	
 	public User altaUsuario (User user) {
@@ -177,70 +188,88 @@ public class UserService {
 		//return userRepository.getUsersWithContactoAndPersona();
 	}
 	
-	
-	
-	/*public void bajaUser(Long id) {
-		
-		//Si Optional es null o no, lo conocemos con ".isPresent()".		
-		Optional<User> optionalModel = userRepository.findById(id);
-		if(optionalModel.isPresent()) {
-			User m = optionalModel.get();
-			m.setEstadoActivoUser(false);
-			m.setFechaBajaUser(LocalDate.now());
+	public String bajaUser(Long id) {
+		User m = userRepository.findById(id).orElseThrow(
+				() -> new ResourceNotFoundException("User", "id", id));
+		String message = "Se ha dado de baja al usuario id: " + m.getId();
+		if(m.getContacto() != null) {
+			message += ", y desasociado a su contacto id: " + m.getContacto().getId();
+			m.setContacto(null);
 			userRepository.save(m);
-			//userRepository.delete(m);											//Temporalmente se elimina de la BD			
 		}
-		else {
-			//No existe user
+		userRepository.delete(m);
+		return message;
+	}
+	
+	public UserPayload altaUser(SignUpRequest signUpRequest) {
+		if (null == signUpRequest.getUsername() || signUpRequest.getUsername().isEmpty()) {
+			throw new BadRequestException("Username is required.");
 		}
 		
+		if (userRepository.existsByUsername(signUpRequest.getUsername())) {
+			throw new BadRequestException("Username is already taken!");
+		}
+
+		if (null == signUpRequest.getEmail() || signUpRequest.getEmail().isEmpty()) {
+			throw new BadRequestException("Email is required");
+		}
+
+		if (userRepository.existsByEmail(signUpRequest.getEmail())) {
+			throw new BadRequestException("Email Address already in use!");
+		}
+		
+		User userModel = new User(signUpRequest.getName(), signUpRequest.getUsername(),
+				signUpRequest.getEmail(), signUpRequest.getPassword());
+
+		userModel.setPassword(passwordEncoder.encode(userModel.getPassword()));
+		
+		//Asignar contacto
+		if(signUpRequest.getContacto() != null && signUpRequest.getContacto().getId() != null) {
+			Contacto contactoAsociar = contactoService.getContactoModelById(signUpRequest.getContacto().getId());
+			userModel.setContacto(contactoAsociar);
+		}
+		//Asignar roles
+		Set<RoleName> rolesPayload = signUpRequest.getRoles();
+		Set<Role> newRoles = rolesPayload.stream()
+				.map(this::buscarRole)
+				.collect(Collectors.toSet());
+		userModel.setRoles(newRoles);
+		
+		if(userModel.getRoles() != null && userModel.getRoles().isEmpty()) {
+			Role roleDefault = buscarRole(RoleName.ROLE_USER);
+			userModel.agregarRol(roleDefault);
+		}
+		
+
+		return userRepository.save(userModel).toPayload();
 	}
 	
-	public User modificarUser(User user) {
-		if (user != null && user.getId() != null)
-			return userRepository.save(user);
-		else
-			return new User();
+	public UserPayload modificarUser(UserPayload payload) {
+		if(payload == null)
+			throw new BadRequestException("Ha introducido un null, no se realizará ninguna acción.");
+		if(payload.getId() == null)
+			throw new BadRequestException("Ha introducido un id null, no se realizará una modificación.");
+		User userModel = this.getUserByIdModel(payload.getId());
+		userModel.modificar(payload);//Modificar datos
+		//Asignar contacto
+		if(userModel.hayQueModificarSuContacto(payload)) {
+			Contacto contactoAsociar = contactoService.getContactoModelById(payload.getContacto().getId());
+			userModel.setContacto(contactoAsociar);
+		}
+		//Asignar roles
+		if(userModel.hayQueModificarSusRoles(payload)) {
+			Set<RoleName> rolesPayload = payload.getRoles();
+			Set<Role> newRoles = rolesPayload.stream()
+					.map(this::buscarRole)
+					.collect(Collectors.toSet());
+			userModel.setRoles(newRoles);
+		}
+		if(userModel.getRoles() != null && userModel.getRoles().isEmpty()) {
+			Role roleDefault = buscarRole(RoleName.ROLE_DEFAULT);
+			userModel.agregarRol(roleDefault);
+		}
+		userModel = userRepository.save(userModel);
+		return userModel.toPayload();
 	}
 	
-	
-	
-	
-	
-	
-	
-	
-	// Payloads
-	public User toModel(UserPayload p) {
-
-		// User
-		User m = new User();
-		m.setId(p.getId());
-		m.setEstadoActivoUser(true);
-		m.setFechaAltaUser(LocalDate.now());
-		m.setFechaBajaUser(null);
-		m.setNombreDescripcion(p.getNombreDescripcion());
-		m.setCuit(p.getCuit());
-		m.setDomicilio(p.getDomicilio());
-		m.setEmail(p.getEmail());
-		m.setTelefono(p.getTelefono());
-
-		return m;
-	}
-
-	public UserPayload toPayload(User m) {
-
-		UserPayload p = new UserPayload();
-
-		// User
-		p.setId(m.getId());
-		p.setNombreDescripcion(m.getNombreDescripcion());
-		p.setCuit(m.getCuit());
-		p.setDomicilio(m.getDomicilio());
-		p.setEmail(m.getEmail());
-		p.setTelefono(m.getTelefono());
-		// Fin User
-
-		return p;
-	}*/
 }
