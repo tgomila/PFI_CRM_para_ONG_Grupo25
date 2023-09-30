@@ -68,8 +68,10 @@ Los módulos que se incluyen son:
 * Voluntarios/Colaboradores.
 * Contactos.
 * Conversaciones.
-* Talleres/Actividades.
-* Inventario.
+* Actividades/Programa de actividades.
+* Factura.
+* Donación.
+* Inventario (producto).
 * Proyectos.
 
 Funciones del sistema:
@@ -89,8 +91,8 @@ Este proyecto deja fuera de su alcance:
 
 ### Construido en
 * Frontend: React
-* Backend: Java 18 con framework SpringBoot.
-* Base de Datos: MySQL.
+* Backend: Java 11 con framework SpringBoot.
+* Base de Datos: MySQL & PostgreSQL.
 
 Para más información leer la documentación.
 
@@ -104,6 +106,7 @@ Para más información leer la documentación.
 #### Requisitos:
 * Tener eclipse ide (se utilizó una versión del 2022).
 * Base de datos MySQL Workbench (en este caso se usó la versión 8.0). Setear username "root" y password "1234" para este ejemplo, luego cambiar contraseña a una más fuerte.
+* Base de datos PostgreSQL.
 * Java SDK 11 en adelante (se utilizó Java 18).
 
 <p align="right">(<a href="#readme-top">volver a arriba</a>)</p>
@@ -180,17 +183,17 @@ Para más información leer la documentación.
 - [x] Base de Datos
 - [x] Backend multitenancy
 - [x] Frontend multitenancy
-- [x] Front de personas, beneficiarios, etc
-- [ ] Conversaciones (chat springboot o de nube)
-- [ ] Actividades y programa (list actividades) de actividades (hecho en backend).
-- [ ] Taller/Actividad (hecho en backend)
-- [ ] Inventario (Producto, cantidad, precio, notas, subtotal) --> Clase producto (hecho en backend)
-- [ ] Préstamos (hecho en backend)
-- [ ] Insumos (hecho en backend)
-- [ ] Proyectos (hecho en backend)
-- [ ] Gráficos front
+- [x] Front de personas, beneficiarios, etc.
+- [x] Actividades y programa (list actividades) de actividades.
+- [x] Producto (Incluye información de inventario como cantidad, precio, proveedor).
+- [x] Factura.
+- [x] Préstamos.
+- [x] Insumos.
+- [x] Proyectos.
+- [x] Gráficos front (hecho en algunos módulos).
+- [x] Manejo visibilidad de módulos.
 - [ ] OAuth
-- [ ] Módulos (hecho en backend)
+- [ ] Conversaciones (chat springboot o de nube).
 - [ ] Tutoriales de video
 
 <p align="right">(<a href="#readme-top">volver arriba</a>)</p>
