@@ -25,7 +25,7 @@ public class MasterTenantService {
 	}
 	
 	public List<TenantPayload> getTenants() {
-		return masterTenantRepository.findAllByOrderByTenantClientId().stream().map(e -> toPayload(e)).collect(Collectors.toList());
+		return masterTenantRepository.findAllByOrderByTenantClientId().stream().map(e -> e.toPayload()).collect(Collectors.toList());
 	}
 	
 	public List<String> getDbNames() {
@@ -49,7 +49,16 @@ public class MasterTenantService {
 		return null;
 	}
 	
-	public TenantPayload altaTenant(MasterTenant masterTenantpayload) {
+	//A partir de acá se utiliza en cargarDatosEjemplo.
+	
+	/** 
+	 * Se utilizaba en cargarDatosEjemplo.java. No deberia usarse por Admin de Tenants
+	 * Quedó desactualizado al pedir Model, ahora se usa otro método con Payload.
+	 * @param payload
+	 * @return
+	 */
+	@SuppressWarnings("unused")
+	private TenantPayload altaTenant(MasterTenant masterTenantpayload) {
 		if(masterTenantpayload.getTenantClientId() == null || masterTenantpayload.getTenantClientId() < 1) {
 			//Busco un id adecuado
 			Integer newTenantId = 100;
@@ -61,6 +70,11 @@ public class MasterTenantService {
 		return masterTenantRepository.save(masterTenantpayload).toPayload();
 	}
 	
+	/** 
+	 * Se utiliza en cargarDatosEjemplo.java. No deberia usarse por Admin de Tenants
+	 * @param payload
+	 * @return
+	 */
 	public TenantPayload altaTenant(TenantPayload payload) {
 		if(payload.getTenantClientId() == null || payload.getTenantClientId() < 1) {
 			//Busco un id adecuado
@@ -88,6 +102,10 @@ public class MasterTenantService {
 		return false;
 	}
 	
+	/**
+	 * Se utiliza en cargar datos ejemplo. No deberia usarse por Admin de Tenants
+	 * @param db_name
+	 */
 	public void bajaTenant(String db_name) {
 		MasterTenant tenant = getTenantByDbName(db_name);
 		if(tenant != null) {
@@ -95,15 +113,6 @@ public class MasterTenantService {
 		}
 		
 	}
-
-	private TenantPayload toPayload(MasterTenant m) {
-		TenantPayload p = new TenantPayload();
-		
-		p.setTenantClientId(m.getTenantClientId());
-		p.setDbName(m.getDbName());
-		p.setTenantName(m.getTenantName());
-		p.setTenantPhoneNumber(m.getTenantPhoneNumber());
-		
-		return p;
-	}
+	
+	//Fin de uso en cargarDatosEjemplo.java
 }

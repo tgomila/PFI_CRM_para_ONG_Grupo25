@@ -14,6 +14,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import com.pfi.crm.constant.MasterUserConstants;
 import com.pfi.crm.exception.BadRequestException;
 import com.pfi.crm.exception.ForbiddenException;
 import com.pfi.crm.exception.ResourceNotFoundException;
@@ -99,6 +100,12 @@ public class ModuloVisibilidadPorRolService {
 		}
 		mensaje+= " para realizar la acción de: '" + accion + "' en módulo: '" + modulo + "'.";
 		throw new ForbiddenException(mensaje);
+	}
+	
+	public void esMasterTenantAdmin(UserPrincipal currentUser) {
+		if(!currentUser.equals(MasterUserConstants.USER_DETAILS)) {
+			throw new ForbiddenException("No es master ternant admin");
+		}
 	}
 	
 	//Copiado y pegado del anterior

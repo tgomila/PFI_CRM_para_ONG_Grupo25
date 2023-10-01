@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -12,9 +13,11 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.pfi.crm.constant.JWTConstants;
+import com.pfi.crm.constant.MasterUserConstants;
 import com.pfi.crm.mastertenant.config.DBContextHolder;
 import com.pfi.crm.multitenant.mastertenant.entity.MasterTenant;
 import com.pfi.crm.multitenant.mastertenant.service.MasterTenantService;
+import com.pfi.crm.multitenant.tenant.model.User;
 import com.pfi.crm.util.JwtTokenProviderUtil;
 
 import io.jsonwebtoken.ExpiredJwtException;
@@ -26,6 +29,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /*
  * Este filtro:
@@ -59,6 +64,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 			try {
 				username = tokenProvider.getUsernameFromToken(authToken);
 				audience = tokenProvider.getAudienceFromToken(authToken);
+				
+				//Aux de inicio de sesión de Master tenant admin
+				if(username.equalsIgnoreCase(MasterUserConstants.MASTER_TENANT_USERNAME) && audience.equalsIgnoreCase("0")) {
+					inicioSesionMasterTenantAdmin(authToken, username, audience, request, response, filterChain);
+					return;
+				}
+				//Fin de inicio de sesión de Master tenant admin
+				
 				MasterTenant masterTenant = masterTenantService.findByClientId(Integer.valueOf(audience));
 				if (null == masterTenant) {
 					logger.error("An error during getting tenant name");
@@ -79,7 +92,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 			UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(username);
 			if (tokenProvider.validateToken(authToken, userDetails)) {
 				UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-						userDetails, null, Arrays.asList(new SimpleGrantedAuthority("ROLE_ADMIN")));
+						userDetails, null, Arrays.asList(new SimpleGrantedAuthority("ROLE_ADMIN")));//No cambies a ROLE_USER, despues no me cargan los gráficos :S
 				authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 				logger.info("authenticated user " + username + ", setting security context");
 				SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -110,6 +123,22 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 		}
 
 		filterChain.doFilter(request, response);*/
+	}
+	
+	//Aux con posibilidad de borrar
+	private void inicioSesionMasterTenantAdmin(String authToken, String username, String audience, HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+		if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+			UserDetails userDetails = MasterUserConstants.USER_DETAILS;
+			
+			if (tokenProvider.validateToken(authToken, userDetails)) {
+				UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+						userDetails, null, Arrays.asList(new SimpleGrantedAuthority("ROLE_ADMIN")));
+				authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+				logger.info("authenticated user " + username + ", setting security context");
+				SecurityContextHolder.getContext().setAuthentication(authentication);
+			}
+		}
+		filterChain.doFilter(request, response);
 	}
 
 	/*private String getJwtFromRequest(HttpServletRequest request) {

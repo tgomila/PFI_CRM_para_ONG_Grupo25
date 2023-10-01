@@ -1,6 +1,7 @@
 package com.pfi.crm.controller;
 
 import com.pfi.crm.constant.Estado;
+import com.pfi.crm.constant.MasterUserConstants;
 import com.pfi.crm.exception.AppException;
 import com.pfi.crm.mastertenant.config.DBContextHolder;
 import com.pfi.crm.multitenant.mastertenant.entity.MasterTenant;
@@ -15,6 +16,7 @@ import com.pfi.crm.payload.request.LoginRequest;
 import com.pfi.crm.payload.request.SignUpRequest;
 import com.pfi.crm.payload.response.ApiResponse;
 import com.pfi.crm.payload.response.JwtAuthenticationResponse;
+import com.pfi.crm.security.UserPrincipal;
 import com.pfi.crm.security.UserTenantInformation;
 import com.pfi.crm.util.JwtTokenProviderUtil;
 
@@ -95,6 +97,10 @@ public class AuthController implements Serializable {
 		if(null == loginRequest.getTenantOrClientId()){
 			return new ResponseEntity<>("ID Tenant es requerido para la conexión", HttpStatus.BAD_REQUEST);
 		}
+		
+		if(loginRequest.getTenantOrClientId().equals(Integer.valueOf(0))){
+			return authenticateMasterTenantUser(loginRequest);
+		}
 		//Fin chequear login
 		
 		//Setear base de datos o schema
@@ -144,6 +150,52 @@ public class AuthController implements Serializable {
 		
 		String jwt = tokenProvider.generateToken(authentication);
 		return ResponseEntity.ok(new JwtAuthenticationResponse(jwt));*/
+	}
+	
+	@PostMapping("/master_tenant/signin")
+	public ResponseEntity<?> authenticateMasterTenantUser(@Valid @RequestBody LoginRequest loginRequest) throws AuthenticationException {
+		
+		//Chequear login
+		LOGGER.info("userLogin() method call...");
+		if(null == loginRequest.getUsernameOrEmail() || !loginRequest.getUsernameOrEmail().equalsIgnoreCase(MasterUserConstants.MASTER_TENANT_USERNAME)){
+			return new ResponseEntity<>("Usuario no válido", HttpStatus.BAD_REQUEST);
+		}
+		
+		if(null == loginRequest.getPassword() || loginRequest.getPassword().isEmpty()){
+			return new ResponseEntity<>("La contraseña es requerida", HttpStatus.BAD_REQUEST);
+		}
+		
+		if(!loginRequest.getPassword().equalsIgnoreCase(MasterUserConstants.MASTER_TENANT_USER_PASSWORD)){
+			return new ResponseEntity<>("La contraseña es incorrecta", HttpStatus.BAD_REQUEST);
+		}
+		
+		if(null == loginRequest.getTenantOrClientId()){
+			return new ResponseEntity<>("ID Tenant es requerido para la conexión", HttpStatus.BAD_REQUEST);
+		}
+		
+		if(!loginRequest.getTenantOrClientId().equals(Integer.valueOf(0))){
+			return new ResponseEntity<>("ID Tenant no es de Master Tenant, tiene que ser 0", HttpStatus.BAD_REQUEST);
+		}
+		//Fin chequear login
+		
+		//Setear base de datos o schema
+		//DBContextHolder.setCurrentDb(masterTenant.getDbName());
+		UserDetails userDetails = MasterUserConstants.USER_DETAILS;
+		List<String> roles = userDetails.getAuthorities().stream()
+				.map(item -> item.getAuthority())
+				.collect(Collectors.toList());
+		System.out.println("userDetails: " + userDetails.getUsername() + " psw: " + userDetails.getPassword() + " auth: " + userDetails.getAuthorities().toString());
+		final String token = tokenProvider.generateToken(userDetails.getUsername(),String.valueOf(loginRequest.getTenantOrClientId()));
+		//Map the value into applicationScope bean
+		setMetaDataAfterLogin();
+		return ResponseEntity.ok(new JwtAuthenticationResponse(
+				userDetails.getUsername(),
+				token,
+				roles,
+				Integer.valueOf(0),//tenantPayload.getTenantClientId(),
+				"MasterTenant",//tenantPayload.getDbName(),
+				"Master de todos los tenants"//tenantPayload.getTenantName()
+			));
 	}
 	
 	private void loadCurrentDatabaseInstance(String databaseName, String userName) {
