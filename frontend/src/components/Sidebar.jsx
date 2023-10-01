@@ -54,87 +54,119 @@ const Sidebar = ({ children }) => {
 
 
     let menuItem = [];
-    let tenantLogoName = "";
-    const [currentUser, setCurrentUser] = useState(undefined);
+    //const [menuItem, setMenuItem] = useState(undefined);
     const [urlLogo, setUrlLogo] = useState(undefined);
     const [tenantName, setTenantName] = useState("");
-    const [menuItemService, setMenuitem] = useState([]);
+    const [menuItemService, setMenuItemService] = useState([]);
     const [showModal, setShowModal] = useState(false);
     useEffect(() => {
         // Fetch data
         // Update the document title using the browser API
-    
-        //Lista de modulos a mostrar
-        let modulos = modulosService.getModulos();
-        modulos.then((res) => {
-            let menuItemConNoVista = res.data;
-            //Si existe actividad, agregar programa de actividades
-            const actividadIndex = menuItemConNoVista.findIndex(item => item.name === 'Actividad');
-            if(actividadIndex !== -1) {
-                let commonItemsAux = {
-                    order: 11,
-                    moduloEnum: "PROGRAMA_DE_ACTIVIDADES",
-                    name: 'Programa de Actividades',
-                    path: "/programadeactividades",
-                    iconName: "FaClipboardList",
-                    tipoVisibilidad: menuItemConNoVista[actividadIndex].tipoVisibilidad,
-                    priceOneMonth: 1.0,
-                    priceOneYear: 10.0,
-                };
-                menuItemConNoVista.push(commonItemsAux);
-            }
-            const filteredMenuItems = menuItemConNoVista.filter(item => item.tipoVisibilidad !== "NO_VISTA" && item.tipoVisibilidad !== "SIN_SUSCRIPCION");
-            filteredMenuItems.sort((a, b) => {
-                if (a.order !== b.order) {
-                    return a.order - b.order;
-                }
-                return a.name.localeCompare(b.name);
-            });
-            setMenuitem(filteredMenuItems);
-        });
-        //TODO testing borrarlo despues
 
-        setUrlLogo("http://ssl.gstatic.com/accounts/ui/avatar_2x.png");//Default
-        //const user = AuthService.getCurrentUser();
-        if (user) {
-            setCurrentUser(user);
+        console.log("user");
+        console.log(user);
+
+        if(user?.dbName === "MasterTenant") {
+            let modulos = [
+                {
+                    order: 1,
+                    moduloEnum: "CONTACTO",
+                    name: 'Tenants',
+                    path: "/master_tenant",
+                    iconName: "FaClipboardList",
+                    tipoVisibilidad: "EDITAR",
+                    priceOneMonth: 0.0,
+                    priceOneYear: 0.0,
+                },
+            ];
+            setMenuItemService(modulos);
+            setUrlLogo("http://ssl.gstatic.com/accounts/ui/avatar_2x.png");//Default
+        }
+        else if (user) {
+    
+            //Lista de modulos a mostrar
+            let modulos = modulosService.getModulos();
+            modulos.then((res) => {
+                let menuItemConNoVista = res.data;
+                //Si existe actividad, agregar programa de actividades
+                const actividadIndex = menuItemConNoVista.findIndex(item => item.name === 'Actividad');
+                if(actividadIndex !== -1) {
+                    let commonItemsAux = {
+                        order: 11,
+                        moduloEnum: "PROGRAMA_DE_ACTIVIDADES",
+                        name: 'Programa de Actividades',
+                        path: "/programadeactividades",
+                        iconName: "FaClipboardList",
+                        tipoVisibilidad: menuItemConNoVista[actividadIndex].tipoVisibilidad,
+                        priceOneMonth: 1.0,
+                        priceOneYear: 10.0,
+                    };
+                    menuItemConNoVista.push(commonItemsAux);
+                }
+                const filteredMenuItems = menuItemConNoVista.filter(item => item.tipoVisibilidad !== "NO_VISTA" && item.tipoVisibilidad !== "SIN_SUSCRIPCION");
+                filteredMenuItems.sort((a, b) => {
+                    if (a.order !== b.order) {
+                        return a.order - b.order;
+                    }
+                    return a.name.localeCompare(b.name);
+                });
+                setMenuItemService(filteredMenuItems);
+            });
+            //TODO testing borrarlo despues
+
+            setUrlLogo("http://ssl.gstatic.com/accounts/ui/avatar_2x.png");//Default
+            //const user = AuthService.getCurrentUser();
+            
             setUrlLogo(BACKEND_STATIC_BASE_URL + "logo/" + user.dbName + ".png");
             setTenantName(user.tenantName);
             //setUrlLogo("http://localhost:8080/logo/tenant2.png");
-        }
-        else {//Default
+            
+        } else {
             setUrlLogo("http://ssl.gstatic.com/accounts/ui/avatar_2x.png");
             setTenantName("No se ha iniciado sesión");
         }
         
     }, []);
-    
-    if (user) {
 
-        // console.log("user");
-        // console.log(user);
+    // useEffect(() => {
+    //     if (user && user?.dbName === "MasterTenant") {
+    //         let modulos = [
+    //             {
+    //                 order: 1,
+    //                 moduloEnum: "CONTACTO",
+    //                 name: 'Tenants',
+    //                 path: "/master_tenant",
+    //                 iconName: "FaClipboardList",
+    //                 tipoVisibilidad: "EDITAR",
+    //                 priceOneMonth: 0.0,
+    //                 priceOneYear: 0.0,
+    //             },
+    //         ];
+    //         setMenuItemService(modulos);
+    //         setUrlLogo("http://ssl.gstatic.com/accounts/ui/avatar_2x.png");//Default
+    //     }
+    // }, [user]);
+
+    const setearMenuItem = () => {
+        
+    }
+    
+    if (user && user?.dbName !== "MasterTenant") {
+        console.log("Entre aquí")
         
         //menuItem = mockSERVICIODEMODULOS.map((item) => {
-        menuItem = menuItemService.map((item) => {
+        let menuItemAux = menuItemService.map((item) => {
             //debugger;
             let commonItems = {
                 order: item.order,
                 path: item.path,
                 name: item.name,
-                tipoVisibilidad: item.tipoVisibilidad
+                tipoVisibilidad: item.tipoVisibilidad,
+                icon: <FaRegEye />
             };
             switch (item.name) {
                 case 'Contacto':
-                    commonItems['icon'] = <AiFillContacts />;
-                    break;
-                    /*return {
-                        order: item.order,
-                        path: item.path,
-                        name: item.name,
-                        tipoVisibilidad: item.tipoVisibilidad,
-                        icon: <AiFillContacts />
-                    }
-                    break;*/
+                    commonItems['icon'] = <AiFillContacts />;break;
                 
                 case 'Persona':
                     commonItems['icon'] = <GoPerson />;break;
@@ -200,11 +232,12 @@ const Sidebar = ({ children }) => {
 
         });
         //Quito chat de la vista, esto es por su había un chat propio
-        menuItem = menuItem.filter(item => item.name !== 'Chat');
+        menuItemAux = menuItemAux.filter(item => item.name !== 'Chat');
+        
 
         //Agregado extra de item para pruebas
 
-        if(user.roles.includes("ROLE_ADMIN")) {
+        if(user.roles.includes("ROLE_ADMIN") && user?.dbName !== "MasterTenant") {
             let commonItemsAux = {
                 order: 21,
                 path: "/modulo_visibilidad",
@@ -212,11 +245,24 @@ const Sidebar = ({ children }) => {
                 tipoVisibilidad: "EDITAR",
                 icon: <FaRegEye />
             };
-            menuItem.push(commonItemsAux);
+            menuItemAux.push(commonItemsAux);
         }
+        //setMenuItem(menuItemAux);
+        menuItem = menuItemAux;
     }
-    else {
-
+    if (user && user?.dbName === "MasterTenant") {
+        let menuItemAux = menuItemService.map((item) => {
+            //debugger;
+            let commonItems = {
+                order: item.order,
+                path: item.path,
+                name: item.name,
+                tipoVisibilidad: item.tipoVisibilidad,
+                icon: <FaRegEye />
+            };
+            return commonItems;
+        });
+        menuItem = menuItemAux;
     }
 
     return (
@@ -269,7 +315,9 @@ const Sidebar = ({ children }) => {
                         <FaBars onClick={toggle} />
                     </div>
                 </div>
-                {
+                {console.log("menuItem")}
+                {console.log(menuItem)}
+                {menuItem && (
                     menuItem.map((item, index) => (
                         <NavLink to={item.path} key={index} className="link" activeclassname="active">
                             <div className="icon">{item.icon}</div>
@@ -278,7 +326,7 @@ const Sidebar = ({ children }) => {
                             <div style={{ visibility: isOpen ? "visible" : "hidden", opacity: isOpen ? "1": "0" }} className="link_text">{item.name}</div>
                         </NavLink>
                     ))
-                }
+                )}
             </div>
             <main>{children}</main>
         </div>

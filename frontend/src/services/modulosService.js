@@ -76,6 +76,7 @@ const getModulo = (moduloName) => {
  * @returns 
  */
 const getAll = () => {
+
     //return  ["Persona", "Beneficiario","Empleado","Colaborador","Consejo Adhonorem","Persona Juridica","Profesional","Donacion","Factura","Users"];
     let link = BACKEND_API_BASE_URL + getBestRoleLink();
     let rta = axios

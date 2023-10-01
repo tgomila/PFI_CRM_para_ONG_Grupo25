@@ -189,6 +189,21 @@ function Login() {
                     </label>
                   </div>
                 ))}
+                <div className="radio-item" key={0}>
+                  <input
+                    className="radio-input"
+                    type="radio"
+                    name={"tenantOrClientId"}
+                    value={0}
+                    onChange={onChangeTenantOrClientId}
+                    id={0}
+                  />
+                  <label htmlFor={0} className="radio-label">
+                    <div className="radio-content">
+                      <span className="miLabel">{"Cosmos Administration"}</span>
+                    </div>
+                  </label>
+                </div>
               </div>
 
               {/* <table>
