@@ -15,6 +15,7 @@ import "../../../Styles/CRUD.scss";
  * @param {string} DatoUpdateInput traelo mediante ejemplo: import { PersonaUpdateInput } from '../Constants/ConstantsInputModel';
  * @param {string} tipoDatoForImageService si es tipos de personas (empleado, beneficiario, etc) es 'contacto', sinó else, si es producto es 'producto'. Si no hay foto ejemplo 'factura', poner "" para no mostrar
  * @param {Object} Service ejemplo EmpleadoService
+ * @param {Object} methodToCallInput (opcional) es para posteos personalizados, si en vez de 'create' se usa 'postSumarTiempoMarket'
  * @param {Array} dataIn si por ejemplo un Producto ya tiene cargado su proveedor contacto, no es necesario llamarlo.
  * @param {string} urlTablaDato ejemplo '/empleado', es para cuando presiona el botón cancelar
  * @param {boolean} isVentanaEmergente true o false
@@ -24,7 +25,7 @@ import "../../../Styles/CRUD.scss";
  * @param {string} typeCRUD ingresar 'CREATE' ó 'UPDATE' para saber que mostrar
  * @returns 
  */
-const CreateReadUpdateGenericoConFoto = ({cargarDatosDefault, DatoUpdateInput, tipoDatoForImageService, Service, dataIn, urlTablaDato, isVentanaEmergente, isPantallaCompleta, el_la, nombreTipoDato, typeCRUD, setAgregarItem}) => {
+const CreateReadUpdateGenericoConFoto = ({cargarDatosDefault, DatoUpdateInput, tipoDatoForImageService, Service, methodToCallInput, dataIn, urlTablaDato, isVentanaEmergente, isPantallaCompleta, el_la, nombreTipoDato, typeCRUD, setAgregarItem}) => {
     let navigate = useNavigate();
     const location = useLocation();
 
@@ -136,7 +137,7 @@ const CreateReadUpdateGenericoConFoto = ({cargarDatosDefault, DatoUpdateInput, t
                 setAgregarItem(data);
                 setLoading(false);
             } else {
-                const methodToCall = typeCRUD === "CREATE" ? "create" : "update";
+                const methodToCall = methodToCallInput ? methodToCallInput : typeCRUD === "CREATE" ? "create" : "update";
                 console.log(data);
                 console.log(methodToCall);
                 //anteriormente era Service.create o Service.update
@@ -428,7 +429,7 @@ const CreateReadUpdateGenericoConFoto = ({cargarDatosDefault, DatoUpdateInput, t
                 <div className = {isVentanaEmergente ? "" : isPantallaCompleta ? "card col-md-10 offset-md-1 offset-md-1" : "card col-md-6 offset-md-3 offset-md-3"}>
                     {!submitted ? (
                         <div className = "card-body">
-                            {typeCRUD === 'CREATE' && tipoDatoForImageService === 'contacto' ? <CreateSearch/> : <UpdateReadSearch/>}
+                            {typeCRUD === 'CREATE' && tipoDatoForImageService === 'contacto' && urlTablaDato !== '/contacto' ? <CreateSearch/> : <UpdateReadSearch/>}
                             {(forzarRenderizado) && (<div></div>)}
                             {(!mostrarSearchID) && (
                                 <div>
@@ -465,7 +466,7 @@ const CreateReadUpdateGenericoConFoto = ({cargarDatosDefault, DatoUpdateInput, t
                                                         {setAgregarItem ? (
                                                           "Agregar item"
                                                         ) : (
-                                                          typeCRUD === 'CREATE' ? ('Crear') : ('Modificar' + nombreTipoDatoPrimeraLetraMayuscula)
+                                                          (typeCRUD === 'CREATE' ? ('Crear') : ('Modificar')) + ' ' + nombreTipoDatoPrimeraLetraMayuscula
                                                         )}
                                                         
                                                     </button>

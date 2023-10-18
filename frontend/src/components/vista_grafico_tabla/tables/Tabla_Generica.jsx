@@ -106,7 +106,7 @@ const TablaGenericaConFoto = ({ columnsIn, dataIn, Service, visibilidadInput, no
     if (visibilidadInput !== "") {
       setVisibilidad(visibilidadInput);
       setIsVisibilidadReady(true);
-    } else {
+    } else if(nombreTipoDatoParaModuloVisibilidad) {
       let modulo = modulosService.getVisibilidadByModulo(nombreTipoDatoParaModuloVisibilidad);
       modulo.then((response) => {
         if (response) {
@@ -114,6 +114,9 @@ const TablaGenericaConFoto = ({ columnsIn, dataIn, Service, visibilidadInput, no
           setIsVisibilidadReady(true);
         }
       });
+    } else {
+      setVisibilidad("");
+      setIsVisibilidadReady(true);
     }
 
     //agregarFotos();
@@ -162,7 +165,13 @@ const TablaGenericaConFoto = ({ columnsIn, dataIn, Service, visibilidadInput, no
   }
 
   if (!isDataColumnsReady || !isVisibilidadReady) {
-    return null;//evita la renderización prematura
+    //return null;//evita la renderización prematura
+    return (
+      <div>
+        <span className="spinner-border spinner-border-sm"></span>
+        <p>Cargando datos e imágenes de la tabla...</p>
+      </div>
+    );
   }
 
   return (

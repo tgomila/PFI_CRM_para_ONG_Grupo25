@@ -16,6 +16,7 @@ import {
     FaPalfed,
     FaComments,
     FaRegEye,
+    FaUsers,
 } from "react-icons/fa";
 
 import {
@@ -38,8 +39,8 @@ import {
 import { NavLink } from 'react-router-dom';
 
 import modulosService from '../services/modulosService';
-import * as constantsURL from "../components/constants/ConstantsURL";
 import { Modal, Button, OverlayTrigger, Tooltip, Image } from "react-bootstrap";
+import * as constantsURL from "../components/constants/ConstantsURL";
 const BACKEND_STATIC_BASE_URL = constantsURL.STATIC_BASE_URL;
 //DOCUMENTACION ICONOS
 // https://react-icons.github.io/react-icons/icons?name=fa
@@ -70,17 +71,36 @@ const Sidebar = ({ children }) => {
             let modulos = [
                 {
                     order: 1,
-                    moduloEnum: "CONTACTO",
-                    name: 'Tenants',
-                    path: "/master_tenant",
+                    moduloEnum: "MARKETPLACE",
+                    name: 'Marketplace',
+                    path: "/master_tenant/market",
                     iconName: "FaClipboardList",
-                    tipoVisibilidad: "EDITAR",
+                    tipoVisibilidad: "",
+                    priceOneMonth: 0.0,
+                    priceOneYear: 0.0,
+                },
+                {
+                    order: 2,
+                    moduloEnum: "VISIBILIDAD",
+                    name: 'Visibilidad',
+                    path: "/master_tenant/visibilidad",
+                    iconName: "FaClipboardList",
+                    tipoVisibilidad: "",
+                    priceOneMonth: 0.0,
+                    priceOneYear: 0.0,
+                },
+                {
+                    order: 3,
+                    moduloEnum: "SIMULADOR_USUARIOS",
+                    name: 'Simular usuario',
+                    path: "/master_tenant/tenant",
+                    iconName: "FaClipboardList",
+                    tipoVisibilidad: "",
                     priceOneMonth: 0.0,
                     priceOneYear: 0.0,
                 },
             ];
             setMenuItemService(modulos);
-            setUrlLogo("http://ssl.gstatic.com/accounts/ui/avatar_2x.png");//Default
         }
         else if (user) {
     
@@ -112,47 +132,16 @@ const Sidebar = ({ children }) => {
                 });
                 setMenuItemService(filteredMenuItems);
             });
-            //TODO testing borrarlo despues
-
-            setUrlLogo("http://ssl.gstatic.com/accounts/ui/avatar_2x.png");//Default
-            //const user = AuthService.getCurrentUser();
-            
-            setUrlLogo(BACKEND_STATIC_BASE_URL + "logo/" + user.dbName + ".png");
             setTenantName(user.tenantName);
-            //setUrlLogo("http://localhost:8080/logo/tenant2.png");
             
         } else {
-            setUrlLogo("http://ssl.gstatic.com/accounts/ui/avatar_2x.png");
             setTenantName("No se ha iniciado sesión");
         }
+        setUrlLogo(AuthService.getTenantLogoURL());
         
     }, []);
-
-    // useEffect(() => {
-    //     if (user && user?.dbName === "MasterTenant") {
-    //         let modulos = [
-    //             {
-    //                 order: 1,
-    //                 moduloEnum: "CONTACTO",
-    //                 name: 'Tenants',
-    //                 path: "/master_tenant",
-    //                 iconName: "FaClipboardList",
-    //                 tipoVisibilidad: "EDITAR",
-    //                 priceOneMonth: 0.0,
-    //                 priceOneYear: 0.0,
-    //             },
-    //         ];
-    //         setMenuItemService(modulos);
-    //         setUrlLogo("http://ssl.gstatic.com/accounts/ui/avatar_2x.png");//Default
-    //     }
-    // }, [user]);
-
-    const setearMenuItem = () => {
-        
-    }
     
     if (user && user?.dbName !== "MasterTenant") {
-        console.log("Entre aquí")
         
         //menuItem = mockSERVICIODEMODULOS.map((item) => {
         let menuItemAux = menuItemService.map((item) => {
@@ -232,7 +221,7 @@ const Sidebar = ({ children }) => {
 
         });
         //Quito chat de la vista, esto es por su había un chat propio
-        menuItemAux = menuItemAux.filter(item => item.name !== 'Chat');
+        // menuItemAux = menuItemAux.filter(item => item.name !== 'Chat');
         
 
         //Agregado extra de item para pruebas
@@ -260,6 +249,14 @@ const Sidebar = ({ children }) => {
                 tipoVisibilidad: item.tipoVisibilidad,
                 icon: <FaRegEye />
             };
+            switch (item.name) {
+                case 'Marketplace':
+                    commonItems['icon'] = <MdLocalGroceryStore />;break;
+                case 'Visibilidad':
+                    commonItems['icon'] = <FaRegEye />;break;
+                case 'Simular usuario':
+                    commonItems['icon'] = <FaUsers />;break;
+            }
             return commonItems;
         });
         menuItem = menuItemAux;
@@ -315,8 +312,8 @@ const Sidebar = ({ children }) => {
                         <FaBars onClick={toggle} />
                     </div>
                 </div>
-                {console.log("menuItem")}
-                {console.log(menuItem)}
+                {/* {console.log("menuItem")}
+                {console.log(menuItem)} */}
                 {menuItem && (
                     menuItem.map((item, index) => (
                         <NavLink to={item.path} key={index} className="link" activeclassname="active">

@@ -8,7 +8,7 @@ const ReadProgramaDeActividadesComponent = ({dataIn, isVentanaEmergente}) => {
     <CreateReadUpdateGenericoConFoto
         cargarDatosDefault = {cargarProgramaDeActividadesDefault}
         DatoUpdateInput = {ProgramaDeActividadesRead}
-        tipoDatoForImageService = {null}
+        tipoDatoForImageService = {'programaDeActividades'}
         dataIn = {dataIn}
         Service = {ProgramaDeActividadesService}
         urlTablaDato = {'/programaDeActividades'}

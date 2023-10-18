@@ -27,6 +27,10 @@ import {
   dateBetweenFilterFn,
 } from "./Tabla_Filters";
 import { format } from 'date-fns';
+import * as constantsURL from "../../constants/ConstantsURL";
+import defaultNoImage from '../../../services/constantsPictures/defaultNoImage.png';
+
+const BACKEND_STATIC_BASE_URL = constantsURL.STATIC_BASE_URL;
 
 const IndeterminateCheckbox = forwardRef(({ indeterminate, ...rest }, ref) => {
   const defaultRef = useRef();
@@ -269,7 +273,8 @@ const RenderFotoPerfil = (id, tipo, imagen, nombrePerfil) => {
 };
 
 //Solo se utilizará para login tenant select
-const RenderFotoPerfilForTablaTenant = ({imagen, nombreFoto}) => {
+const RenderFotoPerfilForTablaTenant = (tenantDbName, nombreTenantFoto) => {
+  const [urlLogo, setUrlLogo] = useState(undefined);
   const [showModal, setShowModal] = useState(false);
 
   const handleOpenModal = () => {
@@ -280,25 +285,32 @@ const RenderFotoPerfilForTablaTenant = ({imagen, nombreFoto}) => {
     setShowModal(false);
   };
 
-  if(!nombreFoto){
-    nombreFoto = "";
+  if(!nombreTenantFoto){
+    nombreTenantFoto = "";
   }
+  useEffect(() => {
+    setUrlLogo(defaultNoImage);//Default
+    if(tenantDbName) {
+      setUrlLogo(BACKEND_STATIC_BASE_URL + "logo/" + tenantDbName + ".png");
+    }
+  }, []);
+
   return(
     <div>
-      {imagen ? (
+      {tenantDbName ? (
         <div>
-          {nombreFoto ? (
+          {nombreTenantFoto ? (
             <div>
               <OverlayTrigger
                 placement="top"
                 overlay={
                   <Tooltip id="tooltip-top">
-                    {nombreFoto}
+                    {nombreTenantFoto}
                   </Tooltip>
                 }
               >
                 <Image 
-                src={imagen} 
+                src={urlLogo} 
                 alt="Foto de perfil" 
                 className="contacto-img-card"
                 onClick={handleOpenModal}
@@ -307,7 +319,7 @@ const RenderFotoPerfilForTablaTenant = ({imagen, nombreFoto}) => {
             </div>
           ) : (
             <img 
-            src={imagen} 
+            src={urlLogo} 
             alt="Foto de perfil" 
             className="contacto-img-card"
             onClick={handleOpenModal}
@@ -317,15 +329,15 @@ const RenderFotoPerfilForTablaTenant = ({imagen, nombreFoto}) => {
         
           <Modal show={showModal} onHide={handleCloseModal}>
             <Modal.Header>
-              <Modal.Title>{nombreFoto}</Modal.Title>
+              <Modal.Title>{nombreTenantFoto}</Modal.Title>
               <button className="close" onClick={handleCloseModal}>
                 <span aria-hidden="true">&times;</span>
               </button>
             </Modal.Header>
             <Modal.Body>
-              {imagen ? (
-                <a href={imagen} target="_blank" rel="noopener noreferrer">
-                  <img src={imagen} alt="Foto de perfil" className="contacto-img-modal" />
+              {urlLogo ? (
+                <a href={urlLogo} target="_blank" rel="noopener noreferrer">
+                  <img src={urlLogo} alt="Foto de perfil" className="contacto-img-modal" />
                 </a>
               ) : (
                 <div>
@@ -344,8 +356,8 @@ const RenderFotoPerfilForTablaTenant = ({imagen, nombreFoto}) => {
         </div>
       ) : (
         <div>
-          <span className="spinner-border spinner-border-sm"></span>
-          <p>No hay foto cargada</p>
+          {/* <span className="spinner-border spinner-border-sm"></span>
+          <p>No hay foto cargada</p> */}
         </div>
       )}
     </div>
@@ -498,7 +510,7 @@ const RenderBotonBorrar = (idInput, nombreABorrar, Service) => {
         <Modal show={showModal} onHide={handleCloseModal}>
           <Modal.Header>
             {!deleteMessage ? (
-              <Modal.Title>Deseas borrar al ID {idInput ? idInput : ""}?</Modal.Title>
+              <Modal.Title>¿Deseas borrar al ID {idInput ? idInput : ""}?</Modal.Title>
             ) : (
               <Modal.Title>¡Borrado exitoso!</Modal.Title>
             )}
@@ -512,9 +524,9 @@ const RenderBotonBorrar = (idInput, nombreABorrar, Service) => {
             {!deleteMessage ? (
               <div>
                 {nombreABorrar ? (
-                  <p>Seguro desea borrar a {nombreABorrar} con ID {idInput ? idInput : ""}?</p>
+                  <p>¿Seguro desea borrar a {nombreABorrar} con ID {idInput ? idInput : ""}?</p>
                 ) : (
-                  <p>Seguro desea borrar a ID {idInput ? idInput : ""}?</p>
+                  <p>¿Seguro desea borrar a ID {idInput ? idInput : ""}?</p>
                 )}
               </div>
             ) : (

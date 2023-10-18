@@ -1,4 +1,7 @@
+import React, { useState, useEffect } from "react";
 import TenantService from "../../../services/TenantService";
+import AuthService from "../../../services/auth.service";
+import MasterTenantAdminService from "../../../services/MasterTenantAdminService";
 import { TablaGenerica } from "./Tabla_Generica";
 import { columnIntegranteConFotoColumn, columnsIntegrantesTenantItems, } from "./Tabla_Variables";
 import {
@@ -15,10 +18,18 @@ import {
 } from"./Tabla_Filters";
 
 import { RenderFotoPerfilForTablaTenant } from "./Tabla_Variables";
+import { Button, OverlayTrigger, Tooltip } from "react-bootstrap";
+import { FaTrashAlt, FaRegEye, FaRegEdit, FaUser, FaArrowRight, FaCloudscale } from "react-icons/fa";
 
-const TablaTenant = ({visibilidadInput, dataIn}) => {
+import { useNavigate } from "react-router-dom";
+
+const TablaTenant = ({dataIn}) => {
 
   const [data, setData] = useState(undefined);
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
+
+  let navigate = useNavigate();
 
   useEffect(() => {
     if (dataIn) {
@@ -34,7 +45,58 @@ const TablaTenant = ({visibilidadInput, dataIn}) => {
     }
   }, []);
 
+  const RenderBotonSimularTenantAdmin = (tenantClientId, nombreAVer) => {
+    const navigate = useNavigate();
+    if(!tenantClientId)
+      return(<div/>);//En caso de que se agrupe la tabla, no mostrar
+    return (
+      <OverlayTrigger
+        placement="top"
+        overlay={
+          <Tooltip id="tooltip-top">
+            Simular {nombreAVer && 'a administrador de ' + nombreAVer + ', '}Tenant ID: {tenantClientId}
+          </Tooltip>
+        }
+      >
+        <Button
+          className="buttonAnimadoVerde"
+          onClick={() => handleLoginTenantAdmin(tenantClientId)}
+        >
+          {" "}
+          <FaArrowRight/><FaUser/>
+        </Button>
+      </OverlayTrigger>
+    );
+  };
 
+  const handleLoginTenantAdmin = (tenantOrClientId) => {
+
+    if(!tenantOrClientId) {
+      return;
+    }
+
+    setMessage("");
+    setLoading(true);
+
+    AuthService.MasterTenantAdminlogin(tenantOrClientId).then(
+      () => {
+        navigate("/users");
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        window.location.reload();
+      },
+      (error) => {
+        const resMessage =
+          (error.response &&
+            error.response.data &&
+            error.response.data.message) ||
+          error.message ||
+          error.toString();
+
+        setLoading(false);
+        setMessage(resMessage);
+      }
+    );
+  };
 
 
 
@@ -46,23 +108,42 @@ const TablaTenant = ({visibilidadInput, dataIn}) => {
     },
     {
       Header: "Foto",
-      Cell: ({ row }) => RenderFotoPerfilForTablaTenant(row.original?.imagen, row.original?.tenantName),
+      //Cell: ({ row }) => RenderFotoPerfilForTablaTenant(row.original?.imagen, row.original?.tenantName),
+      Cell: ({ row }) => RenderFotoPerfilForTablaTenant(row.original?.dbName, row.original?.tenantName),
+    },
+    {
+      Header: "Nombre de base de datos",
+      accessor: "dbName",
+      filter: 'fuzzyText',
+      type: "string",
+    },
+    {
+      Header: "Nombre de la ONG",
+      accessor: "tenantName",
+      filter: 'fuzzyText',
+      type: "string",
     },
     {
       Header: "Número de teléfono",
       accessor: "tenantPhoneNumber",
+    },
+    {
+      Header: 'Simular administrador',
+      Cell: ({ row }) => {
+        return RenderBotonSimularTenantAdmin(row.original?.tenantClientId, row.original?.tenantName);
+      },
     },
   ];
   
   return(
     
     <div>
-      {dataIn && (
+      {data && (
         <TablaGenerica
           columnsIn={columnsTenant}
           dataIn={data}
           //Service={TenantService}
-          visibilidadInput={visibilidadInput ? visibilidadInput : "SOLO_VISTA"}
+          visibilidadInput={""}
           //nombreTipoDatoParaModuloVisibilidad={"TENANT"}
           //tipoDatoParaFoto={"tenant"}
           el_la={"el"}
@@ -73,70 +154,6 @@ const TablaTenant = ({visibilidadInput, dataIn}) => {
   );
 }
 
-const columnsFacturaItems = [
-  {
-    Header: "ID",
-    accessor: "id",
-    type: "number",//sirve para mostrar el icono FaSortNumericDown en tabla generica
-  },
-  {
-    Header: "Descripción",
-    accessor: "descripcion",
-    filter: 'fuzzyText',
-    type: "string",
-  },
-  {
-    Header: "Unidades",
-    accessor: "unidades",
-    Filter: NumberRangeColumnFilter,
-    filter: 'between',
-    type: "number",
-  },
-  {
-    Header: "Precio unitario",
-    accessor: "precioUnitario",
-    Filter: NumberRangeColumnFilter,
-    filter: 'between',
-    type: "number",
-    Cell: ({ value }) => (
-      <span>{value ? `$${Number(value).toLocaleString("es-AR")}` : ''}</span>
-    ),
-  },
-  {
-    Header: "Precio",
-    accessor: "precio",
-    Filter: NumberRangeColumnFilter,
-    filter: 'between',
-    type: "number",
-    Cell: ({ value }) => (
-      <span>{value ? `$${Number(value).toLocaleString("es-AR")}` : ''}</span>
-    ),
-  },
-];
-
-const TenantInput = ({ disabled, data, handleInputChange }) => {
-  return(
-      <div className = "form-group">
-          <br/>
-          <ModalSeleccionarIntegrantes
-              integrantesActuales = {integrantesActuales}
-              columnsIn={columns}
-              tipoDatoParaFoto={"contacto"}
-              nombreTipoDatoParaModuloVisibilidad={"PROFESIONAL"}
-              ServiceDeIntegrantes = {ServiceDeIntegrantes ? ServiceDeIntegrantes : ProfesionalService}
-              handleInputChange = {handleInputChange}
-              nombreHandleInputChange = {nombreHandleInputChange}
-              maxIntegrantesSelected = {maxIntegrantesSelected}
-              isEditable = {isEditable}
-              el_la = {el_la}
-              nombreTipoIntegrante = {nombreTipoIntegrante}
-              nombreTipoIntegrantePrural = {nombreTipoIntegrantePrural}
-          />
-      </div>
-  );
-};
-
 export {
-  columnsFacturaItems,
   TablaTenant,
 };

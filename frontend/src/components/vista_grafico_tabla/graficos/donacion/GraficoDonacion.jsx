@@ -32,12 +32,12 @@ const GraficoDonacion = ({visibilidadInput}) => {
   };
 
   const dataExampleTotal = [
-    { id: 72, nombre: "Julieta", apellido: "Maneiro", cantidad: 7, total: 285000},
-    { id: 142, nombre: "Gabriel", apellido: "Saravia", cantidad: 7, total: 225000},
-    { id: 39, nombre: "Sabrina", apellido: "Jofre", cantidad: 7, total: 175000},
+    { id: 72, nombre: "Julieta", apellido: "Maneiro", cantidad: 17, total: 285000},
+    { id: 142, nombre: "Gabriel", apellido: "Saravia", cantidad: 21, total: 225000},
+    { id: 39, nombre: "Sabrina", apellido: "Jofre", cantidad: 3, total: 175000},
     { id: 215, nombre: "Analía", apellido: "Bracco", cantidad: 7, total: 160000},
-    { id: 45, nombre: "Ignacio", apellido: "Padín", cantidad: 7, total: 155000},
-    { id: 89, nombre: "Federica", apellido: "Perez", cantidad: 7, total: 90000},
+    { id: 45, nombre: "Ignacio", apellido: "Padín", cantidad: 5, total: 155000},
+    { id: 89, nombre: "Federica", apellido: "Perez", cantidad: 2, total: 90000},
   ];
 
   return (

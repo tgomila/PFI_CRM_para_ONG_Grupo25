@@ -268,11 +268,11 @@ function Table({redireccionamiento, columns, data }) {
             onHide={() => changeTrueModalOpen()}
           >
             <Modal.Header closeButton>
-              <Modal.Title>Deseas borrar al ID {rowAux ? rowAux.values.id : ""}?</Modal.Title>
+              <Modal.Title>¿Deseas borrar al ID {rowAux ? rowAux.values.id : ""}?</Modal.Title>
             </Modal.Header>
 
             <Modal.Body>
-              <p>Deseas borrar al ID {rowAux ? rowAux.values.id : ""}?</p>
+              <p>¿Deseas borrar al ID {rowAux ? rowAux.values.id : ""}?</p>
             </Modal.Body>
 
             <Modal.Footer>

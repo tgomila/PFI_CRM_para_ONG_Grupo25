@@ -11,9 +11,9 @@ import "../../Styles/Login.scss";
 
 import { ModalSeleccionarTenant } from "../CRUD/Constants/componente_individual/Elegir_integrantes";
 
-import { RenderFotoPerfilForTablaTenant } from "../vista_grafico_tabla/tables/Tabla_Variables";
-
 import { required } from "../CRUD/Constants/ConstantsInput";
+import * as constantsURL from "../../components/constants/ConstantsURL";
+const BACKEND_STATIC_BASE_URL = constantsURL.STATIC_BASE_URL;
 
 //const Login = () => {
 function Login() {
@@ -139,7 +139,7 @@ function Login() {
             />
           </div>
 
-          {/* <ModalSeleccionarTenant handleInputChange={onChangeTenantOrClientId}/> */}
+          {/* <ModalSeleccionarTenant handleInputChange={onChangeTenantOrClientId} maxIntegrantesSelected = {1}/> */}
 
           <div className="user-box" style={{ display: 'flex' }}>
             {/* <div className="left-part" style={{ flexBasis: '100%' }}> */}
@@ -200,6 +200,7 @@ function Login() {
                   />
                   <label htmlFor={0} className="radio-label">
                     <div className="radio-content">
+                      <img src={BACKEND_STATIC_BASE_URL + "logo/logo-CosmosCRM.png"} className="radio-img" alt={"Cosmos Administration"} />
                       <span className="miLabel">{"Cosmos Administration"}</span>
                     </div>
                   </label>

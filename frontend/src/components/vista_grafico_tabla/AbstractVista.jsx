@@ -9,13 +9,21 @@ function AbstractVista(ComponenteTabla, nombreDatoVisibilidad, ComponenteGrafico
     const [tituloNombrePruralModificado, setTituloNombrePruralModificado] = useState(null);
 
     useEffect(() => {
-      let modulo = modulosService.getVisibilidadByModulo(nombreDatoVisibilidad);
-      modulo.then((response) => {
-        if (response) {
-          setVisibilidad(response);
-          setIsVisibilidadReady(true);
-        }
-      });
+      if(nombreDatoVisibilidad) {
+        //Se usa para contacto, producto. Si no existe nombreDatoVisibilidad es para personalizado como tenantTable
+        //Es casi requisito que exista la visibilidad si o si
+        let modulo = modulosService.getVisibilidadByModulo(nombreDatoVisibilidad);
+        modulo.then((response) => {
+          if (response) {
+            setVisibilidad(response);
+            setIsVisibilidadReady(true);
+          }
+        });
+      }
+      else {
+        setVisibilidad("");
+        setIsVisibilidadReady(true);
+      }
       if(tituloNombrePrural){
         setTituloNombrePruralModificado(tituloNombrePrural.charAt(0).toUpperCase() + tituloNombrePrural.slice(1).toLowerCase());
       }
@@ -27,7 +35,7 @@ function AbstractVista(ComponenteTabla, nombreDatoVisibilidad, ComponenteGrafico
           <div className="Marketplace">
             <h1><span className="underlined underline-clip-title">{tituloNombrePruralModificado}</span></h1>
             <br/><br/>
-        </div>
+          </div>
         )}
         {isVisibilidadReady && (
           <div>

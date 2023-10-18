@@ -51,7 +51,7 @@ const FechaInicioFinInput = ({disabled, data, handleInputChange, propertyFechaIn
     )
 }
 
-const FechaInput = ({ disabled, data, handleInputChange, propertyFecha="fecha", labelText="Fecha", isHour=false }) => {
+const FechaInput = ({ disabled, data, handleInputChange, propertyFecha="fecha", labelText="Fecha", isHour=false, minDateInput, maxDateInput=new Date(3000, 0, 1) }) => {
     const commonProps = {
       disabled: disabled,
       selected: data[propertyFecha] ? new Date(data[propertyFecha]) : null,
@@ -65,8 +65,8 @@ const FechaInput = ({ disabled, data, handleInputChange, propertyFecha="fecha", 
         })
       },
       className: "form-control",
-      minDate: null,
-      maxDate: new Date(3000, 0, 1),
+      minDate: minDateInput ? minDateInput : null,
+      maxDate: maxDateInput ? maxDateInput : new Date(3000, 0, 1),
       placeholderText: "Selecciona una fecha",
       autoComplete: "off",
       locale: es,

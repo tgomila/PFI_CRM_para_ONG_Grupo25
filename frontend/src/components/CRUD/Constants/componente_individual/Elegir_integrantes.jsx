@@ -8,7 +8,7 @@ import BeneficiarioService from "../../../../services/BeneficiarioService";
 import ProfesionalService from "../../../../services/ProfesionalService";
 import TenantService from "../../../../services/TenantService";
 
-import { TablaGenericaPersona, TablaGenericaConFoto } from "../../../vista_grafico_tabla/tables/Tabla_Generica";
+import { TablaGenericaPersona, TablaGenericaConFoto, TablaGenerica } from "../../../vista_grafico_tabla/tables/Tabla_Generica";
 
 import { RenderMostrarContacto } from "../../../vista_grafico_tabla/tables/Tabla_Variables";
 import {
@@ -527,7 +527,7 @@ const ModalSeleccionarIntegrantesProfesional = ({integrantesActuales, ServiceDeI
   );
 }
 
-const ModalSeleccionarTenant = ({handleInputChange, dataIn}) => {
+const ModalSeleccionarTenant = ({integrantesActuales, handleInputChange, dataIn, isEditable, maxIntegrantesSelected}) => {
 
   const [data, setData] = useState(undefined);
 
@@ -553,7 +553,7 @@ const ModalSeleccionarTenant = ({handleInputChange, dataIn}) => {
     },
     {
       Header: "Foto",
-      Cell: ({ row }) => RenderFotoPerfilForTablaTenant(row.original?.imagen, row.original?.tenantName),
+      Cell: ({ row }) => RenderFotoPerfilForTablaTenant(row.original?.dbName, row.original?.tenantName),
     },
     {
       Header: "Nombre",
@@ -566,21 +566,25 @@ const ModalSeleccionarTenant = ({handleInputChange, dataIn}) => {
   ];
 
   return (
-    <ModalSeleccionarIntegrantes
-        //integrantesActuales = {integrantesActuales}
-        columnsIn={columnsTenant}
-        //tipoDatoParaFoto={"contacto"}
-        //nombreTipoDatoParaModuloVisibilidad={"PROFESIONAL"}
-        candidatosAIntegrantesIn = {data}
-        //ServiceDeIntegrantes = {ServiceDeIntegrantes ? ServiceDeIntegrantes : ProfesionalService}
-        handleInputChange = {handleInputChange}
-        //nombreHandleInputChange = {nombreHandleInputChange}
-        maxIntegrantesSelected = {1}
-        //isEditable = {isEditable}
-        el_la = {"la"}
-        nombreTipoIntegrante = {"ONG"}
-        nombreTipoIntegrantePrural = {"ONGs"}
-    />
+    <div>
+      {data && (
+        <ModalSeleccionarIntegrantes
+            integrantesActuales = {integrantesActuales}
+            columnsIn={columnsTenant}
+            tipoDatoParaFoto={""}
+            //nombreTipoDatoParaModuloVisibilidad={"PROFESIONAL"}
+            candidatosAIntegrantesIn = {data}
+            //ServiceDeIntegrantes = {ServiceDeIntegrantes ? ServiceDeIntegrantes : ProfesionalService}
+            handleInputChange = {handleInputChange}
+            //nombreHandleInputChange = {nombreHandleInputChange}
+            maxIntegrantesSelected = {maxIntegrantesSelected}
+            isEditable = {isEditable}
+            el_la = {"la"}
+            nombreTipoIntegrante = {"ONG"}
+            nombreTipoIntegrantePrural = {"ONGs"}
+        />
+      )}
+    </div>
   );
 }
 

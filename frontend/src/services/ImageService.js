@@ -360,6 +360,11 @@ const getDefaultImage = (tipoFoto) => {
   
 }
 
+//True o false
+const isDefaultImage = (imageUrl) => {
+  return (imageUrl === defaultContactoImage || imageUrl === defaultNoImage);
+}
+
 const ImageService = {
     getAllContactoTablaFotos,
     getAllFotos,
@@ -370,6 +375,7 @@ const ImageService = {
     uploadImage,
     uploadImageContacto,
     getDefaultImage,
+    isDefaultImage,
 };
 
 export default ImageService;

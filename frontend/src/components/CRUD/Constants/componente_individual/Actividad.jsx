@@ -82,7 +82,7 @@ const cargarActividadDefault = {
     id: null,
     descripcion: "",
     fechaHoraDesde: null,
-    fechaHoraDesde: null,
+    fechaHoraHasta: null,
     beneficiarios: null,
     profesionales: null,
 }

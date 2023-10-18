@@ -34,9 +34,9 @@ const GraficoBeneficiario = ({visibilidadInput}) => {
 
   const dataExampleEdad = [
     { rangoEdad: "0 a 5 años", etapa: "Primera Infancia", cantidad: 0 },
-    { rangoEdad: "6 a 11 años", etapa: "Infancia", cantidad: 0 },
-    { rangoEdad: "12 a 18 años", etapa: "Adolescencia", cantidad: 1 },
-    { rangoEdad: "19 a 26 años", etapa: "Juventud", cantidad: 15 },
+    { rangoEdad: "6 a 11 años", etapa: "Infancia", cantidad: 57 },
+    { rangoEdad: "12 a 18 años", etapa: "Adolescencia", cantidad: 82 },
+    { rangoEdad: "19 a 26 años", etapa: "Juventud", cantidad: 19 },
     { rangoEdad: "27 a 59 años", etapa: "Adultez", cantidad: 7 },
     { rangoEdad: "mayor a 60 años", etapa: "Persona mayor", cantidad: 2 },
   ];

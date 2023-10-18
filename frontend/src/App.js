@@ -33,7 +33,14 @@ import InsumoVista from "./components/vista_grafico_tabla/InsumoVista";
 import PrestamoVista from "./components/vista_grafico_tabla/PrestamoVista";
 import ProyectoVista from "./components/vista_grafico_tabla/ProyectoVista";
 import ModuloVisibilidadVista from "./components/vista_grafico_tabla/ModuloVisibilidadVista";
-// import ChatVista from "./components/vista_grafico_tabla/ChatVista";
+import ChatVista from "./components/vista_grafico_tabla/ChatVista";
+import AcercaDe from "./components/vista_grafico_tabla/AcercaDe";
+
+//Master admin:
+import TenantVista from "./components/vista_grafico_tabla/TenantVista";
+import MasterAdminTenantsMarketVista from "./components/vista_grafico_tabla/MasterAdminTenantsMarketVista";
+import MasterAdminTenantsVisibilidadVista from "./components/vista_grafico_tabla/MasterAdminTenantsVisibilidadVista";
+import CreateSumarTiempoMarketMasterAdmin from "./components/CRUD/Create/CreateSumarTiempoMarketMasterAdmin";
 
 import FooterComponent from "./components/FooterComponent";
 
@@ -142,6 +149,11 @@ import Profile from "./components/Profile";
 import { useTable } from "react-table";
 import Bienvenido from "./components/Bienvenido";
 
+import { RenderMostrarContacto } from "./components/vista_grafico_tabla/tables/Tabla_Variables";
+
+import * as constantsURL from "./components/constants/ConstantsURL";
+const BACKEND_STATIC_BASE_URL = constantsURL.STATIC_BASE_URL;
+
 /*
 
 import { NavigationBar } from './components/NavigationBar';
@@ -162,43 +174,24 @@ const App = () => {
   const [showModeratorBoard, setShowModeratorBoard] = useState(false);
   const [showAdminBoard, setShowAdminBoard] = useState(false);
   const [currentUser, setCurrentUser] = useState(undefined);
-  //const [menuItemService, setMenuitem] = useState([]);
-  //useEffect(() => {
-      // Fetch data
-      // Update the document title using the browser API
-
-      //Lista de modulos a mostrar
-      //modulosService.getModulos().then((res) => {
-      //    setMenuitem(res.data);
-      //});
-
-      //Este tiene error
-      //let modulos = modulosService.getModulos();
-      //if(isPromise(modulos)) {
-      //  console.log("Es un promise:");
-      //  console.log(modulos);
-      //
-      //  modulos.then((res) => {
-      //      setMenuitem(res.data);
-      //  });
-      //}
-      //else {//Es un object
-      //  console.log("Es un object:");
-      //  console.log(modulos);
-      //
-      //  modulos.map((res) => {
-      //    setMenuitem(res.data);
-      //  });
-      //}
-
-  //}, []);
+  const [masterAdminUser, setMasterAdminUser] = useState(undefined);
+  const [masterTenantAdminUser, setMasterTenantUserAdminUser] = useState(undefined);
 
   useEffect(() => {
     const user = AuthService.getCurrentUser();
+    AuthService.setLogoTenantTab();
     if (user) {
       setCurrentUser(user);
       //setShowModeratorBoard(user.roles.includes("ROLE_MODERATOR"));
       //setShowAdminBoard(user.roles.includes("ROLE_ADMIN"));
+    }
+    const masterTenantAdminUserAux = AuthService.getMasterTenantCurrentUser();
+    if (masterTenantAdminUserAux) {
+      setMasterTenantUserAdminUser(masterTenantAdminUserAux);
+    }
+    const masterAdminUserAux = AuthService.getAdminCurrentUser();
+    if (masterAdminUserAux) {
+      setMasterAdminUser(masterAdminUserAux);
     }
 
     EventBus.on("logout", () => {
@@ -210,6 +203,14 @@ const App = () => {
     };
   }, []);
 
+  const logoutUserSimulatorAdmin = () => {
+    AuthService.logoutUserSimulatorAdmin();
+  };
+
+  const logoutUserSimulatorMasterTenant = () => {
+    AuthService.logoutUserSimulatorMasterTenant();
+  };
+
   const logOut = () => {
     AuthService.logout();
     setShowModeratorBoard(false);
@@ -217,16 +218,17 @@ const App = () => {
     setCurrentUser(undefined);
   };
 
+  // const myProfile = () => {
+  //   if(!currentUser)
+  //     return <></>
+  //   return RenderMostrarContacto(currentUser?.persona ? currentUser?.persona : currentUser?.contacto, 'perfil');
+  // }
+
 
   return (
 
 
     <div className="principal">
-
-
-
-
-
 
 
       <nav className="navbar navbar-expand navbar-dark bg-dark">
@@ -267,11 +269,25 @@ const App = () => {
 
         {currentUser ? (
           <div className="navbar-nav ml-auto">
-            <li className="nav-item">
+            {masterAdminUser && (
+              <li className="nav-item">
+                <a href="/users" className="nav-link" onClick={logoutUserSimulatorAdmin}>
+                  Dejar simulación de usuario
+                </a>
+              </li>
+            )}
+            {!masterAdminUser && masterTenantAdminUser && (
+              <li className="nav-item">
+                <a href="/master_tenant/tenant" className="nav-link" onClick={logoutUserSimulatorMasterTenant}>
+                  Dejar simulación de usuario
+                </a>
+              </li>
+            )}
+            {/* <li className="nav-item">
               <Link to={"/profile"} className="nav-link">
                 {currentUser.username}
               </Link>
-            </li>
+            </li> */}
             <li className="nav-item">
               <a href="/login" className="nav-link" onClick={logOut}>
                 Cerrar Sesión
@@ -332,7 +348,13 @@ const App = () => {
             <Route path="/prestamo" element={<PrestamoVista/>} />
             <Route path="/proyecto" element={<ProyectoVista/>} />
             <Route path="/modulo_visibilidad" element={<ModuloVisibilidadVista/>} />
-            {/* <Route path="/chat" element={<eChatVista/>} /> */}
+            <Route path="/chat" element={<ChatVista/>} />
+            <Route path="/acerca_de" element={<AcercaDe/>} />
+            
+            <Route path="/master_tenant/tenant" element={<TenantVista/>} />
+            <Route path="/master_tenant/market" element={<MasterAdminTenantsMarketVista/>} />
+            <Route path="/master_tenant/market/create_suma_tiempo" element={<CreateSumarTiempoMarketMasterAdmin/>} />
+            <Route path="/master_tenant/visibilidad" element={<MasterAdminTenantsVisibilidadVista/>} />
 
             <Route path="/proyecto" element={<TablasDinamicas redireccionamiento='proyecto' />} />
             <Route path="/chat" element={<TablasDinamicas redireccionamiento='chat' />} />

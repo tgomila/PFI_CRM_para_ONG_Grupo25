@@ -43,7 +43,7 @@ const FotoPerfil = ({ id, setFotoSubida, visibilidad, tipoFoto }) => {
         if(id && id !== ''){
             ImageService.getFoto(id, tipoFoto, 'completa').then((res) => {
                 setFoto(res);
-                setIsFotoDefault(false);
+                setIsFotoDefault(ImageService.isDefaultImage(res));
             });
         }
         else{
@@ -84,13 +84,18 @@ const FotoPerfil = ({ id, setFotoSubida, visibilidad, tipoFoto }) => {
                             MozBorderRadius: '50%',
                             WebkitBorderRadius: '50%',
                             aspectRatio: '1/1',
-                            width: (!id && isFotoDefault) ? '35%' : '100%',
+                            width: (!id || isFotoDefault) ? '35%' : '100%',
                         } : {
-                            width: (!id && isFotoDefault) ? '35%' : '100%',
+                            width: (!id || isFotoDefault) ? '35%' : '100%',
                         }}
                         onClick={handleFotoClick}
                         />
                     </OverlayTrigger>
+                    {isFotoDefault && (
+                        <div style={{textAlign: 'center'}}>
+                            <label style={{color: '#999999', fontStyle: 'italic'}}>Foto por defecto</label>
+                        </div>                    
+                    )}
                     {visibilidad === 'EDITAR' && (
                     <div style={!id ? { display: "flex", justifyContent: "center" } : {}}>
                         <input

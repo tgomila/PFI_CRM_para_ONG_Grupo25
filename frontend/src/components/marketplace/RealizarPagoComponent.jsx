@@ -295,22 +295,25 @@ function CardForm(data) {
     useEffect(() => {
         if(data && data.modulo && (typeof data.modulo === "string") &&
             data.tiempo && (typeof data.tiempo === "string")){
+                console.log("Entre aca")
             setModulo(data.modulo.toLowerCase());
             setTiempo(data.tiempo.toLowerCase());
+            let moduloAux = data.modulo.toLowerCase();//Este let es porque no me renderiza en pantalla setModulo a menos que F5 actualice
+            let tiempoAux = data.tiempo.toLowerCase();//idem moduloAux
             let texto = "Suscripción por ";
-            if(tiempo === "trial")
+            if(tiempoAux === "trial")
                 texto += "7 días ";
-            else if(tiempo === "mes")
+            else if(tiempoAux === "mes")
                 texto += "1 mes ";
-            else if(tiempo === "anio")
+            else if(tiempoAux === "anio")
                 texto += "1 año ";
             else
-                texto += tiempo + " ";
+                texto += tiempoAux + " ";
             texto += "para ";
-            if(modulo === "all")
+            if(moduloAux === "all")
                 texto += "plan total.";
             else
-                texto += modulo;
+                texto += moduloAux;
             setSuscripcionDetalle(texto);
         }
     }, [data]);

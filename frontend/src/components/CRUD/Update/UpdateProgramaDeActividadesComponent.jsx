@@ -8,7 +8,7 @@ const UpdateProgramaDeActividadesComponent = () => {
     <CreateReadUpdateGenericoConFoto
         cargarDatosDefault = {cargarProgramaDeActividadesDefault}
         DatoUpdateInput = {ProgramaDeActividadesUpdateInput}
-        tipoDatoForImageService = {null}
+        tipoDatoForImageService = {'programaDeActividades'}
         Service = {ProgramaDeActividadesService}
         urlTablaDato = {'/programaDeActividades'}
         isPantallaCompleta = {true}
