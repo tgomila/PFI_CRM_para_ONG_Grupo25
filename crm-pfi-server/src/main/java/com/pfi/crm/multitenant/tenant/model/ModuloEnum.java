@@ -21,7 +21,7 @@ public enum ModuloEnum {
 	INSUMO(15, "Insumo", "/insumo", "FiShoppingCart", 2.00),
 	PRESTAMO(16, "Prestamo", "/prestamo", "FaHandHolding", 2.00),
 	PROYECTO(17, "Proyecto", "/proyecto", "AiOutlineFundProjectionScreen", 2.00),
-	CHAT(18, "Chat", "/chat", "HiChatBubbleLeftRight", 2.00),
+	CHAT(18, "Chat", "/chat", "HiChatBubbleLeftRight", 0.00),
 	MARKETPLACE(19, "Marketplace", "/marketplace", "MdLocalGroceryStore", 0.00);
 	
 	

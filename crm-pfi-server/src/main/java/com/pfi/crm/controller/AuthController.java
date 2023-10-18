@@ -9,13 +9,22 @@ import com.pfi.crm.multitenant.mastertenant.service.MasterTenantService;
 import com.pfi.crm.multitenant.tenant.model.Role;
 import com.pfi.crm.multitenant.tenant.model.RoleName;
 import com.pfi.crm.multitenant.tenant.model.User;
+import com.pfi.crm.multitenant.tenant.payload.ContactoPayload;
+import com.pfi.crm.multitenant.tenant.payload.EmpleadoPayload;
+import com.pfi.crm.multitenant.tenant.payload.PersonaFisicaPayload;
+import com.pfi.crm.multitenant.tenant.payload.ProfesionalPayload;
 import com.pfi.crm.multitenant.tenant.payload.TenantPayload;
 import com.pfi.crm.multitenant.tenant.persistence.repository.RoleRepository;
 import com.pfi.crm.multitenant.tenant.persistence.repository.UserRepository;
+import com.pfi.crm.multitenant.tenant.service.EmpleadoService;
+import com.pfi.crm.multitenant.tenant.service.ModuloVisibilidadPorRolService;
+import com.pfi.crm.multitenant.tenant.service.PersonaFisicaService;
+import com.pfi.crm.multitenant.tenant.service.ProfesionalService;
 import com.pfi.crm.payload.request.LoginRequest;
 import com.pfi.crm.payload.request.SignUpRequest;
 import com.pfi.crm.payload.response.ApiResponse;
 import com.pfi.crm.payload.response.JwtAuthenticationResponse;
+import com.pfi.crm.security.CurrentUser;
 import com.pfi.crm.security.UserPrincipal;
 import com.pfi.crm.security.UserTenantInformation;
 import com.pfi.crm.util.JwtTokenProviderUtil;
@@ -33,6 +42,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -73,10 +83,22 @@ public class AuthController implements Serializable {
 
 	@Autowired
 	private JwtTokenProviderUtil tokenProvider;
+	
+	@Autowired
+	private ModuloVisibilidadPorRolService seguridad;
 
 	// Codigo Tenant
 	@Autowired
 	private MasterTenantService masterTenantService;
+	
+	@Autowired
+	private PersonaFisicaService personaFisicaService;
+	
+	@Autowired
+	private EmpleadoService empleadoService;
+	
+	@Autowired
+	private ProfesionalService profesionalService;
 
 	private Map<String, String> mapValue = new HashMap<>();
 	private Map<String, String> userDbMap = new HashMap<>();
@@ -131,13 +153,26 @@ public class AuthController implements Serializable {
 		//Map the value into applicationScope bean
 		setMetaDataAfterLogin();
 		TenantPayload tenantPayload = masterTenant.toPayload();
+		
+		
+		User user = userRepository.findByUsername(userDetails.getUsername()).get();
+		ContactoPayload contacto = user.getContacto() != null ? user.getContacto().toPayload() : null;
+		PersonaFisicaPayload persona = contacto != null && personaFisicaService.existePersonaFisicaPorIdContacto(contacto.getId()) ? personaFisicaService.getPersonaFisicaByIdContacto(contacto.getId()) : null;
+		EmpleadoPayload empleado = contacto != null && empleadoService.existeEmpleadoPorIdContacto(contacto.getId()) ? empleadoService.getEmpleadoByIdContacto(contacto.getId()) : null;
+		ProfesionalPayload profesional = contacto != null && profesionalService.existeProfesionalPorIdContacto(contacto.getId()) ? profesionalService.getProfesionalByIdContacto(contacto.getId()) : null;
+		
 		return ResponseEntity.ok(new JwtAuthenticationResponse(
 				userDetails.getUsername(),
 				token,
 				roles,
 				tenantPayload.getTenantClientId(),
 				tenantPayload.getDbName(),
-				tenantPayload.getTenantName()));
+				tenantPayload.getTenantName(),
+				contacto,
+				persona,
+				empleado,
+				profesional
+				));
 		
 		/*Authentication authentication = authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(
@@ -194,8 +229,110 @@ public class AuthController implements Serializable {
 				roles,
 				Integer.valueOf(0),//tenantPayload.getTenantClientId(),
 				"MasterTenant",//tenantPayload.getDbName(),
-				"Master de todos los tenants"//tenantPayload.getTenantName()
+				"Cosmos Administration",//tenantPayload.getTenantName()
+				null,
+				null,
+				null,
+				null
 			));
+	}
+	
+	@PostMapping("/master_tenant/signin_as_tenant_admin/{tenantOrClientId}")
+	public ResponseEntity<?> getAdminTenantLogin(@PathVariable("tenantOrClientId") Integer tenantOrClientId, @CurrentUser UserPrincipal currentUser) throws AuthenticationException {
+		System.out.println("Test");
+		seguridad.esMasterTenantAdmin(currentUser);
+		
+		//Chequear login
+		if(null == tenantOrClientId){
+			return new ResponseEntity<>("ID Tenant es requerido para la conexión", HttpStatus.BAD_REQUEST);
+		}
+		//Fin chequear login
+		
+		//Setear base de datos o schema
+		MasterTenant masterTenant = masterTenantService.findByClientId(tenantOrClientId);
+		if(null == masterTenant || masterTenant.getStatus().toUpperCase().equals(Estado.Inactivo.toString())){
+			throw new RuntimeException("Por favor contacte a soporte.");
+		}
+		DBContextHolder.setCurrentDb(masterTenant.getDbName());
+		//Entry Client Wise value dbName store into bean.
+		String adminUserName = "admin";
+		User user = userRepository.findByUsername(adminUserName).get();
+		loadCurrentDatabaseInstance(masterTenant.getDbName(), adminUserName /*loginRequest.getUsernameOrEmail()*/);
+		List<String> roles = user.getRoleNames().stream()
+				.map(item -> item.toString())
+				.collect(Collectors.toList());
+		System.out.println("userDetails: " + adminUserName + " psw: " + user.getPassword());
+		final String token = tokenProvider.generateToken(adminUserName,String.valueOf(tenantOrClientId));
+		//Map the value into applicationScope bean
+		setMetaDataAfterLogin();
+		TenantPayload tenantPayload = masterTenant.toPayload();
+		
+		ContactoPayload contacto = user.getContacto() != null ? user.getContacto().toPayload() : null;
+		PersonaFisicaPayload persona = contacto != null && personaFisicaService.existePersonaFisicaPorIdContacto(contacto.getId()) ? personaFisicaService.getPersonaFisicaByIdContacto(contacto.getId()) : null;
+		EmpleadoPayload empleado = contacto != null && empleadoService.existeEmpleadoPorIdContacto(contacto.getId()) ? empleadoService.getEmpleadoByIdContacto(contacto.getId()) : null;
+		ProfesionalPayload profesional = contacto != null && profesionalService.existeProfesionalPorIdContacto(contacto.getId()) ? profesionalService.getProfesionalByIdContacto(contacto.getId()) : null;
+		
+		return ResponseEntity.ok(new JwtAuthenticationResponse(
+				adminUserName,
+				token,
+				roles,
+				tenantPayload.getTenantClientId(),
+				tenantPayload.getDbName(),
+				tenantPayload.getTenantName(),
+				contacto,
+				persona,
+				empleado,
+				profesional
+				));
+	}
+	
+	@PostMapping("/admin/signin_as_user/{userName}")
+	public ResponseEntity<?> getAdminTenantLogin(@CurrentUser UserPrincipal currentUser, @PathVariable("userName") String userName) throws AuthenticationException {
+		seguridad.poseeRolAdmin(currentUser, "Simular un usuario de la base de datos");
+		
+		//Chequear login
+		if(null == userName){
+			return new ResponseEntity<>("Username es requerido para la conexión", HttpStatus.BAD_REQUEST);
+		}
+		//Fin chequear login
+		
+		//Setear base de datos o schema
+		MasterTenant masterTenant = masterTenantService.getTenantByDbName(DBContextHolder.getCurrentDb());
+		if(null == masterTenant || masterTenant.getStatus().toUpperCase().equals(Estado.Inactivo.toString())){
+			throw new RuntimeException("Por favor contacte a soporte.");
+		}
+		//Entry Client Wise value dbName store into bean.
+		User user = userRepository.findByUsername(userName).get();
+		if(user.getRoleMasValuado().equals(RoleName.ROLE_ADMIN)) {
+			throw new RuntimeException("No puede un administrador, simular ser otro/mismo usuario administrador.");
+		}
+		loadCurrentDatabaseInstance(masterTenant.getDbName(), userName /*loginRequest.getUsernameOrEmail()*/);
+		List<String> roles = user.getRoleNames().stream()
+				.map(item -> item.toString())
+				.collect(Collectors.toList());
+		System.out.println("userDetails: " + userName + " psw: " + user.getPassword());
+		final String token = tokenProvider.generateToken(userName,String.valueOf(masterTenant.getTenantClientId()));
+		//Map the value into applicationScope bean
+		setMetaDataAfterLogin();
+		TenantPayload tenantPayload = masterTenant.toPayload();
+		
+		ContactoPayload contacto = user.getContacto() != null ? user.getContacto().toPayload() : null;
+		PersonaFisicaPayload persona = contacto != null && personaFisicaService.existePersonaFisicaPorIdContacto(contacto.getId()) ? personaFisicaService.getPersonaFisicaByIdContacto(contacto.getId()) : null;
+		EmpleadoPayload empleado = contacto != null && empleadoService.existeEmpleadoPorIdContacto(contacto.getId()) ? empleadoService.getEmpleadoByIdContacto(contacto.getId()) : null;
+		ProfesionalPayload profesional = contacto != null && profesionalService.existeProfesionalPorIdContacto(contacto.getId()) ? profesionalService.getProfesionalByIdContacto(contacto.getId()) : null;
+		
+		return ResponseEntity.ok(new JwtAuthenticationResponse(
+				userName,
+				token,
+				roles,
+				tenantPayload.getTenantClientId(),
+				tenantPayload.getDbName(),
+				tenantPayload.getTenantName(),
+				contacto,
+				persona,
+				empleado,
+				profesional
+				));
 	}
 	
 	private void loadCurrentDatabaseInstance(String databaseName, String userName) {

@@ -27,6 +27,7 @@ import com.pfi.crm.multitenant.tenant.payload.ContactoPayload;
 import com.pfi.crm.multitenant.tenant.payload.PersonaFisicaAbstractPayload;
 import com.pfi.crm.multitenant.tenant.payload.PersonaFisicaPayload;
 import com.pfi.crm.multitenant.tenant.persistence.repository.PersonaFisicaRepository;
+import com.pfi.crm.security.UserPrincipal;
 
 @Service
 public class PersonaFisicaService {
@@ -64,6 +65,13 @@ public class PersonaFisicaService {
 	public PersonaFisica getPersonaFisicaModelByIdContacto(Long id) {
 		return personaFisicaRepository.findByContacto_Id(id).orElseThrow(
 				() -> new ResourceNotFoundException("PersonaFisica", "id", id));
+	}
+	
+	public ResponseEntity<?> getPersonaFisicaByIdUser(UserPrincipal user) {
+		Long id = user.getIdContacto();
+		if(id != null)
+			return buscarPersonaOContactoSiExiste(id);
+		throw new BadRequestException("El ID de contacto/persona de usuario es nulo");
 	}
 	
 	public PersonaFisicaPayload getPersonaFisicaByDni(@PathVariable int dni) {

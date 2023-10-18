@@ -917,7 +917,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		user.setName(persona.getNombre().split(" ")[0] + " " + persona.getApellido().split(" ")[0]);
 		user.setUsername(persona.getNombre().split(" ")[0].toLowerCase().substring(0, 1) + persona.getApellido().split(" ")[0].toLowerCase());
 		user.setEmail(persona.getEmail());
-		user.setPassword(passwordEncoder.encode("123456"));
+		user.setPassword(passwordEncoder.encode("cosmos2023"));
 		user.setContacto(contactoService.getContactoModelById(persona.getId()));
 		user.agregarRol(new Role(roleName));
 		return user;
@@ -2169,7 +2169,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		donacion2.setDonante(null);
 		donacion2.setTipoDonacion(DonacionTipo.INSUMO);
 		donacion2.setDescripcion("Budín horneado caseras");
-		donacion2.setValorAproximadoDeLaDonacion(BigDecimal.valueOf(1500.00));
+		donacion2.setValorAproximadoDeLaDonacion(BigDecimal.valueOf(2500.00));
 		donacion2 = donacionService.altaDonacion(donacion2);
 		
 		DonacionPayload donacion3 = new DonacionPayload();
@@ -2177,7 +2177,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		donacion3.setFecha(LocalDateTime.now().minusMonths(1));
 		donacion3.setDonante(contactoDonante);
 		donacion3.setTipoDonacion(DonacionTipo.DINERO);
-		donacion3.setDescripcion("$100.000 pesos");
+		donacion3.setDescripcion("$20.000 pesos");
 		donacion3.setValorAproximadoDeLaDonacion(BigDecimal.valueOf(20000.00));
 		donacion3 = donacionService.altaDonacion(donacion3);
 		
@@ -2188,7 +2188,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		donacion4.setFecha(LocalDateTime.now().minusMonths(1));
 		donacion4.setDonante(contactoDonante4);
 		donacion4.setTipoDonacion(DonacionTipo.DINERO);
-		donacion4.setDescripcion("$100.000 pesos");
+		donacion4.setDescripcion("$30.000 pesos");
 		donacion4.setValorAproximadoDeLaDonacion(BigDecimal.valueOf(30000.00));
 		donacion4 = donacionService.altaDonacion(donacion4);
 	}

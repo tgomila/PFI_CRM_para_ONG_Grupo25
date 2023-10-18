@@ -84,7 +84,7 @@ public class ModuloMarket extends UserDateAudit {
 		return sumarPeriodoASuscripcion(oneYear);
 	}
 	
-	private LocalDateTime sumarPeriodoASuscripcion(Period plusTime) {
+	public LocalDateTime sumarPeriodoASuscripcion(Period plusTime) {
 		if(moduloEnum.isFreeModule())
 			throw new BadRequestException("No se puede suscribir a un módulo gratuito");//return null;
 		this.fechaInicioSuscripcion = LocalDateTime.now();
@@ -96,6 +96,48 @@ public class ModuloMarket extends UserDateAudit {
 		}
 		this.suscripcionActiva = true;
 		return fechaMaximaSuscripcion;
+	}
+	
+	//Será utilizado exclusivamente por el súper admin, dirá por ejemplo que todos los
+	//	tenants deberían tener una fecha (10 días después de hoy) gratis por ejemplo.
+	public boolean sumarTiempoByCosmosAdmin(Period period) {
+		LocalDateTime fechaDeHoy = LocalDateTime.now();
+		LocalDateTime sumaTiempoPeriod = (fechaMaximaSuscripcion == null || fechaDeHoy.isAfter(fechaMaximaSuscripcion) ? fechaDeHoy : fechaMaximaSuscripcion).plus(period);
+		return setFechaMaximaSuscripcionByCosmosAdmin(sumaTiempoPeriod);
+	}
+	
+	//Será utilizado exclusivamente por el súper admin, dirá por ejemplo que todos los
+	//	tenants deberían tener una fecha (10 días después de hoy) gratis por ejemplo.
+	public boolean setFechaMaximaSuscripcionByCosmosAdmin(LocalDateTime fechaPosteriorNow) {
+		if(moduloEnum.isFreeModule())
+			return false;//throw new BadRequestException("No se puede suscribir a un módulo gratuito");//return null;
+		LocalDateTime fechaDeHoy = LocalDateTime.now();
+		if(fechaPosteriorNow == null || fechaDeHoy.isAfter(fechaPosteriorNow))
+			return false;//throw new BadRequestException("No puede crear una suscripción a una fecha anterior a la fecha de hoy");
+		if(fechaMaximaSuscripcion != null) {
+			if(fechaPosteriorNow.isBefore(fechaMaximaSuscripcion))
+				return false;//No le voy a quitar días de suscripción a un cliente.
+			if(fechaMaximaSuscripcion.isBefore(fechaDeHoy))
+				this.fechaInicioSuscripcion = fechaDeHoy;//Si ya hay una suscripción activa, no modifico la fecha de inicio
+		}
+			
+		this.fechaInicioSuscripcion = fechaInicioSuscripcion != null ? this.fechaInicioSuscripcion : fechaDeHoy;
+		this.fechaMaximaSuscripcion = fechaPosteriorNow;
+		this.suscripcionActiva = true;
+		return true;
+	}
+	
+	public boolean quitarPruebaUtilizada() {
+		boolean huboModificacion = false;
+		if(fechaPrueba7DiasUtilizada != null) {
+			fechaPrueba7DiasUtilizada = null;
+			huboModificacion = true;
+		}
+		if(prueba7DiasUtilizada) {
+			prueba7DiasUtilizada = false;
+			huboModificacion = true;
+		}
+		return huboModificacion;
 	}
 	
 	//si ya fue activado anteriormente, no se activa

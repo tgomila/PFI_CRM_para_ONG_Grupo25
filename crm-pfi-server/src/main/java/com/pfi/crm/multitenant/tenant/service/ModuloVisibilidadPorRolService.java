@@ -18,6 +18,8 @@ import com.pfi.crm.constant.MasterUserConstants;
 import com.pfi.crm.exception.BadRequestException;
 import com.pfi.crm.exception.ForbiddenException;
 import com.pfi.crm.exception.ResourceNotFoundException;
+import com.pfi.crm.mastertenant.config.DBContextHolder;
+import com.pfi.crm.multitenant.mastertenant.service.MasterTenantService;
 import com.pfi.crm.multitenant.tenant.model.ModuloEnum;
 import com.pfi.crm.multitenant.tenant.model.ModuloTipoVisibilidadEnum;
 import com.pfi.crm.multitenant.tenant.model.ModuloVisibilidadPorRol;
@@ -25,8 +27,12 @@ import com.pfi.crm.multitenant.tenant.model.ModuloVisibilidadPorRolTipo;
 import com.pfi.crm.multitenant.tenant.model.Role;
 import com.pfi.crm.multitenant.tenant.model.RoleName;
 import com.pfi.crm.multitenant.tenant.model.User;
+import com.pfi.crm.multitenant.tenant.payload.MasterTenantVisibilidadPayload;
+import com.pfi.crm.multitenant.tenant.payload.MasterTenantRoleVisibilidadesPayload;
+import com.pfi.crm.multitenant.tenant.payload.MasterTenantRoleVisibilidadPayload;
 import com.pfi.crm.multitenant.tenant.payload.ModuloItemPayload;
 import com.pfi.crm.multitenant.tenant.payload.ModuloPayload;
+import com.pfi.crm.multitenant.tenant.payload.TenantPayload;
 import com.pfi.crm.multitenant.tenant.payload.request.ModificarVisibilidadRequestPayload;
 import com.pfi.crm.multitenant.tenant.persistence.repository.ModuloVisibilidadPorRolRepository;
 import com.pfi.crm.multitenant.tenant.persistence.repository.ModuloVisibilidadPorRolTipoRepository;
@@ -51,6 +57,9 @@ public class ModuloVisibilidadPorRolService {
 	
 	@Autowired
 	private RoleRepository roleRepository;
+	
+	@Autowired
+	private MasterTenantService masterTenantService;
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(ModuloVisibilidadPorRolService.class);
 	
@@ -552,6 +561,43 @@ public class ModuloVisibilidadPorRolService {
 		return moduloTipos;
 	}
 	
+	
+	
+	/**
+	 * Exclusivo para administrador de todas las ong
+	 */
+	public List<?> getModulosVisibilidadDeTodosLosTenants() {
+		LOGGER.info("Chequear suscripción de módulos");
+		List<TenantPayload> tenants = masterTenantService.getTenants();//Arrays.asList(new String[]{"tenant1", "tenant2", "tenant3"});
+		List<MasterTenantVisibilidadPayload> listaTenantModulos = new ArrayList<MasterTenantVisibilidadPayload>();
+		for(TenantPayload tenant: tenants) {
+			//moduloCheckSuscripcionTenant(tenantName);
+			DBContextHolder.setCurrentDb(tenant.getDbName());
+			MasterTenantVisibilidadPayload tenantModuloPayload = new MasterTenantVisibilidadPayload();
+			tenantModuloPayload.setTenantDbName(tenant.getDbName());
+			tenantModuloPayload.setTenantName(tenant.getTenantName());
+			List<ModuloVisibilidadPorRol> modulos = moduloVisibilidadPorRolRepository.findAll();
+			for(ModuloVisibilidadPorRol rolModulos: modulos) {
+				MasterTenantRoleVisibilidadesPayload rolePayload = new MasterTenantRoleVisibilidadesPayload();
+				RoleName rol = rolModulos.getRole().getRoleName();
+				rolePayload.setRole(rol.toString());
+				rolePayload.setRoleName(rol.getName());
+				for(ModuloVisibilidadPorRolTipo modulosDelRol: rolModulos.getModulos()) {
+					MasterTenantRoleVisibilidadPayload moduloVisibilidad = new MasterTenantRoleVisibilidadPayload();
+					ModuloEnum modulo = modulosDelRol.getModuloEnum();
+					moduloVisibilidad.setModuloEnum(modulo.toString());
+					moduloVisibilidad.setModuloName(modulo.getName());
+					ModuloTipoVisibilidadEnum visibilidad = modulosDelRol.getTipoVisibilidad();
+					moduloVisibilidad.setTipoVisibilidad(visibilidad.toString());
+					moduloVisibilidad.setTipoVisibilidadName(visibilidad.getName());
+					rolePayload.addItem(moduloVisibilidad);
+				}
+				tenantModuloPayload.addRole(rolePayload);
+			}
+			listaTenantModulos.add(tenantModuloPayload);
+		}
+		return listaTenantModulos;
+	}
 	
 	
 	

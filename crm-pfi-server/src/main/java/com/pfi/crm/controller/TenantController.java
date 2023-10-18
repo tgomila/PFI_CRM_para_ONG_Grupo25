@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.pfi.crm.multitenant.mastertenant.service.MasterTenantService;
 import com.pfi.crm.multitenant.tenant.payload.TenantPayload;
 import com.pfi.crm.multitenant.tenant.payload.nombres_tabla.TenantNombreTablaPayload;
+import com.pfi.crm.security.CurrentUser;
+import com.pfi.crm.security.UserPrincipal;
 
 @RestController
 @RequestMapping("/api/tenant")
@@ -22,6 +24,11 @@ public class TenantController {
 	@GetMapping({"/", "/all"})
 	public List<TenantPayload> getTenant() {
 		return  masterTenantService.getTenants();
+	}
+	
+	@GetMapping({"/my_tenant"})
+	public TenantPayload getTenantById(@CurrentUser UserPrincipal currentUser) {
+		return  masterTenantService.getUserTenant();
 	}
 	
 	@GetMapping({"/nombres_tabla"})

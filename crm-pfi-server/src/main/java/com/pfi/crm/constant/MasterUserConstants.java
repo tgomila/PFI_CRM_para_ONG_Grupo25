@@ -15,7 +15,7 @@ import com.pfi.crm.security.UserPrincipal;
 public class MasterUserConstants {
 
 	public static final String MASTER_TENANT_USERNAME = "admin";
-	public static final String MASTER_TENANT_USER_PASSWORD = "MasterSecretPassword";
+	public static final String MASTER_TENANT_USER_PASSWORD = "cosmos2023";
 	
 	private static final List<RoleName> allRoles = Arrays.asList(RoleName.values());
 	private static final List<GrantedAuthority> authorities = allRoles.stream().map(role -> new SimpleGrantedAuthority(role.name())).collect(Collectors.toList());

@@ -51,6 +51,12 @@ public class PersonaFisicaController {
 		return personaFisicaService.getPersonaFisicaByIdContacto(id);
 	}
 	
+	@GetMapping("/perfil")
+	public ResponseEntity<?> getPersonaFisicaByPerfil(@CurrentUser UserPrincipal currentUser) {
+		//No requiere seguridad para ver su foto de perfil
+		return personaFisicaService.getPersonaFisicaByIdUser(currentUser);
+	}
+	
 	@GetMapping("/si_existe/{id}")
 	public PersonaFisicaPayload getSiExistePersonaFisicaById(@PathVariable Long id, @CurrentUser UserPrincipal currentUser) {
 		seguridad.poseePermisosParaAccederAlMetodo(currentUser, ModuloTipoVisibilidadEnum.SOLO_VISTA, ModuloEnum.PERSONA, "Ver persona con id: '" + id + "'");

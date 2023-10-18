@@ -1,5 +1,7 @@
 package com.pfi.crm.multitenant.tenant.service;
 
+import java.time.LocalDateTime;
+import java.time.Period;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -15,16 +17,22 @@ import org.springframework.web.bind.annotation.PathVariable;
 import com.pfi.crm.exception.BadRequestException;
 import com.pfi.crm.exception.ResourceNotFoundException;
 import com.pfi.crm.mastertenant.config.DBContextHolder;
+import com.pfi.crm.multitenant.mastertenant.service.MasterTenantService;
 import com.pfi.crm.multitenant.tenant.model.ModuloEnum;
 import com.pfi.crm.multitenant.tenant.model.ModuloMarket;
 import com.pfi.crm.multitenant.tenant.model.Role;
 import com.pfi.crm.multitenant.tenant.model.RoleName;
+import com.pfi.crm.multitenant.tenant.payload.MasterTenantMarketPayload;
 import com.pfi.crm.multitenant.tenant.payload.ModuloMarketPayload;
+import com.pfi.crm.multitenant.tenant.payload.TenantPayload;
+import com.pfi.crm.multitenant.tenant.payload.request.ModificarMasterTenantMarketRequestPayload;
 import com.pfi.crm.multitenant.tenant.persistence.repository.ModuloMarketRepository;
 import com.pfi.crm.multitenant.tenant.persistence.repository.RoleRepository;
 
 @Service
 public class ModuloMarketService {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(ModuloMarketService.class);
 	
 	@Autowired
 	private ModuloMarketRepository moduloMarketRepository;
@@ -35,7 +43,8 @@ public class ModuloMarketService {
 	@Autowired
 	private RoleRepository roleRepository;
 	
-	private static final Logger LOGGER = LoggerFactory.getLogger(ModuloMarketService.class);
+	@Autowired
+	private MasterTenantService masterTenantService;
 	
 	public ModuloMarketPayload getModuloMarketById(@PathVariable Long id) {
 		return moduloMarketRepository.findById(id).orElseThrow(
@@ -497,15 +506,135 @@ public class ModuloMarketService {
 	}
 	
 	
+	/**
+	 * Exclusivo para administrador de todas las ong
+	 */
+	public List<MasterTenantMarketPayload> getModulosMarketDeTodosLosTenants() {
+		LOGGER.info("Chequear suscripción de módulos");
+		List<TenantPayload> tenants = masterTenantService.getTenants();
+		List<MasterTenantMarketPayload> listaTenantModulos = new ArrayList<MasterTenantMarketPayload>();
+		for(TenantPayload tenant: tenants) {
+			//moduloCheckSuscripcionTenant(tenantName);
+			DBContextHolder.setCurrentDb(tenant.getDbName());
+			List<ModuloMarket> modulos = moduloMarketRepository.findAll();
+			for(ModuloMarket modulo: modulos) {
+				if(modulo.isPaidModule()) {
+					MasterTenantMarketPayload item = new MasterTenantMarketPayload();
+					item.setTenantId(tenant.getTenantClientId());
+					item.setTenantDbName(tenant.getDbName());
+					item.setTenantName(tenant.getTenantName());
+					item.setPaidModule(modulo.isPaidModule());
+					item.setModulo(modulo.getModuloEnum());
+					item.setPrueba7DiasUtilizada(modulo.isPrueba7DiasUtilizada());
+					item.setFechaInicioSuscripcion(modulo.getFechaInicioSuscripcion());
+					item.setFechaMaximaSuscripcion(modulo.getFechaMaximaSuscripcion());
+					item.setSuscripcionActiva(modulo.isSuscripcionActivaByBoolean());
+					listaTenantModulos.add(item);
+				}
+			}
+		}
+		return listaTenantModulos;
+	}
 	
-	/*public ModuloMarketPayload toPayload(ModuloMarket m) {
-		ModuloMarketPayload p = new ModuloMarketPayload();
-		p.setId(m.getId());
-		p.setModuloEnum(m.getModuloEnum());
-		p.setPrueba7DiasUtilizada(m.isPrueba7DiasUtilizada());
-		p.setFechaPrueba7DiasUtilizada(m.getFechaPrueba7DiasUtilizada());
-		p.setFechaMaximaSuscripcion(m.getFechaMaximaSuscripcion());
-		p.setSuscripcionActiva(m.isSuscripcionActiva());
-		return p;
-	}*/
+	public void sumarTiempoModulosMarket(ModificarMasterTenantMarketRequestPayload request) {
+		
+		List<TenantPayload> tenants = new ArrayList<TenantPayload>();
+		
+		//Verifico si es a todos los tenants o 1 tenant
+		if(request.isAllTenants()) {
+			tenants = masterTenantService.getTenants();
+		} else {
+			//for(TenantPayload tenant: request.getTenants()) {
+			//	tenants.add(masterTenantService.findByClientId(tenant.getTenantClientId()).toPayload());
+			//}
+			tenants.add(masterTenantService.findByClientId(request.getTenantId()).toPayload());
+		}
+		LocalDateTime fechaMaximaASetear = request.getFechaMaximaSuscripcion();//Si existe, solo modifico fecha, no Period
+		int nro = 0;
+		Period period = Period.ofDays(0);
+		
+		//Si no hay fecha, es agregar Period de día, mes, etc
+		if(fechaMaximaASetear == null) {
+			if(request.getDiaMesAnio() == null)
+				throw new BadRequestException("No ha ingresado dato de si es día, mes o año.");
+			if(request.getNumeroTiempoASumar() == null)
+				throw new BadRequestException("No ha ingresado dato cuántos días, mes o año sumar.");
+			nro = request.getNumeroTiempoASumar().intValue();
+			if(nro < 0)
+				throw new BadRequestException("No se puede ingresar un número '" + nro + "' negativo, por favor ingrese un número positivo.");
+			if(request.getDiaMesAnio().equalsIgnoreCase("DIA")) {
+				if(nro > 365)
+					throw new BadRequestException("No puede ingresar un número '" + nro + "' mayor a 365 días, dado que es mucho tiempo");
+				period = Period.ofDays(nro);
+			} else if (request.getDiaMesAnio().equalsIgnoreCase("MES")) {
+				if(nro > 12)
+					throw new BadRequestException("No puede ingresar un número '" + nro + "' mayor a 12 meses, dado que es mucho tiempo");
+				period = Period.ofMonths(nro);
+			} else if (request.getDiaMesAnio().equalsIgnoreCase("AÑO")) {
+				if(nro > 3)
+					throw new BadRequestException("No puede ingresar un número '" + nro + "' mayor a 3 años, dado que es mucho tiempo");
+				period = Period.ofYears(nro);
+			} else {
+				throw new BadRequestException("dato de diaMesAnio '" + request.getDiaMesAnio() + "' mal escrito, debe ingresar 'DIA', 'MES' o 'AÑO'");
+			}
+		}
+		
+		
+		
+		boolean isAllModulos = request.isAllModulos();
+		boolean isPruebaUtilizadaATenant = request.getQuitarPruebaUtilizadaATenant() != null ? request.getQuitarPruebaUtilizadaATenant().booleanValue() : false;
+		boolean isSetearFecha = fechaMaximaASetear != null;
+		boolean isSetearPeriod = !isSetearFecha;
+		
+		for(TenantPayload tenant: tenants) {
+			DBContextHolder.setCurrentDb(tenant.getDbName());
+			List<ModuloMarket> modulos = new ArrayList<ModuloMarket>();
+			if(isAllModulos) {
+				modulos = getModulosPagos();
+			} else {
+				modulos.add(getModuloMarketModelByModuloEnum(request.getModuloEnum()));
+			}
+			System.out.println("______________________________________________________________________");
+			System.out.println("Tenant: " + tenant.getTenantName());
+			System.out.println("   Modulos:");
+			@SuppressWarnings("unused")
+			List<ModuloMarketPayload> modulosSuscriptos = new ArrayList<ModuloMarketPayload>();
+			for(ModuloMarket m: modulos) {
+				System.out.println("     " + m.getModuloEnum().getName() + ".");
+				System.out.println("        Antes:   " + m.getFechaMaximaSuscripcion());
+				boolean huboModificacion = false;
+				if(isPruebaUtilizadaATenant) {
+					System.out.println("          Prueba antes:   " + m.isPrueba7DiasUtilizada());
+					huboModificacion = m.quitarPruebaUtilizada();
+					System.out.println("          Prueba despues:   " + m.isPrueba7DiasUtilizada());
+				} else if(isSetearFecha) {
+					huboModificacion = m.setFechaMaximaSuscripcionByCosmosAdmin(fechaMaximaASetear);
+				} else if(isSetearPeriod) {
+					huboModificacion = m.sumarTiempoByCosmosAdmin(period);
+				} else {
+					huboModificacion = false;//No deberia suceder que entre acá
+				}
+				System.out.println("        Despues: " + m.getFechaMaximaSuscripcion());
+				System.out.println("        Hubo modificación: " + huboModificacion);
+				System.out.println("______________________________________________________________________");
+				if(huboModificacion)
+					modulosSuscriptos.add(modificarModuloMarket(m));
+			}
+			System.out.println(isAllModulos ? "______________________________________________________________________" : "");
+			//return modulosSuscriptos;
+		}
+	}
+	
+	public ModificarMasterTenantMarketRequestPayload testSuscribirModulosMarket() {
+		ModificarMasterTenantMarketRequestPayload test = new ModificarMasterTenantMarketRequestPayload();
+		test.setTenantId(Integer.valueOf(100));
+		//test.setTenants(masterTenantService.getTenants());
+		test.setModulo(ModuloEnum.BENEFICIARIO.toString());
+		test.setFechaMaximaSuscripcion(LocalDateTime.now().plusDays(2));
+		test.setNumeroTiempoASumar(2);
+		test.setDiaMesAnio("DIA");
+		test.setQuitarPruebaUtilizadaATenant(true);
+		return test;		
+	}
+	
 }

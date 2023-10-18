@@ -8,6 +8,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.pfi.crm.exception.BadRequestException;
+import com.pfi.crm.mastertenant.config.DBContextHolder;
 import com.pfi.crm.multitenant.mastertenant.entity.MasterTenant;
 import com.pfi.crm.multitenant.mastertenant.repository.MasterTenantRepository;
 import com.pfi.crm.multitenant.tenant.payload.TenantPayload;
@@ -22,6 +24,16 @@ public class MasterTenantService {
 	public MasterTenant findByClientId(Integer clientId) {
 		LOG.info("findByClientId() method call...");
 		return masterTenantRepository.findByTenantClientId(clientId);
+	}
+
+	//Se utiliza en front para obtener el número telefónico
+	public TenantPayload getUserTenant() {
+		String tenantName = DBContextHolder.getCurrentDb();
+		if(tenantName != null) {
+			MasterTenant tenantModel = getTenantByDbName(tenantName);
+			return tenantModel.toPayload();
+		}
+		throw new BadRequestException("Algo salió mal. No hay tenant iniciado sesión.");
 	}
 	
 	public List<TenantPayload> getTenants() {
@@ -39,7 +51,7 @@ public class MasterTenantService {
 			return true;
 	}
 	
-	private MasterTenant getTenantByDbName(String db_name) {
+	public MasterTenant getTenantByDbName(String db_name) {
 		List<MasterTenant> tenants = masterTenantRepository.findAll();
 		for(int i=0; i<tenants.size(); i++) {
 			if(tenants.get(i).getDbName().equalsIgnoreCase(db_name)) {
