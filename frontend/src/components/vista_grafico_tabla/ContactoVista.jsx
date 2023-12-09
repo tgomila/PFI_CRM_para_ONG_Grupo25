@@ -21,6 +21,10 @@ function ContactoVista() {
 
   return (
     <div className="ComponentePrincipalGraficos">
+      <div className="Marketplace">
+        <h1><span className="underlined underline-clip-title">Contactos</span></h1>
+        <br/><br/>
+      </div>
       {isVisibilidadReady && (
         <div>
 

@@ -25,11 +25,11 @@ function Login() {
     TenantService.getAll().then((res) => {
       setTenants(res.data);
       const updatedTenantsImage = res.data.map((tenant) => {
-        const imageUrl = `http://localhost:8080/logo/${tenant.dbName}.png`;
+        const imageUrl = BACKEND_STATIC_BASE_URL + `logo/${tenant.dbName}.png`;//`http://localhost:8080/logo/${tenant.dbName}.png`;
         return {
           ...tenant,
           imageLogo: imageUrl,
-          imageUrl: `http://localhost:8080/logo/${tenant.dbName}.png`,
+          imageUrl: BACKEND_STATIC_BASE_URL + `logo/${tenant.dbName}.png`,//`http://localhost:8080/logo/${tenant.dbName}.png`,
         };
       });
       setTenantsImage(updatedTenantsImage);

@@ -12,6 +12,8 @@ import TenantService from "../../services/TenantService";
 
 import "./Login.css";
 import "../../Styles/CRUD.scss";
+import * as constantsURL from "../../components/constants/ConstantsURL";
+const BACKEND_STATIC_BASE_URL = constantsURL.STATIC_BASE_URL;
 
 // import { required } from "../CRUD/Constants/ConstantsInput";
 
@@ -77,11 +79,11 @@ const Register = () => {
     TenantService.getAll().then((res) => {
       setTenants(res.data);
       const updatedTenantsImage = res.data.map((tenant) => {
-        const imageUrl = `http://localhost:8080/logo/${tenant.dbName}.png`;
+        const imageUrl = BACKEND_STATIC_BASE_URL + `logo/${tenant.dbName}.png`;//`http://localhost:8080/logo/${tenant.dbName}.png`;
         return {
           ...tenant,
           imageLogo: imageUrl,
-          imageUrl: `http://localhost:8080/logo/${tenant.dbName}.png`,
+          imageUrl: BACKEND_STATIC_BASE_URL + `logo/${tenant.dbName}.png`,//`http://localhost:8080/logo/${tenant.dbName}.png`,
         };
       });
       setTenantsImage(updatedTenantsImage);

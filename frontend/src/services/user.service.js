@@ -4,7 +4,6 @@ import * as constantsURL from "../components/constants/ConstantsURL";
 
 // Esto chequea si el token está expirado en clases superiores, para luego cerrar sesión automáticamente.
 
-//const API_URL = "http://localhost:8080/api/test/";
 const API_URL = constantsURL.API_BASE_URL + "test/";
 
 const getPublicContent = () => {
