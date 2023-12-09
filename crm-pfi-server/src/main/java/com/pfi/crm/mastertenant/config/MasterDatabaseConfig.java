@@ -95,7 +95,7 @@ public class MasterDatabaseConfig {
 		properties.put(org.hibernate.cfg.Environment.DIALECT, "org.hibernate.dialect.PostgreSQLDialect");
 		properties.put(org.hibernate.cfg.Environment.SHOW_SQL, true);
 		properties.put(org.hibernate.cfg.Environment.FORMAT_SQL, true);
-		properties.put(org.hibernate.cfg.Environment.HBM2DDL_AUTO, "none");
+		properties.put(org.hibernate.cfg.Environment.HBM2DDL_AUTO, "none");//"create" esto es solo si no existe la tabla masterTenant en database
 		return properties;
 	}
 }

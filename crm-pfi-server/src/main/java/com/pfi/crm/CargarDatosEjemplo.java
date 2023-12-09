@@ -917,7 +917,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		user.setName(persona.getNombre().split(" ")[0] + " " + persona.getApellido().split(" ")[0]);
 		user.setUsername(persona.getNombre().split(" ")[0].toLowerCase().substring(0, 1) + persona.getApellido().split(" ")[0].toLowerCase());
 		user.setEmail(persona.getEmail());
-		user.setPassword(passwordEncoder.encode("cosmos2023"));
+		user.setPassword(passwordEncoder.encode("cosmos2023"));//"123456"
 		user.setContacto(contactoService.getContactoModelById(persona.getId()));
 		user.agregarRol(new Role(roleName));
 		return user;
@@ -2229,7 +2229,7 @@ public class CargarDatosEjemplo implements ApplicationListener<ApplicationReadyE
 		user.setName(name);
 		user.setUsername(username);
 		user.setEmail(email);
-		user.setPassword(passwordEncoder.encode("123456"));
+		user.setPassword(passwordEncoder.encode("cosmos2023"));//"123456"
 		User result = userService.altaUsuario(user);
 		System.out.println("Usuario '" + result.getUsername() + "' dado de alta.");
 		if(rol!=null)

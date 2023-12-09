@@ -51,7 +51,8 @@ import com.pfi.crm.security.UserPrincipal;
 
 @Service
 public class FileStorageService {
-	private final Path root = Paths.get("./fileTenantDB");
+	//private final Path root = Paths.get("./fileTenantDB");
+	private final Path root = Paths.get("/home/ec2-user/fileTenantDB");
 	
 	@Autowired
 	private ContactoService contactoService;

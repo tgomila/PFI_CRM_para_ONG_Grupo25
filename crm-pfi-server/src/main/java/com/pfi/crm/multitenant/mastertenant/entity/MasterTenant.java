@@ -4,6 +4,7 @@ import java.io.Serializable;
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 
+import com.pfi.crm.constant.AWSConstants;
 import com.pfi.crm.multitenant.tenant.payload.TenantPayload;
 
 @Entity
@@ -66,10 +67,11 @@ public class MasterTenant implements Serializable {
 		this.tenantClientId = p.getTenantClientId();
 		this.dbName = p.getDbName();
 		this.tenantName = p.getTenantName();
-		this.url = "jdbc:mysql://localhost:3306/" + p.getDbName()
+		//this.url = "jdbc:mysql://localhost:3307/" + p.getDbName()
+		this.url = "jdbc:mysql://" + AWSConstants.DB_URL_DEFAULT + ":" + AWSConstants.PORT_DEFAULT + "/" + p.getDbName()
 				+ "?useSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false";
-		this.userName = "root";
-		this.password = "1234";
+		this.userName = AWSConstants.USERNAME_DEFAULT;//"root";
+		this.password = "password-pfi";//1234
 		this.driverClass = "com.mysql.cj.jdbc.Driver";
 		this.status = "Active";
 		this.tenantPhoneNumber = "+541131105305";
@@ -80,15 +82,15 @@ public class MasterTenant implements Serializable {
 		this.dbName = p.getDbName();
 		this.tenantName = p.getTenantName();
 		if(timeZone != null&& !timeZone.isEmpty()) {
-			this.url = "jdbc:mysql://localhost:3306/" + p.getDbName()
+			this.url = "jdbc:mysql://" + AWSConstants.DB_URL_DEFAULT + ":" + AWSConstants.PORT_DEFAULT + "/" + p.getDbName()
 					+ "?useSSL=false&serverTimezone=" + timeZone 
 					+ "&useLegacyDatetimeCode=false";
 		} else {
-			this.url = "jdbc:mysql://localhost:3306/" + p.getDbName()
+			this.url = "jdbc:mysql://" + AWSConstants.DB_URL_DEFAULT + ":" + AWSConstants.PORT_DEFAULT + "/" + p.getDbName()
 			+ "?useSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false";
 		}
-		this.userName = "root";
-		this.password = "1234";
+		this.userName = AWSConstants.USERNAME_DEFAULT;//"root";
+		this.password = "password-pfi";//1234
 		this.driverClass = "com.mysql.cj.jdbc.Driver";
 		this.status = "Active";
 		this.tenantPhoneNumber = "+541131105305";

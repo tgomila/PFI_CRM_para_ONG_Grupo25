@@ -1,0 +1,50 @@
+create database master_db;
+CREATE TABLE  `master_db`.`tbl_tenant_master` (
+  `tenant_client_id` int(10) unsigned NOT NULL,
+  `db_name` varchar(50) NOT NULL,
+  `tenant_name` varchar(100) NOT NULL,
+  `url` varchar(250) NOT NULL,
+  `user_name` varchar(50) NOT NULL,
+  `password` varchar(100) NOT NULL,
+  `driver_class` varchar(100) NOT NULL,
+  `status` varchar(10) NOT NULL,
+  `tenant_phone_number` varchar(50) NOT NULL,
+  PRIMARY KEY (`tenant_client_id`) USING BTREE
+) ENGINE=InnoDB;
+
+#SOLO PARA POSTGRES!!! Inicio postgres
+create database master_db;
+CREATE TABLE  tbl_tenant_master (
+  tenant_client_id int check (tenant_client_id > 0) NOT NULL,
+  db_name varchar(50) NOT NULL,
+  tenant_name varchar(100) NOT NULL,
+  url varchar(250) NOT NULL,
+  user_name varchar(50) NOT NULL,
+  password varchar(100) NOT NULL,
+  driver_class varchar(100) NOT NULL,
+  status varchar(10) NOT NULL,
+  tenantPhoneNumber varchar(50) NOT NULL,
+  PRIMARY KEY (tenant_client_id)
+);
+#Fin postgres
+
+create database testdb;
+DROP TABLE IF EXISTS `testdb`.`tbl_user`;
+CREATE TABLE  `testdb`.`tbl_user` (
+  `user_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `full_name` varchar(100) NOT NULL,
+  `gender` varchar(10) NOT NULL,
+  `user_name` varchar(50) NOT NULL,
+  `password` varchar(100) NOT NULL,
+  `status` varchar(10) NOT NULL,
+  PRIMARY KEY (`user_id`)
+) ENGINE=InnoDB;
+
+DROP TABLE IF EXISTS `testdb`.`tbl_product`;
+CREATE TABLE  `testdb`.`tbl_product` (
+  `product_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `product_name` varchar(50) NOT NULL,
+  `quantity` int(10) unsigned NOT NULL DEFAULT '0',
+  `size` varchar(3) NOT NULL,
+  PRIMARY KEY (`product_id`)
+) ENGINE=InnoDB;

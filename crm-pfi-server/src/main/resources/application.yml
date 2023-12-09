@@ -1,17 +1,50 @@
 #CosmosCRM Master DataBase info
+server:
+  port: 8080
+  error:
+    include-message: always
 
 #Sirve para MasterDatabaseConfigProperties
 multitenancy:
   cosmosmtapp:
+    #no tiene uso, por ahora
+    tenant:
+      datasource:
+        driverClassName: com.mysql.cj.jdbc.Driver
+        awsUrl: cosmoscrm-tenants-db.cl2y9krlxcsn.sa-east-1.rds.amazonaws.com
+        port: 3306
+        #url: jdbc:mysql://cosmoscrm-tenants-db.cl2y9krlxcsn.sa-east-1.rds.amazonaws.com:3307/tenant2?useSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false
+        username: admin
+        password: password-pfi
+        
     master:
       datasource:
-        #url: jdbc:mysql://localhost:3306/master_db?useSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false
+        
+        #(No se usa, ex dev) Cuando se usaba un Schema de MySQL
+        #url: jdbc:mysql://localhost:3307/master_db?useSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false
         #driverClassName: com.mysql.cj.jdbc.Driver
         #username: root
-        url: jdbc:postgresql://localhost:5432/master_db?useSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false
+        
+        #Postgres (localhost en pc, ex dev)
+        #url: jdbc:postgresql://localhost:5432/master_db?useSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false
+        #driverClassName: org.postgresql.Driver
+        #username: postgres
+        #password: 1234
+        
         driverClassName: org.postgresql.Driver
-        username: postgres
-        password: 1234
+        
+        #Docker (Dev)
+        #url: jdbc:postgresql://localhost:5433/master_db?useSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false
+        #username: tgomila
+        #password: password-pfi
+        #Fin Docker
+        
+        #AWS (Producción)
+        url: jdbc:postgresql://cosmoscrm-master-db.cl2y9krlxcsn.sa-east-1.rds.amazonaws.com:5432/master_db?useSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false
+        username: tgomila
+        password: password-pfi
+        #Fin AWS
+        
         connectionTimeout: 20000
         maxPoolSize: 250
         idleTimeout: 300000
@@ -23,3 +56,10 @@ multitenancy:
           hibernate:
             #spring.jpa.properties.hibernate.dialect
             dialect: org.hibernate.dialect.PostgreSQLDialect
+
+aws:
+  region: sa-east-1
+  s3:
+    mock: true
+    buckets:
+      customer: fs-cosmos-crm-test-TODO
